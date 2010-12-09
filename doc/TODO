@@ -1,0 +1,30 @@
+- Simple Object-Placement Edit-Mode
+
+- Identify Target
+
+- Wingmen Orders
+
+- Reload/Refill/Repair Zones.
+
+- Footstep sound
+
+- Turrets
+
+- First real mission.
+
+- AI Target-Visibility (LOS): Don't shoot when target is behind a wall.
+
+- Waypoints and pathfinding.
+
+- City-generator.
+
+- Weapon-Engage and -Disengage time.
+
+- Colored particles indicating damage inflicted (chipping off).
+
+- Decide on static object format(s), any at all?
+
+- Mission File Loading
+
+- AI shall support allied Objects (attack their targets/attackers, learn their enemies, follow allies on demand).
+

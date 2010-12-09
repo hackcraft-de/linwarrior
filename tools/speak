@@ -1,0 +1,2 @@
+espeak -s 120 -v en+whisper -f <filename> -w <wavefile>
+

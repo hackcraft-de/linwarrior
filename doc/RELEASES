@@ -1,0 +1,209 @@
+RELEASE NOTES
+
+
+2010_08_28 r17
+Silent Noise release:
+
+Added Procedural Landscape
+- Procedural dunes
+- Decal objects
+Enhanced Sky Model
+- Awesome Night-Sky - don't miss
+- Clouds
+- Galaxy
+- Solar bodies
+Enhanced Textures
+- Explosion FX
+- Camoflage
+Input Enhancement
+- Mapping of mouse to virtual gamepad for targeting.
+General Graphic Enhancement
+- Antialiasing/Multisample through option "--samples n" or short "-s n" with n 0 2 4.
+
+
+
+
+2010_03_20 r16
+Hadron Collider release:
+
+Enhanced Sky Model
+- textured sun and moon.
+- dramatic cloud layers.
+- mystic textured mountains on the horizon.
+Gimped Urban Textures
+- Textures are unter CC-BY-license (welcome to modify and enhance)
+Pimped Proecdural Textures
+- Simplex-Noise camoflage texture
+Cool Verlet-Integration of Constrained Particles.
+- Pure Physics - no fake (maybe some minor)
+- Collision Detection + Correction faster and easier
+- No more sticking on walls - ai can walk "around" obstacles
+- No more bouncing
+- There is no spoon - just particles
+Weapons now using particles instead of rays.
+- Rays emulated through particle-trails
+- No more shooting through buildings
+Scalable Weapons
+- Will allow customization
+Complex Loadable Models through text-based MD5Mesh-Format.
+- Finer models possible
+- More vehicle types to come
+- Easy moddability and community support (Blender and now MisfitModel 3D)
+- CC-BY-license models (welcome to modify and enhance)
+- MD5Format-Exporter for MisfitModel 3D included.
+Fixed a font-rendering bug on 64bit systems.
+Timed message passing to groups of objects - in preparation for
+- wingman orders.
+- timed events.
+- event passing.
+- ai group coordination.
+- mission scripting
+
+Please note that the project welcomes modifications
+of models, textures and sound under CC-BY.
+
+
+
+2009_11_08 r15 (5.0MB)
+Liberation release:
+
++ Added zone-damage.
++ Overhauled HUD.
++ Navigation-Computer.
++ Now log/linear hybrid radar.
++ Enhanced sample world.
++ Bound animation to velocity.
++ Tweaked physics.
++ Reintroduced sun and moon.
++ Now simple textured buildings and roads with streetlamps.
++ Added switchable view distance (1-9, 0 unlimited).
++ Adjusted controlls.
++ Reintroduced enemies targeting upwards.
++ Includes linux- and win-binary.
++ Preparations for further changes.
+
+
+
+0.6.5[beta 9] 2009_05_29 r14 (3.6MB)
+Spatial-Space release:
+
++ Spatial clustering of units => faster object filtering.
++ Initial PVS, faster collisions => larger/detailed landscapes possible.
++ Logarithmic distance radar.
++ Improved frame locking.
++ Text and messages.
++ Base- & turret-compass-number.
++ Unit move- & aim-targets.
++ Weaker jumpjets.
++ Can run w/o sound when device busy.
+
+
+
+0.6.3[beta 8] 2009_02_08 r13 (3.5MB)
+Birthday party release:
+
++ OpenAL positional audio.
++ Weapons sounds, vocal power-up sequence.
++ Ambient background drone.
++ Makefile with autodependencies.
++ Includes Windows-Binary.
+
+
+
+0.6.1[beta 7] 2008_12_24 r12 (2.0MB)
+Hohoho...release:
+
++ Visual weapon modells (animated).
++ Ammo and clips reloading.
++ Ammo and clips in Weapon-HUD.
++ Homing-Missile aquires target.
++ Try all weapons in --mission 2.
++ Preliminary Doxygen comments and config-file.
+
+
+
+0.6.1[beta 6] 2008_10_20 r11 (1.7MB)
+Ground and Mountain release:
++ Blooming mountains.
++ Groundplane-Texture.
++ WAIT-Opcode with timeout for AI-Stack-Engine.
++ First campaign mission underway (--mission 2).
+
+
+
+0.6.1[beta 5] 2008_09_21 r10
+Down-Town release:
+
++ Added Simple 3D-Texturing (no 2D-Texturing).
++ Citybuilder.
++ Pimped-Explosions.
++ Jump-Jet-Effect.
++ Single-Damage-Indicator.
++ GoTo and Repeat-Opcode for AI-Stack-Engine.
+
+
+
+0.6.1[beta 4] 2008_08_08 r9
+Lucky Number Release:
+
++ Inter-Object-Collisions & Physics
+
+
+
+0.6.1[beta 3] 2008_07_13 r8
+Unnamed Release:
+
++ Improved Head Up Display.
++ Improved Projectile-Collissions.
+
+
+
+0.6.1[beta 2] 2008_06_08 r7
+Gamepad release:
+
++ SDL and Gamepad support.
++ Contains (Linux) NetBeans C++ Project. + Hand compiled Windows binary.
+
+
+
+0.6.1[beta 1] 2008_05_17 r6
+On the way release:
+
++ Further refactoring and work towards SDL support but still GLUT.
+
+
+
+0.6.1[beta 0] 2008_03_09 r5
+Modern-Line release:
+
++ New look.
++ Major source clean up and refactoring.
++ Now using NetBeans C++ for Project-Workspace.
+
+
+
+0.6.0 2004_01_11 r4
+classic end:
+
++ Finishes the LinWarrior Classic Line after a long idle time.
+
+
+
+0.52 r3
+experimental:
+
++ Completly different
+
+
+
+0.51 r2
+classic version:
+
++ Minor changes
+
+
+
+0.50 (2000) r1
+very classic version:
+
++ First release version, mainly programmed over winter holydays 1999.

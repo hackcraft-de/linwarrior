@@ -1,0 +1,80 @@
+Large Teams Develop, Small Teams Evolve (and have success).
+
+
+This is just a draft of a workflow which *may* be a good way to go from
+scratch to game and *stay motivated*.
+
+These guidelines where found through *not* beeing conformant to them -
+ie. I learned the hard way.
+
+
+Overall Suggestions:
+
+1. Break it where you see fit, these aren't hard rules but
+merely guidelines - but you should consider consequences. Breaking could
+lead to frustration and thereby to project stalls and project death.
+
+2. Don't waste time implementing something you may
+(or worse may not) need in the future (Bottom-Up). Instead better write
+code in a What-You-Get-Is-What-You-Mean manner (Top-Down) - so write the
+function-code before you write the function. Push code downwards as functions
+grow larger. Use dummy functions are sometimes helpful.
+
+3. Don't waste too much Time on beautiful code structure
+beforehand, just pin it down and refactor later when neccessary.
+Change is a usual thing - accept it - as soon as you write it it will
+be legacy code - live with it.
+
+4. Don't throw code away just because you want to do
+differently - better refactor, reformat and let code evolve towards your
+goal. Let your codebase be compileable all the time without spreading
+above an abbys.
+
+5. Don't over-generalize or otherwise be lured by the latest
+Software-Development trend. Different things should be different constructs.
+Don't mix Weapons, Projectiles and Particles with GameObjects.
+On the other hand you should put as much needed common attributes into
+a GameObject-Base-Object as neccessary to treat them all the same by the
+GameWorld.
+
+6. Graphics is the number one project killer before a game is playable.
+You can literaly spend years enhancing graphics without adding gameplay.
+When the game is playable graphics may boost a project.
+Many doomed projects start as funky tech-demos or feature lists.
+Many successful projects start ugly but with focus on determined gameplay.
+
+7. Likewise 6. projects going public too early without fixed gameplay
+vision and focus on gameplay either end up as tech-demos or are
+talked to death. A game does not live from features alone but some
+features are neccessary to really implement gameplay. It is more
+important to reduce features to an orthogonal set than to collect
+would-be-cool features.
+
+8. Evolve don't jump!
+
+
+
+Evolution/Development Path (Some steps may be exchanged with their neighbours):
+
+
+Character movement should be functional as soon as possible,
+something like an infinitive empty plane as a starting world is enough.
+
+Introduce non-moving dummy targets while implementing collision-detection,
+targeting and damaging. Good enough for tutorial missions:
+"Yo, here we've got some targeting/manouvering training kid,
+but stay calm, they won't shoot you!" - so add a simple text-display.
+
+Targets now may fire back and move. All characters should be damageable and
+be able to die.
+
+Mission fullfillment, failure, transition and gameovers in some simple
+way should be functional at this point.
+
+Congratulations this is a Game, a prototype at least.
+
+Extend on: Character movement, weapons, ai, objectives.
+
+Iterate.
+
+

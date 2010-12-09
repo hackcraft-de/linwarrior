@@ -1,0 +1,3 @@
+On Macintosh OS X you must uncomment the LFLAGS line for OS X in the Makefile.
+
+See the main README for other details on installing this plugin.

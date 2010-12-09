@@ -1,0 +1,118 @@
+List of Important Concepts
+==========================
+(top secret - eyes only)
+
+
+Virtual Gamepad
+---------------
+
+One uniform input interface - the virtual gamepad - simplifies and abstracts
+non-uniform input methods (keyboard/+mouse, gamepad, joystick, network,
+autopilot) and serves as a common source of command-wishes for any Object,
+not only those controlled by human players. The virtual gamepad does
+provide easy means for storing and replaying demos.
+
+
+
+Command Stack
+-------------
+
+A Stack onto which tactical and operational orders can be placed
+to be worked top to bottom and on which current top orders can be
+superceded by new orders without the pevious being lost for later resume.
+
+A tactical plan can be build by placing several operational orders on
+the stack or by placing an order onto the stack which keeps track of operations.
+
+Behavior for the current order (state) is implemented by calling do_* methods
+of the controlled object. Whether to add or remove orders (state-switch) is
+determined by calling fuzzy-predicates which are implemented by the controlled
+object, too.
+
+Therefore execution of an order and determining when change of orders has
+to happen is implemented by means of abstract methods (you get what you mean).
+
+A fuzzy-predicate could be "inFireRange" and an Action-Method could be
+"aimAtTarget". Note that thereby the Command-Stack-Engine does only hardcode
+the general logical structure in which objectives are fulfilled but does
+not hardcode the way it is exactly executed. That is the Stack may tell
+you which object to target, where to move, when to fire - but does not
+tell you how you have to hold your hand, how to move your feet or how to
+trigger the weapon.
+
+Note that the Fuzzy-Predicates are a kind of input to the Stack-Automata
+and the Action-Methods are a kind of output-function.
+
+
+
+Object Filtering
+----------------
+
+Finding objects which have certain specified properties, values, intersections
+with geometric primitives etc or any combination of those are done by filtering.
+First the whole set of objects can be filtered by one property through
+one filtering method and then the resulting object set can be filtered again
+and again by other filters. For example: First you can filter by object type
+(roles), to get that kind of object then you can filter by range to get all
+nearby objects of that kind. This is very similar to a Geo-Database populated
+by objects to which you can send querries like:
+"select * from objects where flags=1100101 and distance < 100"
+
+
+
+Object with Roles
+-----------------
+
+The Base-Object already includes several common variables - also not needed
+by all specific (sub-)objects. The Base-Object includes a bitmask which
+lists all roles the object belongs to (one bit one role).
+These bitmasks do not only tell which variables hold senseful information
+but they also tell to which game related groups the object belongs to and
+which state it has inside the game world. By Object-Filtering objects playing
+certain roles can be selected. The Base-Object holds many method-stubs without
+senseful bodies - to be filled by subclasses. This is some kind of poor-man's
+role based programming. Subclasses will only add specialiased attributes
+needed to represent internal state and will implement those stubbed methods
+to change or implement new behavior. When de-/serializing objects only those
+attributes must be considered which are meaningful to the assumed roles.
+
+
+
+Particle Physics
+----------------
+
+Also particle physics sounds like rocket science (which it is) it is
+a very simple way of doing collisions, collision corrections and accurate
+physical behavior all in one. Just take a Particle with current position,
+acceleration and previous position then the new position equals the
+current position plus the difference of current and previous position
+plus acceleration times time squared which is factored out:
+p'' = 2 * p' - p + a * dt * dt    (the Verlet-Integration)
+Note that it is mandatory to have a fixed framerate (a fixed framerate
+spares a lot of trouble elsewhere, too).
+Then collision detection is reduced to deciding wether a point is inside
+another object (maybe extended by particle radius).
+And collision correction is reduced to placing (constraining) the offending
+particle to the nearest non offending point on the objects boundary hull.
+It is soo simple yet soo powerful it almost feels like beeing 2d again.
+
+
+
+Norm Units
+----------
+
+The International System of Units - short SI-Units spares a lot of trouble.
+Game specific, country or computer specific units can lead to headaches.
+64 units == 1 Human size or whatever, I beg you those days are over.
+Just make it SI: 1.0 meter is just plainly 1.0 meter.
+Most people on this planet will understand that without wasting a thought
+Just 3 countries on this planet did not officially adopt SI-Units.
+SI defines base units: lenght (m), mass (kg), time (s), ...
+And SI defines derived units: force (N), angle (rad), pressure (Pa), ...
+To me it seemed odd a long time to use radians (2 * pi) instead of
+degrees (360) but one needs to supply the sin/cos functions with radians
+anyway which means a lot of conversions. So using SI-Units is a straight
+forward thing - whenever you see a variable like "mass" it should be
+kilogramms or at least when noted: micro-, milli-, ...
+
+

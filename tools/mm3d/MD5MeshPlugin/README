@@ -1,0 +1,23 @@
+This is a plugin for Misfit Model 3D.  This tar archive should be 
+unpacked in the mm3d-X.X.X directory.  If it is not, it will not 
+compile properly.  After the archive is unpacked, go into the
+plugins/[plugin_name] directory and type "make" to build the plugin.
+This will build a .so file.  There is no make install.  Instead, copy 
+the .so file to your personal or system-wide plugins directory.
+
+These directories are:
+
+   $(HOME)/.mm3d/plugins/1.2                   (personal)
+   $(PREFIX)/share/mm3d/plugins/1.2            (system-wide)
+
+$(HOME) is your home directory.  $(PREFIX) is the PREFIX where Misfit 
+Model 3D was installed.  By default this is /usr/local.  In the case of 
+a binary distribution your PREFIX may be /usr.  If you are not sure you 
+can check both of those.  You may also be able to use the output of 
+the following command:
+
+   readlink ~/.mm3d/plugins/1.2/shared
+
+The shared file should be a symbolic link to the system-wide plugins 
+directory.  The readlink command will tell you where the symbolic link
+points.

@@ -1,0 +1,26 @@
+LinWarrior 3D  (Build Aug 26 2010) by hackcraft.de
+
+Reading Commandline Arguments...
+
+LinWarrior
+  by Benjamin Pickhardt (benjamin.pickhardt*udo.edu)
+
+Build:
+  Aug 26 2010
+  21:37:38
+
+Options:
+
+  --help          prints this help screen
+  --resolution    followed by resolution WIDTH or WIDTHxHEIGHT
+  --samples       folowed by the number of multisamples 0,2,4,8,... 
+  --window        start in windowed mode
+  --joypad        followed by a (default) or b.
+                  The a-Type Gamepad is noticeable by zedwise
+                  ordered buttons and b-Type by clockwise buttons
+  --bgm           play background music wav file
+
+  All options can be abbreviated by their first letter:
+    --help is the same as -h
+
+

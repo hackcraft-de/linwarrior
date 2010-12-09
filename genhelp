@@ -1,0 +1,6 @@
+#!/bin/sh
+
+./dist/linwarrior -h > ./doc/HELP
+
+make doxygen
+

@@ -1,0 +1,79 @@
+COPYING
+
+The Project contains parts that may be re-distributed in part or whole under
+As-it-is, CC-BY(-SA), CC-Sampling+, and others.
+For Licensing details see below.
+
+
+Source-Code License
+
+    As-it-is open source.
+
+    By no way does that imply that the original code-base is generally
+    governed under that license - but that what you have received is a
+    version (re-)licensed under that very license.
+
+    As a side note: The author is currently targeting towards mature
+    users who understand that this software is under development -
+    than in mass distribution to complaining users.
+
+    The main author retains the right to publish other versions of the
+    code-base under different licenses. These are basic rights
+    expressed explicitly for those in doubt.
+
+    In case you would like to use a fractional part of the source
+    for your own project just rip it and use it - one can talk about how big
+    fractional can get - a notification or reference would be appreciated.
+
+    If you would like submit a patch a copyright-transfer would be neccessary.
+
+    This source is under benevolent dictatorship.
+    If there are any questions, problems, suggestions
+    please get into direct contact.
+
+    Copyright by Benjamin Pickhardt, 1999-today
+    hackcraft.de
+
+
+Data-File License
+
+    The Multimedia-Files (text, scripts, textures, models, sounds, etc) in the
+    data-Directory have their own copyrights and licenses.
+    CC-BY is encouraged for new contributions.
+    Multi-licensing and allowance to re-license is recommended.
+
+    My thanks go to all contributors. Thank you very much!
+
+
+Further thanks to all developers, maintainers, packagers, distributors and supporters of:
+
+    OpenGL
+    OpenAL
+    libSDL
+    GCC
+    MinGW
+    Linux
+    FreeBSD
+    Ubuntu
+
+
+Thanks for Inspiration and Motivation:
+
+    MW on SNES
+    Cybernator
+    Probotector
+    MW2 & MW2Mercenaries
+    Virtual On
+    Cybersled
+    FrontMission
+    AppleSeed
+    Ghost in the Shell
+    HeavyGear Rulebook
+    Gundam Series
+
+
+Thanks to all those who have shown their interest in this project!
+
+
+Thank you for playing!
+

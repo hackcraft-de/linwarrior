@@ -1,0 +1,2 @@
+mplayer -af volume=0,resample=44100:0:1,pan=1:0.5:0.5,channels=1 -ao pcm:waveheader:file="machinegun.wav" *m240*.wav -endpos 1
+

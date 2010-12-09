@@ -1,0 +1,131 @@
+#include "cWeapon.h"
+
+#include "cWorld.h"
+#include "psi3d/macros.h"
+#include "psi3d/noise.h"
+#include "psi3d/snippetsgl.h"
+
+#include <iostream>
+using std::cout;
+using std::endl;
+
+
+int cWeapon::sInstances = 0;
+std::map<int,long> cWeapon::sTextures;
+
+cWeapon::cWeapon() {
+    sInstances++;
+    if (sInstances == 1) {
+        // Haze Texture
+        if (1) {
+            cout << "Generating Haze..." << endl;
+            int w = 1 << 7;
+            int h = w;
+            int bpp = 4;
+            unsigned char* texels = new unsigned char[((unsigned long)w)*h*bpp];
+            unsigned char* p = texels;
+            loopij(h,w) {
+
+                float dx = (((float)j / (float)w) - 0.5f) * 2.0f;
+                float dy = (((float)i / (float)h) - 0.5f) * 2.0f;
+                float r = sqrt(dx*dx+dy*dy);
+                float r_ = fmin(1.0f, r);
+                float a = 1.0f-pow(r_, 1.7);
+
+                const float f = 2*2.0f;
+                float v3f[] = { f * (float)j / (float)w, 0, f * (float)i / (float)h };
+                float c = cDistortion::sig(cNoise::simplex3(43+v3f[0],23+v3f[1],11+v3f[2])*4);
+                float c4f[4] = { c, c, c, c };
+                *p++ = 255*c4f[2];
+                *p++ = 255*c4f[1];
+                *p++ = 255*c4f[0];
+                *p++ = 255*c4f[3]*a;
+            }
+            bool soft = true;
+            bool repeat = true;
+            unsigned int texname;
+            texname = SGL::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
+            sTextures[0] = texname;
+            delete texels;
+        }
+    }
+
+    weaponMountfv = weaponBasefv = NULL;
+    weaponOwner = NULL;
+    weaponScale = 1.0f;
+    timeReloading = 0.0f;
+    timeReadying = 0.0f;
+    timeFiring = 0.0f;
+    clipSize = 8;
+    depotSize = 5;
+    remainingAmmo = clipSize;
+    remainingClips = depotSize;
+
+    soundSource = -1;
+}
+
+void cWeapon::playSource() {
+    if (alIsSource(soundSource)) {
+        alSourcePlay(soundSource);
+    }
+}
+
+void cWeapon::playSourceIfNotPlaying() {
+    if (alIsSource(soundSource)) {
+        ALint playing;
+        alGetSourcei(soundSource, AL_SOURCE_STATE, &playing);
+        if (playing != AL_PLAYING)
+            alSourcePlay(soundSource);
+    }
+}
+
+void cWeapon::transform() {
+    { // Current Pose-Matrix and Sound-Source-Position update.
+        glPushMatrix();
+        {
+            glLoadIdentity();
+            if (weaponBasefv != NULL) glMultMatrixf(weaponBasefv);
+            else if (weaponOwner) glTranslatef(weaponOwner->traceable->pos[0], weaponOwner->traceable->pos[1], weaponOwner->traceable->pos[2]);
+            if (weaponMountfv) glMultMatrixf(weaponMountfv);
+            glGetFloatv(GL_MODELVIEW_MATRIX, weaponPosef);
+        }
+        glPopMatrix();
+        if (alIsSource(soundSource)) {
+            alSourcefv(soundSource, AL_POSITION, &weaponPosef[12]);
+        }
+    }
+}
+
+int cWeapon::damageByParticle(float* worldpos, float radius, int roles, float damage) {
+    roles = 0;//(1UL << cObject::DAMAGEABLE) | (1UL << cObject::COLLIDEABLE);
+    float scaled_damage = damage * weaponScale;
+    // Roles to test for.
+    std::set<OID> test;
+    int damaged = 0;
+    float maxrange = 25;
+    float worldpos_[3];
+    vector_cpy(worldpos_, worldpos);
+    std::list<cObject*>* range = cWorld::instance->filterByRange(weaponOwner, worldpos, 0.0f, maxrange, -1, NULL);
+    //cout << "damageByParticle: "  << cWorld::instance->getNames(range) << endl;
+    if (!range->empty()) {
+
+        foreach(i, *range) {
+            cObject* object = *i;
+            if (! object->allRoles(&test) ) continue;
+            float localpos_[3];
+            float depth = object->constrainParticle(worldpos_, radius, localpos_, NULL);
+            //cout << object->nameable->name << " depth: " << depth << endl;
+            if (depth == 0) continue;
+            if (object->hasRole(DAMAGEABLE)) {
+                damaged++;
+                object->damageByParticle(localpos_, scaled_damage, weaponOwner);
+            }
+            break;
+        }
+    }
+    delete range;
+
+    return damaged;
+}
+
+
