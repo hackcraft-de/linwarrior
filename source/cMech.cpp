@@ -19,7 +19,7 @@ using std::vector;
 using std::cout;
 using std::endl;
 
-#define MECHDETAIL -1
+#define MECHDETAIL 0
 
 DEFINE_glprintf
 
@@ -243,10 +243,16 @@ void cMech::onSpawn() {
     //cout << "Mech spawned " << base->oid << "\n";
 }
 
+#define grand() ((rand()%100 + rand()%100 + rand()%100 + rand()%100 + rand()%100) * 0.01f * 0.2f - 0.5f)
+
 void cMech::multEyeMatrix() {
     float camera[16];
     float rot_inv[16];
     float pos_inv[16];
+
+    float intensity = 0.0 + pow(this->misc->jetpower * 0.01f, 1.5f);
+    float shake = 0.004f * intensity;
+    float jerk = 0.95f * intensity;
 
     glPushMatrix();
     {
@@ -257,7 +263,11 @@ void cMech::multEyeMatrix() {
         // Compose Camera Matrix from inverse components
         glLoadIdentity();
         glMultMatrixf(rot_inv);
+        glRotatef(grand()*jerk, 1,0,0);
+        glRotatef(grand()*jerk, 0,1,0);
+        glRotatef(grand()*jerk, 0,0,1);
         glMultMatrixf(pos_inv);
+        glTranslatef(grand()*shake, grand()*shake, grand()*shake);
         glGetFloatv(GL_MODELVIEW_MATRIX, camera);
         //matrix_print(camera);
     }
@@ -291,10 +301,11 @@ void cMech::multEyeMatrix() {
 
 void cMech::setAsAudioListener() {
     float s = -0.1;
+    float step = s * cWorld::instance->mTiming.getSPF();
     float vel[] = {
-        traceable->vel[0] * cWorld::instance->mSPF * s,
-        traceable->vel[1] * cWorld::instance->mSPF * s,
-        traceable->vel[2] * cWorld::instance->mSPF * s
+        traceable->vel[0] * step,
+        traceable->vel[1] * step,
+        traceable->vel[2] * step
     };
     float pos[] = {
         traceable->pos[0], traceable->pos[1], traceable->pos[2]

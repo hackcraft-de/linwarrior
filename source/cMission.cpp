@@ -35,7 +35,8 @@ void cMission::onVictory() {
     if (mState != -1) {
         mState = -1;
         cWorld::instance->sendMessage(0, 0, 0,
-                "   (+) Primary target fullfilled.\n   (+) You Won!\n   (+) Hit ESC to finish Mission\n"
+                "DISPLAY",
+                std::string("   (+) Primary target fullfilled.\n   (+) You Won!\n   (+) Hit ESC to finish Mission\n")
                 );
     }
 }
@@ -44,7 +45,8 @@ void cMission::onDefeat() {
     if (mState != -2) {
         mState = -2;
         cWorld::instance->sendMessage(0, 0, 0,
-                "   (-) You Lost!\n   (+) Hit ESC to finish Mission\n"
+                "DISPLAY",
+                std::string("   (-) You Lost!\n   (+) Hit ESC to finish Mission\n")
                 );
     }
 }
@@ -53,18 +55,14 @@ void cMission::onDefeat() {
 // ------------------------------------------------------------
 
 cObject* cEmptyMission::init(cWorld* world) {
-    world->mBackground = new cDomeBackground;
+    world->mBackground = new cBackground;
 
     if (true) {
-        world->mHour = 12;
-        world->mMinute = 0;
-        world->mSecond = 0;
+        world->mTiming.setTime(12);
     } else {
         float hour;
         getSystemHour(hour);
-        world->mHour = (int) hour;
-        world->mMinute = 0;
-        world->mSecond = 0;
+        world->mTiming.setTime(hour);
     }
 
     cObject* player = NULL;
@@ -117,20 +115,16 @@ cObject* cEmptyMission::init(cWorld* world) {
 
 cObject* cOpenMission::init(cWorld* world) {
     cout << "Setting up world background...\n";
-    world->mBackground = new cDomeBackground;
+    world->mBackground = new cBackground;
 
     cout << "Setting mission date and time...\n";
     if (!true) {
-        world->mHour = 9;
-        world->mMinute = 0;
-        world->mSecond = 0;
+        world->mTiming.setTime(9);
     } else {
         float hour;
         getSystemHour(hour);
         hour = fmod(hour, 24);
-        world->mHour = (int) hour;
-        world->mMinute = (int) (60 * (hour - (int) hour));
-        world->mSecond = 0;
+        world->mTiming.setTime(hour, 60 * (hour - (int) hour));
     }
 
     cout << "Initialising vehicles...\n";
@@ -148,11 +142,12 @@ cObject* cOpenMission::init(cWorld* world) {
         float pos[] = {30, -1, 30};
         float range[] = {90, 40, 90};
         OID group = 1;
+        std::string type = "RADIO";
         std::string message = std::string("YOU ARE LEAVING THE MISSION AREA!");
         bool positive = false;
         bool posedge = true;
         OID delay = 0;
-        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, message, group, positive, posedge, delay);
+        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, type, message, group, positive, posedge, delay);
         world->spawnObject(oob);
     }
 
@@ -161,11 +156,12 @@ cObject* cOpenMission::init(cWorld* world) {
         float pos[] = {30, -1, 30};
         float range[] = {110, 50, 110};
         OID group = 1;
+        std::string type = "RADIO";
         std::string message = std::string("YOU HAVE LEFT THE MISSION AREA, CONTRACT VOIDED!");
         bool positive = false;
         bool posedge = true;
         OID delay = 0;
-        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, message, group, positive, posedge, delay);
+        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, type, message, group, positive, posedge, delay);
         world->spawnObject(oob);
     }
 
@@ -175,11 +171,12 @@ cObject* cOpenMission::init(cWorld* world) {
         float pos[] = {0, f*1.76, 0};
         float range[] = {3.5, f*1.75, 3.5};
         OID group = 1;
+        std::string type = "RADIO";
         std::string message = std::string("Happy!");
         bool positive = true;
         bool posedge = true;
         OID delay = 0;
-        cObject* oob = new cAlert(pos, range, cAlert::rShape::CONE, message, group, positive, posedge, delay);
+        cObject* oob = new cAlert(pos, range, cAlert::rShape::CONE, type, message, group, positive, posedge, delay);
         world->spawnObject(oob);
     }
 
@@ -408,9 +405,9 @@ cObject* cOpenMission::initMechs(cWorld* planet) {
         }
     }
 
-    planet->sendMessage(0, player->base->oid, 3, "Stay alert there have been intruders!");
-    planet->sendMessage(0, player->base->oid, 2, "Wingmen into formation!");
-    planet->sendMessage(0, player->base->oid, 1, "Objective: Your group has the order to search the town for possible offending forces. Good luck!");
+    planet->sendMessage(0, player->base->oid, 3, "RADIO", string("Stay alert there have been intruders!"));
+    planet->sendMessage(0, player->base->oid, 2, "RADIO", string("Wingmen into formation!"));
+    planet->sendMessage(0, player->base->oid, 1, "RADIO", string("Objective: Your group has the order to search the town for possible offending forces. Good luck!"));
 
     return player;
 }
@@ -446,11 +443,12 @@ void cOpenMission::initArchitecture(cWorld* planet) {
             float pos[] = {3 * 120, 0, 3 * 40};
             float range[] = {10, 3, 10};
             OID group = 1;
+            std::string type = "RADIO";
             std::string message = std::string("EVACUATION ZONE REACHED, FINISHING MISSION!");
             bool positive = true;
             bool posedge = true;
             OID delay = 0;
-            cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, message, group, positive, posedge, delay);
+            cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, type, message, group, positive, posedge, delay);
             planet->spawnObject(oob);
         }
     }

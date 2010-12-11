@@ -612,6 +612,7 @@ void cNavcom::drawHUD() {
     // Overlay information text: time, date, direction, location.
     glPushMatrix();
     {
+        std::stringstream s;
         glColor4f(0.99, 0.99, 0.19, 1);
         glTranslatef(0, 1, 0);
         glScalef(1.0f / 20.0f, 1.0f / 10.0f, 1.0f);
@@ -628,9 +629,13 @@ void cNavcom::drawHUD() {
         float angle = atan2(mDevice->traceable->ori[1], mDevice->traceable->ori[3]);
         glprintf("MKS: %2i", int(64 - angle * 64 / M_PI) % 64);
         glTranslatef(0, -6, 0);
-        glprintf("Date: %i_%i", w->mYear, w->mDay);
+        s << "Date: " << w->mTiming.getDate();
+        glprintf(s.str().c_str());
         glTranslatef(0, -1, 0);
-        glprintf("Time: %i:%02i:%02i", w->mHour, w->mMinute, w->mSecond);
+        s.clear();
+        s.str("");
+        s << "Time: " << w->mTiming.getTime();
+        glprintf(s.str().c_str());
     }
     glPopMatrix();
 }

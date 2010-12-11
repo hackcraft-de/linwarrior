@@ -217,17 +217,17 @@ struct cPrimitives {
         glEnd();
     }
 
-    static inline void glXYCenteredTextureSquare() {
+    static inline void glXYCenteredTextureSquare(float s = 0.5f) {
         glBegin(GL_QUADS);
         {
             glTexCoord2i(0, 0);
-            glVertex3f(-0.5f, -0.5f, 0);
+            glVertex3f(-s, -s, 0);
             glTexCoord2i(1, 0);
-            glVertex3f(+0.5f, -0.5f, 0);
+            glVertex3f(+s, -s, 0);
             glTexCoord2i(1, 1);
-            glVertex3f(+0.5f, +0.5f, 0);
+            glVertex3f(+s, +s, 0);
             glTexCoord2i(0, 1);
-            glVertex3f(-0.5f, +0.5f, 0);
+            glVertex3f(-s, +s, 0);
         }
         glEnd();
     }

@@ -7,7 +7,7 @@ using std::endl;
 bool cAlert::sDrawzone = false;
 
 
-cAlert::cAlert(float* center, float* range, int shapetype, std::string message, OID group, bool positive, bool posedge, bool once, OID fusedelay) {
+cAlert::cAlert(float* center, float* range, int shapetype, std::string msgtype, std::string msgtext, OID group, bool positive, bool posedge, bool once, OID fusedelay) {
     vector_cpy(shape.center, center);
     vector_cpy(shape.range, range);
     this->traceable->radius = 1 + fmax(fabs(shape.range[0]), fmax(fabs(shape.range[1]), fabs(shape.range[2])));
@@ -22,7 +22,8 @@ cAlert::cAlert(float* center, float* range, int shapetype, std::string message, 
     this->fusedelay = fusedelay;
     this->once = once;
     this->fired = false;
-    this->message = message;
+    this->msgtype = msgtype;
+    this->msgtext = msgtext;
     this->group = group;
     collideable = new rCollideable;
     addRole(COLLIDEABLE, collideable);
@@ -85,7 +86,7 @@ float cAlert::constrainParticle(float* worldpos, float radius, float* localpos, 
             if (posedge) {
                 fired = true;
                 //cout << "fusedelay=" << fusedelay << endl;
-                cWorld::instance->sendMessageT(fusedelay, base->oid, group, message, NULL);
+                cWorld::instance->sendMessage(fusedelay, base->oid, group, msgtype, msgtext, NULL);
             }
         }
     } else  {
@@ -94,7 +95,7 @@ float cAlert::constrainParticle(float* worldpos, float radius, float* localpos, 
             intruders.erase(enactor->base->oid);
             if (!posedge) {
                 fired = true;
-                cWorld::instance->sendMessageT(fusedelay, base->oid, group, message, NULL);
+                cWorld::instance->sendMessage(fusedelay, base->oid, group, msgtype, msgtext, NULL);
             }
         }
     }

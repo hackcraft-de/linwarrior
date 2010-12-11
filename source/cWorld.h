@@ -32,6 +32,8 @@ class cWorld;
 #include <vector>
 #include <queue>
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 
 class cBackground;
 class cObject;
@@ -61,6 +63,8 @@ public:
         OID mTimestamp;
         /// Until when is this message meant to be valid (0 == forever).
         OID mBestbefore;
+        /// Message type.
+        std::string mType;
         /// Message String (lets say it's the subject).
         std::string mText;
         /// Binary large object - fresh allocated pointer to custom data.
@@ -74,6 +78,8 @@ public:
 
     /// Not yet dispatched messages (because they are not yet overdue).
     std::priority_queue<rMessage*, std::vector<rMessage*>, cWorld::rMessage> mMessages;
+
+    /// Messages already delivered to group participants.
     std::list<rMessage*> mDispatchedMessages;
 
     /// Object Group - as for now intended for messaging maillist-groups.
@@ -144,36 +150,128 @@ public:
     // But time & date should be adjusted to the planet and
     // planet's date shall be mapped like beween maya, gregorian
     // or moon calendars.
+    struct rTiming {
+        /// Counts years of simulation universe.
+        unsigned int mYear;
 
-    /// Counts years of simulation universe.
-    unsigned int mYear;
+        /// Counts 366-Days of simulation year (0-365).
+        unsigned int mDay;
 
-    /// Counts 366-Days of simulation year (0-365).
-    unsigned int mDay;
+        /// Counts 24-Hours of simulation day (0-23).
+        unsigned int mHour;
 
-    /// Counts 24-Hours of simulation day (0-23).
-    unsigned int mHour;
+        /// Counts minutes of simulation hour.
+        unsigned int mMinute;
 
-    /// Counts minutes of simulation hour.
-    unsigned int mMinute;
+        /// Counts seconds of simulation minute.
+        unsigned int mSecond;
 
-    /// Counts seconds of simulation minute.
-    unsigned int mSecond;
+        /// Micro-Seconds, incremented by delta at every simulation timestep.
+        unsigned int mMSec;
 
-    /// Micro-Seconds, incremented by delta at every simulation timestep.
-    unsigned int mMSec;
+        /// Incremented at every simulation timestep and reset on each second.
+        unsigned int mFrame;
 
-    /// Incremented at every simulation timestep and reset on each second.
-    unsigned int mFrame;
+        /// Incremented for noteable events (eg. OID consumption). Reset each frame.
+        unsigned int mDeltacycle;
 
-    /// Incremented for noteable events (eg. OID consumption). Reset each frame.
-    unsigned int mDeltacycle;
+        /// seconds per frame = 1.0f/mFPS.
+        float mSPF;
 
-    /// seconds per frame = 1.0f/mFPS.
-    float mSPF;
+        /// frames per second = 1.0f/mSPF.
+        float mFPS;
 
-    /// frames per second = 1.0f/mSPF.
-    float mFPS;
+        float getSPF() {
+            return mSPF;
+        }
+        
+        unsigned int getDeltacycle() {
+            return mDeltacycle;
+        }
+
+        void setFPS(float fps) {
+            mFPS = fps;
+            mSPF = 1.0f / fps;
+        }
+
+        void setDate(unsigned int year, unsigned int day) {
+            mYear = year;
+            mDay = day;
+        }
+
+        void setTime(unsigned hour, unsigned minute = 0, unsigned second = 0) {
+            mHour = hour;
+            mMinute = minute;
+            mSecond = second;
+            mMSec = 0;
+            mFrame = 0;
+            mDeltacycle = 1;
+        }
+
+        void advanceDelta() {
+            mDeltacycle++;
+        }
+
+        void advanceTime(int deltamsec) {
+            mSPF = float(deltamsec) / 1000.0f;
+            mFPS = 1.0f / (mSPF + 0.000001f);
+            mFrame++;
+            mDeltacycle = 1;
+            mMSec += deltamsec;
+            if (mMSec >= 1000) {
+                mFrame = 0;
+                mSecond += mMSec / 1000;
+                mMSec %= 1000;
+                if (mSecond >= 60) {
+                    mMinute += mSecond / 60;
+                    mSecond %= 60;
+                    if (mMinute >= 60) {
+                        mHour += mMinute / 60;
+                        mMinute %= 60;
+                        if (mHour >= 24) {
+                            mDay += mHour / 24;
+                            mHour %= 24;
+                            if (mDay >= 366) {
+                                mYear += mDay / 366;
+                                mDay %= 366;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        float getTime24() {
+            float time24 = float(mHour) + float(mMinute) / 60.0f + float(mSecond) / (60.0f * 60.0f) + float(mMSec) / (60.0f * 60.0f * 1000.0f);
+            return time24;
+        }
+
+        OID getTimekey() {
+            OID ddd = mDay;
+            OID hh = mHour;
+            OID mm = mMinute;
+            OID ss = mSecond;
+            OID ff = mFrame;
+            OID serid = ((((ddd * 100 + hh) *100 + mm) *100 + ss) * 100 + ff) * 10000 + mDeltacycle;
+            return serid;
+        }
+
+        std::string getDate() {
+            std::stringstream s;
+            s << mYear << "_" << mDay;
+            return s.str();
+        }
+
+        std::string getTime() {
+            std::stringstream s;
+            s << mHour;
+            s << ":" << std::setfill('0') << std::setw(2) << mMinute;
+            s << ":" << std::setfill('0') << std::setw(2) << mSecond;
+            return s.str();
+        }
+
+
+    } mTiming;
 
 public: // Constructor, Object-Management and Drawing:
 
@@ -189,22 +287,12 @@ public: // Messaging
     /**
      * Sent messages are currently collected with an attached timestamp.
      * @param delay time offset for sending see getOID() for calculation.
-     * @param sender a value of 0 is anonymous.
-     * @param group is the group the message is sent to - 0 default group.
-     * @param format c printf formatted string format.
-     * @param ... aditional parameters for formatted printing.
-     */
-    void sendMessage(OID delay, OID sender /* = 0 */, OID groupid /* = 0 */, const char* format, ...);
-
-    /**
-     * Sent messages are currently collected with an attached timestamp.
-     * @param delay time offset for sending see getOID() for calculation.
      * @param sender a value of 0 currently defines a broadcast.
      * @param group is the group the message is sent to - 0 default group.
      * @param text the message subject/text to send, will be copied to string.
      * @param blob binary data, you give away ownership may be deleted by world.
      */
-    void sendMessageT(OID delay, OID sender /* = 0 */, OID groupid /* = 0 */, std::string text, void* blob = NULL);
+    void sendMessage(OID delay, OID sender /* = 0 */, OID groupid /* = 0 */, std::string type, std::string text, void* blob = NULL);
 
 public: // Spawning, Fragging, Garbage Collection
 

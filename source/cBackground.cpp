@@ -17,7 +17,7 @@ using std::endl;
 #include "cLandscape.h"
 #include "cSolid.h"
 
-#define BKGDETAIL -1
+#define BKGDETAIL 0
 
 extern unsigned char* loadTGA(const char *fname, int *w, int* h, int* bpp);
 
@@ -120,7 +120,7 @@ char fragmentshader2D_[] = " \
     } \
 ";
 
-cDomeBackground::cDomeBackground() {
+cBackground::cBackground() {
 
     if (0) {
         GLenum p = glCreateProgramObjectARB();
@@ -219,7 +219,7 @@ cDomeBackground::cDomeBackground() {
     // Ground Texture
     if (1) {
         cout << "Generating Ground..." << endl;
-        int w = 1 << (8 + BKGDETAIL);
+        int w = 1 << (7 + BKGDETAIL);
         int h = w;
         int bpp = 3;
         unsigned char* texels = new unsigned char[((unsigned long) w) * h * bpp];
@@ -250,7 +250,7 @@ cDomeBackground::cDomeBackground() {
     // Sun Texture
     if (1) {
         cout << "Generating Sun..." << endl;
-        int w = 1 << (7 + BKGDETAIL);
+        int w = 1 << (6 + BKGDETAIL);
         int h = w;
         int bpp = 4;
         unsigned char* texels = new unsigned char[((unsigned long) w) * h * bpp];
@@ -293,7 +293,7 @@ cDomeBackground::cDomeBackground() {
     // Earth Texture
     if (1) {
         cout << "Generating Earth..." << endl;
-        int w = 1 << (7 + BKGDETAIL);
+        int w = 1 << (6 + BKGDETAIL);
         int h = w;
         int bpp = 4;
         unsigned char* texels = new unsigned char[((unsigned long) w) * h * bpp];
@@ -337,7 +337,7 @@ cDomeBackground::cDomeBackground() {
     // Lavos Texture
     if (1) {
         cout << "Generating Lavos..." << endl;
-        int w = 1 << (7 + BKGDETAIL);
+        int w = 1 << (6 + BKGDETAIL);
         int h = w;
         int bpp = 4;
         unsigned char* texels = new unsigned char[((unsigned long) w) * h * bpp];
@@ -382,7 +382,7 @@ cDomeBackground::cDomeBackground() {
     // Moon Texture
     if (1) {
         cout << "Generating Moon..." << endl;
-        int w = 1 << (7 + BKGDETAIL);
+        int w = 1 << (6 + BKGDETAIL);
         int h = w;
         int bpp = 4;
         unsigned char* texels = new unsigned char[((unsigned long) w) * h * bpp];
@@ -429,7 +429,7 @@ cDomeBackground::cDomeBackground() {
     // Cloud Texture
     if (1) {
         cout << "Generating Clouds..." << endl;
-        int w = 1 << (9 + BKGDETAIL);
+        int w = 1 << (8 + BKGDETAIL);
         int h = w;
         int bpp = 4;
         unsigned char* texels = new unsigned char[((unsigned long) w) * h * bpp];
@@ -537,7 +537,7 @@ cDomeBackground::cDomeBackground() {
     heightshift = -10;
 }
 
-void cDomeBackground::drawBackground(float hour) {
+void cBackground::drawBackground(float hour) {
     // Push random seed because the current seed is going to be
     // replaced by a (deterministic) constant value for clouds.
     unsigned int seed = rand();
@@ -617,7 +617,7 @@ void cDomeBackground::drawBackground(float hour) {
     srand(seed);
 }
 
-void cDomeBackground::drawGalaxy() {
+void cBackground::drawGalaxy() {
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_TEXTURE_BIT);
     {
         glDisable(GL_DEPTH_TEST);
@@ -735,7 +735,7 @@ void cDomeBackground::drawGalaxy() {
     glPopAttrib();
 }
 
-void cDomeBackground::drawUpperDome() {
+void cBackground::drawUpperDome() {
     glPushAttrib(GL_ALL_ATTRIB_BITS | GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
         glDisable(GL_DEPTH_TEST);
@@ -815,7 +815,7 @@ void cDomeBackground::drawUpperDome() {
     glPopAttrib();
 }
 
-void cDomeBackground::drawLowerDome() {
+void cBackground::drawLowerDome() {
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
         glDisable(GL_DEPTH_TEST);
@@ -888,7 +888,7 @@ void cDomeBackground::drawLowerDome() {
     glPopAttrib();
 }
 
-void cDomeBackground::drawGround() {
+void cBackground::drawGround() {
     //return;
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_TEXTURE_BIT);
     {
@@ -954,7 +954,7 @@ void cDomeBackground::drawGround() {
     glPopAttrib();
 }
 
-void cDomeBackground::drawClouds() {
+void cBackground::drawClouds() {
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
         glDisable(GL_DEPTH_TEST);
@@ -1028,16 +1028,7 @@ void cDomeBackground::drawClouds() {
                     glRotatef(xrad / 0.017454, 1, 0, 0);
                     glTranslatef(0, 0, 1.7);
                     glColor4f(light, light, light, density);
-                    glBegin(GL_QUADS);
-                    glTexCoord2f(1, 1);
-                    glVertex3f(+1, +1, 0);
-                    glTexCoord2f(0, 1);
-                    glVertex3f(-1, +1, 0);
-                    glTexCoord2f(0, 0);
-                    glVertex3f(-1, -1, 0);
-                    glTexCoord2f(1, 0);
-                    glVertex3f(+1, -1, 0);
-                    glEnd();
+                    cPrimitives::glXYCenteredTextureSquare(1);
                 }
                 glPopMatrix();
             }
@@ -1118,7 +1109,7 @@ inline float InvSqrt(float x) {
 }
 #endif
 
-void cDomeBackground::drawSun() {
+void cBackground::drawSun() {
     float m[16];
     glGetFloatv(GL_MODELVIEW_MATRIX, m);
 
@@ -1230,24 +1221,14 @@ void cDomeBackground::drawSun() {
             //if (hour > 6.50 && hour < 17.50)
             {
                 glRotatef(angle, 1, 0, 0);
-
                 glTranslatef(0, 0, scale);
                 glColor4f(1, 0.95, 0.8, 0.8);
-                //cPrimitives::glDisk(detail, sun);
                 // Sun
 #if 1
                 glEnable(GL_TEXTURE_2D);
                 glBindTexture(GL_TEXTURE_2D, textures[T_SUN]);
-                glBegin(GL_QUADS);
-                glTexCoord2f(0, 0);
-                glVertex3f(-sun, -sun, 0);
-                glTexCoord2f(0, 1);
-                glVertex3f(-sun, +sun, 0);
-                glTexCoord2f(1, 1);
-                glVertex3f(+sun, +sun, 0);
-                glTexCoord2f(1, 0);
-                glVertex3f(+sun, -sun, 0);
-                glEnd();
+                cPrimitives::glXYCenteredTextureSquare(sun);
+                //cPrimitives::glDisk(detail, sun);
 #else
                 glPushMatrix();
                 glDisable(GL_CULL_FACE);
@@ -1267,7 +1248,7 @@ void cDomeBackground::drawSun() {
     glPopAttrib();
 }
 
-void cDomeBackground::drawOrbit() {
+void cBackground::drawOrbit() {
     float m[16];
     glGetFloatv(GL_MODELVIEW_MATRIX, m);
 
@@ -1296,7 +1277,7 @@ void cDomeBackground::drawOrbit() {
             const float scale = 0.1 * 2400.0f;
             float sun = 15 * 80 * 0.1;
             //const float corona = 1.2f;
-            float moon = sun * 0.5;
+            float moon = sun * 0.25;
 
             static float angle = 0;
             angle -= 1;
@@ -1362,7 +1343,7 @@ void cDomeBackground::drawOrbit() {
     glPopAttrib();
 }
 
-void cDomeBackground::drawRain() {
+void cBackground::drawRain() {
 
     srand(seed);
     seed = rand();
@@ -1373,7 +1354,7 @@ void cDomeBackground::drawRain() {
         float dz = 0.1;
         cParticle* p = new cParticle();
         float alpha = (rand() % 628) * 0.01;
-        float dist = 0.2 + 0.1 * (rand() % 50);
+        float dist = 0.2 + 0.1 * (rand() % 75);
         float h = 15;
         vector_set(p->pos, sin(alpha) * dist - 0.3 * dx*h, h, cos(alpha) * dist - 0.3 * dz * h);
         vector_cpy(p->old, p->pos);

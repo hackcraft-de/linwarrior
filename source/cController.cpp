@@ -137,7 +137,9 @@ void cController::waitEvent() {
         if (enemy) {
             {
                 OID self = controlledDevice->base->oid;
-                cWorld::instance->sendMessage(0, 0, 0, "#%llu: Intruder!\n", self);
+                std::stringstream s;
+                s << self << ": Intruder!\n";
+                cWorld::instance->sendMessage(0, 0, 0, "DEBUG", s.str());
             }
             pushAttackEnemy(enemy);
         }

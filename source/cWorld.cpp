@@ -43,17 +43,9 @@ cWorld::cWorld() {
     //mAirdensity = 1000.0f; // Water
     mGndfriction = 0.13;
 
-    mFPS = 30.0f;
-    mSPF = 1.0f / mFPS;
-
-    mYear = 2009;
-    mDay = 125;
-    mHour = 01;
-    mMinute = 01;
-    mSecond = 01;
-    mMSec = 0;
-    mFrame = 0;
-    mDeltacycle = 1;
+    mTiming.setFPS(30);
+    mTiming.setDate(2010, 350);
+    mTiming.setTime(01, 01, 01);
 
     mViewdistance = 190;
 
@@ -68,34 +60,24 @@ cWorld::cWorld() {
 // Querries
 
 OID cWorld::getOID() {
-    OID ddd = mDay;
-    OID hh = mHour;
-    OID mm = mMinute;
-    OID ss = mSecond;
-    OID ff = mFrame;
-    OID serid = ((((ddd * 100 + hh) *100 + mm) *100 + ss) * 100 + ff) * 10000 + mDeltacycle;
-    return serid;
+    return mTiming.getTimekey();
 }
 
 
 // Messaging
 
-void cWorld::sendMessage(OID delay, OID sender /* = 0 */, OID groupid /* = 0 */, const char* format, ...) {
-    FORMATBUFFER
-    sendMessageT(delay, sender, groupid, string(buffer), NULL);
-}
-
-
-void cWorld::sendMessageT(OID delay, OID sender /* = 0 */, OID groupid /* = 0 */, string text, void* blob) {
+void cWorld::sendMessage(OID delay, OID sender /* = 0 */, OID groupid /* = 0 */, string type, string text, void* blob) {
     //cout << "sendMessageT(dly=" << delay << ", sdr=" << sender << ", gid=" << groupid << ", txt=" << text << ")" << endl;
     cWorld::rMessage* message = new cWorld::rMessage;
     assert(message != NULL);
+
+    mTiming.advanceDelta();
     message->mSender = sender;
     message->mReceiver = 0;
     message->mGroup = groupid;
-    mDeltacycle++;
-    message->mTimestamp = getOID() + delay;
+    message->mTimestamp = mTiming.getTimekey() + delay;
     message->mBestbefore = 0;
+    message->mType = type;
     message->mText = text;
     message->mBlob = blob;
 
@@ -115,12 +97,12 @@ void cWorld::spawnObject(cObject *object) {
 
     OID serid = getOID();
 
-    cout << serid << " spawning at deltacycle " << mDeltacycle << endl;
+    cout << serid << " spawning at deltacycle " << mTiming.getDeltacycle() << endl;
 
     mIndex[serid] = object;
 
     object->base->oid = serid;
-    mDeltacycle++;
+    mTiming.advanceDelta();
 
     mObjects.push_back(object);
     object->onSpawn();
@@ -151,41 +133,9 @@ void cWorld::bagFragged() {
 
 void cWorld::advanceTime(int deltamsec) {
     //cout << "advanceTime()\n";
-
     if (mMission) mMission->checkConditions();
-    //cout << "0\n";
-    mSPF = float(deltamsec) / 1000.0f;
-    mFPS = 1.0 / (mSPF + 0.000001f);
-    //cout << "0_\n";
-
-    mFrame++;
-    mDeltacycle = 1;
-    mMSec += deltamsec;
-    if (mMSec >= 1000) {
-        mFrame = 0;
-        mSecond += mMSec / 1000;
-        mMSec %= 1000;
-        if (mSecond >= 60) {
-            mMinute += mSecond / 60;
-            mSecond %= 60;
-            if (mMinute >= 60) {
-                mHour += mMinute / 60;
-                mMinute %= 60;
-                if (mHour >= 24) {
-                    mDay += mHour / 24;
-                    mHour %= 24;
-                    if (mDay >= 366) {
-                        mYear += mDay / 366;
-                        mDay %= 366;
-                    }
-                }
-            }
-        }
-    }
-
-    //cout << "1\n";
+    mTiming.advanceTime(deltamsec);
     //cout << getSerial() << ": " << mHour << " " << mMinute << " " << mSecond << " " << mDeltacycle << endl;
-
 }
 
 
@@ -253,7 +203,7 @@ void cWorld::dispatchMessages() {
 
 void cWorld::animateObjects() {
     //cout << "animateObjects()\n";
-    float spf = mSPF;
+    float spf = mTiming.getSPF();
 
     foreachNoInc(i, mObjects) {
         cObject* object = *i++;
@@ -274,8 +224,7 @@ void cWorld::transformObjects() {
 
 void cWorld::drawBack() {
     //cout << "drawBack()\n";
-    float time24 = float(mHour) + float(mMinute) / 60.0f + float(mSecond) / (60.0f * 60.0f) + float(mMSec) / (60.0f * 60.0f * 1000.0f);
-    if (mBackground) mBackground->drawBackground(time24);
+    if (mBackground) mBackground->drawBackground(mTiming.getTime24());
 }
 
 void cWorld::drawSolid(cObject* camera, std::list<cObject*>* objects) {

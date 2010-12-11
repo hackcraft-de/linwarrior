@@ -18,27 +18,12 @@
 #include "cParticle.h"
 
 class cBackground;
-class cDomeBackground;
-
-/**
- * Base-Class for background painting.
- * drawBackground method will be called on begin of frame painting.
- */
-class cBackground {
-public:
-
-    /**
-     * Draws the worlds background for a given time.
-     */
-    virtual void drawBackground(float hour) {
-    };
-};
 
 /**
  * A background in form of a SkySphere just like
  * those virtual horizons found in aviation instruments.
  */
-class cDomeBackground : public cBackground {
+class cBackground {
 public:
     float hour;
     std::map<int, unsigned int> textures;
@@ -49,7 +34,7 @@ public:
     int seed;
     float heightshift;
 public:
-    cDomeBackground();
+    cBackground();
     void drawBackground(float hour = 12.00f); // Calls other draw*()
     void drawGalaxy();
     void drawUpperDome();
@@ -61,8 +46,6 @@ public:
     void drawOrbit();
     void drawRain();
 };
-
-
 
 #endif
 

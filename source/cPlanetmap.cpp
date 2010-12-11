@@ -59,43 +59,25 @@ cPlanetmap::cPlanetmap() {
             unsigned int texname = SGL::glBindTexture3D(0, true, true, true, true, true, size, size, size, texels);
             sTextures.push_back(texname);
         }
-        // Scattering 1
-        {
+
+        string basepath = string("data/base/decals/");
+        string filenames[] = {
+            string("desertblossom.tga"),
+            string("hybridplant.tga"),
+            string("desertplant.tga"),
+            string("hybridus.tga"),
+            string("mountain.tga")
+        };
+
+        loopi (4) {
+            string name = string(basepath).append(filenames[i]);
             unsigned int texname;
             int w, h, bpp;
-            unsigned char* texels = loadTGA("data/base/decals/desertblossom.tga", &w, &h, &bpp);
+            unsigned char* texels = loadTGA(name.c_str(), &w, &h, &bpp);
             texname = SGL::glBindTexture2D(0, true, true, false, false, w, h, bpp, texels);
             delete texels;
             sTextures.push_back(texname);
         }
-        // Scattering 2
-        {
-            unsigned int texname;
-            int w, h, bpp;
-            unsigned char* texels = loadTGA("data/base/decals/hybridplant.tga", &w, &h, &bpp);
-            texname = SGL::glBindTexture2D(0, true, true, false, false, w, h, bpp, texels);
-            delete texels;
-            sTextures.push_back(texname);
-        }
-        // Scattering 3
-        {
-            unsigned int texname;
-            int w, h, bpp;
-            unsigned char* texels = loadTGA("data/base/decals/desertplant.tga", &w, &h, &bpp);
-            texname = SGL::glBindTexture2D(0, true, true, false, false, w, h, bpp, texels);
-            delete texels;
-            sTextures.push_back(texname);
-        }
-        // Scattering 4
-        {
-            unsigned int texname;
-            int w, h, bpp;
-            unsigned char* texels = loadTGA("data/base/decals/hybridus.tga", &w, &h, &bpp);
-            texname = SGL::glBindTexture2D(0, true, true, false, false, w, h, bpp, texels);
-            delete texels;
-            sTextures.push_back(texname);
-        }
-        sTextures.push_back(sTextures.back());
     }
     this->traceable->radius = 10;
     this->traceable->pos[0] = float_NAN;
