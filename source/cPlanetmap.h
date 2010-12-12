@@ -15,6 +15,15 @@ class cPlanetmap;
 
 #include "cLandscape.h"
 
+// Amount of cached patches.
+#define PLANETMAP_CACHESIZE 64
+
+// Size of cache patch (8 => [256 * 256])
+#define PLANETMAP_TILESIZE 8
+
+// Submetre detail (2 => 4th of a metre).
+#define PLANETMAP_DIVISIONS 2
+
 /**
  * Procedural Landscape Rendering and Collision.
  */
@@ -33,8 +42,7 @@ public:
         // Cache key - spatial index.
         unsigned long key;
         // Cached Surface Data.
-        //float heightcolor[1024*1024*4];
-        float heightcolor[512 * 512 * 4];
+        OID heightcolor[(1UL << PLANETMAP_TILESIZE)*(1UL << PLANETMAP_TILESIZE)];
     };
     /// LRU Surface Cache.
     std::map<unsigned long, sPatch*> patches;
