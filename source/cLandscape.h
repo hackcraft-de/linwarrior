@@ -126,9 +126,12 @@ struct cLandscape {
         float lava_alpha = 0.25f * (2.0f - 2.0f * h)*(2.0f - 2.0f * h);
         float glow_alpha = (h < 0.2f) ? 1.2f - 5.0f * h : 0.0f;
 
-        color[RED] = lava[0] * lava_alpha + ash[0] * ash_alpha + glow[0] * glow_alpha;
-        color[GRN] = lava[1] * lava_alpha + ash[1] * ash_alpha + glow[1] * glow_alpha;
-        color[BLU] = lava[2] * lava_alpha + ash[2] * ash_alpha + glow[2] * glow_alpha;
+        color[RED] = (lava[0] * lava_alpha + ash[0] * ash_alpha + glow[0] * glow_alpha);
+        color[GRN] = (lava[1] * lava_alpha + ash[1] * ash_alpha + glow[1] * glow_alpha);
+        color[BLU] = (lava[2] * lava_alpha + ash[2] * ash_alpha + glow[2] * glow_alpha);
+        color[RED] = (color[RED] > 1.0f ? 1.0f : color[RED])*0.8f + 0.1;
+        color[GRN] = (color[GRN] > 1.0f ? 1.0f : color[GRN])*0.8f + 0.1;
+        color[BLU] = (color[BLU] > 1.0f ? 1.0f : color[BLU])*0.8f + 0.1;
         color[BUMP] = h;
     }
 

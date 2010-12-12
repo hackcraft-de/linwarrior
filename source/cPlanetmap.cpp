@@ -342,7 +342,7 @@ void cPlanetmap::getCachedHeight(float x, float z, float* const color) {
     unsigned char* bytes = (unsigned char*) h;
     float* height = (float*) &bytes[0];
 
-    const float logbase = 230.0f / log(2);
+    const float logbase = 255.0f / log(3);
     const float logbaseinv = 1.0f / logbase;
 
     if (*height != *height) {
