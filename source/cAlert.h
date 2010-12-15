@@ -54,6 +54,7 @@ private:
     std::string msgtype;
     std::string msgtext;
     OID group;
+    /// Lists object currently inside the tracked zone.
     std::set<OID> intruders;
     /// Use positive shape (true) or negative of shape (false) as zone?
     bool positive;

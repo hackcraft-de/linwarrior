@@ -4,6 +4,11 @@
 using std::cout;
 using std::endl;
 
+#include "psi3d/snippetsgl.h"
+#include "psi3d/instfont.h"
+DEFINE_glprintf
+
+
 bool cAlert::sDrawzone = false;
 
 
@@ -106,7 +111,7 @@ float cAlert::constrainParticle(float* worldpos, float radius, float* localpos, 
 
 
 void cAlert::drawEffect() {
-    if (!sDrawzone) return;
+    //if (!sDrawzone) return;
     
     float edge = posedge ? 1.0f : 0.0f;
     float c_pos[] = { 0,1,edge, 1 };
@@ -115,9 +120,38 @@ void cAlert::drawEffect() {
     float c2[] = { c1[0]*0.66f, c1[1]*0.66f, c1[2]*0.66f, c1[3] };
     float c3[] = { c1[0]*0.33f, c1[1]*0.33f, c1[2]*0.33f, c1[3] };
     
+    rShape* s = &shape;
+    float* center = s->center;
+    float* range = s->range;
 
     glPushName((GLuint)(this->base->oid & 0xFFFF));
+
+    if (nameable) {
+        glColor4f(0.99, 0.99, 0.2, 1);
+        glPushMatrix();
+        {
+            glPushAttrib(GL_ALL_ATTRIB_BITS);
+            {
+                glDisable(GL_LIGHTING);
+                glDisable(GL_FOG);
+                glDisable(GL_CULL_FACE);
+                float s = 0.85;
+                glTranslatef(center[0],center[1]+0.5f*s,center[2]);
+                glScalef(s, s, s);
+                float n[16];
+                SGL::glGetTransposeInverseRotationMatrix(n);
+                glMultMatrixf(n);
+                int l = nameable->name.length();
+                glTranslatef(-l * 0.5f, 0, 0);
+                glprintf(nameable->name.c_str());
+            }
+            glPopAttrib();
+        }
+        glPopMatrix();
+    }
     
+    if (!sDrawzone) return;
+
     glPushMatrix();
     {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -125,12 +159,10 @@ void cAlert::drawEffect() {
             glDisable(GL_LIGHTING);
             glDisable(GL_FOG);
             glDisable(GL_CULL_FACE);
+
             glLineWidth(3);
             glLineStipple(0.01, 0xFC);
             glEnable(GL_LINE_STIPPLE);
-            rShape* s = &shape;
-            float* center = s->center;
-            float* range = s->range;
             switch (s->type) {
                 case rShape::CYLINDER:
                 {
@@ -291,7 +323,7 @@ void cAlert::drawEffect() {
                     break;
                 }
             }
-    
+
         }
         glPopAttrib();
     }

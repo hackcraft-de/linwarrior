@@ -113,7 +113,17 @@ cObject* cEmptyMission::init(cWorld* world) {
 
 // ------------------------------------------------------------
 
+void cOpenMission::onVictory() {
+    cMission::onVictory();
+}
+
+void cOpenMission::onDefeat() {
+    cMission::onDefeat();
+}
+
 cObject* cOpenMission::init(cWorld* world) {
+    srand(0);
+    
     cout << "Setting up world background...\n";
     world->mBackground = new cBackground;
 
@@ -127,61 +137,82 @@ cObject* cOpenMission::init(cWorld* world) {
         world->mTiming.setTime(hour, 60 * (hour - (int) hour));
     }
 
+    cout << "Initialising planetary maps...\n";
+    cPlanetmap* planetmap = new cPlanetmap();
+    world->spawnObject(planetmap);
+
+    cout << "Initialising call groups...\n";
+    {
+        cWorld::rGroup* group1 = new cWorld::rGroup();
+        group1->mID = 1;
+        group1->mName = "/alliance/player";
+        world->mGroups[group1->mID] = group1;
+
+        cWorld::rGroup* group2 = new cWorld::rGroup();
+        group2->mID = 2;
+        group2->mName = "/alliance/wingmen";
+        world->mGroups[group2->mID] = group2;
+
+        cWorld::rGroup* group3 = new cWorld::rGroup();
+        group3->mID = 3;
+        group3->mName = "/alliance/all";
+        world->mGroups[group3->mID] = group3;
+
+        cWorld::rGroup* group4 = new cWorld::rGroup();
+        group4->mID = 4;
+        group4->mName = "/enemies/all";
+        world->mGroups[group4->mID] = group4;
+    }
+
+    cout << "Initialising Skytide City...\n";
+    initSkytideCity(world, planetmap);
+
+    cout << "Initialising Starcircle Town...\n";
+    initStarcircleTown(world, planetmap);
+
+    cout << "Initialising Penta Spaceport...\n";
+    initPentaSpaceport(world, planetmap);
+
+    cout << "Initialising Pyra Nano Corp...\n";
+    initPyraNanoCorp(world, planetmap);
+
+    if (true) {
+        // Buggy/Experimental
+        //planet->spawnObject(new cPadmap(-0,-0));
+    }
+
     cout << "Initialising vehicles...\n";
-    cObject* player = initMechs(world);
-
-    cout << "Initialising building and street topography...\n";
-    initArchitecture(world);
-
-    cout << "Initialising vegetation...\n";
-    initFlora(world);
+    cObject* player = initPlayerParty(world);
 
     cout << "Initialising mission triggers...\n";
-    // Setup Leaving Mission Area Warning-Alert.
     {
-        float pos[] = {30, -1, 30};
-        float range[] = {90, 40, 90};
-        OID group = 1;
-        std::string type = "RADIO";
-        std::string message = std::string("YOU ARE LEAVING THE MISSION AREA!");
-        bool positive = false;
-        bool posedge = true;
-        OID delay = 0;
-        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, type, message, group, positive, posedge, delay);
-        world->spawnObject(oob);
-    }
+        // Setup Leaving Mission Area Warning-Alert.
+        {
+            float pos[] = {30, -1, 30};
+            float range[] = {90, 40, 90};
+            OID group = 1;
+            std::string type = "RADIO";
+            std::string message = std::string("YOU ARE LEAVING THE MISSION AREA!");
+            bool positive = false;
+            bool posedge = true;
+            OID delay = 0;
+            cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, type, message, group, positive, posedge, delay);
+            world->spawnObject(oob);
+        }
 
-    // Setup Contract Voided Aleart.
-    {
-        float pos[] = {30, -1, 30};
-        float range[] = {110, 50, 110};
-        OID group = 1;
-        std::string type = "RADIO";
-        std::string message = std::string("YOU HAVE LEFT THE MISSION AREA, CONTRACT VOIDED!");
-        bool positive = false;
-        bool posedge = true;
-        OID delay = 0;
-        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, type, message, group, positive, posedge, delay);
-        world->spawnObject(oob);
-    }
-
-    // Setup Test Aleart.
-    {
-        float f = 1.5;
-        float pos[] = {0, f*1.76, 0};
-        float range[] = {3.5, f*1.75, 3.5};
-        OID group = 1;
-        std::string type = "RADIO";
-        std::string message = std::string("Happy!");
-        bool positive = true;
-        bool posedge = true;
-        OID delay = 0;
-        cObject* oob = new cAlert(pos, range, cAlert::rShape::CONE, type, message, group, positive, posedge, delay);
-        world->spawnObject(oob);
-    }
-
-    // Setup Victory/Defeat Conditions.
-    {
+        // Setup Contract Voided Aleart.
+        {
+            float pos[] = {30, -1, 30};
+            float range[] = {110, 50, 110};
+            OID group = 1;
+            std::string type = "RADIO";
+            std::string message = std::string("YOU HAVE LEFT THE MISSION AREA, CONTRACT VOIDED!");
+            bool positive = false;
+            bool posedge = true;
+            OID delay = 0;
+            cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, type, message, group, positive, posedge, delay);
+            world->spawnObject(oob);
+        }
         // Defeated when killed.
         mDefeat.push_back(player);
     }
@@ -189,37 +220,7 @@ cObject* cOpenMission::init(cWorld* world) {
     return player;
 }
 
-void cOpenMission::onVictory() {
-    cMission::onVictory();
-}
-
-void cOpenMission::onDefeat() {
-    cMission::onDefeat();
-}
-
-cObject* cOpenMission::initMechs(cWorld* planet) {
-    srand(0);
-
-    cWorld::rGroup* group1 = new cWorld::rGroup();
-    group1->mID = 1;
-    group1->mName = "/alliance/player";
-    planet->mGroups[group1->mID] = group1;
-
-    cWorld::rGroup* group2 = new cWorld::rGroup();
-    group2->mID = 2;
-    group2->mName = "/alliance/wingmen";
-    planet->mGroups[group2->mID] = group2;
-
-    cWorld::rGroup* group3 = new cWorld::rGroup();
-    group3->mID = 3;
-    group3->mName = "/alliance/all";
-    planet->mGroups[group3->mID] = group3;
-
-    cWorld::rGroup* group4 = new cWorld::rGroup();
-    group4->mID = 4;
-    group4->mName = "/enemies/all";
-    planet->mGroups[group3->mID] = group4;
-
+cObject* cOpenMission::initPlayerParty(cWorld* world) {
     cObject* player = NULL;
 
     // Player
@@ -238,10 +239,10 @@ cObject* cOpenMission::initMechs(cWorld* planet) {
         mech->addRole(HUMANPLAYER);
         mech->socialised->addEnemy(RED);
 
-        planet->spawnObject(mech);
-        group1->mMembers.insert(mech->base->oid);
-        group2->mMembers.insert(mech->base->oid);
-        group3->mMembers.insert(mech->base->oid);
+        world->spawnObject(mech);
+        world->mGroups[1]->mMembers.insert(mech->base->oid);
+        world->mGroups[2]->mMembers.insert(mech->base->oid);
+        world->mGroups[3]->mMembers.insert(mech->base->oid);
         //cout << "after first spawn\n";
 
         if (true) {
@@ -282,9 +283,9 @@ cObject* cOpenMission::initMechs(cWorld* planet) {
         mech->addRole(BLUE);
         mech->socialised->addEnemy(RED);
 
-        planet->spawnObject(mech);
-        group2->mMembers.insert(mech->base->oid);
-        group3->mMembers.insert(mech->base->oid);
+        world->spawnObject(mech);
+        world->mGroups[2]->mMembers.insert(mech->base->oid);
+        world->mGroups[3]->mMembers.insert(mech->base->oid);
         bool patrol = true;
         mech->entity->controller->pushFollowLeader(player->base->oid, patrol);
         mech->mountWeapon((char*) "LLoArm", new cWeaponMachinegun);
@@ -303,15 +304,39 @@ cObject* cOpenMission::initMechs(cWorld* planet) {
         mech->addRole(BLUE);
         mech->socialised->addEnemy(RED);
 
-        planet->spawnObject(mech);
-        group2->mMembers.insert(mech->base->oid);
-        group3->mMembers.insert(mech->base->oid);
+        world->spawnObject(mech);
+        world->mGroups[2]->mMembers.insert(mech->base->oid);
+        world->mGroups[3]->mMembers.insert(mech->base->oid);
         bool patrol = true;
         mech->entity->controller->pushFollowLeader(player->base->oid, patrol);
         mech->mountWeapon((char*) "RLoArm", new cWeaponMachinegun);
     }
 
-    // Allied
+    world->sendMessage(0, player->base->oid, 3, "RADIO", string("Stay alert there have been intruders!"));
+    world->sendMessage(0, player->base->oid, 2, "RADIO", string("Wingmen into formation!"));
+    world->sendMessage(0, player->base->oid, 1, "RADIO", string("Objective: Your group has the order to search the town for possible offending forces. Good luck!"));
+
+    return player;
+}
+
+void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
+    capitalCity(0, 0, 0, world);
+    //roundForrest(50,0,50, planet, 65, 150, 5);
+
+    {
+        OID group = 1;
+        float pos[] = {0, 1.76, 0};
+        float color[16];
+        planetmap->getCachedHeight(pos[0],pos[2], color);
+        pos[1] += color[3];
+        float range[] = {0.5, 0.5, 0.5};
+        string message = string("Skytide City");
+        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group);
+        oob->nameable->name = message;
+        world->spawnObject(oob);
+    }
+
+    // Allied Patrol
     if (true) {
         float pos[3] = {+10 * 1, 0, -50 * 1};
         float rot[3] = {0, -210, 0};
@@ -324,8 +349,8 @@ cObject* cOpenMission::initMechs(cWorld* planet) {
         mech->addRole(BLUE);
         mech->socialised->addEnemy(RED);
 
-        planet->spawnObject(mech);
-        group3->mMembers.insert(mech->base->oid);
+        world->spawnObject(mech);
+        world->mGroups[3]->mMembers.insert(mech->base->oid);
 
         if (true) {
             //mech->mountWeapon((char*)"LLoArm",  new cMachineGun);
@@ -347,8 +372,7 @@ cObject* cOpenMission::initMechs(cWorld* planet) {
         //mech->mController->pushFollowLeader(player->mSerial, true);
     }
 
-
-    // Primary
+    // Primary Target
     if (true) {
         float pos[3] = {+50, 0, +50};
         cMech* mech = new cMech(pos);
@@ -366,8 +390,8 @@ cObject* cOpenMission::initMechs(cWorld* planet) {
 
         mVictory.push_back(mech);
 
-        planet->spawnObject(mech);
-        group4->mMembers.insert(mech->base->oid);
+        world->spawnObject(mech);
+        world->mGroups[4]->mMembers.insert(mech->base->oid);
 
         if (true) {
             //mech->mountWeapon((char*)"LTorsor", new cExplosion);
@@ -377,7 +401,7 @@ cObject* cOpenMission::initMechs(cWorld* planet) {
         }
     }
 
-    // Secondary
+    // Secondary Target
     if (true) {
         float pos[3] = {-50, 0, +50};
         cMech* mech = new cMech(pos);
@@ -393,8 +417,8 @@ cObject* cOpenMission::initMechs(cWorld* planet) {
         //ai->newState(cController::ROUTE, navs);
 
         //gCameraEntity = mech;
-        planet->spawnObject(mech);
-        group4->mMembers.insert(mech->base->oid);
+        world->spawnObject(mech);
+        world->mGroups[4]->mMembers.insert(mech->base->oid);
 
         if (true) {
             mech->mountWeapon((char*) "LLoArm", new cWeaponSparkgun);
@@ -404,67 +428,126 @@ cObject* cOpenMission::initMechs(cWorld* planet) {
             //mech->mountWeapon((char*)"RTorsor",  new cHomingMissile);
         }
     }
-
-    planet->sendMessage(0, player->base->oid, 3, "RADIO", string("Stay alert there have been intruders!"));
-    planet->sendMessage(0, player->base->oid, 2, "RADIO", string("Wingmen into formation!"));
-    planet->sendMessage(0, player->base->oid, 1, "RADIO", string("Objective: Your group has the order to search the town for possible offending forces. Good luck!"));
-
-    return player;
 }
 
-void cOpenMission::initArchitecture(cWorld* planet) {
-    srand(0);
-
-    if (true) {
-        capitalCity(0, 0, 0, planet);
-        //roundForrest(50,0,50, planet, 65, 150, 5);
+void cOpenMission::initStarcircleTown(cWorld* world, cPlanetmap* planetmap) {
+    {
+        OID group = 1;
+        float pos[] = {3*120, 8.76, 3*40};
+        float color[16];
+        planetmap->getCachedHeight(pos[0],pos[2], color);
+        pos[1] += color[3];
+        float range[] = {0.5, 0.5, 0.5};
+        string message = string("Starcircle Town");
+        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group);
+        oob->nameable->name = message;
+        world->spawnObject(oob);
     }
-
-
+    
+    smallSettling(120, 0, 40, world, 15);
+    //roundForrest(120*3,0, 40*3, planet, 7*2, 22*2, 3);
+    
     if (true) {
-        pyramidBuilding(-75, 0, 90, planet);
-        //roundForrest(-75*3,0,90*3, planet, 25*2, 30*2, 3);
-        smallArmy(-65 * 3, 0, 80 * 3, planet, "Pyramid Guard", 3, false);
+        smallArmy(120 * 3, 0, 40 * 3, world, "Ambusher", 1, false, 1);
+        smallArmy(312, 0, 137, world, "Def A", 3, false, 3);
+        smallArmy(310, 0, 71, world, "Def B", 2, false, 2);
     }
-
-    if (true) {
-        spacePort(-90, 0, -60, planet, mDefeat, mVictory);
-        //roundForrest(-90*3,0,-60*3, planet, 40*2, 70*2, 3);
+    
+    {
+        float pos[] = {3 * 120, 0, 3 * 40};
+        float range[] = {10, 3, 10};
+        OID group = 1;
+        std::string type = "RADIO";
+        std::string message = std::string("EVACUATION ZONE REACHED, FINISHING MISSION!");
+        bool positive = true;
+        bool posedge = true;
+        OID delay = 0;
+        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, type, message, group, positive, posedge, delay);
+        world->spawnObject(oob);
     }
-
-
-    if (true) {
-        smallSettling(120, 0, 40, planet, 15);
-        //roundForrest(120*3,0, 40*3, planet, 7*2, 22*2, 3);
-        smallArmy(120 * 3, 0, 40 * 3, planet, "Ambusher", 1, false, 1);
-        smallArmy(312, 0, 137, planet, "Def A", 3, false, 3);
-        smallArmy(310, 0, 71, planet, "Def B", 2, false, 2);
-        {
-            float pos[] = {3 * 120, 0, 3 * 40};
-            float range[] = {10, 3, 10};
-            OID group = 1;
-            std::string type = "RADIO";
-            std::string message = std::string("EVACUATION ZONE REACHED, FINISHING MISSION!");
-            bool positive = true;
-            bool posedge = true;
-            OID delay = 0;
-            cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, type, message, group, positive, posedge, delay);
-            planet->spawnObject(oob);
-        }
-    }
-
-    if (true) {
-        // Buggy/Experimental
-        //planet->spawnObject(new cPadmap(-0,-0));
-        planet->spawnObject(new cPlanetmap());
-    }
-
 }
 
-void cOpenMission::initFlora(cWorld* planet) {
-    srand(0);
+void cOpenMission::initPyraNanoCorp(cWorld* world, cPlanetmap* planetmap) {
+    {
+        OID group = 1;
+        float pos[] = {-75*3, 8.76, 90*3};
+        float color[16];
+        planetmap->getCachedHeight(pos[0],pos[2], color);
+        pos[1] += color[3];
+        float range[] = {0.5, 0.5, 0.5};
+        string message = string("Pyra Nano Corporation");
+        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group);
+        oob->nameable->name = message;
+        world->spawnObject(oob);
+    }
 
-    //roundForrest(50,0,50, planet, 75, 720, 17);
+    pyramidBuilding(-75, 0, 90, world);
+    //roundForrest(-75*3,0,90*3, planet, 25*2, 30*2, 3);
+    smallArmy(-65 * 3, 0, 80 * 3, world, "Pyramid Guard", 3, false);
+}
+
+void cOpenMission::initPentaSpaceport(cWorld* world, cPlanetmap* planetmap) {
+    float x = -90;
+    float y = 0;
+    float z = -60;
+    
+    {
+        OID group = 1;
+        float pos[] = {x*3, 8.76, z*3};
+        float color[16];
+        planetmap->getCachedHeight(pos[0],pos[2], color);
+        pos[1] += color[3];
+        float range[] = {0.5, 0.5, 0.5};
+        string message = string("Penta Interstellar Spaceport");
+        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group);
+        oob->nameable->name = message;
+        world->spawnObject(oob);
+    }
+
+    //roundForrest(-90*3,0,-60*3, planet, 40*2, 70*2, 3);
+    
+    // The Space-Ship Port
+
+    cBuilding* port = new cBuilding(-3 * 3 + x, 1 + y, 0 + z, 9, 1, 3);
+    world->spawnObject(port);
+    mDefeat.push_back(port);
+    port = new cBuilding(-4 * 3 + x, 0 + y, -1 + z, 12, 1, 5);
+    world->spawnObject(port);
+    mDefeat.push_back(port);
+
+    // Bay-Road
+
+    loopi(6) {
+        world->spawnObject(new cTile(i + x / 3, 0 + y, 0 + z / 3, cTile::KIND_ROAD_EW));
+    }
+
+    // Generators
+
+    loopi(5) {
+        float a = (360 / 5) * i * 0.017453f;
+        float r = 26;
+        cBuilding* hub = new cBuilding(r * sin(a) + x, 0 + y, r * cos(a) + z, 3, 1, 2);
+        world->spawnObject(hub);
+        mVictory.push_back(hub);
+    }
+
+    // Mechs
+    
+    float pos[3] = {3*x, y, 3*z + 2};
+    float rot[3] = {0, 0, 0};
+
+    loopi(2) {
+        pos[0] += 20;
+        cMech* mech = new cMech(pos, rot);
+        if (mech == NULL) throw "No memory for cMech in spacePortMechs.";
+        mech->entity->pad = new cPad;
+        if (mech->entity->pad == NULL) throw "No memory for cPad in spacePortMechs.";
+        mech->nameable->name = "Space Port Guard";
+        mech->addRole(RED);
+        mech->socialised->addEnemy(BLUE);
+        world->spawnObject(mech);
+        mech->mountWeapon((char*) "Center", new cWeaponMachinegun);
+    }
 }
 
 void cOpenMission::battleField(cWorld* world) {
@@ -547,8 +630,8 @@ void cOpenMission::smallArmy(int wx, int wy, int wz, cWorld* world, const char* 
             mech->mountWeapon((char*) "Center", new cWeaponMachinegun);
         }
 
-        a += M_PI * 0.2;
-        r += 0.4 * 6;
+        a += M_PI * 0.2f;
+        r += 0.4f * 6;
     }
 }
 
@@ -699,51 +782,6 @@ void cOpenMission::pyramidBuilding(int x, int y, int z, cWorld* world) {
     loopi(n) {
         world->spawnObject(new cBuilding(i + x, i + y, i + z, (n * 2) - 2 * i, 1, (n * 2) - 2 * i));
     }
-}
-
-void cOpenMission::spacePortMechs(int x, int y, int z, cWorld* world) {
-    float pos[3] = {x, y, z + 2};
-    float rot[3] = {0, 0, 0};
-
-    loopi(2) {
-        pos[0] += 20;
-        cMech* mech = new cMech(pos, rot);
-        if (mech == NULL) throw "No memory for cMech in spacePortMechs.";
-        mech->entity->pad = new cPad;
-        if (mech->entity->pad == NULL) throw "No memory for cPad in spacePortMechs.";
-        mech->nameable->name = "Space Port Guard";
-        mech->addRole(RED);
-        mech->socialised->addEnemy(BLUE);
-        world->spawnObject(mech);
-        mech->mountWeapon((char*) "Center", new cWeaponMachinegun);
-    }
-}
-
-void cOpenMission::spacePort(int x, int y, int z, cWorld* world, std::vector<cObject*>& defeat, std::vector<cObject*>& victory) {
-    // The Space-Ship Port
-    cBuilding* port = new cBuilding(-3 * 3 + x, 1 + y, 0 + z, 9, 1, 3);
-    world->spawnObject(port);
-    defeat.push_back(port);
-    port = new cBuilding(-4 * 3 + x, 0 + y, -1 + z, 12, 1, 5);
-    world->spawnObject(port);
-    defeat.push_back(port);
-    // Bay-Road
-
-    loopi(6) {
-        world->spawnObject(new cTile(i + x / 3, 0 + y, 0 + z / 3, cTile::KIND_ROAD_EW));
-    }
-
-    // Generators
-
-    loopi(5) {
-        float a = (360 / 5) * i * 0.017453f;
-        float r = 26;
-        cBuilding* hub = new cBuilding(r * sin(a) + x, 0 + y, r * cos(a) + z, 3, 1, 2);
-        world->spawnObject(hub);
-        victory.push_back(hub);
-    }
-
-    spacePortMechs(x * 3, y, z * 3, world);
 }
 
 //---------------------------------------------------------------------------

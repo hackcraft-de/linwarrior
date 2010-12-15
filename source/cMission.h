@@ -14,6 +14,7 @@ class cMission;
 #include "cWorld.h"
 #include "cObject.h"
 #include "cPad.h"
+#include "cPlanetmap.h"
 
 #include <vector>
 
@@ -79,13 +80,15 @@ class cEmptyMission : public cMission {
  * Mission for testing new Mission features.
  */
 class cOpenMission : public cMission {
-    virtual cObject* init(cWorld* world);
     virtual void onVictory();
     virtual void onDefeat();
+    virtual cObject* init(cWorld* world);
 private:
-    cObject* initMechs(cWorld* world);
-    void initFlora(cWorld* world);
-    void initArchitecture(cWorld* world);
+    cObject* initPlayerParty(cWorld* world);
+    void initSkytideCity(cWorld* world, cPlanetmap* planetmap);
+    void initStarcircleTown(cWorld* world, cPlanetmap* planetmap);
+    void initPentaSpaceport(cWorld* world, cPlanetmap* planetmap);
+    void initPyraNanoCorp(cWorld* world, cPlanetmap* planetmap);
 private:
     static void battleField(cWorld* world);
     static void smallArmy(int wx, int wy, int wz, cWorld* world, const char* name, int n, bool blue, int wpn=0);
@@ -93,7 +96,6 @@ private:
     static void roundForrest(int wx, int wy, int wz, cWorld* world, int r1, int r2, int nmax = 17);
     static void capitalCity(int wx, int wy, int wz, cWorld* world);
     static void pyramidBuilding(int x, int y, int z, cWorld* world);
-    static void spacePortMechs(int x, int y, int z, cWorld* world);
     static void spacePort(int x, int y, int z, cWorld* world, std::vector<cObject*>& defeat, std::vector<cObject*>& victory);
 };
 
