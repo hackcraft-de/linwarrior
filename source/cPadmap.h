@@ -34,7 +34,7 @@ protected:
     float heights[16*16];
     float mapscale[3];
 public:
-    cPadmap(float x, float z);
+    cPadmap(float x, float y, float z);
     /// Calculate Height of the xz position.
     inline float getHeight(float x, float z);
     virtual float constrainParticle(float* worldpos, float radius = 0.0f, float* localpos = NULL, cObject* enactor = NULL);

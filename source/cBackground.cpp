@@ -580,7 +580,8 @@ void cBackground::drawBackground(float hour) {
         glPushMatrix();
         {
             //glLoadIdentity();
-            float p[] = {70, 90, -30, 1};
+            float p[] = {0.7, 0.9, -0.3, 0};
+            //float p[] = {70, 90, -30, 0};
             float a[] = {0.3 * haze[0], 0.3 * haze[1], 0.3 * haze[2], 1};
             //glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 1.0f);
             glLightfv(GL_LIGHT0, GL_POSITION, p);

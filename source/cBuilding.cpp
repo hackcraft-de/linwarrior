@@ -322,7 +322,7 @@ cBuilding::cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
     buildingRooms[0] = 3 * rooms_x;
     buildingRooms[1] = 3 * rooms_y;
     buildingRooms[2] = 3 * rooms_z;
-    vector_set(traceable->pos, x * 3 + buildingRooms[0]*0.5f, y * 3, z * 3 + buildingRooms[2]*0.5f);
+    vector_set(traceable->pos, x + buildingRooms[0]*0.5f, y, z + buildingRooms[2]*0.5f);
     this->traceable->radius = sqrt(0.25f * buildingRooms[0] * buildingRooms[0] + 0.25f * buildingRooms[1] * buildingRooms[1] + 0.25f * buildingRooms[2] * buildingRooms[2]);
     dirtyBase = true;
 }
@@ -929,7 +929,7 @@ cTile::cTile(int x, int y, int z, int kind) {
     } // if sInstances == 1
 
     //    addRole(COLLIDEABLE); // !!
-    vector_set(traceable->pos, x * 9.0f + 4.5f, y * 3.0f, z * 9.0f + 4.5f);
+    vector_set(traceable->pos, x + 4.5f, y, z + 4.5f);
     tileKind = kind;
 }
 

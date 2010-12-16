@@ -90,7 +90,19 @@ cPlanetmap::cPlanetmap() {
     nameable->name = "PLANETMAP";
 }
 
-
+void cPlanetmap::invalidateCache() {
+    const long TILESIZE = PLANETMAP_TILESIZE;
+    for (std::map<unsigned long, sPatch*>::iterator i = patches.begin(); i != patches.end(); i++) {
+        sPatch* patch = (*i).second;
+        OID* ptr = patch->heightcolor;
+        const unsigned long totaltilesize = (1UL << (TILESIZE + TILESIZE));
+        for (unsigned long i = 0; i < totaltilesize; i++) {
+            float* height = (float*) ptr;
+            *height = float_NAN;
+            ptr++;
+        }
+    }
+}
 
 void cPlanetmap::getHeight(float x, float z, float* const color) {
     float h = 0;
@@ -196,71 +208,24 @@ void cPlanetmap::getHeight(float x, float z, float* const color) {
         color[2] = cont[2];
     }
 
-    // Modification (Big City)
-    {
-        const float range = 70+65;
-        const float height = 0.009f;
-        const float inv_range = 1.0f / range;
-        float x_ = x - 50;
-        float z_ = z - 50;
-        if (-range < x_ && x_ < +range && -range < z_ && z_ < +range) {
-            float dx = fabs(x_);
-            float dz = fabs(z_);
-            float dy = 1.0f - fmax(dx,dz) * inv_range;
-            dy = (dy < 0.25f) ? (dy * 4.0f) : 1.0f;
-            h *= (1.0f - dy);
-            h += height * dy;
-        }
-    }
-    // Modification (Far City)
-    {
-        const float range = 60;
-        const float height = 0.011f;
-        const float inv_range = 1.0f / range;
-        float x_ = x - 360;
-        float z_ = z - 125;
-        if (-range < x_ && x_ < +range && -range < z_ && z_ < +range) {
-            float dx = fabs(x_);
-            float dz = fabs(z_);
-            float dy = 1.0f - fmax(dx,dz) * inv_range;
-            dy = (dy < 0.5f) ? (dy * 2.0f) : 1.0f;
-            h *= (1.0f - dy);
-            h += height * dy;
-        }
-    }
-    // Modification Space-Port (-260 -180)
-    {
-        const float range = 90;
-        const float height = 0.011f;
-        const float inv_range = 1.0f / range;
-        float x_ = x + 260;
-        float z_ = z + 180;
-        if (-range < x_ && x_ < +range && -range < z_ && z_ < +range) {
-            float dx = fabs(x_);
-            float dz = fabs(z_);
-            float dy = 1.0f - fmax(dx,dz) * inv_range;
-            dy = (dy < 0.25f) ? (dy * 4.0f) : 1.0f;
-            h *= (1.0f - dy);
-            h += height * dy;
-        }
-    }
+    loopiv(mods) {
+        sMod* mod = mods[i];
 
-    // Modification Pyramid (-210 285)
-    {
-        const float range = 100;
-        const float height = 0.011f;
-        const float inv_range = 1.0f / range;
-        //float x_ = x + 210;
-        //float z_ = z - 285;
-        float x_ = x + 140;
-        float z_ = z - 210;
-        if (-range < x_ && x_ < +range && -range < z_ && z_ < +range) {
-            float dx = fabs(x_);
-            float dz = fabs(z_);
-            float dy = 1.0 - fmax(dx,dz) * inv_range;
-            dy = (dy < 0.25f) ? (dy * 4.0f) : 1.0f;
-            h *= (1.0f - dy);
-            h += height * dy;
+        // Square leveling
+        {
+            float x_ = x - mod->pos[0];
+            float z_ = z - mod->pos[2];
+            const float range = mod->range;
+            const float height = mod->height;
+            const float inv_range = 1.0f / range;
+            if (-range < x_ && x_ < +range && -range < z_ && z_ < +range) {
+                float dx = fabs(x_);
+                float dz = fabs(z_);
+                float dy = 1.0f - fmax(dx,dz) * inv_range;
+                dy = (dy < 0.25f) ? (dy * 4.0f) : 1.0f;
+                h *= (1.0f - dy);
+                h += height * dy;
+            }
         }
     }
 

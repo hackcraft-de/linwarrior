@@ -24,7 +24,7 @@ int cPadmap::sInstances = 0;
 std::map<int, long> cPadmap::sTextures;
 std::vector<int> cPadmap::sSpiral[2];
 
-cPadmap::cPadmap(float x, float z) {
+cPadmap::cPadmap(float x, float y, float z) {
     sInstances++;
     if (sInstances == 1) {
         unsigned char* texels = NULL;
@@ -63,10 +63,12 @@ cPadmap::cPadmap(float x, float z) {
         }
     }
 
-    vector_set(traceable->pos, x, 0, z);
+    vector_set(traceable->pos, x, y, z);
     quat_set(traceable->ori, 0, 0, 0, 1);
+
     collideable = new rCollideable;
     addRole(COLLIDEABLE);
+
     float h[16 * 16] = {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -153,6 +155,7 @@ void cPadmap::drawSolid() {
 
         glPushMatrix();
         {
+            glTranslatef(traceable->pos[0], traceable->pos[1], traceable->pos[2]);
             glScalef(mapscale[0], mapscale[1], mapscale[2]);
 
             int a = dims[0];
@@ -267,10 +270,16 @@ void cPadmap::drawSolid() {
 
 
 float cPadmap::constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor) {
+    return 0.0f; // !!!!!!!!!!
+
     //if (enactor == NULL) return 0.0;
     //if (!enactor->hasRole(HUMANPLAYER)) return 0.0;
     float localpos_[3];
     vector_cpy(localpos_, worldpos);
+
+    localpos_[0] -= traceable->pos[0];
+    localpos_[1] -= traceable->pos[1];
+    localpos_[2] -= traceable->pos[2];
     
     //localpos_[0] /= mapscale[0];
     //localpos_[1] /= mapscale[1];
@@ -344,6 +353,9 @@ float cPadmap::constrainParticle(float* worldpos, float radius, float* localpos,
         //localpos_[0] *= mapscale[0];
         //localpos_[1] *= mapscale[1];
         //localpos_[2] *= mapscale[2];
+        localpos_[0] += traceable->pos[0];
+        localpos_[1] += traceable->pos[1];
+        localpos_[2] += traceable->pos[2];
         vector_cpy(worldpos, localpos_);
         if (localpos != NULL) vector_cpy(localpos, localpos_);
     }

@@ -4,13 +4,15 @@ RELEASE NOTES
     _  _   r18
 
 Enhanced Landscape Rendering
-- Crude Geoclipmapping
+- Crude geoclipmapping
 - Improved performance/quality
 Enhanced Textures
-- Procedural Road Textures
-- Procedural Skyscraper Textures
+- Procedural road textures
+- Procedural skyscraper textures
 Enhanced Immersion
-- Added Jump-Jet-Thruster Vibrations
+- Added jump-jet-thruster vibrations
+Enhanced World
+- Added location markers.
 
 
 2010_08_28 r17

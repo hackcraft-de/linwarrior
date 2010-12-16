@@ -34,8 +34,16 @@ public:
     /// Instance shared Textures.
     static std::vector<long> sTextures;
 public:
-    /// LRU Surface Cache-Tile.
+    /// Surface Modifiction
+    struct sMod {
+        float pos[3];
+        float range;
+        float height;
+    };
+    /// All effective surface modifictions.
+    std::vector<sMod*> mods;
 
+    /// LRU Surface Cache-Tile.
     struct sPatch {
         // Number of accesses last frame.
         unsigned long touches;
@@ -48,10 +56,12 @@ public:
     std::map<unsigned long, sPatch*> patches;
 public:
     cPlanetmap();
+    /// Remove cached data - enforce recalculation (enforce cache miss).
+    void invalidateCache();
     /// Calculate Height and Color of the xz position.
-    inline void getHeight(float x, float z, float* const color);
+    void getHeight(float x, float z, float* const color);
     /// Retrieves Height and Color of the xz position and calculates on demand.
-    inline void getCachedHeight(float x, float z, float* const color);
+    void getCachedHeight(float x, float z, float* const color);
     /// Re-adjust particle position by making multiple downward-hemispherical checks.
     virtual float constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor);
     /// Draw Landscape surrounding the current camera position.

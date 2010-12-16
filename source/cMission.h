@@ -84,11 +84,15 @@ class cOpenMission : public cMission {
     virtual void onDefeat();
     virtual cObject* init(cWorld* world);
 private:
-    cObject* initPlayerParty(cWorld* world);
+    cObject* initPlayerParty(cWorld* world, cPlanetmap* planetmap);
     void initSkytideCity(cWorld* world, cPlanetmap* planetmap);
     void initStarcircleTown(cWorld* world, cPlanetmap* planetmap);
     void initPentaSpaceport(cWorld* world, cPlanetmap* planetmap);
     void initPyraNanoCorp(cWorld* world, cPlanetmap* planetmap);
+    void initAcroloidMines(cWorld* world, cPlanetmap* planetmap);
+    void initCollapsiumFactory(cWorld* world, cPlanetmap* planetmap);
+    void initJurataJail(cWorld* world, cPlanetmap* planetmap);
+    void initSpadenixFactory(cWorld* world, cPlanetmap* planetmap);
 private:
     static void battleField(cWorld* world);
     static void smallArmy(int wx, int wy, int wz, cWorld* world, const char* name, int n, bool blue, int wpn=0);

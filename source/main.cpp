@@ -589,7 +589,7 @@ int cMain::sdlmain(int argc, char** args) {
     //alDopplerFactor(2.0);
     //alSpeedOfSound(343.3*0.1);
 
-    if (1) {
+    if (0) {
         cout << "Loading Ambient Background Music...\n";
         try {
             ALuint buffer;
