@@ -1,6 +1,6 @@
 #!/bin/sh
 
 # Run LinWarrior
-./dist/linwarrior -r 512x480 -m 0
+./dist/linwarrior -r 512x480 -m 0 -s 4
 #./dist/linwarrior -r 1650 -m 0
 

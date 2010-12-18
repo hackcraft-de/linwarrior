@@ -17,7 +17,7 @@ using std::endl;
 #include "cLandscape.h"
 #include "cSolid.h"
 
-#define BKGDETAIL 0
+#define BKGDETAIL 1
 
 extern unsigned char* loadTGA(const char *fname, int *w, int* h, int* bpp);
 

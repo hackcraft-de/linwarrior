@@ -251,39 +251,46 @@ struct cSolid {
             unsigned char seed2 = seed + j;//31 + j * 17;
             float sum = 0;
             float fsum = 0;
+            float p = 1;
+            float gain = 0.77f;
+            float f = 0.4f;
+            float lac = 1.81f;
             for (int i = 1; i < 7; i++) {
-                float p = (1 << i)*0.5;
-                float f = (8 - i)*4;
-                sum += f * fabs(cNoise::simplex3(x*p, y*p, z*p, seed2));
-                fsum += f;
-                seed2 += 7;
+                sum += f * fabs(cNoise::simplex3(x*f, y*f, z*f, seed2));
+                fsum += p;
+                seed += 7;
+                p *= gain;
+                f *= lac;
             }
             sum /= fsum;
-            c[j] = cDistortion::sig(12 * sum - 1);
+            c[j] = sum;//cDistortion::sig(12 * sum - 1);
         }
 
         //float z = 100;
         //c[3] = pow(z, 1-(nextrand(nextrand(nextrand(c[3]*987654321))) % 1723) * 0.00058f) / z;
 
+        float specular = 0.95f;
+
         float p2 = 10001;
         float diffusion2 = 0.5f, shift2 = 0.5f, e2 = 2.0f;
-        //float spots1 = sig( -voronoi3(x*p1, y*p1, z*p1, diffusion1, shift1, e1) * 18 - 15 );
-        float spots2 = pow(-(0.5f - 0.5f * cNoise::voronoi3(x*p2, y*p2, z*p2, diffusion2, shift2, e2)), 14);
+        float spots2_ = (0.5f - 0.5f * cNoise::voronoi3(x*p2, y*p2, z*p2, diffusion2, shift2, e2));
+        float spots2 = specular * pow(-spots2_, 14) + (1.0f-specular) * 0.3 * pow(spots2_, 0.05);
 
         float p1 = 2001;
         float diffusion1 = 0.5f, shift1 = 0.5f, e1 = 2.0f;
-        //float spots1 = sig( -voronoi3(x*p1, y*p1, z*p1, diffusion1, shift1, e1) * 18 - 15 );
-        float spots1 = pow(-(0.5f - 0.5f * cNoise::voronoi3(x*p1, y*p1, z*p1, diffusion1, shift1, e1)), 14);
+        float spots1_ = (0.5f - 0.5f * cNoise::voronoi3(x*p1, y*p1, z*p1, diffusion1, shift1, e1));
+        float spots1 = specular * pow(-spots1_, 14) + (1.0f-specular) * 0.3 * pow(spots1_, 0.05);
 
         float p0 = 201;
         float diffusion = 0.5f, shift = 0.5f, e = 2.0f;
-        //float spots = sig( -voronoi3(x*p0, y*p0, z*p0, diffusion, shift, e) * 18 - 15 );
-        float spots = pow(-(0.5f - 0.5f * cNoise::voronoi3(x*p0, y*p0, z*p0, diffusion, shift, e)), 14);
+        float spots0_ = (0.5f - 0.5f * cNoise::voronoi3(x*p0, y*p0, z*p0, diffusion, shift, e));
+        float spots0 = specular * pow(-spots0_, 14) + (1.0f-specular) * 0.3 * pow(spots0_, 0.05);
 
         float stars = 1.29f;
-        float nebula = 0.1f;
-        //c[3] = stars*exposure( spots1*0.6 + 0.8*spots );
-        c[3] = stars * (spots2 * 0.8f + spots1 * 0.9f + 0.99f * spots);
+        //c[3] = stars*exposure( spots1*0.6 + 0.8*spots0 );
+        c[3] = stars * (spots2 * 0.8f + spots1 * 0.9f + 0.99f * spots0);
+
+        float nebula = 0.05f;
 
         color[0] = fmin(1, 0.00f + 0.91f * nebula * c[0] + c[3]);
         color[1] = fmin(1, 0.00f + 0.91f * nebula * c[1] + c[3]);

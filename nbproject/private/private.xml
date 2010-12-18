@@ -4,7 +4,7 @@
         <file>
             <url>source/cBackground.cpp</url>
             <line>64</line>
-            <line>772</line>
+            <line>773</line>
         </file>
         <file>
             <url>source/cMech.cpp</url>
@@ -12,7 +12,7 @@
         </file>
         <file>
             <url>source/cPlanetmap.cpp</url>
-            <line>409</line>
+            <line>413</line>
         </file>
     </editor-bookmarks>
 </project-private>

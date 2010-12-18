@@ -119,7 +119,7 @@ cObject* cEmptyMission::init(cWorld* world) {
 #define SPACEPORT   { -270, 0, -180 }
 #define PYRANANO    { -210, 0, 270 }
 
-#define STARCIRCLE  { 300, 0, 0 }
+#define STARCIRCLE  { 250, 0, 0 }
 #define COLLAPSIUM  { 300, 0, -150 }
 #define ACROLOID    { 400, 0, -200 }
 #define JURATA      { 400, 0, +100 }
@@ -142,7 +142,7 @@ cObject* cOpenMission::init(cWorld* world) {
 
     cout << "Setting mission date and time...\n";
     if (!true) {
-        world->mTiming.setTime(9);
+        world->mTiming.setTime(12);
     } else {
         float hour;
         getSystemHour(hour);
@@ -189,10 +189,10 @@ cObject* cOpenMission::init(cWorld* world) {
     cout << "Initialising Pyra Nano Corp...\n";
     initPyraNanoCorp(world, planetmap);
 
-    initAcroloidMines(world, planetmap);
-    initCollapsiumFactory(world, planetmap);
-    initJurataJail(world, planetmap);
-    initSpadenixFactory(world, planetmap);
+    //initAcroloidMines(world, planetmap);
+    //initCollapsiumFactory(world, planetmap);
+    //initJurataJail(world, planetmap);
+    //initSpadenixFactory(world, planetmap);
 
     if (!true) {
         cout << "Initialising Experimental Structure...\n";
@@ -495,6 +495,8 @@ void cOpenMission::initStarcircleTown(cWorld* world, cPlanetmap* planetmap) {
     float color[16];
     planetmap->getHeight(loc[0],loc[2], color);
     loc[1] = color[3];
+    loc[1] = 0.0;
+    cout << "STARCIRCLE height: " << loc[1] << endl;
     
     cPlanetmap::sMod* mod = new cPlanetmap::sMod();
     mod->pos[0] = loc[0];
