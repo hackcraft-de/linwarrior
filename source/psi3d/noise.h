@@ -493,7 +493,8 @@ struct cNoise {
                     float dx = x - x_;
                     float dy = y - y_;
                     float dz = z - z_;
-                    float d = pow(dx,e) + pow(dy,e) + pow(dz,e);
+                    float d = dx*dx + dy*dy + dz*dz;
+                    //float d = pow(dx,e) + pow(dy,e) + pow(dz,e);
                     if (d <= min_d) {
                         min_d_ = min_d;
                         min_d = d;
@@ -503,9 +504,11 @@ struct cNoise {
                 }
             }
         }
-        const float e_inv = 1.0f / e;
-        const float u = pow(min_d, e_inv);
-        const float v = pow(min_d_,e_inv);
+        //const float e_inv = 1.0f / e;
+        //const float u = pow(min_d, e_inv);
+        //const float v = pow(min_d_,e_inv);
+        const float u = sqrt(min_d);
+        const float v = sqrt(min_d_);
         // Result within [0,1[ because u less or equal v.
         //return 1.999999f * (u / (u + v));
         // Result within [-1,+1] because u less or equal v.

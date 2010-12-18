@@ -120,6 +120,7 @@ char fragmentshader2D_[] = " \
     } \
 ";
 
+
 cBackground::cBackground() {
 
     if (0) {
@@ -219,7 +220,7 @@ cBackground::cBackground() {
     // Ground Texture
     if (1) {
         cout << "Generating Ground..." << endl;
-        int w = 1 << (7 + BKGDETAIL);
+        int w = 1 << (8 + BKGDETAIL);
         int h = w;
         int bpp = 3;
         unsigned char* texels = new unsigned char[((unsigned long) w) * h * bpp];

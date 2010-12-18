@@ -254,7 +254,7 @@ struct cSolid {
             for (int i = 1; i < 7; i++) {
                 float p = (1 << i)*0.5;
                 float f = (8 - i)*4;
-                sum += f * cNoise::simplex3(x*p, y*p, z*p, seed2);
+                sum += f * fabs(cNoise::simplex3(x*p, y*p, z*p, seed2));
                 fsum += f;
                 seed2 += 7;
             }
@@ -294,24 +294,28 @@ struct cSolid {
     static inline void planet_cloud(float x, float y, float z, float* color, unsigned char seed = 131) {
         float sum = 0;
         float fsum = 0;
-        for (int i = 0; i < 8; i++) {
-            float p = 1 << i;
-            float f = (8 - i)*2;
-            sum += f * cNoise::simplex3(x*p, y*p, z*p, seed);
-            fsum += f;
+        float p = 1;
+        float gain = 0.67f;
+        float f = 0.871;
+        float lac = 2.171f;
+        for (int i = 0; i < 16; i++) {
+            sum += fabs(p * cNoise::simplex3(x*f, y*f, z*f, seed));
+            fsum += p;
             seed += 7;
+            p *= gain;
+            f *= lac;
         }
         sum /= fsum;
 
-        float f00 = cDistortion::sig(9 * sum);
+        float f00 = sum;
 
-        float covering = 0.55f;
+        float covering = 0.99f;
         f00 = fmax(0.0f, f00 - (1.0f - covering)) / covering;
 
-        float sharpness = 0.98f;
+        float sharpness = 0.999f;
         f00 = pow(f00, 2.0f - sharpness);
 
-        float f01 = sin(2.14f * f00);
+        float f01 = sum;//sin(2.14f * f00);
 
         color[0] = f01;
         color[1] = f01;

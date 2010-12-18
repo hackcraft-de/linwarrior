@@ -22,8 +22,8 @@ cPlanetmap::cPlanetmap() {
     if (sInstances == 1) {
         // Solid Ground
         {
-            const float diffusion = 0.2;
-            const float shift = 0.0;
+            const float diffusion = 0.4;
+            const float shift = 0.3;
             const int size = 64;
             unsigned char texels[size * size * size * 3];
             int samples = 3;
@@ -32,12 +32,16 @@ cPlanetmap::cPlanetmap() {
                 unsigned char* texel = texels;
                 loopijk(size, size, size) {
                     float f = 256.0f / (float)size;
-                    float i_ = (rand()%100) * 0.01;
-                    float j_ = (rand()%100) * 0.01;
-                    float k_ = (rand()%100) * 0.01;
+                    float i_ = (rand()&127) * 0.0078f;
+                    float j_ = (rand()&127) * 0.0078f;
+                    float k_ = (rand()&127) * 0.0078f;
                     unsigned char r = 0, g = 0, b = 0;
-                    float a = ((cNoise::voronoi3((i+i_)*f,(j+j_)*f,(k+k_)*f, diffusion, shift) + 1.0f) * 0.5);
-                    a = 0.3 + a * 0.8;
+                    float a0 = ((cNoise::voronoi3((i+i_)*f,(j+j_)*f,(k+k_)*f, diffusion, shift) + 1.0f) * 0.5);
+                    f *= 2;
+                    float a1 = ((cNoise::voronoi3((i+i_)*f,(j+j_)*f,(k+k_)*f, diffusion, shift) + 1.0f) * 0.5);
+                    f *= 2.171;
+                    float a2 = ((cNoise::voronoi3((i+i_)*f,(j+j_)*f,(k+k_)*f, diffusion, shift) + 1.0f) * 0.5);
+                    float a = 0.5 + fabs(a0) * 0.3 + a1 * 0.15 + a2 * 0.075;
                     a = a > 1.0 ? 1.0 : a;
                     a = a < 0.0 ? 0.0 : a;
                     r = a * 255;
@@ -474,7 +478,7 @@ void cPlanetmap::drawSolid() {
             assert(!(x!=x));
             assert(!(z!=z));
             //float c[3];
-            float ts = 0.2;
+            float ts = 0.3f;
             //cout << x << " " << z << endl;
 
 
