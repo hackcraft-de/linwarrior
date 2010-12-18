@@ -43,18 +43,18 @@ public:
     /**
      * Identifiers for single Buttons with groupings:
      * HU, HD, HL, HR: CoolieHat or digital axes as of yesterdays.
-     * DELTA, CROSS, SQUARE, CIRCLE: Primary action buttons (up,dn,lt,rt).
+     * PU, PD, PL, PR: Primary action buttons (up,dn,lt,rt).
      * L1, L2: Left hand side buttons (top and bottom) [selections/camera/trigger].
      * R1, R2: Right hand side buttons (top and bottom) [selections/camera/trigger].
      * SELECT, START: Center buttons.
      * J1B, J2B: Buttons of the analouge sticks (pressing them down).
      */
     enum Buttons {
-        BT_SQUARE, BT_DELTA, BT_CROSS, BT_CIRCLE, // Primary action buttons.
-        BT_L1, BT_L2, BT_R1, BT_R2, // Shoulder buttons.
-        BT_SELECT, BT_START, // Central controll buttons.
-        BT_J1B, BT_J2B, // Analouge stick push down buttons
-        BT_HU, BT_HD, BT_HL, BT_HR // HUD directional buttons
+        BT_PL, BT_PU, BT_PD, BT_PR, // 4 Primary action buttons.
+        BT_L1, BT_L2, BT_R1, BT_R2, // 2 + 2 Shoulder buttons.
+        BT_SELECT, BT_START, // 2 Central controll buttons.
+        BT_J1B, BT_J2B, // 2 Analouge stick push down buttons (or L3 and R3).
+        BT_HU, BT_HD, BT_HL, BT_HR // 4 HUD directional buttons.
     };
 
     /**
@@ -142,7 +142,7 @@ public:
         s << "Pad {" << div
                 << "J1(" << getAxis(AX_UD1) << ", " << getAxis(AX_LR1) << ")" << div
                 << "J2(" << getAxis(AX_UD2) << ", " << getAxis(AX_LR2) << ")" << div
-                << "ABXY(" << getButton(BT_SQUARE) << ", " << getButton(BT_DELTA) << ", " << getButton(BT_CROSS) << ", " << getButton(BT_CIRCLE) << ")" << div
+                << "LUDR-BT(" << getButton(BT_PL) << ", " << getButton(BT_PU) << ", " << getButton(BT_PD) << ", " << getButton(BT_PR) << ")" << div
                 << "L1/R1(" << getButton(BT_L1) << ", " << getButton(BT_R1) << ")" << div
                 << "L2/R2(" << getButton(BT_L2) << ", " << getButton(BT_R2) << ")" << div
                 << "Sel/St(" << getButton(BT_SELECT) << ", " << getButton(BT_START) << ")" << div

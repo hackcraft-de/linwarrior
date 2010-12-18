@@ -27,13 +27,13 @@ class cWeapon;
 #define MECH_TURRET_LR_AXIS   AX_LR2
 #define MECH_TURRET_UD_AXIS   AX_UD2
 #define MECH_THROTTLE_AXIS    AX_UD1
-//#define MECH_FIRE_BUTTON      BT_CROSS
+//#define MECH_FIRE_BUTTON      BT_PD
 #define MECH_FIRE_BUTTON      BT_R2
-//#define MECH_JET_BUTTON       BT_SQUARE
+//#define MECH_JET_BUTTON       BT_PL
 #define MECH_JET_BUTTON       BT_L2
-#define MECH_CAMERA_BUTTON    BT_DELTA
-#define MECH_NEXT_BUTTON      BT_CIRCLE
-#define MECH_PREV_BUTTON      BT_SQUARE
+#define MECH_CAMERA_BUTTON    BT_PU
+#define MECH_NEXT_BUTTON      BT_PR
+#define MECH_PREV_BUTTON      BT_PL
 
 /**
  * Models Mechlike Objects.

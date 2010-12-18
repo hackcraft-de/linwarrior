@@ -440,10 +440,10 @@ void cMain::updatePad(cPad* pad, SDL_Joystick* joy, int* mapping) {
     if (keystate[SDLK_r] == 1) pad->setButton(cPad::BT_R1, true);
     if (keystate[SDLK_g] == 1) pad->setButton(cPad::BT_R2, true);
     // Primary Buttons
-    if (keystate[SDLK_s] == 1) pad->setButton(cPad::BT_SQUARE, true);
-    if (keystate[SDLK_e] == 1) pad->setButton(cPad::BT_DELTA, true);
-    if (keystate[SDLK_d] == 1) pad->setButton(cPad::BT_CROSS, true);
-    if (keystate[SDLK_f] == 1) pad->setButton(cPad::BT_CIRCLE, true);
+    if (keystate[SDLK_s] == 1) pad->setButton(cPad::BT_PL, true);
+    if (keystate[SDLK_e] == 1) pad->setButton(cPad::BT_PU, true);
+    if (keystate[SDLK_d] == 1) pad->setButton(cPad::BT_PD, true);
+    if (keystate[SDLK_f] == 1) pad->setButton(cPad::BT_PR, true);
     // Second Analogue Stick or Coolie-Hat:
     if (keystate[SDLK_LALT] == 0) {
         if (keystate[SDLK_j]) pad->setAxis(cPad::AX_LR2, -1.0f);
@@ -478,9 +478,9 @@ void cMain::updatePad(cPad* pad, SDL_Joystick* joy, int* mapping) {
         pad->setAxis(cPad::AX_LR2, pad->getAxis(cPad::AX_LR2) + 10.0f*mx/(float)w2);
         pad->setAxis(cPad::AX_UD2, pad->getAxis(cPad::AX_UD2) - 10.0f*my/(float)h2);
         
-        if (mouseWheel > 0) pad->setButton(cPad::BT_SQUARE, true);
-        if (mb & SDL_BUTTON_MMASK) pad->setButton(cPad::BT_DELTA, true);
-        if (mouseWheel < 0) pad->setButton(cPad::BT_CROSS, true);
+        if (mouseWheel > 0) pad->setButton(cPad::BT_PL, true);
+        if (mb & SDL_BUTTON_MMASK) pad->setButton(cPad::BT_PU, true);
+        if (mouseWheel < 0) pad->setButton(cPad::BT_PD, true);
         //if (mb & SDL_BUTTON_X1MASK) pad->setButton(cPad::BT_CROSS, true);
         //if (mb & SDL_BUTTON_X2MASK) pad->setButton(cPad::BT_CIRCLE, true);
         if (mb & SDL_BUTTON_RMASK) pad->setButton(cPad::BT_L2, true);
