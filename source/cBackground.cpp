@@ -10,12 +10,13 @@
 using std::cout;
 using std::endl;
 
+#include "cWorld.h"
+#include "cLandscape.h"
+#include "cSolid.h"
+
 #include "psi3d/macros.h"
 #include "psi3d/noise.h"
 #include "psi3d/snippetsgl.h"
-
-#include "cLandscape.h"
-#include "cSolid.h"
 
 #define BKGDETAIL 1
 

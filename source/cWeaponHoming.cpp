@@ -1,5 +1,7 @@
 #include "cWeaponHoming.h"
 
+#include "cWorld.h"
+
 #include "psi3d/snippetsgl.h"
 
 #include <cassert>
@@ -100,7 +102,7 @@ void cWeaponHoming::animate(float spf) {
 
         // Now update the Missile itself
         if (s->target) {
-            cObject *targetobject = cWorld::instance->mIndex[s->target];
+            cObject *targetobject = cWorld::instance->getObject(s->target);
             if (targetobject && true) {
                 float tgt[] = {0, 0, 0};
                 vector_cpy(tgt, targetobject->traceable->pos);

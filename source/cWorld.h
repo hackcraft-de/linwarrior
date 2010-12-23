@@ -9,21 +9,14 @@
 #ifndef _CWORLD_H
 #define _CWORLD_H
 
-/**
- * Serial-Code or OID for cObject (used for values, too).
- * Use whereever possible to store object references.
- * Object A having a pointer to cObject B is like saying A and B are bound together.
- * Pointers are ok between a Mech and its *own* weapon but not between
- * a targeting weapon (or Mech) and a hostile target Mech.
- * Only bind together what belongs together and what would be destroyed together.
- * Pointers express responsibility whereas OIDs loosely couple.
- * Use cWorld::instance->mIndex[oid] to map serial to pointer.
- */
-typedef unsigned long long OID;
 
 class cWorld;
 #include "psi3d/macros.h"
+#include "OID.h"
+#include "cTiming.h"
+#include "cMessage.h"
 #include "cObject.h"
+#include "cBackground.h"
 
 #include <list>
 #include <set>
@@ -31,9 +24,6 @@ class cWorld;
 #include <string>
 #include <vector>
 #include <queue>
-#include <iostream>
-#include <sstream>
-#include <iomanip>
 
 class cBackground;
 class cObject;
@@ -48,39 +38,6 @@ public:
     /// The current World instance (singleton) other objects may
     /// only affect that current instance.
     static cWorld* instance;
-
-public:
-    /// Sent messages.
-
-    struct rMessage {
-        /// Who sent this message (object id).
-        OID mSender;
-        /// To whom this message is/was sent (object id).
-        OID mReceiver;
-        /// To whom this message is/was sent (group id).
-        OID mGroup;
-        /// When was this message sent / valid only after this due date.
-        OID mTimestamp;
-        /// Until when is this message meant to be valid (0 == forever).
-        OID mBestbefore;
-        /// Message type.
-        std::string mType;
-        /// Message String (lets say it's the subject).
-        std::string mText;
-        /// Binary large object - fresh allocated pointer to custom data.
-        void* mBlob;
-
-        /// Compare time for message priority queue, fifo.
-        bool operator()(rMessage const* a, rMessage const* b) const {
-            return a->mTimestamp > b->mTimestamp;
-        }
-    };
-
-    /// Not yet dispatched messages (because they are not yet overdue).
-    std::priority_queue<rMessage*, std::vector<rMessage*>, cWorld::rMessage> mMessages;
-
-    /// Messages already delivered to group participants.
-    std::list<rMessage*> mDispatchedMessages;
 
     /// Object Group - as for now intended for messaging maillist-groups.
 
@@ -97,16 +54,24 @@ public:
     /// Group 0 is initialized as default or broadcast group.
     std::map<OID, rGroup*> mGroups;
 
+private:
+
+    /// Not yet dispatched messages (because they are not yet overdue).
+    std::priority_queue<cMessage*, std::vector<cMessage*>, cMessage> mMessages;
+
+    /// Messages already delivered to group participants.
+    std::list<cMessage*> mDispatchedMessages;
+
     /// Background Object
-    cBackground* mBackground;
+    cBackground mBackground;
 
     // Not Yet, may be merged with Background:
     // Overlays weather effects like rain, snow or dust.
     //cWeather* mWeather;
-
+public:
     /// Mission Setup and Objective-Controller.
     cMission* mMission;
-
+private:
     /// Gravity acceleration vector [m/s²]. space = (0,0,0), earth = (0,-9.8,0).
     std::vector<float> mGravity;
 
@@ -124,13 +89,13 @@ public:
 
     /// Contains fragged objects.
     std::list<cObject*> mCorpses;
-
+public:
     /// Allows searching the world in a structured manner.
     std::map<OID, std::list<cObject*> > mGeomap;
 
     /// Non-Positional (NaN) and some oversize objects go here for clustering.
     std::list<cObject*> mUncluster;
-
+private:
     /// Render only objects that far away.
     float mViewdistance;
 
@@ -144,143 +109,45 @@ public:
      */
     //std::map<std::string, std::string> mValues;
 
-    // Serious question: What time & date format would be used
-    // as a common planetary calendar? Is that sensible at all?!
-    // So far I assume terran planetary dates everywhere.
-    // But time & date should be adjusted to the planet and
-    // planet's date shall be mapped like beween maya, gregorian
-    // or moon calendars.
-    struct rTiming {
-        /// Counts years of simulation universe.
-        unsigned int mYear;
-
-        /// Counts 366-Days of simulation year (0-365).
-        unsigned int mDay;
-
-        /// Counts 24-Hours of simulation day (0-23).
-        unsigned int mHour;
-
-        /// Counts minutes of simulation hour.
-        unsigned int mMinute;
-
-        /// Counts seconds of simulation minute.
-        unsigned int mSecond;
-
-        /// Micro-Seconds, incremented by delta at every simulation timestep.
-        unsigned int mMSec;
-
-        /// Incremented at every simulation timestep and reset on each second.
-        unsigned int mFrame;
-
-        /// Incremented for noteable events (eg. OID consumption). Reset each frame.
-        unsigned int mDeltacycle;
-
-        /// seconds per frame = 1.0f/mFPS.
-        float mSPF;
-
-        /// frames per second = 1.0f/mSPF.
-        float mFPS;
-
-        float getSPF() {
-            return mSPF;
-        }
-        
-        unsigned int getDeltacycle() {
-            return mDeltacycle;
-        }
-
-        void setFPS(float fps) {
-            mFPS = fps;
-            mSPF = 1.0f / fps;
-        }
-
-        void setDate(unsigned int year, unsigned int day) {
-            mYear = year;
-            mDay = day;
-        }
-
-        void setTime(unsigned hour, unsigned minute = 0, unsigned second = 0) {
-            mHour = hour;
-            mMinute = minute;
-            mSecond = second;
-            mMSec = 0;
-            mFrame = 0;
-            mDeltacycle = 1;
-        }
-
-        void advanceDelta() {
-            mDeltacycle++;
-        }
-
-        void advanceTime(int deltamsec) {
-            mSPF = float(deltamsec) / 1000.0f;
-            mFPS = 1.0f / (mSPF + 0.000001f);
-            mFrame++;
-            mDeltacycle = 1;
-            mMSec += deltamsec;
-            if (mMSec >= 1000) {
-                mFrame = 0;
-                mSecond += mMSec / 1000;
-                mMSec %= 1000;
-                if (mSecond >= 60) {
-                    mMinute += mSecond / 60;
-                    mSecond %= 60;
-                    if (mMinute >= 60) {
-                        mHour += mMinute / 60;
-                        mMinute %= 60;
-                        if (mHour >= 24) {
-                            mDay += mHour / 24;
-                            mHour %= 24;
-                            if (mDay >= 366) {
-                                mYear += mDay / 366;
-                                mDay %= 366;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        float getTime24() {
-            float time24 = float(mHour) + float(mMinute) / 60.0f + float(mSecond) / (60.0f * 60.0f) + float(mMSec) / (60.0f * 60.0f * 1000.0f);
-            return time24;
-        }
-
-        OID getTimekey() {
-            OID ddd = mDay;
-            OID hh = mHour;
-            OID mm = mMinute;
-            OID ss = mSecond;
-            OID ff = mFrame;
-            OID serid = ((((ddd * 100 + hh) *100 + mm) *100 + ss) * 100 + ff) * 10000 + mDeltacycle;
-            return serid;
-        }
-
-        std::string getDate() {
-            std::stringstream s;
-            s << mYear << "_" << mDay;
-            return s.str();
-        }
-
-        std::string getTime() {
-            std::stringstream s;
-            s << mHour;
-            s << ":" << std::setfill('0') << std::setw(2) << mMinute;
-            s << ":" << std::setfill('0') << std::setw(2) << mSecond;
-            return s.str();
-        }
-
-
-    } mTiming;
+    // Timing, simulation stepping, deltacycles, date, fps, etc.
+    cTiming mTiming;
 
 public: // Constructor, Object-Management and Drawing:
 
     cWorld();
 
-public: // Querries
+public: // Accessors
 
     /// Returns the Object ID valid for this instant's time & deltacycle.
     OID getOID();
+
+    cTiming* getTiming() {
+        return &mTiming;
+    }
+
+    cObject* getObject(OID oid) {
+        return mIndex[oid];
+    }
+
+    std::vector<float>* getGravity() {
+        return &mGravity;
+    }
+
+    float getGndfriction() {
+        return mGndfriction;
+    }
+
+    float getAirdensity() {
+        return mAirdensity;
+    }
+
+    void setViewdistance(float viewdistance) {
+        mViewdistance = viewdistance;
+    }
+
+    float getViewdistance() {
+        return mViewdistance;
+    }
 
 public: // Messaging
 
@@ -344,7 +211,7 @@ public: // Simulation Step - Call every frame in order to update the world/missi
 
 public: // World-Filtering, World-Scanning, World-Sense for objects.
 
-    inline OID getGeokey(long x, long z);
+    OID getGeokey(long x, long z);
 
     std::list<cObject*>* getGeoInterval(float* min2f, float* max2f);
 

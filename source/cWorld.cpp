@@ -27,7 +27,6 @@ cWorld* cWorld::instance = NULL;
 cWorld::cWorld() {
     cWorld::instance = this;
 
-    mBackground = NULL;
     mMission = NULL;
 
     mGravity.reserve(3);
@@ -68,23 +67,19 @@ OID cWorld::getOID() {
 
 void cWorld::sendMessage(OID delay, OID sender /* = 0 */, OID groupid /* = 0 */, string type, string text, void* blob) {
     //cout << "sendMessageT(dly=" << delay << ", sdr=" << sender << ", gid=" << groupid << ", txt=" << text << ")" << endl;
-    cWorld::rMessage* message = new cWorld::rMessage;
-    assert(message != NULL);
 
     mTiming.advanceDelta();
-    message->mSender = sender;
-    message->mReceiver = 0;
-    message->mGroup = groupid;
-    message->mTimestamp = mTiming.getTimekey() + delay;
-    message->mBestbefore = 0;
-    message->mType = type;
-    message->mText = text;
-    message->mBlob = blob;
+    
+    cMessage* message = new cMessage(sender, 0, groupid, mTiming.getTimekey() + delay, 0, type, text, blob);
+    assert(message != NULL);
 
     // Is there any such group if no individual receiver specified.
-    if (message->mReceiver == 0) {
+    if (message->getReceiver() == 0) {
         rGroup* g = mGroups[groupid];
-        if (g == NULL) throw "no such group.";
+        if (g == NULL) {
+            delete message;
+            throw "no such group.";
+        }
     }
     mMessages.push(message);
 }
@@ -164,23 +159,23 @@ void cWorld::clusterObjects() {
 void cWorld::dispatchMessages() {
     OID now = getOID();
     while (!mMessages.empty()) {
-        rMessage* message = mMessages.top();
-        if (message->mTimestamp <= now) {
+        cMessage* message = mMessages.top();
+        if (message->getTimestamp() <= now) {
             // Remove from to-send-list.
             mMessages.pop();
             // Keep record of sent messages.
             mDispatchedMessages.push_front(message);
             // Deliver info about new message to individual receiver(s).
-            if (message->mReceiver != 0) {
+            if (message->getReceiver() != 0) {
                 // Message to single receiver.
-                cObject* object = mIndex[message->mReceiver];
+                cObject* object = mIndex[message->getReceiver()];
                 // Unable to deliver message to non-existent object?
                 if (object == NULL) continue;
                 // Deliver.
                 object->onMessage(message);
             } else {
                 // Message to group receivers.
-                rGroup* group = mGroups[message->mGroup];
+                rGroup* group = mGroups[message->getGroup()];
                 // Unable to deliver message to non-existent group?
                 if (group == NULL) continue;
                 // Inform each group member of the new message.
@@ -224,7 +219,7 @@ void cWorld::transformObjects() {
 
 void cWorld::drawBack() {
     //cout << "drawBack()\n";
-    if (mBackground) mBackground->drawBackground(mTiming.getTime24());
+    mBackground.drawBackground(mTiming.getTime24());
 }
 
 void cWorld::drawSolid(cObject* camera, std::list<cObject*>* objects) {

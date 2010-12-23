@@ -1,8 +1,9 @@
 // cMech.cpp
 
-#include "cObject.h"
-
 #include "cMech.h"
+
+#include "cWorld.h"
+
 #include "cController.h"
 #include "cPad.h"
 #include "psi3d/macros.h"
@@ -231,8 +232,8 @@ cMech::~cMech() {
 }
 
 void cMech::onMessage(void* message) {
-    cWorld::rMessage* m = (cWorld::rMessage*) message;
-    cout << "I (" << this->base->oid << ":" << this->nameable->name << ") just received: \"" << m->mText << "\" from group " << m->mGroup << endl;
+    cMessage* m = (cMessage*) message;
+    cout << "I (" << this->base->oid << ":" << this->nameable->name << ") just received: \"" << m->getText() << "\" from group " << m->getGroup() << endl;
 }
 
 void cMech::onSpawn() {
@@ -301,7 +302,7 @@ void cMech::multEyeMatrix() {
 
 void cMech::setAsAudioListener() {
     float s = -0.1;
-    float step = s * cWorld::instance->mTiming.getSPF();
+    float step = s * cWorld::instance->getTiming()->getSPF();
     float vel[] = {
         traceable->vel[0] * step,
         traceable->vel[1] * step,
@@ -432,9 +433,9 @@ void cMech::animatePhysics(float spf) {
     }
 
     // Accumulate environmental forces
-    traceable->applyGravityForce(cWorld::instance->mGravity.data());
+    traceable->applyGravityForce(cWorld::instance->getGravity()->data());
     traceable->applyFrictionForce(spf);
-    traceable->applyAirdragForce(cWorld::instance->mAirdensity);
+    traceable->applyAirdragForce(cWorld::instance->getAirdensity());
 
     // Integrate position and estimate current velocity...
     traceable->stepVerlet(1.0f / spf, spf*spf, 0.001f);
@@ -480,7 +481,7 @@ void cMech::animatePhysics(float spf) {
         }
 
         // Set friction for next frame - if there was a collision.
-        traceable->friction = (depth > 0) ? cWorld::instance->mGndfriction : 0.0f;
+        traceable->friction = (depth > 0) ? cWorld::instance->getGndfriction() : 0.0f;
     }
 }
 
@@ -1203,7 +1204,7 @@ float cMech::inDestinationRange() {
 }
 
 float cMech::inMeeleRange() {
-    cObject* target = cWorld::instance->mIndex[entity->target];
+    cObject* target = cWorld::instance->getObject(entity->target);
     if (target == NULL) return 0.0f;
     float a = 16;
     float b = 24;
@@ -1215,7 +1216,7 @@ float cMech::inMeeleRange() {
 
 float cMech::inWeaponRange() {
     // TODO inWeaponRange should depend on ready to fire weapons properties.
-    cObject* target = cWorld::instance->mIndex[entity->target];
+    cObject* target = cWorld::instance->getObject(entity->target);
     if (target == NULL) return 0.0f;
     float a = 36 + 10;
     float b = 44 + 10;
@@ -1226,7 +1227,7 @@ float cMech::inWeaponRange() {
 }
 
 float cMech::inTargetRange() {
-    cObject* target = cWorld::instance->mIndex[entity->target];
+    cObject* target = cWorld::instance->getObject(entity->target);
     if (target == NULL) return 0.0f;
     float a = 56;
     float b = 124;
@@ -1245,7 +1246,7 @@ void cMech::do_moveTowards() {
     if (finitef(entity->destination[0])) {
         target_pos = entity->destination.data();
     } else if (entity->target != 0) {
-        cObject* target = cWorld::instance->mIndex[entity->target];
+        cObject* target = cWorld::instance->getObject(entity->target);
         if (target != NULL) {
             target_pos = target->traceable->pos.data();
         } else {
@@ -1275,7 +1276,7 @@ void cMech::do_moveNear() {
     if (finitef(entity->destination[0])) {
         target_pos = entity->destination.data();
     } else if (entity->target != 0) {
-        cObject* target = cWorld::instance->mIndex[entity->target];
+        cObject* target = cWorld::instance->getObject(entity->target);
         if (target != NULL) {
             target_pos = target->traceable->pos.data();
         } else {
@@ -1311,7 +1312,7 @@ void cMech::do_aimAt() {
     // Get aim-target position.
     float* target_pos = NULL;
     if (entity->target != 0) {
-        cObject* target = cWorld::instance->mIndex[entity->target];
+        cObject* target = cWorld::instance->getObject(entity->target);
         if (target != NULL) target_pos = target->traceable->pos.data();
         else return;
     } else return;
@@ -1338,7 +1339,7 @@ void cMech::do_fireAt() {
     // Get aim-target position.
     float* target_pos = NULL;
     if (entity->target != 0) {
-        cObject* target = cWorld::instance->mIndex[entity->target];
+        cObject* target = cWorld::instance->getObject(entity->target);
         if (target != NULL) target_pos = target->traceable->pos.data();
         else return;
     } else return;

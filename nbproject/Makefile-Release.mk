@@ -42,11 +42,13 @@ OBJECTFILES= \
 	${OBJECTDIR}/source/cWeaponHoming.o \
 	${OBJECTDIR}/source/cWeaponPlasmagun.o \
 	${OBJECTDIR}/source/cBuilding.o \
-	${OBJECTDIR}/source/cBackground.o \
 	${OBJECTDIR}/source/cWorld.o \
+	${OBJECTDIR}/source/cBackground.o \
+	${OBJECTDIR}/source/cTiming.o \
 	${OBJECTDIR}/source/cWeapon.o \
 	${OBJECTDIR}/source/cObject.o \
 	${OBJECTDIR}/source/cSolid.o \
+	${OBJECTDIR}/_ext/880981645/cMessage.o \
 	${OBJECTDIR}/source/cTree.o \
 	${OBJECTDIR}/source/cPlanetmap.o \
 	${OBJECTDIR}/source/cPadmap.o \
@@ -127,15 +129,20 @@ ${OBJECTDIR}/source/cBuilding.o: source/cBuilding.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/cBuilding.o source/cBuilding.cpp
 
+${OBJECTDIR}/source/cWorld.o: source/cWorld.cpp 
+	${MKDIR} -p ${OBJECTDIR}/source
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/cWorld.o source/cWorld.cpp
+
 ${OBJECTDIR}/source/cBackground.o: source/cBackground.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/cBackground.o source/cBackground.cpp
 
-${OBJECTDIR}/source/cWorld.o: source/cWorld.cpp 
+${OBJECTDIR}/source/cTiming.o: source/cTiming.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/cWorld.o source/cWorld.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/cTiming.o source/cTiming.cpp
 
 ${OBJECTDIR}/source/cWeapon.o: source/cWeapon.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source
@@ -151,6 +158,11 @@ ${OBJECTDIR}/source/cSolid.o: source/cSolid.cpp
 	${MKDIR} -p ${OBJECTDIR}/source
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/cSolid.o source/cSolid.cpp
+
+${OBJECTDIR}/_ext/880981645/cMessage.o: /media/44EA-7693/linux_workspaces/netbeans_workspace/linwarrior/source/cMessage.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/880981645
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/880981645/cMessage.o /media/44EA-7693/linux_workspaces/netbeans_workspace/linwarrior/source/cMessage.cpp
 
 ${OBJECTDIR}/source/cTree.o: source/cTree.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source

@@ -316,7 +316,7 @@ void cMain::drawFrame(int elapsed_msec) {
 
         // Find objects in visible range.
         float* origin = game.camera->traceable->pos.data();
-        float maxrange = game.world->mViewdistance;
+        float maxrange = game.world->getViewdistance();
         float min[] = {origin[0] - maxrange, origin[2] - maxrange};
         float max[] = {origin[0] + maxrange, origin[2] + maxrange};
         std::list<cObject*>* visobjects = game.world->getGeoInterval(min, max);
@@ -382,16 +382,16 @@ void cMain::updateKey(Uint8 keysym) {
     } else if (keysym == _PAUSE_KEY) {
         game.paused = !game.paused;
     } else {
-        if (keysym == SDLK_1) cWorld::instance->mViewdistance = 100;
-        else if (keysym == SDLK_2) cWorld::instance->mViewdistance = 150;
-        else if (keysym == SDLK_3) cWorld::instance->mViewdistance = 200;
-        else if (keysym == SDLK_4) cWorld::instance->mViewdistance = 250;
-        else if (keysym == SDLK_5) cWorld::instance->mViewdistance = 300;
-        else if (keysym == SDLK_6) cWorld::instance->mViewdistance = 350;
-        else if (keysym == SDLK_7) cWorld::instance->mViewdistance = 400;
-        else if (keysym == SDLK_8) cWorld::instance->mViewdistance = 450;
-        else if (keysym == SDLK_9) cWorld::instance->mViewdistance = 500;
-        else if (keysym == SDLK_0) cWorld::instance->mViewdistance = 5000;
+        if (keysym == SDLK_1) cWorld::instance->setViewdistance(100);
+        else if (keysym == SDLK_2) cWorld::instance->setViewdistance(150);
+        else if (keysym == SDLK_3) cWorld::instance->setViewdistance(200);
+        else if (keysym == SDLK_4) cWorld::instance->setViewdistance(250);
+        else if (keysym == SDLK_5) cWorld::instance->setViewdistance(300);
+        else if (keysym == SDLK_6) cWorld::instance->setViewdistance(350);
+        else if (keysym == SDLK_7) cWorld::instance->setViewdistance(400);
+        else if (keysym == SDLK_8) cWorld::instance->setViewdistance(450);
+        else if (keysym == SDLK_9) cWorld::instance->setViewdistance(500);
+        else if (keysym == SDLK_0) cWorld::instance->setViewdistance(5000);
     }
 }
 

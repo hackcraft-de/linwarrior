@@ -1,5 +1,7 @@
 #include "cWeaponMachinegun.h"
 
+#include "cWorld.h"
+
 #include "psi3d/instfont.h"
 #include "psi3d/snippetsgl.h"
 
@@ -102,7 +104,7 @@ void cWeaponMachinegun::animate(float spf) {
 
     foreachNoInc(i, castoffParticles) {
         cParticle* s = *i++;
-        s->vel[1] += cWorld::instance->mGravity[1] * spf;
+        s->vel[1] += (*cWorld::instance->getGravity())[1] * spf;
         s->pos[0] += s->vel[0] * spf;
         s->pos[1] += s->vel[1] * spf;
         s->pos[2] += s->vel[2] * spf;

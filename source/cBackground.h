@@ -14,7 +14,6 @@
 
 #include <map>
 #include <list>
-#include "cWorld.h"
 #include "cParticle.h"
 
 class cBackground;

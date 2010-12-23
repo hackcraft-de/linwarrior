@@ -182,7 +182,7 @@ void cController::attackEnemy() {
         //((cMech*)mDevice)->Pattern(tf, "nrnlln");
     }
     
-    cObject* target = cWorld::instance->mIndex[entity];
+    cObject* target = cWorld::instance->getObject(entity);
     if (controlledDevice->inTargetRange() < 0.01) {
         controlledDevice->do_aimFor(NULL);
         pop();

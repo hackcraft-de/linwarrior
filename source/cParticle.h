@@ -9,6 +9,15 @@
 #ifndef _CPARTICLE_H
 #define	_CPARTICLE_H
 
+#include "OID.h"
+
+// for loops
+#include "psi3d/ctrl.h"
+// for vector ops
+#include "psi3d/math3d.h"
+// for float_NAN
+#include "psi3d/macros.h"
+
 #include <list>
 #include <vector>
 #include <cmath>

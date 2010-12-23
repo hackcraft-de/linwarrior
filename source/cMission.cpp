@@ -56,14 +56,12 @@ void cMission::onDefeat() {
 
 
 cObject* cEmptyMission::init(cWorld* world) {
-    world->mBackground = new cBackground;
-
     if (true) {
-        world->mTiming.setTime(12);
+        world->getTiming()->setTime(12);
     } else {
         float hour;
         getSystemHour(hour);
-        world->mTiming.setTime(hour);
+        world->getTiming()->setTime(hour);
     }
 
     cObject* player = NULL;
@@ -137,17 +135,14 @@ void cOpenMission::onDefeat() {
 cObject* cOpenMission::init(cWorld* world) {
     srand(0);
     
-    cout << "Setting up world background...\n";
-    world->mBackground = new cBackground;
-
     cout << "Setting mission date and time...\n";
     if (!true) {
-        world->mTiming.setTime(12);
+        world->getTiming()->setTime(12);
     } else {
         float hour;
         getSystemHour(hour);
         hour = fmod(hour, 24);
-        world->mTiming.setTime(hour, 60 * (hour - (int) hour));
+        world->getTiming()->setTime(hour, 60 * (hour - (int) hour));
     }
 
     cout << "Initialising planetary maps...\n";

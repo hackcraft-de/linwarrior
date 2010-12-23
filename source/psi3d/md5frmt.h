@@ -16,6 +16,8 @@
 
 // memcpy, memset
 #include <string.h>
+// file operations f...
+#include <cstdio>
 
 #include <cassert>
 

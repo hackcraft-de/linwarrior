@@ -1,5 +1,7 @@
 #include "cComcom.h"
 
+#include "cWorld.h"
+
 #include "psi3d/snippetsgl.h"
 
 #include <iostream>
@@ -27,9 +29,9 @@ cComcom::cComcom(cObject* device) {
 }
 
 void cComcom::process(float spf) {
-    cWorld::rMessage* message = NULL;//cWorld::instance->recvMessage(0, mLastMessage);
+    cMessage* message = NULL;//cWorld::instance->recvMessage(0, mLastMessage);
     if (message != NULL) {
-        mLastMessage = message->mTimestamp;
+        mLastMessage = message->getTimestamp();
     }
 }
 
@@ -629,12 +631,12 @@ void cNavcom::drawHUD() {
         float angle = atan2(mDevice->traceable->ori[1], mDevice->traceable->ori[3]);
         glprintf("MKS: %2i", int(64 - angle * 64 / M_PI) % 64);
         glTranslatef(0, -6, 0);
-        s << "Date: " << w->mTiming.getDate();
+        s << "Date: " << w->getTiming()->getDate();
         glprintf(s.str().c_str());
         glTranslatef(0, -1, 0);
         s.clear();
         s.str("");
-        s << "Time: " << w->mTiming.getTime();
+        s << "Time: " << w->getTiming()->getTime();
         glprintf(s.str().c_str());
     }
     glPopMatrix();

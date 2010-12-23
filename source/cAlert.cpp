@@ -1,5 +1,7 @@
 #include "cAlert.h"
 
+#include "cWorld.h"
+
 #include <ostream>
 using std::cout;
 using std::endl;

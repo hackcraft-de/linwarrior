@@ -18,7 +18,9 @@ class cPad;
 class cController;
 class cWorld;
 
-#include "cWorld.h"
+//#include "cWorld.h"
+#include "OID.h"
+#include "cMessage.h"
 #include "cParticle.h"
 
 #include <string>

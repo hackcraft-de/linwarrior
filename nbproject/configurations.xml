@@ -32,15 +32,18 @@
           <itemPath>source/cWeaponRaybeam.h</itemPath>
           <itemPath>source/cWeaponSparkgun.h</itemPath>
         </logicalFolder>
+        <itemPath>source/OID.h</itemPath>
         <itemPath>source/cBackground.h</itemPath>
         <itemPath>source/cComcom.h</itemPath>
         <itemPath>source/cController.h</itemPath>
         <itemPath>source/cLandscape.h</itemPath>
+        <itemPath>/media/44EA-7693/linux_workspaces/netbeans_workspace/linwarrior/source/cMessage.h</itemPath>
         <itemPath>source/cMission.h</itemPath>
         <itemPath>source/cPad.h</itemPath>
         <itemPath>source/cParticle.h</itemPath>
         <itemPath>source/cSolid.h</itemPath>
         <itemPath>source/cSurface.h</itemPath>
+        <itemPath>source/cTiming.h</itemPath>
         <itemPath>source/cTree.h</itemPath>
         <itemPath>source/cWorld.h</itemPath>
         <itemPath>source/main.h</itemPath>
@@ -62,12 +65,14 @@
         <itemPath>source/cController.cpp</itemPath>
         <itemPath>source/cLandscape.cpp</itemPath>
         <itemPath>source/cMech.cpp</itemPath>
+        <itemPath>/media/44EA-7693/linux_workspaces/netbeans_workspace/linwarrior/source/cMessage.cpp</itemPath>
         <itemPath>source/cMission.cpp</itemPath>
         <itemPath>source/cObject.cpp</itemPath>
         <itemPath>source/cPadmap.cpp</itemPath>
         <itemPath>source/cPlanetmap.cpp</itemPath>
         <itemPath>source/cSolid.cpp</itemPath>
         <itemPath>source/cSurface.cpp</itemPath>
+        <itemPath>source/cTiming.cpp</itemPath>
         <itemPath>source/cTree.cpp</itemPath>
         <itemPath>source/cWeapon.cpp</itemPath>
         <itemPath>source/cWeaponExplosion.cpp</itemPath>
