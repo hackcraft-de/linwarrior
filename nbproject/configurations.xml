@@ -4,51 +4,49 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <logicalFolder name="f1" displayName="source" projectFiles="true">
-        <logicalFolder name="f3" displayName="objects" projectFiles="true">
-          <itemPath>source/cAlert.h</itemPath>
-          <itemPath>source/cBuilding.h</itemPath>
-          <itemPath>source/cMech.h</itemPath>
-          <itemPath>source/cObject.h</itemPath>
-          <itemPath>source/cPadmap.h</itemPath>
-          <itemPath>source/cPlanetmap.h</itemPath>
-        </logicalFolder>
-        <logicalFolder name="f1" displayName="psi3d" projectFiles="true">
-          <itemPath>source/psi3d/ctrl.h</itemPath>
-          <itemPath>source/psi3d/instfont.h</itemPath>
-          <itemPath>source/psi3d/kdtree.h</itemPath>
-          <itemPath>source/psi3d/macros.h</itemPath>
-          <itemPath>source/psi3d/math3d.h</itemPath>
-          <itemPath>source/psi3d/md5frmt.h</itemPath>
-          <itemPath>source/psi3d/noise.h</itemPath>
-          <itemPath>source/psi3d/snippetsgl.h</itemPath>
-        </logicalFolder>
-        <logicalFolder name="f2" displayName="weapons" projectFiles="true">
-          <itemPath>source/cWeapon.h</itemPath>
-          <itemPath>source/cWeaponExplosion.h</itemPath>
-          <itemPath>source/cWeaponHoming.h</itemPath>
-          <itemPath>source/cWeaponMachinegun.h</itemPath>
-          <itemPath>source/cWeaponPlasmagun.h</itemPath>
-          <itemPath>source/cWeaponRaybeam.h</itemPath>
-          <itemPath>source/cWeaponSparkgun.h</itemPath>
-        </logicalFolder>
-        <itemPath>source/OID.h</itemPath>
-        <itemPath>source/cBackground.h</itemPath>
-        <itemPath>source/cComcom.h</itemPath>
-        <itemPath>source/cController.h</itemPath>
-        <itemPath>source/cLandscape.h</itemPath>
-        <itemPath>/media/44EA-7693/linux_workspaces/netbeans_workspace/linwarrior/source/cMessage.h</itemPath>
-        <itemPath>source/cMission.h</itemPath>
-        <itemPath>source/cPad.h</itemPath>
-        <itemPath>source/cParticle.h</itemPath>
-        <itemPath>source/cSolid.h</itemPath>
-        <itemPath>source/cSurface.h</itemPath>
-        <itemPath>source/cTiming.h</itemPath>
-        <itemPath>source/cTree.h</itemPath>
-        <itemPath>source/cWorld.h</itemPath>
-        <itemPath>source/main.h</itemPath>
-        <itemPath>source/userkeys.h</itemPath>
+      <logicalFolder name="f3" displayName="objects" projectFiles="true">
+        <itemPath>source/cAlert.h</itemPath>
+        <itemPath>source/cBuilding.h</itemPath>
+        <itemPath>source/cMech.h</itemPath>
+        <itemPath>source/cObject.h</itemPath>
+        <itemPath>source/cPadmap.h</itemPath>
+        <itemPath>source/cPlanetmap.h</itemPath>
       </logicalFolder>
+      <logicalFolder name="f4" displayName="utils" projectFiles="true">
+        <itemPath>source/psi3d/ctrl.h</itemPath>
+        <itemPath>source/psi3d/instfont.h</itemPath>
+        <itemPath>source/psi3d/kdtree.h</itemPath>
+        <itemPath>source/psi3d/macros.h</itemPath>
+        <itemPath>source/psi3d/math3d.h</itemPath>
+        <itemPath>source/psi3d/md5frmt.h</itemPath>
+        <itemPath>source/psi3d/noise.h</itemPath>
+        <itemPath>source/psi3d/snippetsgl.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f2" displayName="weapons" projectFiles="true">
+        <itemPath>source/cWeapon.h</itemPath>
+        <itemPath>source/cWeaponExplosion.h</itemPath>
+        <itemPath>source/cWeaponHoming.h</itemPath>
+        <itemPath>source/cWeaponMachinegun.h</itemPath>
+        <itemPath>source/cWeaponPlasmagun.h</itemPath>
+        <itemPath>source/cWeaponRaybeam.h</itemPath>
+        <itemPath>source/cWeaponSparkgun.h</itemPath>
+      </logicalFolder>
+      <itemPath>source/OID.h</itemPath>
+      <itemPath>source/cBackground.h</itemPath>
+      <itemPath>source/cComcom.h</itemPath>
+      <itemPath>source/cController.h</itemPath>
+      <itemPath>source/cLandscape.h</itemPath>
+      <itemPath>/media/44EA-7693/linux_workspaces/netbeans_workspace/linwarrior/source/cMessage.h</itemPath>
+      <itemPath>source/cMission.h</itemPath>
+      <itemPath>source/cPad.h</itemPath>
+      <itemPath>source/cParticle.h</itemPath>
+      <itemPath>source/cSolid.h</itemPath>
+      <itemPath>source/cSurface.h</itemPath>
+      <itemPath>source/cTiming.h</itemPath>
+      <itemPath>source/cTree.h</itemPath>
+      <itemPath>source/cWorld.h</itemPath>
+      <itemPath>source/main.h</itemPath>
+      <itemPath>source/userkeys.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -57,33 +55,31 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <logicalFolder name="f1" displayName="source" projectFiles="true">
-        <itemPath>source/cAlert.cpp</itemPath>
-        <itemPath>source/cBackground.cpp</itemPath>
-        <itemPath>source/cBuilding.cpp</itemPath>
-        <itemPath>source/cComcom.cpp</itemPath>
-        <itemPath>source/cController.cpp</itemPath>
-        <itemPath>source/cLandscape.cpp</itemPath>
-        <itemPath>source/cMech.cpp</itemPath>
-        <itemPath>/media/44EA-7693/linux_workspaces/netbeans_workspace/linwarrior/source/cMessage.cpp</itemPath>
-        <itemPath>source/cMission.cpp</itemPath>
-        <itemPath>source/cObject.cpp</itemPath>
-        <itemPath>source/cPadmap.cpp</itemPath>
-        <itemPath>source/cPlanetmap.cpp</itemPath>
-        <itemPath>source/cSolid.cpp</itemPath>
-        <itemPath>source/cSurface.cpp</itemPath>
-        <itemPath>source/cTiming.cpp</itemPath>
-        <itemPath>source/cTree.cpp</itemPath>
-        <itemPath>source/cWeapon.cpp</itemPath>
-        <itemPath>source/cWeaponExplosion.cpp</itemPath>
-        <itemPath>source/cWeaponHoming.cpp</itemPath>
-        <itemPath>source/cWeaponMachinegun.cpp</itemPath>
-        <itemPath>source/cWeaponPlasmagun.cpp</itemPath>
-        <itemPath>source/cWeaponRaybeam.cpp</itemPath>
-        <itemPath>source/cWeaponSparkgun.cpp</itemPath>
-        <itemPath>source/cWorld.cpp</itemPath>
-        <itemPath>source/main.cpp</itemPath>
-      </logicalFolder>
+      <itemPath>source/cAlert.cpp</itemPath>
+      <itemPath>source/cBackground.cpp</itemPath>
+      <itemPath>source/cBuilding.cpp</itemPath>
+      <itemPath>source/cComcom.cpp</itemPath>
+      <itemPath>source/cController.cpp</itemPath>
+      <itemPath>source/cLandscape.cpp</itemPath>
+      <itemPath>source/cMech.cpp</itemPath>
+      <itemPath>/media/44EA-7693/linux_workspaces/netbeans_workspace/linwarrior/source/cMessage.cpp</itemPath>
+      <itemPath>source/cMission.cpp</itemPath>
+      <itemPath>source/cObject.cpp</itemPath>
+      <itemPath>source/cPadmap.cpp</itemPath>
+      <itemPath>source/cPlanetmap.cpp</itemPath>
+      <itemPath>source/cSolid.cpp</itemPath>
+      <itemPath>source/cSurface.cpp</itemPath>
+      <itemPath>source/cTiming.cpp</itemPath>
+      <itemPath>source/cTree.cpp</itemPath>
+      <itemPath>source/cWeapon.cpp</itemPath>
+      <itemPath>source/cWeaponExplosion.cpp</itemPath>
+      <itemPath>source/cWeaponHoming.cpp</itemPath>
+      <itemPath>source/cWeaponMachinegun.cpp</itemPath>
+      <itemPath>source/cWeaponPlasmagun.cpp</itemPath>
+      <itemPath>source/cWeaponRaybeam.cpp</itemPath>
+      <itemPath>source/cWeaponSparkgun.cpp</itemPath>
+      <itemPath>source/cWorld.cpp</itemPath>
+      <itemPath>source/main.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

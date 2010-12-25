@@ -28,6 +28,7 @@ class cWorld;
 #include <set>
 #include <map>
 #include <algorithm>
+#include <string>
 
 #include <GL/glew.h>
 #include <AL/al.h>
@@ -56,55 +57,58 @@ unsigned char* loadTGA(const char *fname, int *w, int* h, int* bpp);
  */
 int saveTGA(const char *fname, int w, int h, int bpp, unsigned char* image);
 
-/// Utility function to compute nearest rotation direction and intensity.
-void rotationTo(float* result2f, float* own_pos, float* tgt_pos, float* base_ori, float*tower_ori = NULL);
-
-
-/// Enumeration of roles an object may assume.
-
-enum Roles {
-    // Roles indicating Attributes
-    BASE,
-    NAMEABLE,
-    SOCIALISED,
-    TRACEABLE,
-    COLLIDEABLE,
-    DAMAGEABLE,
-    ENTITY,
-
-    // Roles indicating Kind of Objects
-    MECH,
-    BUILDING,
-    TREE,
-    IMMOBILE,
-
-    // Roles indicating belonging to certain Social-Parties
-    RED,
-    BLUE,
-    GREEN,
-    YELLOW,
-    CIVIL,
-
-    // Roles indicating State
-    WOUNDED, //  <= 75% hp
-    SERIOUS, // <= 50% hp
-    CRITICAL, // <= 25% hp
-    DEAD, // <= 0% hp, note that the later include the former.
-
-    // Special Roles
-    HUMANPLAYER,
-    FRAGGED,
-
-    MAX_ROLES
-};
 
 /**
  * Base-Class of all roles (mainy to just replace void*).
  * An instance of it may be used to flag a role as being "set" (future).
  * Note that a Role of an Object can be sub-classed individually and
  * replace the parent role.
+ * A role can be understood as a set of object attributes reflecting
+ * a certain part or aspect of the object.
  */
 struct rRole {
+    std::string role;
+
+    rRole(std::string role) {
+        this->role = role;
+    }
+
+    /// Enumeration of roles an object may assume.
+    enum Roles {
+        // Roles indicating Attributes
+        BASE,
+        NAMEABLE,
+        SOCIALISED,
+        TRACEABLE,
+        COLLIDEABLE,
+        DAMAGEABLE,
+        CONTROLLED,
+
+        // Roles indicating Kind of Objects
+        MECH,
+        BUILDING,
+        TREE,
+        IMMOBILE,
+
+        // Roles indicating belonging to certain Social-Parties
+        RED,
+        BLUE,
+        GREEN,
+        YELLOW,
+        CIVIL,
+
+        // Roles indicating State
+        WOUNDED, //  <= 75% hp
+        SERIOUS, // <= 50% hp
+        CRITICAL, // <= 25% hp
+        DEAD, // <= 0% hp, note that the later include the former.
+
+        // Special Roles
+        HUMANPLAYER,
+        FRAGGED,
+
+        MAX_ROLES
+    };
 };
 
 /**
@@ -117,17 +121,15 @@ struct rBase : public rRole {
     double seconds;
     /// Constructor.
 
-    rBase() : oid(0), seconds(0) {
+    rBase() : rRole("BASE"), oid(0), seconds(0) {
     }
     /// Copy Constructor.
 
-    rBase(rBase * original) {
-        if (original == NULL) {
-            rBase();
-            return;
+    rBase(rBase * original) : rRole("BASE"), oid(0), seconds(0) {
+        if (original != NULL) {
+            oid = original->oid;
+            seconds = original->seconds;
         }
-        oid = original->oid;
-        seconds = original->seconds;
     }
 };
 
@@ -143,18 +145,116 @@ struct rNameable : public rRole {
     unsigned int designation;
     /// Constructor.
 
-    rNameable() : name("Unnamed"), description("Undescribed"), designation(0) {
+    rNameable() : rRole("NAMEABLE"), name("Unnamed"), description("Undescribed"), designation(0) {
     }
     /// Copy Constructor.
 
-    rNameable(rNameable * original) {
-        if (original == NULL) {
-            rNameable();
-            return;
+    rNameable(rNameable * original) : rRole("NAMEABLE"), name("Unnamed"), description("Undescribed"), designation(0) {
+        if (original != NULL) {
+            name = original->name;
+            description = original->description;
+            designation = original->designation;
         }
-        name = original->name;
-        description = original->description;
-        designation = original->designation;
+    }
+};
+
+/**
+ * Encapsulates physical state as far as movement and position is concerned.
+ */
+struct rTraceable : public cParticle, public rRole {
+    /// Constructor.
+
+    rTraceable() : cParticle(), rRole("TRACEABLE") {
+    }
+    /// Copy Constructor.
+
+    rTraceable(cParticle * original) : cParticle(original), rRole("TRACEABLE") {
+    }
+};
+
+/**
+ * Marks an object being collideable.
+ */
+struct rCollideable : public rRole {
+    /// Constructor.
+
+    rCollideable() : rRole("COLLIDEABLE") {
+    };
+
+    /// Copy Constructor.
+
+    rCollideable(rCollideable * original) : rRole("COLLIDEABLE") {
+    };
+};
+
+/**
+ * Encapsulates attributes related to body damage and armor state.
+ */
+struct rDamageable : public rRole {
+    /// Enumeration of entity body part units: Body, Legs, Left, Right.
+
+    enum Parts {
+        BODY = 0, // Some Objects only have this
+        LEGS,
+        LEFT,
+        RIGHT,
+        MAX_PARTS
+    };
+    /// Health-Points for Body-Parts.
+    float hp[MAX_PARTS];
+    // Diverse armor for Body-Parts.
+    // float beam[MAX_PARTS];
+    // float pierce[MAX_PARTS];
+    // float splash[MAX_PARTS];
+    // float heat[MAX_PARTS];
+    // float sinks[MAX_PARTS];
+    /// Constructor.
+
+    rDamageable() : rRole("DAMAGEABLE") {
+        loopi(MAX_PARTS) hp[i] = 100.0f;
+    }
+    /// Copy Constructor.
+
+    rDamageable(rDamageable * original) : rRole("DAMAGEABLE") {
+        if (original == NULL) {
+            rDamageable();
+        } else {
+            loopi(MAX_PARTS) hp[i] = original->hp[i];
+        }
+    }
+};
+
+/**
+ * Encapsulates thoughtful steering behavior attributes and code.
+ */
+struct rControlled : public rRole {
+    /// Aim target
+    OID target;
+    /// Who disturbed me? Replace with a map of (OID, intensity)-pairs?
+    OID disturber;
+    /// Movement target, set Not-a-Number for non-validity.
+    std::vector<float> destination;
+    /// Human, AI/Remote Pad-Control over the Object.
+    cPad* pad;
+    /// Command Stack controlls the pad when enabled.
+    cController* controller;
+    /// Constructor.
+
+    rControlled() : rRole("CONTROLLED"), target(0), disturber(0), destination(3), pad(NULL), controller(NULL) {
+        destination[0] = destination[1] = destination[2] = float_NAN;
+    }
+    /// Copy Constructor.
+
+    rControlled(rControlled * original) : rRole("CONTROLLED") {
+        if (original == NULL) {
+            rControlled();
+        } else {
+            target = original->target;
+            disturber = original->disturber;
+            destination = original->destination;
+            pad = original->pad;
+            controller = original->controller;
+        }
     }
 };
 
@@ -168,17 +268,15 @@ struct rSocialised : public rRole {
     std::set<OID> enemies;
     /// Constructor.
 
-    rSocialised() /* : roles(0), allies(0), enemies(0) */ {
+    rSocialised() : rRole("SOCIALISED") {
     }
     /// Copy Constructor.
 
-    rSocialised(rSocialised * original) {
-        if (original == NULL) {
-            rSocialised();
-            return;
+    rSocialised(rSocialised * original) : rRole("SOCIALISED") {
+        if (original != NULL) {
+            allies = original->allies;
+            enemies = original->enemies;
         }
-        allies = original->allies;
-        enemies = original->enemies;
     }
 
     /// Check wether an object playing a certain role is an ally.
@@ -218,105 +316,6 @@ struct rSocialised : public rRole {
     }
 };
 
-/**
- * Encapsulates physical state as far as movement is concerned.
- */
-struct rTraceable : public cParticle, public rRole {
-    /// Constructor.
-
-    rTraceable() : cParticle() {
-    }
-    /// Copy Constructor.
-
-    rTraceable(cParticle * original) : cParticle(original) {
-    }
-};
-
-/**
- * Marks an object being collideable.
- */
-struct rCollideable : public rRole {
-    /// Constructor.
-
-    rCollideable() {
-    };
-
-    /// Copy Constructor.
-
-    rCollideable(rCollideable * original) {
-    };
-};
-
-/**
- * Encapsulates attributes related to body damage and armor state.
- */
-struct rDamageable : public rRole {
-    /// Enumeration of entity body part units: Body, Legs, Left, Right.
-
-    enum Parts {
-        BODY = 0, // Some Objects only have this
-        LEGS,
-        LEFT,
-        RIGHT,
-        MAX_PARTS
-    };
-    /// Health-Points for Body-Parts.
-    float hp[MAX_PARTS];
-    // Diverse armor for Body-Parts.
-    // float beam[MAX_PARTS];
-    // float pierce[MAX_PARTS];
-    // float splash[MAX_PARTS];
-    // float heat[MAX_PARTS];
-    // float sinks[MAX_PARTS];
-    /// Constructor.
-
-    rDamageable() {
-        loopi(MAX_PARTS) hp[i] = 100.0f;
-    }
-    /// Copy Constructor.
-
-    rDamageable(rDamageable * original) {
-        if (original == NULL) {
-            rDamageable();
-            return;
-        }
-        loopi(MAX_PARTS) hp[i] = original->hp[i];
-    }
-};
-
-/**
- * Encapsulates thoughtful behavior attributes and code.
- */
-struct rEntity : public rRole {
-    /// Aim target
-    OID target;
-    /// Who disturbed me? Replace with a map of (OID, intensity)-pairs?
-    OID disturber;
-    /// Movement target, set Not-a-Number for non-validity.
-    std::vector<float> destination;
-    /// Human, AI/Remote Pad-Control over the Object.
-    cPad* pad;
-    /// Command Stack controlls the pad when enabled.
-    cController* controller;
-    /// Constructor.
-
-    rEntity() : target(0), disturber(0), destination(3), pad(NULL), controller(NULL) {
-        destination[0] = destination[1] = destination[2] = float_NAN;
-    }
-    /// Copy Constructor.
-
-    rEntity(rEntity * original) {
-        if (original == NULL) {
-            rEntity();
-            return;
-        }
-        target = original->target;
-        disturber = original->disturber;
-        destination = original->destination;
-        pad = original->pad;
-        controller = original->controller;
-    }
-};
 
 /**
  * Generic Game-Object (Object with Roles) which
@@ -344,7 +343,7 @@ public: // Predefined Roles
     rTraceable* traceable;
     rCollideable* collideable;
     rDamageable* damageable;
-    rEntity* entity;
+    rControlled* controlled;
 
 public: // Experimental Role "Managing"
 
@@ -357,51 +356,51 @@ public:
 
     cObject() {
         if (roleids.empty()) {
-            registerRole(BASE, "BASE");
-            registerRole(SOCIALISED, "SOCIALISED");
-            registerRole(TRACEABLE, "TRACEABLE");
-            registerRole(COLLIDEABLE, "COLLIDEABLE");
-            registerRole(DAMAGEABLE, "DAMAGEABLE");
-            registerRole(ENTITY, "ENTITY");
+            registerRole(rRole::BASE, "BASE");
+            registerRole(rRole::TRACEABLE, "TRACEABLE");
+            registerRole(rRole::COLLIDEABLE, "COLLIDEABLE");
+            registerRole(rRole::DAMAGEABLE, "DAMAGEABLE");
+            registerRole(rRole::CONTROLLED, "CONTROLLED");
+            registerRole(rRole::SOCIALISED, "SOCIALISED");
         }
         base = new rBase;
         nameable = new rNameable;
-        socialised = NULL; //new rSocialised;
         traceable = new rTraceable;
         collideable = NULL; //new rCollideable;
         damageable = NULL; //new rDamageable;
-        entity = NULL; // new rEntity;
-        roles[BASE] = base;
-        roles[NAMEABLE] = nameable;
-        //roles[SOCIALISED] = socialised;
-        roles[TRACEABLE] = traceable;
-        //roles[COLLIDEABLE] = collideable;
-        //roles[DAMAGEABLE] = damageable;
-        //roles[ENTITY] = entity;
+        controlled = NULL; // new rControlled;
+        socialised = NULL; //new rSocialised;
+        roles[rRole::BASE] = base;
+        roles[rRole::NAMEABLE] = nameable;
+        roles[rRole::TRACEABLE] = traceable;
+        //roles[rRole::COLLIDEABLE] = collideable;
+        //roles[rRole::DAMAGEABLE] = damageable;
+        //roles[rRole::CONTROLLED] = controlled;
+        //roles[rRole::SOCIALISED] = socialised;
     }
 
     cObject(cObject* original) {
         if (original->base) base = new rBase(original->base);
         if (original->nameable) nameable = new rNameable(original->nameable);
-        if (original->socialised) socialised = new rSocialised(original->socialised);
         if (original->traceable) traceable = new rTraceable(original->traceable);
         if (original->collideable) collideable = new rCollideable(original->collideable);
         if (original->damageable) damageable = new rDamageable(original->damageable);
-        if (original->entity) entity = new rEntity(original->entity);
-        if (original->base) roles[BASE] = base;
-        if (original->nameable) roles[NAMEABLE] = nameable;
-        if (original->socialised) roles[SOCIALISED] = socialised;
-        if (original->traceable) roles[TRACEABLE] = traceable;
-        if (original->collideable) roles[COLLIDEABLE] = collideable;
-        if (original->damageable) roles[DAMAGEABLE] = damageable;
-        if (original->entity) roles[ENTITY] = entity;
+        if (original->controlled) controlled = new rControlled(original->controlled);
+        if (original->socialised) socialised = new rSocialised(original->socialised);
+        if (original->base) roles[rRole::BASE] = base;
+        if (original->nameable) roles[rRole::NAMEABLE] = nameable;
+        if (original->traceable) roles[rRole::TRACEABLE] = traceable;
+        if (original->collideable) roles[rRole::COLLIDEABLE] = collideable;
+        if (original->damageable) roles[rRole::DAMAGEABLE] = damageable;
+        if (original->controlled) roles[rRole::CONTROLLED] = controlled;
+        if (original->socialised) roles[rRole::SOCIALISED] = socialised;
     }
 
     virtual ~cObject() {
         delete this->base;
         delete this->damageable;
         delete this->collideable;
-        delete this->entity;
+        delete this->controlled;
         delete this->nameable;
         delete this->socialised;
         delete this->traceable;

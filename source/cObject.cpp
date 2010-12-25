@@ -149,20 +149,6 @@ int saveTGA(const char *fname, int w, int h, int bpp, unsigned char* image) {
 }
 
 
-void rotationTo(float* result2f, float* own_pos, float* tgt_pos, float* base_ori, float*tower_ori) {
-    float dir_global[3];
-    vector_sub(dir_global, tgt_pos, own_pos);
-    float ori_inv[4];
-    quat_cpy(ori_inv, base_ori);
-    if (tower_ori) quat_mul(ori_inv, ori_inv, tower_ori);
-    quat_conj(ori_inv);
-    float dir_local[4];
-    quat_apply(dir_local, ori_inv, dir_global);
-    vector_norm(dir_local, dir_local);
-    result2f[X] = dir_local[X];
-    if (dir_local[Z] > 0) result2f[X] += copysign(1.0f, result2f[X]);
-    result2f[Y] = dir_local[Y];
-}
 
 
 

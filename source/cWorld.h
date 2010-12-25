@@ -174,7 +174,7 @@ public: // Spawning, Fragging, Garbage Collection
     /**
      * Removes object from active world (mObjects & mIndex),
      * adds object to Corpse-List,
-     * adds cObject::FRAGGED role to object,
+     * adds rRole::FRAGGED role to object,
      * finally object->onFragged() is called.
      * Note that FRAGGED != DEAD objects:
      * Dead objects are still part of the world

@@ -20,7 +20,7 @@ std::map<OID,cTree::rTree*> cTree::cache;
 
 
 cTree::cTree(float* pos, float* rot, int seed, int type, int age) {
-    addRole(TREE);
+    addRole(rRole::TREE);
     if (pos) vector_cpy(traceable->pos.data(), pos);
     tree.seed = seed;
     tree.type = type;

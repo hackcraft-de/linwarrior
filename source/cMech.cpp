@@ -118,14 +118,14 @@ cMech::cMech(float* pos, float* rot) {
     misc = new rMisc;
     computerised = new rComputerised(this);
 
-    entity = new rEntity();
+    controlled = new rControlled();
     socialised = new rSocialised();
 
-    addRole(COLLIDEABLE);
-    addRole(DAMAGEABLE);
-    addRole(SOCIALISED, socialised);
-    addRole(ENTITY, entity);
-    addRole(MECH);
+    addRole(rRole::COLLIDEABLE);
+    addRole(rRole::DAMAGEABLE);
+    addRole(rRole::SOCIALISED, socialised);
+    addRole(rRole::CONTROLLED, controlled);
+    addRole(rRole::MECH);
 
     if (pos != NULL) vector_cpy(traceable->pos, pos);
     vector_cpy(traceable->old, traceable->pos);
@@ -164,8 +164,8 @@ cMech::cMech(float* pos, float* rot) {
         }
     }
 
-    entity->controller = new cController(this, true);
-    assert(entity->controller != NULL);
+    controlled->controller = new cController(this, true);
+    assert(controlled->controller != NULL);
 
     do_moveFor(NULL);
 
@@ -240,7 +240,7 @@ void cMech::onSpawn() {
     //cout << "cMech::onSpawn()\n";
     this->mountWeapon((char*) "CTorsor", &misc->explosion, false);
     ALuint soundsource = traceable->sound;
-    if (hasRole(HUMANPLAYER) && alIsSource(soundsource)) alSourcePlay(soundsource);
+    if (hasRole(rRole::HUMANPLAYER) && alIsSource(soundsource)) alSourcePlay(soundsource);
     //cout << "Mech spawned " << base->oid << "\n";
 }
 
@@ -353,7 +353,7 @@ float cMech::TowerLR(float radians) {
     if (e > +steplimit) e = +steplimit;
     if (e < -steplimit) e = -steplimit;
     misc->twr[Y] += e;
-    if (this->hasRole(IMMOBILE)) {
+    if (this->hasRole(rRole::IMMOBILE)) {
         const float fullcircle = 2 * M_PI; // 360
         misc->twr[Y] = fmod(misc->twr[Y], fullcircle);
         return 0.0f;
@@ -380,13 +380,13 @@ void cMech::TowerUD(float radians) {
 void cMech::fireAllWeapons() {
 
     loopi(misc->weapons.size()) {
-        misc->weapons[i]->fire(entity->target);
+        misc->weapons[i]->fire(controlled->target);
     }
 }
 
 void cMech::fireWeapon(unsigned n) {
     if (n >= misc->weapons.size()) return;
-    misc->weapons[n]->fire(entity->target);
+    misc->weapons[n]->fire(controlled->target);
 }
 
 void cMech::mountWeapon(char* point, cWeapon *weapon, bool add) {
@@ -541,14 +541,14 @@ void cMech::animate(float spf) {
     base->seconds += spf;
 
     int body = rDamageable::BODY;
-    if (damageable->hp[body] <= 75) addRole(WOUNDED);
-    if (damageable->hp[body] <= 50) addRole(SERIOUS);
-    if (damageable->hp[body] <= 25) addRole(CRITICAL);
-    //if (damageable->mHp[body] <= 0) this->addRole(DEAD);
+    if (damageable->hp[body] <= 75) addRole(rRole::WOUNDED);
+    if (damageable->hp[body] <= 50) addRole(rRole::SERIOUS);
+    if (damageable->hp[body] <= 25) addRole(rRole::CRITICAL);
+    //if (damageable->mHp[body] <= 0) this->addRole(rRole::DEAD);
 
-    if (hasRole(DEAD)) {
-        remRole(COLLIDEABLE);
-        remRole(DAMAGEABLE);
+    if (hasRole(rRole::DEAD)) {
+        remRole(rRole::COLLIDEABLE);
+        remRole(rRole::DAMAGEABLE);
         // Stop movement when dead
         misc->throttle = 0;
         misc->jetpower = 0;
@@ -561,42 +561,42 @@ void cMech::animate(float spf) {
             TowerUD(0);
             //cWorld::instance->fragObject(this);
         }
-        if (entity->pad) entity->pad->reset();
+        if (controlled->pad) controlled->pad->reset();
     }
 
     // Process computers and Pad-input when not dead.
-    if (!hasRole(DEAD)) {
-        assert(entity->pad != NULL);
+    if (!hasRole(rRole::DEAD)) {
+        assert(controlled->pad != NULL);
         //cout << mPad->toString();
 
         // Let all computers do their work.
         if (computerised) computerised->process(spf);
 
         // Let AI-Controller set Pad-input.
-        if (entity->controller && entity->controller->controllerEnabled) {
-            if (entity->pad) entity->pad->reset();
-            entity->controller->process();
+        if (controlled->controller && controlled->controller->controllerEnabled) {
+            if (controlled->pad) controlled->pad->reset();
+            controlled->controller->process();
         }
 
-        float excess = this->TowerLR(0.25f * M_PI * spf * -entity->pad->getAxis(cPad::MECH_TURRET_LR_AXIS));
-        this->TowerUD(50 * spf * entity->pad->getAxis(cPad::MECH_TURRET_UD_AXIS) * 0.017453f);
+        float excess = this->TowerLR(0.25f * M_PI * spf * -controlled->pad->getAxis(cPad::MECH_TURRET_LR_AXIS));
+        this->TowerUD(50 * spf * controlled->pad->getAxis(cPad::MECH_TURRET_UD_AXIS) * 0.017453f);
 
-        if (!this->hasRole(IMMOBILE)) {
+        if (!this->hasRole(rRole::IMMOBILE)) {
             // Steer left right
-            this->ChassisLR(excess + 0.25f * M_PI * spf * -entity->pad->getAxis(cPad::MECH_CHASSIS_LR_AXIS));
+            this->ChassisLR(excess + 0.25f * M_PI * spf * -controlled->pad->getAxis(cPad::MECH_CHASSIS_LR_AXIS));
             // Speed
-            float tdelta = -entity->pad->getAxis(cPad::MECH_THROTTLE_AXIS);
+            float tdelta = -controlled->pad->getAxis(cPad::MECH_THROTTLE_AXIS);
             //cout << "tdelta: " << tdelta << "  speed: " << mSpeed << "\n";
             misc->throttle = fmax(-200.0f, tdelta * 400.0f);
         }
 
-        if (entity->pad->getButton(cPad::MECH_NEXT_BUTTON) && entity->pad->getButtonEvent(cPad::MECH_NEXT_BUTTON)) {
+        if (controlled->pad->getButton(cPad::MECH_NEXT_BUTTON) && controlled->pad->getButtonEvent(cPad::MECH_NEXT_BUTTON)) {
             this->computerised->tarcom->nextTarget();
-        } else if (entity->pad->getButton(cPad::MECH_PREV_BUTTON) && entity->pad->getButtonEvent(cPad::MECH_PREV_BUTTON)) {
+        } else if (controlled->pad->getButton(cPad::MECH_PREV_BUTTON) && controlled->pad->getButtonEvent(cPad::MECH_PREV_BUTTON)) {
             this->computerised->tarcom->prevTarget();
         }
 
-        if (entity->pad->getButton(cPad::MECH_FIRE_BUTTON)) {
+        if (controlled->pad->getButton(cPad::MECH_FIRE_BUTTON)) {
             if (true) {
                 misc->currentWeapon %= misc->weapons.size();
                 fireWeapon(misc->currentWeapon);
@@ -607,13 +607,13 @@ void cMech::animate(float spf) {
             }
         }
 
-        if (entity->pad->getButton(cPad::MECH_JET_BUTTON)) {
+        if (controlled->pad->getButton(cPad::MECH_JET_BUTTON)) {
             misc->jetpower += (100 - misc->jetpower) * 0.1;
         } else {
             misc->jetpower -= (misc->jetpower * 0.05);
         }
 
-        if (entity->pad->getButton(cPad::MECH_CAMERA_BUTTON)) {
+        if (controlled->pad->getButton(cPad::MECH_CAMERA_BUTTON)) {
             // Only if Camera State is not transitional
             // then switch to next perspective on button press.
             if (misc->camerastate > 0) {
@@ -805,10 +805,10 @@ void cMech::drawSolid() {
             glFrontFace(GL_CW);
             glDisable(GL_LIGHTING);
             int texture = 0;
-            texture = hasRole(RED) ? 0 : texture;
-            texture = hasRole(BLUE) ? 1 : texture;
-            texture = hasRole(GREEN) ? 2 : texture;
-            texture = hasRole(YELLOW) ? 3 : texture;
+            texture = hasRole(rRole::RED) ? 0 : texture;
+            texture = hasRole(rRole::BLUE) ? 1 : texture;
+            texture = hasRole(rRole::GREEN) ? 2 : texture;
+            texture = hasRole(rRole::YELLOW) ? 3 : texture;
             glBindTexture(GL_TEXTURE_3D, sTextures[texture]);
             glPushMatrix();
             {
@@ -920,7 +920,7 @@ void cMech::drawSolid() {
 
 void cMech::drawEffect() {
     // Draw name above head.
-    if (!hasRole(HUMANPLAYER)) {
+    if (!hasRole(rRole::HUMANPLAYER)) {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
             glDisable(GL_CULL_FACE);
@@ -928,9 +928,9 @@ void cMech::drawEffect() {
             glDisable(GL_TEXTURE_2D);
             glDepthMask(GL_FALSE);
             //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-            if (hasRole(RED)) glColor4f(1, 0, 0, 0.4);
-            else if (hasRole(GREEN)) glColor4f(0, 1, 0, 0.4);
-            else if (hasRole(BLUE)) glColor4f(0, 0, 1, 0.4);
+            if (hasRole(rRole::RED)) glColor4f(1, 0, 0, 0.4);
+            else if (hasRole(rRole::GREEN)) glColor4f(0, 1, 0, 0.4);
+            else if (hasRole(rRole::BLUE)) glColor4f(0, 0, 1, 0.4);
             else glColor4f(1, 1, 0, 0.4);
             glPushMatrix();
             {
@@ -1099,13 +1099,13 @@ void cMech::damageByParticle(float* localpos, float damage, cObject* enactor) {
     else if (localpos[0] > +0.5 && this->damageable->hp[rDamageable::RIGHT] > 0) hitzone = rDamageable::RIGHT;
 
     if (damage != 0.0f) {
-        if (enactor != NULL) entity->disturber = enactor->base->oid;
+        if (enactor != NULL) controlled->disturber = enactor->base->oid;
         this->damageable->hp[hitzone] -= damage;
         if (this->damageable->hp[hitzone] < 0) this->damageable->hp[hitzone] = 0;
-        if (this->damageable->hp[rDamageable::BODY] <= 0 && !this->hasRole(DEAD)) {
-            this->remRole(DAMAGEABLE);
-            this->remRole(COLLIDEABLE);
-            this->addRole(DEAD);
+        if (this->damageable->hp[rDamageable::BODY] <= 0 && !this->hasRole(rRole::DEAD)) {
+            this->remRole(rRole::DAMAGEABLE);
+            this->remRole(rRole::COLLIDEABLE);
+            this->addRole(rRole::DEAD);
             cout << "cMech::damageByParticle(): DEAD\n";
             misc->explosion.fire(0);
         }
@@ -1169,7 +1169,7 @@ float cMech::constrainParticleToWorld(float* worldpos, float radius) {
 OID cMech::enemyNearby() {
     OID result = 0;
     std::set<OID> test;
-    test.insert(DAMAGEABLE);
+    test.insert(rRole::DAMAGEABLE);
     // Filter objects by distance
     std::list<cObject*>* scan = cWorld::instance->filterByRange(this, this->traceable->pos.data(), 0.0f, 50.0f, -1, NULL);
     if (!scan->empty()) {
@@ -1189,22 +1189,22 @@ OID cMech::enemyNearby() {
 }
 
 OID cMech::disturbedBy() {
-    OID disturb = entity->disturber;
-    entity->disturber = 0;
+    OID disturb = controlled->disturber;
+    controlled->disturber = 0;
     return disturb;
 }
 
 float cMech::inDestinationRange() {
     float a = 0;
     float b = 6;
-    float d = vector_distance(traceable->pos, entity->destination);
+    float d = vector_distance(traceable->pos, controlled->destination);
     if (d < a) return 1.0f;
     if (d > b) return 0.0f;
     return (1.0f - (d - a) / (b - a));
 }
 
 float cMech::inMeeleRange() {
-    cObject* target = cWorld::instance->getObject(entity->target);
+    cObject* target = cWorld::instance->getObject(controlled->target);
     if (target == NULL) return 0.0f;
     float a = 16;
     float b = 24;
@@ -1216,7 +1216,7 @@ float cMech::inMeeleRange() {
 
 float cMech::inWeaponRange() {
     // TODO inWeaponRange should depend on ready to fire weapons properties.
-    cObject* target = cWorld::instance->getObject(entity->target);
+    cObject* target = cWorld::instance->getObject(controlled->target);
     if (target == NULL) return 0.0f;
     float a = 36 + 10;
     float b = 44 + 10;
@@ -1227,7 +1227,7 @@ float cMech::inWeaponRange() {
 }
 
 float cMech::inTargetRange() {
-    cObject* target = cWorld::instance->getObject(entity->target);
+    cObject* target = cWorld::instance->getObject(controlled->target);
     if (target == NULL) return 0.0f;
     float a = 56;
     float b = 124;
@@ -1239,56 +1239,56 @@ float cMech::inTargetRange() {
 
 void cMech::do_moveTowards() {
     //cout << "do_moveTowards():\n";
-    if (entity->pad == NULL) return;
+    if (controlled->pad == NULL) return;
 
     // Determine Target (ie. Move- or Aim-Target if former is not available).
     float* target_pos = NULL;
-    if (finitef(entity->destination[0])) {
-        target_pos = entity->destination.data();
-    } else if (entity->target != 0) {
-        cObject* target = cWorld::instance->getObject(entity->target);
+    if (finitef(controlled->destination[0])) {
+        target_pos = controlled->destination.data();
+    } else if (controlled->target != 0) {
+        cObject* target = cWorld::instance->getObject(controlled->target);
         if (target != NULL) {
             target_pos = target->traceable->pos.data();
         } else {
-            entity->target = 0;
+            controlled->target = 0;
             return;
         }
     } else return;
 
     // Determine nearest rotation direction
     float rd[2];
-    rotationTo(rd, traceable->pos.data(), target_pos, this->traceable->ori.data());
-    entity->pad->setAxis(cPad::MECH_CHASSIS_LR_AXIS, rd[X]);
+    cParticle::rotationTo(rd, traceable->pos.data(), target_pos, this->traceable->ori.data());
+    controlled->pad->setAxis(cPad::MECH_CHASSIS_LR_AXIS, rd[X]);
 
     //float thr = 20.0f * (1.0f - fabs(rd[X]) / 360.0f);
     float thr = 1.0f * (1.0f - 0.6 * fabs(rd[X]));
     //cout << "Throttle: " << thr << "\n";
     //mPad->setAxis(cPad::MECH_THROTTLE_AXIS, (char) - thr);
-    entity->pad->setAxis(cPad::MECH_THROTTLE_AXIS, -thr);
+    controlled->pad->setAxis(cPad::MECH_THROTTLE_AXIS, -thr);
 }
 
 void cMech::do_moveNear() {
     //cout << "do_moveNear():\n";
-    if (entity->pad == NULL) return;
+    if (controlled->pad == NULL) return;
 
     // Determine Target (ie. Move- or Aim-Target if former is not available).
     float* target_pos = NULL;
-    if (finitef(entity->destination[0])) {
-        target_pos = entity->destination.data();
-    } else if (entity->target != 0) {
-        cObject* target = cWorld::instance->getObject(entity->target);
+    if (finitef(controlled->destination[0])) {
+        target_pos = controlled->destination.data();
+    } else if (controlled->target != 0) {
+        cObject* target = cWorld::instance->getObject(controlled->target);
         if (target != NULL) {
             target_pos = target->traceable->pos.data();
         } else {
-            entity->target = 0;
+            controlled->target = 0;
             return;
         }
     } else return;
 
     // Determine nearest rotation direction
     float rd[2];
-    rotationTo(rd, traceable->pos.data(), target_pos, this->traceable->ori.data());
-    entity->pad->setAxis(cPad::MECH_CHASSIS_LR_AXIS, 2 * rd[X]);
+    cParticle::rotationTo(rd, traceable->pos.data(), target_pos, this->traceable->ori.data());
+    controlled->pad->setAxis(cPad::MECH_CHASSIS_LR_AXIS, 2 * rd[X]);
 
     float d = vector_distance(this->traceable->pos, target_pos);
 
@@ -1300,19 +1300,19 @@ void cMech::do_moveNear() {
 
     f *= thr;
 
-    entity->pad->setAxis(cPad::MECH_THROTTLE_AXIS, -f);
+    controlled->pad->setAxis(cPad::MECH_THROTTLE_AXIS, -f);
     //cout << "Throttle: " << thr << "\n";
     //mPad->setAxis(cPad::MECH_THROTTLE_AXIS, (char) - thr);
 }
 
 void cMech::do_aimAt() {
     //cout "do_aimAt():\n";
-    if (entity->pad == NULL) return;
+    if (controlled->pad == NULL) return;
 
     // Get aim-target position.
     float* target_pos = NULL;
-    if (entity->target != 0) {
-        cObject* target = cWorld::instance->getObject(entity->target);
+    if (controlled->target != 0) {
+        cObject* target = cWorld::instance->getObject(controlled->target);
         if (target != NULL) target_pos = target->traceable->pos.data();
         else return;
     } else return;
@@ -1327,19 +1327,19 @@ void cMech::do_aimAt() {
     quat_mul(tower_ori, tower_ori, tower_ori_v);
 
     float rd[2];
-    rotationTo(rd, traceable->pos.data(), target_pos, this->traceable->ori.data(), tower_ori);
-    entity->pad->setAxis(cPad::MECH_TURRET_LR_AXIS, 2 * rd[X]);
-    entity->pad->setAxis(cPad::MECH_TURRET_UD_AXIS, rd[Y]);
+    cParticle::rotationTo(rd, traceable->pos.data(), target_pos, this->traceable->ori.data(), tower_ori);
+    controlled->pad->setAxis(cPad::MECH_TURRET_LR_AXIS, 2 * rd[X]);
+    controlled->pad->setAxis(cPad::MECH_TURRET_UD_AXIS, rd[Y]);
 }
 
 void cMech::do_fireAt() {
     //cout << "do_fireAt():\n";
-    if (entity->pad == NULL) return;
+    if (controlled->pad == NULL) return;
 
     // Get aim-target position.
     float* target_pos = NULL;
-    if (entity->target != 0) {
-        cObject* target = cWorld::instance->getObject(entity->target);
+    if (controlled->target != 0) {
+        cObject* target = cWorld::instance->getObject(controlled->target);
         if (target != NULL) target_pos = target->traceable->pos.data();
         else return;
     } else return;
@@ -1348,33 +1348,33 @@ void cMech::do_fireAt() {
     float tower_ori[4];
     quat_set(tower_ori, 0, sin(0.5 * this->misc->twr[Y]), 0, cos(0.5 * this->misc->twr[Y]));
     float rd[2];
-    rotationTo(rd, traceable->pos.data(), target_pos, this->traceable->ori.data(), tower_ori);
+    cParticle::rotationTo(rd, traceable->pos.data(), target_pos, this->traceable->ori.data(), tower_ori);
     // Fire at random and only if angle small enough.
     if (rand() % 100 <= 40 && fabs(rd[X]) < 0.5) {
-        entity->pad->setButton(cPad::MECH_FIRE_BUTTON, true);
+        controlled->pad->setButton(cPad::MECH_FIRE_BUTTON, true);
         //cout "fire\n";
     }
 }
 
 void cMech::do_idle() {
-    if (entity->pad == NULL) return;
+    if (controlled->pad == NULL) return;
     misc->throttle = 0;
-    entity->pad->reset();
+    controlled->pad->reset();
 }
 
 void cMech::do_aimFor(OID target) {
-    entity->target = target;
+    controlled->target = target;
 }
 
 void cMech::do_moveFor(float* dest) {
     if (dest != NULL) {
-        vector_cpy(entity->destination, dest);
+        vector_cpy(controlled->destination, dest);
     } else {
         // Set XYZ to Not-A-Number (NaN) for no location.
         // Note that NaN-ity can only be tested either by
         // isnanf(x), !finite(x) or by x!=x as NaN always != NaN.
-        entity->destination[0] = entity->destination[1] = entity->destination[2] = float_NAN;
-        assert(entity->destination[0] != entity->destination[0]);
+        controlled->destination[0] = controlled->destination[1] = controlled->destination[2] = float_NAN;
+        assert(controlled->destination[0] != controlled->destination[0]);
         //cout << "Destination is " << ((finitef(mDestination[0])) ? "finite" : "infinite" ) << "\n";
     }
 }

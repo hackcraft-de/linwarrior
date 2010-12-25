@@ -88,9 +88,9 @@ cPlanetmap::cPlanetmap() {
     this->traceable->pos[1] = float_NAN;
     this->traceable->pos[2] = float_NAN;
     collideable = new rCollideable;
-    addRole(COLLIDEABLE);
+    addRole(rRole::COLLIDEABLE);
     damageable = new rDamageable;
-    addRole(DAMAGEABLE);
+    addRole(rRole::DAMAGEABLE);
     nameable->name = "PLANETMAP";
 }
 
@@ -334,7 +334,7 @@ void cPlanetmap::getCachedHeight(float x, float z, float* const color) {
 
 float cPlanetmap::constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor) {
     //if (enactor == NULL) return 0.0;
-    //if (!enactor->hasRole(HUMANPLAYER)) return 0.0;
+    //if (!enactor->hasRole(rRole::HUMANPLAYER)) return 0.0;
     float localpos_[3];
     vector_cpy(localpos_, worldpos);
 

@@ -315,9 +315,9 @@ cBuilding::cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
     }
     collideable = new rCollideable;
     damageable = new rDamageable;
-    addRole(COLLIDEABLE);
-    addRole(DAMAGEABLE);
-    addRole(BUILDING);
+    addRole(rRole::COLLIDEABLE);
+    addRole(rRole::DAMAGEABLE);
+    addRole(rRole::BUILDING);
     quat_set(traceable->ori, 0, 0, 0, 1);
     buildingRooms[0] = 3 * rooms_x;
     buildingRooms[1] = 3 * rooms_y;
@@ -330,9 +330,9 @@ cBuilding::cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
 void cBuilding::damageByParticle(float* localpos, float damage, cObject* enactor) {
     if (damage > 0) {
         this->damageable->hp[rDamageable::BODY] -= damage;
-        if (this->damageable->hp[rDamageable::BODY] <= 0 && !hasRole(DEAD)) {
+        if (this->damageable->hp[rDamageable::BODY] <= 0 && !hasRole(rRole::DEAD)) {
             //this->remRole(DAMAGEABLE);
-            this->addRole(DEAD);
+            this->addRole(rRole::DEAD);
             cout << "cBuilding::damageByParticle(): DEAD\n";
             explosionObject.fire(0);
         }

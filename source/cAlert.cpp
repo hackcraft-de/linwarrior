@@ -33,9 +33,9 @@ cAlert::cAlert(float* center, float* range, int shapetype, std::string msgtype, 
     this->msgtext = msgtext;
     this->group = group;
     collideable = new rCollideable;
-    addRole(COLLIDEABLE, collideable);
+    addRole(rRole::COLLIDEABLE, collideable);
     shape.type = shapetype;
-    sensitivity.insert(HUMANPLAYER);
+    sensitivity.insert(rRole::HUMANPLAYER);
     fusedelay = 0;
 }
 

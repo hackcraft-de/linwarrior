@@ -157,10 +157,10 @@ void cTarcom::drawHUD() {
             glBegin(GL_POINTS);
             {
                 cObject* o = *i;
-                if (o->hasRole(RED)) glColor4f(1, 0, 0, 1);
-                else if (o->hasRole(GREEN)) glColor4f(0, 1, 0, 1);
-                else if (o->hasRole(BLUE)) glColor4f(0, 0, 1, 1);
-                else if (o->hasRole(YELLOW)) glColor4f(0, 1, 0, 1);
+                if (o->hasRole(rRole::RED)) glColor4f(1, 0, 0, 1);
+                else if (o->hasRole(rRole::GREEN)) glColor4f(0, 1, 0, 1);
+                else if (o->hasRole(rRole::BLUE)) glColor4f(0, 0, 1, 1);
+                else if (o->hasRole(rRole::YELLOW)) glColor4f(0, 1, 0, 1);
                 else glColor4f(0.5, 0.5, 0.5, 1);
                 if (o->base->oid == selected) glColor4f(1,0,1,1);
                 float dx = o->traceable->pos[0] - mDevice->traceable->pos[0];

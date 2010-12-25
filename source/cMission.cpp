@@ -17,14 +17,14 @@ using std::endl;
 void cMission::checkConditions() {
     // Destroyed all necessary enemies?
     unsigned int n = 0;
-    loopiv(mVictory) if (mVictory[i]->hasRole(DEAD)) n++;
+    loopiv(mVictory) if (mVictory[i]->hasRole(rRole::DEAD)) n++;
     if (n != 0 && n == mVictory.size()) {
         onVictory();
         return;
     }
     // Destroyed any neccessary friend?
     n = 0;
-    loopiv(mDefeat) if (mDefeat[i]->hasRole(DEAD)) n++;
+    loopiv(mDefeat) if (mDefeat[i]->hasRole(rRole::DEAD)) n++;
     if (n != 0) {
         onDefeat();
         return;
@@ -71,13 +71,13 @@ cObject* cEmptyMission::init(cWorld* world) {
         cMech* mech = new cMech(pos);
         assert(mech != NULL);
 
-        mech->entity->pad = new cPad;
+        mech->controlled->pad = new cPad;
         mech->nameable->name = "Alpha";
 
-        mech->entity->controller->controllerEnabled = false; // Disable Autopilot.
-        mech->addRole(BLUE);
-        mech->addRole(HUMANPLAYER);
-        mech->socialised->addEnemy(RED);
+        mech->controlled->controller->controllerEnabled = false; // Disable Autopilot.
+        mech->addRole(rRole::BLUE);
+        mech->addRole(rRole::HUMANPLAYER);
+        mech->socialised->addEnemy(rRole::RED);
 
         player = mech;
 
@@ -262,13 +262,13 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap) {
         if (mech == NULL) throw "No memory for player mech!";
         player = mech;
 
-        mech->entity->pad = new cPad;
-        if (mech->entity->pad == NULL) throw "No memory for player pad!";
+        mech->controlled->pad = new cPad;
+        if (mech->controlled->pad == NULL) throw "No memory for player pad!";
         mech->nameable->name = "Alpha";
-        mech->entity->controller->controllerEnabled = false; // Disable Autopilot.
-        mech->addRole(BLUE);
-        mech->addRole(HUMANPLAYER);
-        mech->socialised->addEnemy(RED);
+        mech->controlled->controller->controllerEnabled = false; // Disable Autopilot.
+        mech->addRole(rRole::BLUE);
+        mech->addRole(rRole::HUMANPLAYER);
+        mech->socialised->addEnemy(rRole::RED);
 
         world->spawnObject(mech);
         world->mGroups[1]->mMembers.insert(mech->base->oid);
@@ -311,17 +311,17 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap) {
         cMech* mech = new cMech(pos, rot);
         assert(mech != NULL);
 
-        mech->entity->pad = new cPad();
+        mech->controlled->pad = new cPad();
         mech->nameable->name = "Wing 1";
 
-        mech->addRole(BLUE);
-        mech->socialised->addEnemy(RED);
+        mech->addRole(rRole::BLUE);
+        mech->socialised->addEnemy(rRole::RED);
 
         world->spawnObject(mech);
         world->mGroups[2]->mMembers.insert(mech->base->oid);
         world->mGroups[3]->mMembers.insert(mech->base->oid);
         bool patrol = true;
-        mech->entity->controller->pushFollowLeader(player->base->oid, patrol);
+        mech->controlled->controller->pushFollowLeader(player->base->oid, patrol);
         mech->mountWeapon((char*) "LLoArm", new cWeaponMachinegun);
     }
 
@@ -335,17 +335,17 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap) {
         cMech* mech = new cMech(pos, rot);
         assert(mech != NULL);
 
-        mech->entity->pad = new cPad();
+        mech->controlled->pad = new cPad();
         mech->nameable->name = "Wing 2";
 
-        mech->addRole(BLUE);
-        mech->socialised->addEnemy(RED);
+        mech->addRole(rRole::BLUE);
+        mech->socialised->addEnemy(rRole::RED);
 
         world->spawnObject(mech);
         world->mGroups[2]->mMembers.insert(mech->base->oid);
         world->mGroups[3]->mMembers.insert(mech->base->oid);
         bool patrol = true;
-        mech->entity->controller->pushFollowLeader(player->base->oid, patrol);
+        mech->controlled->controller->pushFollowLeader(player->base->oid, patrol);
         mech->mountWeapon((char*) "RLoArm", new cWeaponMachinegun);
     }
 
@@ -396,11 +396,11 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
         cMech* mech = new cMech(pos, rot);
         assert(mech != NULL);
 
-        mech->entity->pad = new cPad();
+        mech->controlled->pad = new cPad();
         mech->nameable->name = "City Patrol";
 
-        mech->addRole(BLUE);
-        mech->socialised->addEnemy(RED);
+        mech->addRole(rRole::BLUE);
+        mech->socialised->addEnemy(rRole::RED);
 
         world->spawnObject(mech);
         world->mGroups[3]->mMembers.insert(mech->base->oid);
@@ -413,15 +413,15 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
         }
 
         float d[] = { loc[0]+100, loc[1]+0, loc[1]-50 };
-        mech->entity->controller->pushGotoDestination(d);
+        mech->controlled->controller->pushGotoDestination(d);
         float c[] = { loc[0]+100, loc[1]+0, loc[2]+120 };
-        mech->entity->controller->pushGotoDestination(c);
+        mech->controlled->controller->pushGotoDestination(c);
         float b[] = { loc[0]-20, loc[1]+0, loc[2]+120 };
-        mech->entity->controller->pushGotoDestination(b, false);
+        mech->controlled->controller->pushGotoDestination(b, false);
         float a[] = { loc[0]-15, loc[1]+0, loc[2]-50 };
-        mech->entity->controller->pushGotoDestination(a);
-        mech->entity->controller->pushRepeatInstructions(4);
-        mech->entity->controller->pushWaitEvent(1000 * 2);
+        mech->controlled->controller->pushGotoDestination(a);
+        mech->controlled->controller->pushRepeatInstructions(4);
+        mech->controlled->controller->pushWaitEvent(1000 * 2);
         //mech->mController->pushFollowLeader(player->mSerial, true);
     }
 
@@ -431,11 +431,11 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
         cMech* mech = new cMech(pos);
         assert(mech != NULL);
 
-        mech->entity->pad = new cPad();
+        mech->controlled->pad = new cPad();
         mech->nameable->name = "City Villain";
 
-        mech->addRole(RED);
-        mech->socialised->addEnemy(BLUE);
+        mech->addRole(rRole::RED);
+        mech->socialised->addEnemy(rRole::BLUE);
 
         //ai->newState(cController::WAIT, (char*) NULL);
         //ai->newState(cController::TARGET, "Delta");
@@ -460,11 +460,11 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
         cMech* mech = new cMech(pos);
         assert(mech != NULL);
 
-        mech->entity->pad = new cPad();
+        mech->controlled->pad = new cPad();
         mech->nameable->name = "City Bandit";
 
-        mech->addRole(RED);
-        mech->socialised->addEnemy(BLUE);
+        mech->addRole(rRole::RED);
+        mech->socialised->addEnemy(rRole::BLUE);
 
         //ai->newState(cController::ENGAGE, "Charly");
         //ai->newState(cController::ROUTE, navs);
@@ -735,11 +735,11 @@ void cOpenMission::initPentaSpaceport(cWorld* world, cPlanetmap* planetmap) {
         pos[0] += 20;
         cMech* mech = new cMech(pos, rot);
         if (mech == NULL) throw "No memory for cMech in spacePortMechs.";
-        mech->entity->pad = new cPad;
-        if (mech->entity->pad == NULL) throw "No memory for cPad in spacePortMechs.";
+        mech->controlled->pad = new cPad;
+        if (mech->controlled->pad == NULL) throw "No memory for cPad in spacePortMechs.";
         mech->nameable->name = "Space Port Guard";
-        mech->addRole(RED);
-        mech->socialised->addEnemy(BLUE);
+        mech->addRole(rRole::RED);
+        mech->socialised->addEnemy(rRole::BLUE);
         world->spawnObject(mech);
         mech->mountWeapon((char*) "Center", new cWeaponMachinegun);
     }
@@ -753,11 +753,11 @@ void cOpenMission::battleField(cWorld* world) {
         cMech* mech = new cMech(pos);
         if (mech == NULL) throw "No memory for cMech in battleField.";
 
-        mech->entity->pad = new cPad();
-        if (mech->entity->pad == NULL) throw "No memory for cPad in battleField.";
+        mech->controlled->pad = new cPad();
+        if (mech->controlled->pad == NULL) throw "No memory for cPad in battleField.";
         mech->nameable->name = "X";
-        mech->addRole(RED);
-        mech->socialised->addEnemy(BLUE);
+        mech->addRole(rRole::RED);
+        mech->socialised->addEnemy(rRole::BLUE);
 
         world->spawnObject(mech);
 
@@ -774,11 +774,11 @@ void cOpenMission::battleField(cWorld* world) {
         cMech* mech = new cMech(pos);
         if (mech == NULL) throw "No memory for cMech in battleField.";
 
-        mech->entity->pad = new cPad();
-        if (mech->entity->pad == NULL) throw "No memory for cPad in battleField.";
+        mech->controlled->pad = new cPad();
+        if (mech->controlled->pad == NULL) throw "No memory for cPad in battleField.";
         mech->nameable->name = "Y";
-        mech->addRole(BLUE);
-        mech->socialised->addEnemy(RED);
+        mech->addRole(rRole::BLUE);
+        mech->socialised->addEnemy(rRole::RED);
 
         world->spawnObject(mech);
 
@@ -804,15 +804,15 @@ void cOpenMission::smallArmy(int wx, int wy, int wz, cWorld* world, const char* 
         float rot[3] = {0, rand() % 360, 0};
         cMech* mech = new cMech(pos, rot);
         if (mech == NULL) throw "No memory for cMech in smallArmy.";
-        mech->entity->pad = new cPad;
-        if (mech->entity->pad == NULL) throw "No memory for cPad in smallArmy.";
+        mech->controlled->pad = new cPad;
+        if (mech->controlled->pad == NULL) throw "No memory for cPad in smallArmy.";
         mech->nameable->name = name;
         if (blue) {
-            mech->addRole(BLUE);
-            mech->socialised->addEnemy(RED);
+            mech->addRole(rRole::BLUE);
+            mech->socialised->addEnemy(rRole::RED);
         } else {
-            mech->addRole(RED);
-            mech->socialised->addEnemy(BLUE);
+            mech->addRole(rRole::RED);
+            mech->socialised->addEnemy(rRole::BLUE);
         }
         world->spawnObject(mech);
         if (wpn == 0) {

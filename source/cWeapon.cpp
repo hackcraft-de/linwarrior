@@ -116,7 +116,7 @@ int cWeapon::damageByParticle(float* worldpos, float radius, int roles, float da
             float depth = object->constrainParticle(worldpos_, radius, localpos_, NULL);
             //cout << object->nameable->name << " depth: " << depth << endl;
             if (depth == 0) continue;
-            if (object->hasRole(DAMAGEABLE)) {
+            if (object->hasRole(rRole::DAMAGEABLE)) {
                 damaged++;
                 object->damageByParticle(localpos_, scaled_damage, weaponOwner);
             }

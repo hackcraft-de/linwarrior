@@ -192,7 +192,7 @@ void cController::attackEnemy() {
         controlledDevice->do_aimFor(NULL);
         pop();
         return;
-    } else if (target->hasRole(DEAD)) {
+    } else if (target->hasRole(rRole::DEAD)) {
         controlledDevice->do_aimFor(NULL);
         pop();
         return;

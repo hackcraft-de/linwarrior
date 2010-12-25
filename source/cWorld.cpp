@@ -6,9 +6,6 @@
 #include "cObject.h"
 #include "cMission.h"
 
-// for FORMATBUFFER
-#include "psi3d/instfont.h"
-
 #include <cassert>
 
 #include <string>
@@ -105,8 +102,8 @@ void cWorld::spawnObject(cObject *object) {
 }
 
 void cWorld::fragObject(cObject *object) {
-    if (object->hasRole(FRAGGED)) return;
-    object->addRole(FRAGGED);
+    if (object->hasRole(rRole::FRAGGED)) return;
+    object->addRole(rRole::FRAGGED);
     mObjects.remove(object);
     mCorpses.push_back(object);
     mIndex.erase(object->base->oid);
@@ -360,7 +357,7 @@ std::list<cObject*>* cWorld::filterByRole(cObject* ex, std::set<OID>* rolemask, 
     foreach(i, *objects) {
         if (amount == 0) break;
         cObject *object = *i;
-        if (object->hasRole(FRAGGED)) continue;
+        if (object->hasRole(rRole::FRAGGED)) continue;
         // Filter Condition
         if (all) {
             if (! object->allRoles(rolemask) ) continue;
@@ -394,7 +391,7 @@ std::list<cObject*>* cWorld::filterByRange(cObject* ex, float* origin, float min
         if (amount == 0) break;
         cObject *object = *i;
         if (object == ex) continue;
-        if (object->hasRole(FRAGGED)) continue;
+        if (object->hasRole(rRole::FRAGGED)) continue;
         // Filter Condition
         float diff[3];
         vector_sub(diff, origin, object->traceable->pos);
@@ -425,7 +422,7 @@ std::list<cObject*>* cWorld::filterByName(cObject* ex, char* name, int maxamount
         if (amount == 0) break;
         cObject *object = *i;
         if (object == ex) continue;
-        if (object->hasRole(FRAGGED)) continue;
+        if (object->hasRole(rRole::FRAGGED)) continue;
         // Filter Condition
         if (object->nameable != NULL && strcmp(object->nameable->name.c_str(), name) != 0) continue;
         amount--;
@@ -446,7 +443,7 @@ std::list<cObject*>* cWorld::filterByBeam(cObject* ex, float* pointa, float* poi
         if (amount == 0) break;
         cObject *object = *i;
         if (object == ex) continue;
-        if (object->hasRole(FRAGGED)) continue;
+        if (object->hasRole(rRole::FRAGGED)) continue;
         // Filter Condition
 
         float* x0 = object->traceable->pos.data();

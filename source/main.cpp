@@ -148,12 +148,12 @@ void cGame::initMission() {
         this->world->mMission = new cEmptyMission();
         assert(this->world->mMission != NULL);
         this->camera = this->world->mMission->init(this->world);
-        this->pad1 = this->camera->entity->pad;
+        this->pad1 = this->camera->controlled->pad;
     } else {
         this->world->mMission = new cOpenMission();
         assert(this->world->mMission != NULL);
         this->camera = this->world->mMission->init(this->world);
-        this->pad1 = this->camera->entity->pad;
+        this->pad1 = this->camera->controlled->pad;
     }
     assert(this->camera != NULL);
     assert(this->pad1 != NULL);
