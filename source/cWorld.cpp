@@ -45,39 +45,52 @@ cWorld::cWorld() {
 
     mViewdistance = 190;
 
-    rGroup* defaultgroup = new rGroup();
-    defaultgroup->mID = 0;
-    mGroups[defaultgroup->mID] = defaultgroup;
-
     //getSystemHour(mTime);
 }
 
 
-// Querries
+// Accessors
 
 OID cWorld::getOID() {
     return mTiming.getTimekey();
 }
 
+cTiming* cWorld::getTiming() {
+    return &mTiming;
+}
+
+cObject* cWorld::getObject(OID oid) {
+    return mIndex[oid];
+}
+
+std::vector<float>* cWorld::getGravity() {
+    return &mGravity;
+}
+
+float cWorld::getGndfriction() {
+    return mGndfriction;
+}
+
+float cWorld::getAirdensity() {
+    return mAirdensity;
+}
+
+void cWorld::setViewdistance(float viewdistance) {
+    mViewdistance = viewdistance;
+}
+
+float cWorld::getViewdistance() {
+    return mViewdistance;
+}
+
 
 // Messaging
 
-void cWorld::sendMessage(OID delay, OID sender /* = 0 */, OID groupid /* = 0 */, string type, string text, void* blob) {
+void cWorld::sendMessage(OID delay, OID sender /* = 0 */, OID recvid /* = 0 */, string type, string text, void* blob) {
     //cout << "sendMessageT(dly=" << delay << ", sdr=" << sender << ", gid=" << groupid << ", txt=" << text << ")" << endl;
-
     mTiming.advanceDelta();
-    
-    cMessage* message = new cMessage(sender, 0, groupid, mTiming.getTimekey() + delay, 0, type, text, blob);
+    cMessage* message = new cMessage(sender, recvid, mTiming.getTimekey() + delay, 0, type, text, blob);
     assert(message != NULL);
-
-    // Is there any such group if no individual receiver specified.
-    if (message->getReceiver() == 0) {
-        rGroup* g = mGroups[groupid];
-        if (g == NULL) {
-            delete message;
-            throw "no such group.";
-        }
-    }
     mMessages.push(message);
 }
 
@@ -88,14 +101,12 @@ void cWorld::spawnObject(cObject *object) {
     if (object == NULL) throw "Null object for spawnObject given.";
 
     OID serid = getOID();
-
+    assert(serid != 0);
     cout << serid << " spawning at deltacycle " << mTiming.getDeltacycle() << endl;
-
     mIndex[serid] = object;
-
     object->base->oid = serid;
     mTiming.advanceDelta();
-
+    
     mObjects.push_back(object);
     object->onSpawn();
     // cout << serid << " spawn complete.\n";
@@ -170,20 +181,17 @@ void cWorld::dispatchMessages() {
                 if (object == NULL) continue;
                 // Deliver.
                 object->onMessage(message);
-            } else {
-                // Message to group receivers.
-                rGroup* group = mGroups[message->getGroup()];
-                // Unable to deliver message to non-existent group?
-                if (group == NULL) continue;
-                // Inform each group member of the new message.
-
-                foreach(i, group->mMembers) {
-                    OID oid = *i;
-                    cObject* object = mIndex[oid];
-                    // Unable to deliver message to non-existent object?
-                    if (object == NULL) continue;
-                    // Deliver.
-                    object->onMessage(message);
+                // Later this shall be handled by the object/role itself in onMessage(message).
+                if (object->hasRole(rRole::GROUPING)) {
+                    // Message to group receivers.
+                    rGrouping* group = object->grouping;
+                    // Unable to deliver message to non-existent group?
+                    if (group == NULL) continue;
+                    // Inform each group member of the new message.
+                    foreach(i, group->mMembers) {
+                        OID oid = *i;
+                        this->sendMessage(0, message->getSender(), oid, message->getType(), message->getText(), message->getBlob());
+                    }
                 }
             }
         } else {
@@ -294,7 +302,7 @@ OID cWorld::getGeokey(long x, long z) {
 }
 
 
-std::list<cObject*>* cWorld::getGeoInterval(float* min2f, float* max2f) {
+std::list<cObject*>* cWorld::getGeoInterval(float* min2f, float* max2f, bool addunclustered) {
     std::list<cObject*>* found = new std::list<cObject*>();
     const long f = 1 << 5;
 
@@ -316,6 +324,10 @@ std::list<cObject*>* cWorld::getGeoInterval(float* min2f, float* max2f) {
     }
     //cout << min2f[0] << ":" << min2f[1] << " - " << max2f[0] << ":" << max2f[1] << " " << n <<  " FOUND " << found->size() << endl;
     //cout << ax << ":" << az << " - " << bx << ":" << bz << " " << n <<  " FOUND " << found->size() << endl;
+
+    if (addunclustered && !mUncluster.empty()) {
+        found->insert(found->begin(), mUncluster.begin(), mUncluster.end());
+    }
 
     return found;
 }

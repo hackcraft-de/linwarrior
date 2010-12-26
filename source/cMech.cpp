@@ -231,9 +231,9 @@ cMech::~cMech() {
     sInstances--;
 }
 
-void cMech::onMessage(void* message) {
-    cMessage* m = (cMessage*) message;
-    cout << "I (" << this->base->oid << ":" << this->nameable->name << ") just received: \"" << m->getText() << "\" from group " << m->getGroup() << endl;
+void cMech::onMessage(cMessage* message) {
+    cout << "I (" << this->base->oid << ":" << this->nameable->name << ") just received: \"" << message->getText() << "\" from sender " << message->getSender() << endl;
+    this->computerised->forcom->addMessage(message->getText());
 }
 
 void cMech::onSpawn() {

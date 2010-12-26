@@ -39,23 +39,10 @@ public:
     /// only affect that current instance.
     static cWorld* instance;
 
-    /// Object Group - as for now intended for messaging maillist-groups.
-
-    struct rGroup {
-        /// Group identifier.
-        OID mID;
-        /// Group name.
-        std::string mName;
-        /// Lists registered members of this group.
-        std::set<OID> mMembers;
-    };
-
-    /// Maps groupid to group - note that objectids "may" be used as "owners".
-    /// Group 0 is initialized as default or broadcast group.
-    std::map<OID, rGroup*> mGroups;
+    /// Mission Setup and Objective-Controller.
+    cMission* mMission;
 
 private:
-
     /// Not yet dispatched messages (because they are not yet overdue).
     std::priority_queue<cMessage*, std::vector<cMessage*>, cMessage> mMessages;
 
@@ -67,11 +54,8 @@ private:
 
     // Not Yet, may be merged with Background:
     // Overlays weather effects like rain, snow or dust.
-    //cWeather* mWeather;
-public:
-    /// Mission Setup and Objective-Controller.
-    cMission* mMission;
-private:
+    //cWeather mWeather;
+    
     /// Gravity acceleration vector [m/s²]. space = (0,0,0), earth = (0,-9.8,0).
     std::vector<float> mGravity;
 
@@ -89,13 +73,13 @@ private:
 
     /// Contains fragged objects.
     std::list<cObject*> mCorpses;
-public:
+
     /// Allows searching the world in a structured manner.
     std::map<OID, std::list<cObject*> > mGeomap;
 
     /// Non-Positional (NaN) and some oversize objects go here for clustering.
     std::list<cObject*> mUncluster;
-private:
+
     /// Render only objects that far away.
     float mViewdistance;
 
@@ -121,33 +105,19 @@ public: // Accessors
     /// Returns the Object ID valid for this instant's time & deltacycle.
     OID getOID();
 
-    cTiming* getTiming() {
-        return &mTiming;
-    }
+    cTiming* getTiming();
 
-    cObject* getObject(OID oid) {
-        return mIndex[oid];
-    }
+    cObject* getObject(OID oid);
 
-    std::vector<float>* getGravity() {
-        return &mGravity;
-    }
+    std::vector<float>* getGravity();
 
-    float getGndfriction() {
-        return mGndfriction;
-    }
+    float getGndfriction();
 
-    float getAirdensity() {
-        return mAirdensity;
-    }
+    float getAirdensity();
 
-    void setViewdistance(float viewdistance) {
-        mViewdistance = viewdistance;
-    }
+    void setViewdistance(float viewdistance);
 
-    float getViewdistance() {
-        return mViewdistance;
-    }
+    float getViewdistance();
 
 public: // Messaging
 
@@ -155,11 +125,11 @@ public: // Messaging
      * Sent messages are currently collected with an attached timestamp.
      * @param delay time offset for sending see getOID() for calculation.
      * @param sender a value of 0 currently defines a broadcast.
-     * @param group is the group the message is sent to - 0 default group.
+     * @param recvid is the receiver the message is sent to - 0 null/def receiver.
      * @param text the message subject/text to send, will be copied to string.
      * @param blob binary data, you give away ownership may be deleted by world.
      */
-    void sendMessage(OID delay, OID sender /* = 0 */, OID groupid /* = 0 */, std::string type, std::string text, void* blob = NULL);
+    void sendMessage(OID delay, OID sender /* = 0 */, OID recvid /* = 0 */, std::string type, std::string text, void* blob = NULL);
 
 public: // Spawning, Fragging, Garbage Collection
 
@@ -213,7 +183,7 @@ public: // World-Filtering, World-Scanning, World-Sense for objects.
 
     OID getGeokey(long x, long z);
 
-    std::list<cObject*>* getGeoInterval(float* min2f, float* max2f);
+    std::list<cObject*>* getGeoInterval(float* min2f, float* max2f, bool addunclustered = false);
 
     /**
      * Debug function to print out an object-list.

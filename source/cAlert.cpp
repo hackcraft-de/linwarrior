@@ -11,10 +11,10 @@ using std::endl;
 DEFINE_glprintf
 
 
-bool cAlert::sDrawzone = false;
+bool cAlert::sDrawzone = !true;
 
 
-cAlert::cAlert(float* center, float* range, int shapetype, std::string msgtype, std::string msgtext, OID group, bool positive, bool posedge, bool once, OID fusedelay) {
+cAlert::cAlert(float* center, float* range, int shapetype, std::string msgtype, std::string msgtext, OID receiver, bool positive, bool posedge, bool once, OID fusedelay) {
     vector_cpy(shape.center, center);
     vector_cpy(shape.range, range);
     this->traceable->radius = 1 + fmax(fabs(shape.range[0]), fmax(fabs(shape.range[1]), fabs(shape.range[2])));
@@ -31,7 +31,7 @@ cAlert::cAlert(float* center, float* range, int shapetype, std::string msgtype, 
     this->fired = false;
     this->msgtype = msgtype;
     this->msgtext = msgtext;
-    this->group = group;
+    this->receiver = receiver;
     collideable = new rCollideable;
     addRole(rRole::COLLIDEABLE, collideable);
     shape.type = shapetype;
@@ -93,7 +93,7 @@ float cAlert::constrainParticle(float* worldpos, float radius, float* localpos, 
             if (posedge) {
                 fired = true;
                 //cout << "fusedelay=" << fusedelay << endl;
-                cWorld::instance->sendMessage(fusedelay, base->oid, group, msgtype, msgtext, NULL);
+                cWorld::instance->sendMessage(fusedelay, base->oid, receiver, msgtype, msgtext, NULL);
             }
         }
     } else  {
@@ -102,7 +102,7 @@ float cAlert::constrainParticle(float* worldpos, float radius, float* localpos, 
             intruders.erase(enactor->base->oid);
             if (!posedge) {
                 fired = true;
-                cWorld::instance->sendMessage(fusedelay, base->oid, group, msgtype, msgtext, NULL);
+                cWorld::instance->sendMessage(fusedelay, base->oid, receiver, msgtype, msgtext, NULL);
             }
         }
     }
@@ -113,7 +113,7 @@ float cAlert::constrainParticle(float* worldpos, float radius, float* localpos, 
 
 
 void cAlert::drawEffect() {
-    //if (!sDrawzone) return;
+    if (!sDrawzone) return;
     
     float edge = posedge ? 1.0f : 0.0f;
     float c_pos[] = { 0,1,edge, 1 };
@@ -152,7 +152,7 @@ void cAlert::drawEffect() {
         glPopMatrix();
     }
     
-    if (!sDrawzone) return;
+    //if (!sDrawzone) return;
 
     glPushMatrix();
     {

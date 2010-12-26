@@ -22,8 +22,6 @@ private:
     OID mSender;
     /// To whom this message is/was sent (object id).
     OID mReceiver;
-    /// To whom this message is/was sent (group id).
-    OID mGroup;
     /// When was this message sent / valid only after this due date.
     OID mTimestamp;
     /// Until when is this message meant to be valid (0 == forever).
@@ -35,13 +33,12 @@ private:
     /// Binary large object - fresh allocated pointer to custom data (delete yourself).
     void* mBlob;
 public:
-    cMessage(OID sender = 0, OID receiver = 0, OID group = 0, OID timestamp = 0, OID bestbefore = 0, std::string type = "", std::string text = "", void* blob = NULL);
+    cMessage(OID sender = 0, OID receiver = 0, OID timestamp = 0, OID bestbefore = 0, std::string type = "", std::string text = "", void* blob = NULL);
     cMessage(const cMessage& orig);
     virtual ~cMessage();
 
     OID getSender();
     OID getReceiver();
-    OID getGroup();
     OID getTimestamp();
     OID getBestbefore();
     std::string getType();

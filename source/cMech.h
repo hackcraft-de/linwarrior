@@ -176,7 +176,7 @@ public:
     ~cMech();
 
     // Events
-    virtual void onMessage(void* message);
+    virtual void onMessage(cMessage* message);
     virtual void onSpawn();
 
     // Camera and Headphone

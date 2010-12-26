@@ -51,10 +51,10 @@ public:
     virtual void checkConditions();
 
     /// Called when checkConditions() sees the victory condition(s) fullfilled.
-    void onVictory();
+    virtual void onVictory();
 
     /// Called when checkConditions() sees the defeat condition(s) fullfilled.
-    void onDefeat();
+    virtual void onDefeat();
     
     /**
      * Indicates wether this Mission is a success.
@@ -80,6 +80,12 @@ class cEmptyMission : public cMission {
  * Mission for testing new Mission features.
  */
 class cOpenMission : public cMission {
+private:
+    cObject group_alliance_player;
+    cObject group_alliance_wingmen;
+    cObject group_alliance_all;
+    cObject group_enemies_all;
+private:
     virtual void onVictory();
     virtual void onDefeat();
     virtual cObject* init(cWorld* world);

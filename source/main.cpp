@@ -4,6 +4,8 @@
 
 #include "psi3d/snippetsgl.h"
 
+#include "cAlert.h"
+
 #include <iostream>
 
 #include <SDL/SDL_timer.h>
@@ -280,10 +282,14 @@ void cMain::drawFrame(int elapsed_msec) {
         game.world->bagFragged();
     }
 
-    // Draw fewer frames?
-    //static int cnt = 0;
-    //cnt++;
-    //if (cnt % 2 == 0) return;
+    // Draw area zones while paused (debug/editmode kind of).
+    cAlert::sDrawzone = game.paused;
+
+    // Draw fewer frames? Only every n'th frame.
+    int nthframe = 1;
+    static int cnt = 0;
+    cnt++;
+    if (cnt % nthframe != 0) return;
 
     // SOLID / WIREFRAME drawing scheme.
     if (!game.wireframe) {
@@ -319,14 +325,9 @@ void cMain::drawFrame(int elapsed_msec) {
         float maxrange = game.world->getViewdistance();
         float min[] = {origin[0] - maxrange, origin[2] - maxrange};
         float max[] = {origin[0] + maxrange, origin[2] + maxrange};
-        std::list<cObject*>* visobjects = game.world->getGeoInterval(min, max);
+        std::list<cObject*>* visobjects = game.world->getGeoInterval(min, max, true);
         assert(visobjects != NULL);
         //cout << "vis:" << objects->size() << " vs " << mObjects.size() << endl;
-
-        if (!game.world->mUncluster.empty()) {
-            std::list<cObject*>* ubiobjects = &game.world->mUncluster;
-            visobjects->insert(visobjects->begin(), ubiobjects->begin(), ubiobjects->end());
-        };
 
         // Draw the surounding Sky- and Ground-Dome/Box
         game.world->drawBack();
@@ -346,10 +347,13 @@ void cMain::drawFrame(int elapsed_msec) {
     }
     SGL::glPopProjection();
 
-    glFlush();
+    //glFlush();
 
+    bool motionblur = !true;
     if (game.nightvision) {
         SGL::glAccumBlurInverse(0.83f);
+    } else if (motionblur) {
+        SGL::glAccumBlur(0.4f);
     }
 
     if (picking) {
@@ -717,6 +721,7 @@ int cMain::sdlmain(int argc, char** args) {
         }
         start_ms = SDL_GetTicks();
 
+        //glFinish();
         SDL_GL_SwapBuffers();
 
     } // end main loop

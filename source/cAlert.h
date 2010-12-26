@@ -53,7 +53,7 @@ private:
     rShape shape;
     std::string msgtype;
     std::string msgtext;
-    OID group;
+    OID receiver;
     /// Lists object currently inside the tracked zone.
     std::set<OID> intruders;
     /// Use positive shape (true) or negative of shape (false) as zone?
@@ -70,7 +70,7 @@ private:
     std::set<OID> sensitivity;
 public:
 
-    cAlert(float* center, float* range, int shapetype, std::string msgtype, std::string msgtext, OID group, bool positive = true, bool posedge = true, bool once = false, OID fusedelay = 0);
+    cAlert(float* center, float* range, int shapetype, std::string msgtype, std::string msgtext, OID receiver, bool positive = true, bool posedge = true, bool once = false, OID fusedelay = 0);
 
     virtual float constrainParticle(float* worldpos, float radius = 0.0f, float* localpos = NULL, cObject* enactor = NULL);
     virtual void drawEffect();

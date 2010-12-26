@@ -17,8 +17,9 @@ class cSyscom;
 class cForcom;
 class cNavcom;
 
-#include "cObject.h"
 #include "cMech.h"
+
+// for Console
 #include "psi3d/instfont.h"
 
 class cComputer {
@@ -90,8 +91,10 @@ public:
 class cForcom : public cComputer {
 public:
     cMech* mDevice;
+    std::string mMessage;
 public:
     cForcom(cMech* device);
+    void addMessage(std::string msg);
     void process(float spf);
     void drawHUD();
 };
@@ -109,6 +112,7 @@ public:
     std::vector< std::vector<float> > mPOIs;
 public:
     cNavcom(cObject* device);
+    void drawPOI(float x, float y, float s);
     void process(float spf);
     void drawHUD();
 };

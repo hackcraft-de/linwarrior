@@ -7,10 +7,9 @@
 
 #include "cMessage.h"
 
-cMessage::cMessage(OID sender, OID receiver, OID group, OID timestamp, OID bestbefore, std::string type, std::string text, void* blob) {
+cMessage::cMessage(OID sender, OID receiver, OID timestamp, OID bestbefore, std::string type, std::string text, void* blob) {
     mSender = sender;
     mReceiver = receiver;
-    mGroup = group;
     mTimestamp = timestamp;
     mBestbefore = bestbefore;
     mType = type;
@@ -21,7 +20,6 @@ cMessage::cMessage(OID sender, OID receiver, OID group, OID timestamp, OID bestb
 cMessage::cMessage(const cMessage& orig) {
     mSender = orig.mSender;
     mReceiver = orig.mReceiver;
-    mGroup = orig.mGroup;
     mTimestamp = orig.mTimestamp;
     mBestbefore = orig.mBestbefore;
     mType = orig.mType;
@@ -40,10 +38,6 @@ OID cMessage::getSender() {
 
 OID cMessage::getReceiver() {
     return mReceiver;
-}
-
-OID cMessage::getGroup() {
-    return mGroup;
 }
 
 OID cMessage::getTimestamp() {

@@ -83,6 +83,7 @@ struct rRole {
         COLLIDEABLE,
         DAMAGEABLE,
         CONTROLLED,
+        GROUPING,
 
         // Roles indicating Kind of Objects
         MECH,
@@ -316,6 +317,27 @@ struct rSocialised : public rRole {
     }
 };
 
+/**
+ * Object Group - as for now intended for messaging maillist-groups.
+ */
+struct rGrouping : public rRole {
+    /// Group name.
+    std::string mName;
+    /// Lists registered members of this group.
+    std::set<OID> mMembers;
+
+    rGrouping() : rRole("GROUPING"), mName("Unnamed") {
+    }
+
+    rGrouping(rGrouping * original) : rRole("GROUPING"), mName("Unnamed") {
+        if (original != NULL) {
+            mName = original->mName;
+            mMembers.clear();
+            //mMembers.insert(mMembers.begin(), original->mMembers.begin(), original->mMembers.end());
+        }
+    }
+};
+
 
 /**
  * Generic Game-Object (Object with Roles) which
@@ -344,6 +366,7 @@ public: // Predefined Roles
     rCollideable* collideable;
     rDamageable* damageable;
     rControlled* controlled;
+    rGrouping* grouping;
 
 public: // Experimental Role "Managing"
 
@@ -362,21 +385,19 @@ public:
             registerRole(rRole::DAMAGEABLE, "DAMAGEABLE");
             registerRole(rRole::CONTROLLED, "CONTROLLED");
             registerRole(rRole::SOCIALISED, "SOCIALISED");
+            registerRole(rRole::GROUPING, "GROUPING");
         }
         base = new rBase;
         nameable = new rNameable;
         traceable = new rTraceable;
-        collideable = NULL; //new rCollideable;
-        damageable = NULL; //new rDamageable;
-        controlled = NULL; // new rControlled;
-        socialised = NULL; //new rSocialised;
+        collideable = NULL;
+        damageable = NULL;
+        controlled = NULL;
+        socialised = NULL;
+        grouping = NULL;
         roles[rRole::BASE] = base;
         roles[rRole::NAMEABLE] = nameable;
         roles[rRole::TRACEABLE] = traceable;
-        //roles[rRole::COLLIDEABLE] = collideable;
-        //roles[rRole::DAMAGEABLE] = damageable;
-        //roles[rRole::CONTROLLED] = controlled;
-        //roles[rRole::SOCIALISED] = socialised;
     }
 
     cObject(cObject* original) {
@@ -387,6 +408,7 @@ public:
         if (original->damageable) damageable = new rDamageable(original->damageable);
         if (original->controlled) controlled = new rControlled(original->controlled);
         if (original->socialised) socialised = new rSocialised(original->socialised);
+        if (original->grouping) grouping = new rGrouping(original->grouping);
         if (original->base) roles[rRole::BASE] = base;
         if (original->nameable) roles[rRole::NAMEABLE] = nameable;
         if (original->traceable) roles[rRole::TRACEABLE] = traceable;
@@ -394,6 +416,7 @@ public:
         if (original->damageable) roles[rRole::DAMAGEABLE] = damageable;
         if (original->controlled) roles[rRole::CONTROLLED] = controlled;
         if (original->socialised) roles[rRole::SOCIALISED] = socialised;
+        if (original->grouping) roles[rRole::GROUPING] = grouping;
     }
 
     virtual ~cObject() {
@@ -452,7 +475,7 @@ public:
 
     /// Called when a message was sent to (a group) this object (is a member of).
 
-    virtual void onMessage(void* message) {
+    virtual void onMessage(cMessage* message) {
     }
 
     /// Called right after object has been removed from object list and index.

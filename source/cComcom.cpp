@@ -3,6 +3,7 @@
 #include "cWorld.h"
 
 #include "psi3d/snippetsgl.h"
+#include "psi3d/instfont.h"
 
 #include <iostream>
 using std::cout;
@@ -11,6 +12,7 @@ using std::endl;
 DEFINE_Console_printf
 DEFINE_glprintf
 
+// -----------------------------------------------
 
 cComcom::cComcom(cObject* device) {
     mDevice = device;
@@ -56,6 +58,7 @@ void cComcom::drawHUD() {
     glPopMatrix();
 }
 
+// -----------------------------------------------
 
 cTarcom::cTarcom(cObject* device) {
     mDevice = device;
@@ -184,6 +187,8 @@ void cTarcom::drawHUD() {
     glPopMatrix();
 }
 
+// -----------------------------------------------
+
 cSyscom::cSyscom(cObject* device) {
     mDevice = device;
 }
@@ -252,7 +257,7 @@ void cSyscom::drawHUD() {
     glPopMatrix();
 }
 
-#include "cMech.h"
+// -----------------------------------------------
 
 cWepcom::cWepcom(cObject* device) {
     mDevice = device;
@@ -296,8 +301,14 @@ void cWepcom::drawHUD() {
     glPopMatrix();
 }
 
+// -----------------------------------------------
+
 cForcom::cForcom(cMech* device) {
     mDevice = device;
+}
+
+void cForcom::addMessage(std::string msg) {
+    mMessage = msg;
 }
 
 void cForcom::process(float spf) {
@@ -483,21 +494,27 @@ void cForcom::drawHUD() {
         glEnd();
 
     } // Tower angle indicator
+
+    // Message display
+    if (true) {
+        glPushMatrix();
+        {
+            std::stringstream s;
+            glColor4f(0.99, 0.99, 0.19, 1);
+            glTranslatef(0, 1, 0);
+            glScalef(1.0f / 80.0f, 1.0f / 16.0f, 1.0f);
+            glColor4f(0.09, 0.99, 0.09, 1);
+            //glRotatef(1, 0,0,1);
+            glTranslatef(0, -0, 0);
+            s << mMessage;
+            glprintf(s.str().c_str());
+            //glprintf("TEST TEST TEST ... TEST TEST TEST\ntest test test");
+        }
+        glPopMatrix();
+    } // Message display
 }
 
-
-void drawPOI(float x, float y, float s) {
-    glBegin(GL_LINE_STRIP);
-    {
-        glVertex3f(x, y - s, 0);
-        glVertex3f(x + s, y, 0);
-        glVertex3f(x, y + s, 0);
-        glVertex3f(x - s, y, 0);
-        glVertex3f(x, y - s, 0);
-    }
-    glEnd();
-}
-
+// -----------------------------------------------
 
 cNavcom::cNavcom(cObject* device) {
     mDevice = device;
@@ -534,6 +551,18 @@ cNavcom::cNavcom(cObject* device) {
     mRoute.push_back(3);
     mRoute.push_back(4);
     mRoute.push_back(5);
+}
+
+void cNavcom::drawPOI(float x, float y, float s) {
+    glBegin(GL_LINE_STRIP);
+    {
+        glVertex3f(x, y - s, 0);
+        glVertex3f(x + s, y, 0);
+        glVertex3f(x, y + s, 0);
+        glVertex3f(x - s, y, 0);
+        glVertex3f(x, y - s, 0);
+    }
+    glEnd();
 }
 
 void cNavcom::process(float spf) {
