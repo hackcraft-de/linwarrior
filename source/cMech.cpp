@@ -649,7 +649,7 @@ void cMech::animate(float spf) {
     //alSourcefv(traceable->sound, AL_VELOCITY, traceable->vel.data());
 }
 
-void cMech::transform() {
+void cMech::transform() {    
     if (true) {
         MD5Format::model* model = rigged->model;
         MD5Format::joint* manipulators = new MD5Format::joint[model->numJoints];
@@ -796,6 +796,33 @@ void cMech::transform() {
 }
 
 void cMech::drawSolid() {
+    if (hasRole(rRole::HUMANPLAYER)) {
+        int light = GL_LIGHT1;
+        if (misc->jetpower > 0.1) {
+            float p[] = {traceable->pos[0], traceable->pos[1]+1.2, traceable->pos[2], 1};
+            //float zero[] = {0, 0, 0, 1};
+            float s = (misc->jetpower > 100.0) ? 1.0f : misc->jetpower*0.01f;
+            float a[] = {0.0,0.0,0.0,1};
+            float d[] = {0.9 * s, 0.9 * s, 0.4 * s, 1};
+            glPushMatrix();
+            {
+                //glLoadIdentity();
+                //glTranslatef(traceable->pos[0], traceable->pos[1]+1, traceable->pos[2]);
+                //glLightfv(light, GL_POSITION, zero);
+                glLightfv(light, GL_POSITION, p);
+                glLightfv(light, GL_AMBIENT, a);
+                glLightfv(light, GL_DIFFUSE, d);
+                glLightf(light, GL_CONSTANT_ATTENUATION, 1.0);
+                glLightf(light, GL_LINEAR_ATTENUATION, 0.001);
+                glLightf(light, GL_QUADRATIC_ATTENUATION, 0.005);
+                glEnable(light);
+            }
+            glPopMatrix();
+        } else {
+            glDisable(light);
+        }
+    }
+
     if (rigged->model != NULL) {
         MD5Format::model* model = rigged->model;
         MD5Format::joint* joints_ = rigged->joints;

@@ -540,34 +540,45 @@ cBackground::cBackground() {
 }
 
 void cBackground::drawBackground(float hour) {
+    // Reference: dawn sunrise daylight sunset dusk darkness
+    
     // Push random seed because the current seed is going to be
     // replaced by a (deterministic) constant value for clouds.
     unsigned int seed = rand();
 
-    //float speed = 10000;
     float speed = 1;
+    // every hour
+    speed *= 24;
+    // every half hour
+    speed *= 2;
+    // every quarter hour
+    speed *= 2;
+    //speed = 1000;
+    //speed = 10000;
     this->hour = fmod(speed*hour, 24.00f);
     //hour = rand()%24;
 
+    float t = ((this->hour * 360.0f / 24.0f) - 90.0f); // = [-90,+270]
+
+    // Daylight gradient.
     // hour = [0,24]
     // => [-90,   0, 90, 180, 270]
     // => [ -1,   0,  1,   0,  -1] = sin
-    // => [  0, 0.5,  1, 0.5,   0] = s brightness sine-wave.
-    float t = ((this->hour * 360.0f / 24.0f) - 90.0f); // = [-90,+270]
+    // => [  0, 0.5,  1, 0.5,   0] = s daylight sine-wave.
     float s = sin(t * 0.017453)*0.5f + 0.5f; // = [0,1]
-
-    // Set gradient colors according to brightness sine-wave.
-    vector_set(topColor, 0.0, 0.0, s * 0.8 + 0.2); // original
-    //vector_set(topColor, s * 0.8 + 0.2, s * 0.5 + 0.2, s * 0.2 + 0.2);
+    vector_set(topColor, s * 0.2 + 0.1, s * 0.2 + 0.1, s * 0.8 + 0.2); // original
     vector_set(middleColor, s * 0.95 + 0.05, s * 0.95 + 0.05, s * 0.95 + 0.05); // original
-    //vector_set(bottomColor, 0.4 * s + 0.1, 0.2 * s + 0.1, 0.1 * s + 0.1); // original
-    vector_set(bottomColor, s * 0.95 + 0.05, s * 0.95 + 0.05, s * 0.95 + 0.05);
+    vector_set(bottomColor, s * 0.95 + 0.05, s * 0.95 + 0.05, s * 0.95 + 0.05); // original
 
-    //vector_set(mBtColor, 0.1 * s + 0.0, 0.1 * s + 0.0, 0.1 * s + 0.0);
-    //vector_set(mBtColor, 0.4 * s + 0.1, 0.4 * s + 0.1, 0.4 * s + 0.1);
-    //vector_set(mBtColor, 0.6 * s + 0.1, 0.6 * s + 0.1, 0.9 * s + 0.1);
-    //vector_set(mBtColor, 0.44 * s + 0.1, 0.44 * s + 0.1, 0.46 * s + 0.1);
-    //vector_set(mBtColor, 0.24 * s + 0.1, 0.44 * s + 0.1, 0.26 * s + 0.1);
+    // Dusk and dawn gradient.
+    // => [ 0,    1,  0,   1,   0] = c
+    float c = pow(fabs(cos(t * 0.017453))*0.5f + 0.5f, 4); // = [0,1]
+    float top_[3] = { c * 0.25, c * 0.25, c * 0.0 };
+    float mid_[3] = { c * 0.55, c * 0.25, c * 0.0 };
+    float bot_[3] = { c * 0.55, c * 0.25, c * 0.0 };
+    vector_add(topColor, topColor, top_);
+    vector_add(middleColor, middleColor, mid_);
+    vector_add(bottomColor, bottomColor, bot_);
 
     float alpha = 0.80f;
     float haze[4] = {
@@ -578,24 +589,21 @@ void cBackground::drawBackground(float hour) {
     };
     glFogfv(GL_FOG_COLOR, haze);
 
+    // Directional sun and moonlight.
     if (1) {
-        glPushMatrix();
-        {
-            //glLoadIdentity();
-            float p[] = {0.7, 0.9, -0.3, 0};
-            //float p[] = {70, 90, -30, 0};
-            float a[] = {0.3 * haze[0], 0.3 * haze[1], 0.3 * haze[2], 1};
-            //glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 1.0f);
-            glLightfv(GL_LIGHT0, GL_POSITION, p);
-            glLightfv(GL_LIGHT0, GL_AMBIENT, a);
-            glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.0);
-            glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.0001);
-            glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.000001);
-            //glEnable(GL_NORMALIZE);
-        }
-        glPopMatrix();
+        float p[] = {0.7, 0.9, -0.3, 0};
+        //float p[] = {70, 90, -30, 0};
+        float a[] = {0.2 * haze[0], 0.2 * haze[1], 0.2 * haze[2], 1};
+        float d[] = {0.9 * s + (1-s)*0.2, 0.9 * s + (1-s)*0.2, 0.4 * s + (1-s)*0.4, 1};
+        glLightfv(GL_LIGHT0, GL_POSITION, p);
+        glLightfv(GL_LIGHT0, GL_AMBIENT, a);
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, d);
+        //glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.0);
+        //glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.0001);
+        //glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.000001);
+        //glEnable(GL_NORMALIZE);
+        glEnable(GL_LIGHT0);
     }
-
 
     GLint mode;
     glGetIntegerv(GL_POLYGON_MODE, &mode);

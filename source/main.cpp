@@ -218,9 +218,10 @@ void cMain::initGL(int width, int height) {
     {
         glEnable(GL_LIGHTING);
         float p[] = {0, 500, 0, 1};
-        float a[] = {0.5, 0.5, 0.5, 1};
+        float a[] = {0.95, 0.5, 0.5, 1};
         glLightfv(GL_LIGHT0, GL_POSITION, p);
         glLightfv(GL_LIGHT0, GL_AMBIENT, a);
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, a);
         glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.0);
         glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.001);
         glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.00001);
@@ -298,7 +299,6 @@ void cMain::drawFrame(int elapsed_msec) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         glEnable(GL_CULL_FACE);
         glEnable(GL_LIGHTING);
-        glEnable(GL_LIGHT0);
         glClear(GL_DEPTH_BUFFER_BIT); // With Background.
     } else {
         glClearColor(0.2, 0.2, 0.2, 1.0);
