@@ -3,7 +3,9 @@
 #include "main.h"
 
 #include "psi3d/snippetsgl.h"
+#include "psi3d/instfont.h"
 
+// To dis-/enable zone drawing.
 #include "cAlert.h"
 
 #include <iostream>
@@ -20,7 +22,7 @@ cGame cMain::game;
 int cMain::mouseWheel = 0;
 
 unsigned int* gInstantfont = NULL;
-
+DEFINE_glprintf
 
 cGame::cGame()
 : pad1(NULL),
@@ -629,6 +631,48 @@ int cMain::sdlmain(int argc, char** args) {
 
     cout << "Installing Cleanup Hook...\n";
     atexit(cleanup);
+
+    bool loadscreen = true;
+    if (loadscreen) {
+        cout << "Showing load screen...\n";
+        glPushAttrib(GL_ALL_ATTRIB_BITS);
+        {
+            glClearColor(0.1, 0.1, 0.9, 1.0);
+            glDisable(GL_LIGHTING);
+            glDisable(GL_FOG);
+            glDisable(GL_DEPTH_TEST);
+            glDisable(GL_CULL_FACE);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            SGL::glPushOrthoProjection();
+            {
+                glPushMatrix();
+                {
+                    glLoadIdentity();
+                    glTranslatef(0,1,0);
+                    glScalef(1.0f/80.0f, 1.0f/40.0f, 1.0f);
+                    glColor4f(1,1,0,1);
+                    glprintf("LinWarrior 3D  (Build " __DATE__ ") by hackcraft.de");
+                    glColor4f(0,1,0,1);
+                    glTranslatef(0,-34,0);
+                    glprintf("IJKL-Keys   : Aim Weapons");
+                    glTranslatef(0,-1,0);
+                    glprintf("Cursor-Keys : Steer Base");
+                    glTranslatef(0,-1,0);
+                    glprintf("SEDF-Keys   : Main Action Buttons");
+                    glTranslatef(0,-1,0);
+                    glprintf("AW-/RG-Keys : Left/Right Action Buttons");
+                    glTranslatef(0,-1,0);
+                    glTranslatef(0,-1,0);
+                    glColor4f(1,1,0,1);
+                    glprintf("PROCESSING DATA...this may take a while...");
+                }
+                glPopMatrix();
+            }
+            SGL::glPopProjection();
+        }
+        glPopAttrib();
+        SDL_GL_SwapBuffers();
+    }
 
     cout << "Initialising Mission...\n";
     game.initMission();

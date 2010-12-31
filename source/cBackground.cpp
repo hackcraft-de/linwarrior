@@ -993,14 +993,14 @@ void cBackground::drawClouds() {
 
             float windspeed = 2;
             float trad = windspeed * 24.0f * (hour / 24.00f) * 2 * M_PI;
-            float light = 0.1 + 0.8 * cos((hour - 12.0f) / 12.00f * 0.5f * M_PI);
+            float light = 0.3 + 0.7 * cos((hour - 12.0f) / 12.00f * 0.5f * M_PI);
             glRotatef(trad / 0.017453f, 1, 0.1, 1);
 
             //cout << hour << endl;
             srand(12421);
             int n = 5;
             float density = 3.0f / float(1.0f + n);
-            density = 0.99;
+            density = 0.999f;
             for (int i = 0; i < n; i++) {
                 //float xrad = -(rand() % 157) * 0.01f;
                 float xrad = -(157 - (rand() % 314)) * 0.01f;

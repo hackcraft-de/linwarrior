@@ -130,7 +130,8 @@ void cOpenMission::onVictory() {
         mState = -1;
         cWorld::instance->sendMessage(0, 0, group_alliance_player.base->oid,
                 "DISPLAY",
-                std::string("   (+) Primary target fullfilled.\n   (+) You Won!\n   (+) Hit ESC to finish Mission\n")
+                //std::string("   (+) Primary target fullfilled.\n   (+) You Won!\n   (+) Hit ESC to finish Mission\n")
+                std::string("Stortebeker:\n  Good work!\n  We now have control over the town.\n  You may have a look around:\n  Pyra Nano Corp: SW of Skytide.\n  Starcircle: E of Skytide\n  Spaceport: NW\n  And don't get yourself killed.")
                 );
     }
 }
@@ -365,7 +366,7 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap) {
 
     world->sendMessage(0, player->base->oid, group_alliance_all.base->oid, "RADIO", string("Stay alert there have been intruders!"));
     world->sendMessage(0, player->base->oid, group_alliance_wingmen.base->oid, "RADIO", string("Wingmen into formation!"));
-    world->sendMessage(0, player->base->oid, group_alliance_player.base->oid, "RADIO", string("Objective: Your group has the order to search the town for possible offending forces. Good luck!"));
+    world->sendMessage(0, player->base->oid, group_alliance_player.base->oid, "RADIO", string("Stortebeker:\n  You guys search the town for offenders.\n  Then I'll give you more work!\n  I'll search the sourrounding."));
 
     return player;
 }
@@ -391,7 +392,7 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
     //cout << "height before: " << loc[1] << "  height after: " << color[3] << endl;
 
     capitalCity(loc[0], loc[1], loc[2], world);
-    roundForrest(loc[0]+50, loc[1], loc[2]+50, world, 65, 150, 5);
+    roundForrest(loc[0]+50, loc[1], loc[2]+50, world, 65, 150, 1);
 
     {
         OID group = group_alliance_player.base->oid;
@@ -411,7 +412,7 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
         assert(mech != NULL);
 
         mech->controlled->pad = new cPad();
-        mech->nameable->name = "City Patrol";
+        mech->nameable->name = "Stortebeker";
 
         mech->addRole(rRole::BLUE);
         mech->socialised->addEnemy(rRole::RED);
@@ -446,7 +447,7 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
         assert(mech != NULL);
 
         mech->controlled->pad = new cPad();
-        mech->nameable->name = "City Villain";
+        mech->nameable->name = "Offending Villain";
 
         mech->addRole(rRole::RED);
         mech->socialised->addEnemy(rRole::BLUE);
@@ -475,7 +476,7 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
         assert(mech != NULL);
 
         mech->controlled->pad = new cPad();
-        mech->nameable->name = "City Bandit";
+        mech->nameable->name = "Lurking Bandit";
 
         mech->addRole(rRole::RED);
         mech->socialised->addEnemy(rRole::BLUE);

@@ -502,7 +502,7 @@ void cForcom::drawHUD() {
             std::stringstream s;
             glColor4f(0.99, 0.99, 0.19, 1);
             glTranslatef(0, 1, 0);
-            glScalef(1.0f / 80.0f, 1.0f / 16.0f, 1.0f);
+            glScalef(1.0f / 60.0f, 1.0f / 20.0f, 1.0f);
             glColor4f(0.09, 0.99, 0.09, 1);
             //glRotatef(1, 0,0,1);
             glTranslatef(0, -0, 0);

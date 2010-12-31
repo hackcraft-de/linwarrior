@@ -51,6 +51,7 @@ public:
         unsigned long key;
         // Cached Surface Data.
         OID heightcolor[(1UL << PLANETMAP_TILESIZE)*(1UL << PLANETMAP_TILESIZE)];
+        long normal[(1UL << PLANETMAP_TILESIZE)*(1UL << PLANETMAP_TILESIZE)];
     };
     /// LRU Surface Cache.
     std::map<unsigned long, sPatch*> patches;

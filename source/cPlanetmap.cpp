@@ -311,16 +311,37 @@ void cPlanetmap::getCachedHeight(float x, float z, float* const color) {
     unsigned char* bytes = (unsigned char*) h;
     float* height = (float*) &bytes[0];
 
+    char* normal = (char*) &(patch->normal[((fx << TILESIZE) | fz)]);
+
     const float logbase = 255.0f / log(3);
     const float logbaseinv = 1.0f / logbase;
 
     if (*height != *height) {
         getHeight(x, z, color);
+        float h00 = color[3]; // *
         *height = color[3];
         bytes[4] = log(1.0f + color[0]) * logbase;
         bytes[5] = log(1.0f + color[1]) * logbase;
         bytes[6] = log(1.0f + color[2]) * logbase;
         bytes[7] = 1;
+
+        // * Experimental gradient caching:
+        float e = 0.025f;
+        getHeight(x+e, z, color);
+        float h10 = color[3]; // *
+        getHeight(x, z+e, color);
+        float h01 = color[3]; // *
+        float xd = (h10 - h00);
+        float zd = (h01 - h00);
+        //zv = { 0, zd, e }.
+        //xv = { e, xd, 0 }.
+        //n = zv X xv.
+        float n[] = { -e * xd, e * e, -zd * e };
+        vector_norm(n, n);
+        normal[0] = n[0] * 126;
+        normal[1] = n[1] * 126;
+        normal[2] = n[2] * 126;
+        normal[3] = 0;
     } else {
         float* height = (float*) &bytes[0];
         color[3] = *height;
@@ -328,6 +349,9 @@ void cPlanetmap::getCachedHeight(float x, float z, float* const color) {
         color[1] = exp(bytes[5] * logbaseinv) - 1.0f;
         color[2] = exp(bytes[6] * logbaseinv) - 1.0f;
     }
+    color[4] = normal[0] * 0.007936f; // div by 126.
+    color[5] = normal[1] * 0.007936f;
+    color[6] = normal[2] * 0.007936f;
 #endif
 } // getCachedHeight
 
@@ -419,6 +443,10 @@ int detail = 0;
 
 #if 1
 
+#define xmax(v1,v2)          (((v1)>(v2))?(v1):(v2))
+
+#define xmin(v1,v2)          (((v1)<(v2))?(v1):(v2))
+
 void cPlanetmap::drawSolid() {
 
     // Get current Camera-Matrix.
@@ -505,22 +533,19 @@ void cPlanetmap::drawSolid() {
                     bool skip = false;
                     for (float j = z - s; j <= z + s; j += step) {
 
-                        float alpha_o_z = fmin(1, 0.16f * fmax(0, s - fabs(j - -p[2])));
-                        float alpha_o_x = fmin(1, 0.16f * fmax(0, s - fabs(i + step - -p[0])));
-                        float alpha_o = fmin(alpha_o_z, alpha_o_x);
-
-                        float alpha_i_z = fmin(1, 0.3f * fmax(0, fabs(j - -p[2]) - s_));
-                        float alpha_i_x = fmin(1, 0.3f * fmax(0, fabs(i + step - -p[0]) - s_));
+                        float alpha_i_z = fmin(1, 0.3f * xmax(0, abs(j +p[2]) - s_));
+                        float alpha_i_x = fmin(1, 0.3f * xmax(0, abs(i + step + p[0]) - s_));
                         float alpha_i = fmax(alpha_i_z, alpha_i_x);
-
-                        float alpha = alpha_o;//fmin(alpha_i, alpha_o);
+                        
+                        float alpha_o_z = fmin(1, 0.16f * xmax(0, s - abs(j + p[2])));
+                        float alpha_o_x = fmin(1, 0.16f * xmax(0, s - abs(i + step + p[0])));
+                        float alpha_o = fmin(alpha_o_z, alpha_o_x);
+                        float alpha = alpha_o;
 
                         if (alpha_o <= 0.0f || alpha_i <= 0.0f) {
-                        //if ((fabs(z - j) < (s_)) && ((x - i) > -s_ && (x - i) < s_ )) {
                             skip = true;
                             continue;
-                        }
-                        if (skip) {
+                        } else if (skip) {
                             glEnd();
                             skip = false;
                             glBegin(GL_TRIANGLE_STRIP);
@@ -534,7 +559,8 @@ void cPlanetmap::drawSolid() {
                         //float alpha = (d2 < dext) ? 1 : 1.0f/(1.0f + 0.002f*(d2-dext));
                         color[3] = alpha;
 
-                        glNormal3f(0,1,0);
+                        //glNormal3f(0,1,0);
+                        glNormal3fv(&color[4]);
                         glColor4f(fmin(1.0f,color[0]),fmin(1.0f,color[1]),fmin(1.0f,color[2]),fmin(1.0f,color[3]));
                         glTexCoord3f((i + step)*ts, h0*ts, j*ts);
                         glVertex3f(i + step, h0, j);
@@ -544,8 +570,8 @@ void cPlanetmap::drawSolid() {
                         getCachedHeight(i + 0, j, color);
                         float h1 = color[cLandscape::BUMP] + 0.005f * k;
 
-                        alpha_o_z = fmin(1, 0.16f * fmax(0, s - fabs(j - -p[2])));
-                        alpha_o_x = fmin(1, 0.16f * fmax(0, s - fabs(i - -p[0])));
+                        alpha_o_z = fmin(1, 0.16f * xmax(0, s - abs(j + p[2])));
+                        alpha_o_x = fmin(1, 0.16f * xmax(0, s - abs(i + p[0])));
                         alpha_o = fmin(alpha_o_z, alpha_o_x);
                         alpha = alpha_o;
 
@@ -553,7 +579,8 @@ void cPlanetmap::drawSolid() {
                         //alpha = (d2 < dext) ? 1 : 1.0f/(1.0f + 0.002f*(d2-dext));
                         color[3] = alpha;
 
-                        glNormal3f(0,1,0);
+                        //glNormal3f(0,1,0);
+                        glNormal3fv(&color[4]);
                         glColor4f(fmin(1.0f,color[0]),fmin(1.0f,color[1]),fmin(1.0f,color[2]),fmin(1.0f,color[3]));
                         glTexCoord3f((i + 0)*ts, h1*ts, j*ts);
                         glVertex3f(i + 0, h1, j);

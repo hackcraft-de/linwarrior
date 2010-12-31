@@ -43,7 +43,7 @@ cWorld::cWorld() {
     mTiming.setDate(2010, 350);
     mTiming.setTime(01, 01, 01);
 
-    mViewdistance = 190;
+    mViewdistance = 150;
 
     //getSystemHour(mTime);
 }

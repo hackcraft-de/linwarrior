@@ -6,13 +6,39 @@ RELEASE NOTES
 Enhanced Landscape Rendering
 - Crude geoclipmapping
 - Improved performance/quality
-Enhanced Textures
+- More vegetation variation
+- Added indifferent normals for lighting
+Enhanced Sky Model
+- Added morning and evening coloration
+- Overhauled cloud textures
+- Cold ambient and warm direct daylight
+Enhanced Town
 - Procedural road textures
 - Procedural skyscraper textures
 Enhanced Immersion
 - Added jump-jet-thruster vibrations
+- Added jump-jet lighting
+- Added simple message display
 Enhanced World
-- Added location markers.
+- Added location markers
+- Press P_ause to see zones
+- One small step for editing
+- Added messages for introductory mission
+Enhanced Internals
+- Changed message groups to dispatching objects
+- Refactored/Cleaned a lot of previous work (esp. PCG code)
+Enhanced Usability
+- Added simple loading screen with key-hints
+
+This release turns out to be a lot about graphics but there are some important steps towards a game.
+Notably there is some beginning of a story, a mission and finally a loadscreen.
+Behind the scenes there where changes for handling game events and towards an integrated editor.
+And yet there is a long way to go.
+As for the next release?
+Maybe something towards an editmode?
+Maybe some shiny new vehicles?
+Maybe some multitasking?
+
 
 
 2010_08_28 r17
