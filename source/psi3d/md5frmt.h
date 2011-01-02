@@ -84,6 +84,7 @@ public: // STRUCTURES
         // vert verts[numverts]
         // tri tris[numtris]
         // weight weights[numweights]
+        // normal normals[numweights] * todo
     };
 
     struct vert {
@@ -101,7 +102,10 @@ public: // STRUCTURES
         int idx, joint;
         float bias;
         float v[3];
+        float n[3];
     };
+
+    //typedef weight normal;
 
 public: // QUERIES
 
@@ -159,6 +163,14 @@ public: // QUERIES
         weight* weights = (weight*) (tris + meshptr->numtris);
         return weights;
     }
+
+    /*
+    static inline weight * getNormals(mesh * meshptr) {
+        weight* weights = getWeights(meshptr);
+        normal* normals = (normal*) (weights + meshptr->numweights);
+        return normals;
+    }
+    */
 
     static inline int findJoint(model* modelptr, const char* name) {
         joint* joints = getJoints(modelptr);
@@ -648,31 +660,71 @@ public: // TRANSFORMING
         }
     }
     
-    static void animatedMeshVertices(mesh* msh, joint* joints, float* vertices) {
+    static void animatedMeshVertices(mesh* msh, joint* joints, float* vertices, float* normals) {
         vert* verts = getVerts(msh);
         weight* weights = getWeights(msh);
-        float* v_ = vertices;
+        float* v_result = vertices;
+        float* n_result = normals;
         int numverts = msh->numverts;
         vert* v = verts;
         while (numverts-- > 0) {
             //cout << v->start << " " << v->length << endl;
-            vector_set(v_, 0, 0, 0);
+            vector_set(v_result, 0, 0, 0);
+            vector_set(n_result, 0, 0, 0);
             weight* w = &weights[v->start];
             //cout << w->idx << " " << w->v[0] << " " << w->v[1] << " " << w->v[2] << endl;
+            // Sum up transformed vertex-weights to get final vertex (and normal).
             int numweights = v->length;
             while (numweights-- > 0) {
+                // Get influencing joint for this weight.
                 joint* j = &joints[w->joint];
-                float q[4];
-                quat_cpy(q, j->q);
-                float temp[3];
-                quat_apply(temp, q, w->v);
-                vector_add(temp, temp, j->v);
-                vector_scale(temp, temp, w->bias);
-                vector_add(v_, v_, temp);
+                // Transform weight for vertex and add in.
+                float v_temp[3];
+                quat_apply(v_temp, j->q, w->v);
+                vector_add(v_temp, v_temp, j->v);
+                vector_scale(v_temp, v_temp, w->bias);
+                vector_add(v_result, v_result, v_temp);
+                // Transform weight for normal and add in.
+                float n_temp[3];
+                quat_apply(n_temp, j->q, w->n);
+                vector_scale(n_temp, n_temp, w->bias);
+                vector_add(n_result, n_result, n_temp);
+                // On to next weighted influence.
                 w++;
             }
             v++;
-            v_ += 3;
+            v_result += 3;
+            n_result += 3;
+        }
+    }
+
+    static void unanimatedMeshNormals(mesh* msh, joint* joints, float* normals) {
+        vert* verts = getVerts(msh);
+        weight* weights = getWeights(msh);
+        float* n_result = normals;
+        int numverts = msh->numverts;
+        vert* v = verts;
+        while (numverts-- > 0) {
+            //cout << v->start << " " << v->length << endl;
+            weight* w = &weights[v->start];
+            //cout << w->idx << " " << w->v[0] << " " << w->v[1] << " " << w->v[2] << endl;
+            // Sum up transformed vertex-weights to get final vertex (and normal).
+            int numweights = v->length;
+            while (numweights-- > 0) {
+                // Get influencing joint for this weight.
+                joint* j = &joints[w->joint];
+                // Inversion of: Transform weight for normal.
+                float q[4];
+                quat_cpy(q, j->q);
+                quat_conj(q);
+                //float n_temp[3];
+                //vector_scale(n_temp, n_temp, 1.0f/w->bias);
+                quat_apply(w->n, q, n_result);
+                // On to next weighted influence.
+                w++;
+            }
+            v++;
+            n_result += 3;
         }
     }
 

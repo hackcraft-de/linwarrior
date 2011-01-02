@@ -536,7 +536,84 @@ void cleanup() {
     std::cout << "Thank you for playing.\n";
 }
 
+
+#include <SDL/SDL_thread.h>
+
+SDL_mutex* jobsmutex;
+std::queue<int (*)(void*)> jobs;
+
+int minion(void* data) {
+    unsigned int id = SDL_ThreadID();
+    cout << "Minion " << id << " at your service!\n";
+    int (*job)(void*) = minion;
+    bool done = false;
+    while(!done) {
+        // Grab a new job.
+        int (*nextjob)(void*) = NULL;
+        SDL_mutexP(jobsmutex);
+        {
+            if (!jobs.empty()) {
+                nextjob = jobs.front();
+                jobs.pop();
+            } // else look at secondary jobs.
+        }
+        SDL_mutexV(jobsmutex);
+        // Work on job if any available.
+        if (nextjob != NULL) {
+            cout << "Minion " << id << " is fulfilling your wish!\n";
+            job = nextjob;
+            int result = job(NULL);
+            cout << "Minion " << id << " job is finished with result " << result << "!\n";
+        } else if (job != NULL && nextjob == NULL) {
+            // Wait for a job to do.
+            cout << "Minion " << id << " is awaiting your command!\n";
+            job = nextjob;
+            SDL_Delay(10);
+        } else {
+            SDL_Delay(10);
+        }
+    }
+    return 0;
+}
+
+int job_render(void* data) {
+    while(true) {
+        //cout << "Buffering BGM.\n";
+        SDL_Delay(1.0f/DEFAULT_FPS * 1000);
+    }
+    return 0;
+}
+
+int job_bgm(void* data) {
+    while(true) {
+        //cout << "Buffering BGM.\n";
+        SDL_Delay(1000);
+    }
+    return 0;
+}
+
+std::stringstream oss;
+
+int job_output(void* data) {
+    while(true) {
+        //cout << "Redirecting text output.\n";
+        if (!oss.str().empty()) {
+            printf("%s", oss.str().c_str());
+            oss.clear();
+            oss.str("");
+            fflush(stdout);
+        }
+        SDL_Delay(200);
+    }
+    return 0;
+}
+
 int cMain::sdlmain(int argc, char** args) {
+    jobs.push(job_bgm);
+    jobs.push(job_output);
+    jobs.push(job_render);
+    std::cout.rdbuf( oss.rdbuf() );
+
     std::cout << "LinWarrior 3D  (Build " __DATE__ ") by hackcraft.de" << std::endl << std::endl;
 
     cout << "Reading Commandline Arguments...\n";
@@ -631,6 +708,13 @@ int cMain::sdlmain(int argc, char** args) {
 
     cout << "Installing Cleanup Hook...\n";
     atexit(cleanup);
+
+    cout << "Breeding Minions...\n";
+    int maxminions = 3;
+    SDL_Thread* minions[maxminions];
+    loopi(maxminions) {
+        minions[i] = SDL_CreateThread (minion, &i);
+    }
 
     bool loadscreen = true;
     if (loadscreen) {
@@ -771,6 +855,11 @@ int cMain::sdlmain(int argc, char** args) {
     } // end main loop
 
     cout << "Shutting Down...\n";
+
+    // Better set global signal and SDL_WaitThread.
+    loopi(maxminions) {
+        SDL_KillThread(minions[i]);
+    }
 
     return 0;
 }

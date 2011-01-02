@@ -594,7 +594,7 @@ void cBackground::drawBackground(float hour) {
         float p[] = {0.7, 0.9, -0.3, 0};
         //float p[] = {70, 90, -30, 0};
         float a[] = {0.2 * haze[0], 0.2 * haze[1], 0.2 * haze[2], 1};
-        float d[] = {0.9 * s + (1-s)*0.2, 0.9 * s + (1-s)*0.2, 0.4 * s + (1-s)*0.4, 1};
+        float d[] = {0.9 * s + (1-s)*0.15, 0.9 * s + (1-s)*0.15, 0.4 * s + (1-s)*0.2, 1};
         glLightfv(GL_LIGHT0, GL_POSITION, p);
         glLightfv(GL_LIGHT0, GL_AMBIENT, a);
         glLightfv(GL_LIGHT0, GL_DIFFUSE, d);

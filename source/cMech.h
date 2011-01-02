@@ -134,8 +134,10 @@ protected:
         float RAMount[16];
         float LSMount[16];
         float LAMount[16];
-        //
+        // Untransformed vertices.
         std::map<int, float*> baseverts;
+        // Untransformed normals.
+        std::map<int, float*> basenorms;
         /// Enumeration for indexing joints in animation.
 
         enum Jointpoints {

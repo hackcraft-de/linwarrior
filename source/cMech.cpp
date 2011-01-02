@@ -882,25 +882,50 @@ void cMech::drawSolid() {
                     //glEnable(GL_TEXTURE_2D);
                     if (ENABLE_TEXTURE_3D) glEnable(GL_TEXTURE_3D);
 
-                    // Generate base vertices for 3d-tex-coords.
+                    // Generate base vertices and normals for 3d-tex-coords.
                     if (rigged->baseverts.empty()) {
                         MD5Format::mesh* msh = MD5Format::getFirstMesh(model);
                         MD5Format::joint* staticjoints = MD5Format::getJoints(rigged->model);
 
                         loopi(model->numMeshes) {
                             float* baseverts = new float[msh->numverts * 3];
-                            MD5Format::animatedMeshVertices(msh, staticjoints, baseverts);
+                            float* basenorms = new float[msh->numverts * 3];
+                            MD5Format::animatedMeshVertices(msh, staticjoints, baseverts, basenorms);
                             rigged->baseverts[i] = baseverts;
+                            rigged->basenorms[i] = basenorms;
+                            // TODO: recalculate normals, invert and to weights.
+                            {
+                                MD5Format::tri* tris = MD5Format::getTris(msh);
+                                // TODO: Normals need to be averaged/smoothed.
+                                for (int j = 0; j < msh->numtris; j++) {
+                                    float* a = &baseverts[3*tris[j].a];
+                                    float* b = &baseverts[3*tris[j].b];
+                                    float* c = &baseverts[3*tris[j].c];
+                                    float ab[3];
+                                    float bc[3];
+                                    float n[3];
+                                    vector_sub(ab, b, a);
+                                    vector_sub(bc, c, b);
+                                    vector_cross(n, bc, ab);
+                                    vector_norm(n, n);
+                                    vector_cpy(&basenorms[3*tris[j].a], n);
+                                    vector_cpy(&basenorms[3*tris[j].b], n);
+                                    vector_cpy(&basenorms[3*tris[j].c], n);
+                                }
+                            }
+                            MD5Format::unanimatedMeshNormals(msh, staticjoints, basenorms);
                             msh = MD5Format::getNextMesh(msh);
                         }
                     }
+                    glEnable(GL_LIGHTING);
 
                     MD5Format::mesh* msh = MD5Format::getFirstMesh(model);
 
                     loopi(model->numMeshes) {
                         //cout << curr->numverts << " " << curr->numtris << " " << curr->numweights << endl;
                         float* vtx = new float[msh->numverts * 3];
-                        MD5Format::animatedMeshVertices(msh, joints_, vtx);
+                        float* nrm = new float[msh->numverts * 3];
+                        MD5Format::animatedMeshVertices(msh, joints_, vtx, nrm);
                         MD5Format::tri* tris = MD5Format::getTris(msh);
                         //MD5Format::vert* verts = MD5Format::getVerts(msh);
                         // For 3d texturing.
@@ -913,16 +938,19 @@ void cMech::drawSolid() {
                             int k = tris[j].a;
                             //glTexCoord2fv(verts[k].tmap);
                             //glTexCoord3fv(&vox[3 * k]);
+                            glNormal3fv(&nrm[3 * k]);
                             glTexCoord3f(vox[3 * k+0]*s, vox[3 * k+1]*s, vox[3 * k+2]*s);
                             glVertex3fv(&vtx[3 * k]);
                             k = tris[j].b;
                             //glTexCoord2fv(verts[k].tmap);
                             //glTexCoord3fv(&vox[3 * k]);
+                            glNormal3fv(&nrm[3 * k]);
                             glTexCoord3f(vox[3 * k+0]*s, vox[3 * k+1]*s, vox[3 * k+2]*s);
                             glVertex3fv(&vtx[3 * k]);
                             k = tris[j].c;
                             //glTexCoord2fv(verts[k].tmap);
                             //glTexCoord3fv(&vox[3 * k]);
+                            glNormal3fv(&nrm[3 * k]);
                             glTexCoord3f(vox[3 * k+0]*s, vox[3 * k+1]*s, vox[3 * k+2]*s);
                             glVertex3fv(&vtx[3 * k]);
                         }
