@@ -21,7 +21,7 @@
 #define PI_OVER_180 0.017453292
 
 #ifndef finitef
-//#define finitef(x) (!(x != x))
+#define finitef(x) (!(x != x))
 #endif
 
 
@@ -355,7 +355,7 @@ typedef  SCALAR          MATRIX[4*4];
 
 #define quat_expand(q_) \
 { \
-    const float w2 = 1.0f - ( (q_[0]*q_[0]) + ((q_)[1]*)q_)[1]) + ((q_)[2]*(q_)[2]) ); \
+    const float w2 = 1.0f - ( (q_[0]*q_[0]) + ((q_)[1]*(q_)[1]) + ((q_)[2]*(q_)[2]) ); \
     q_[3] = (w2 < 0) ? 0.0f : -sqrt(w2); \
 }
 

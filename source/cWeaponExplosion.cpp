@@ -10,7 +10,7 @@ cWeaponExplosion::cWeaponExplosion() {
         //buffer = alutCreateBufferHelloWorld();
         buffer = alutCreateBufferFromFile("data/freesound/explosion.wav");
         alGenSources(1, &soundSource);
-        if (alGetError() != AL_FALSE || !alIsSource(soundSource)) throw "sorry, could not create audio source for explosion";
+        //if (alGetError() != AL_FALSE || !alIsSource(soundSource)) throw "sorry, could not create audio source for explosion";
         alSourcei(soundSource, AL_BUFFER, buffer);
         alSourcef(soundSource, AL_PITCH, 1.0f);
         alSourcef(soundSource, AL_GAIN, 10.0f);

@@ -25,7 +25,7 @@ cPlanetmap::cPlanetmap() {
             const float diffusion = 0.4;
             const float shift = 0.3;
             const int size = 64;
-            unsigned char texels[size * size * size * 3];
+            unsigned char* texels = new unsigned char[size * size * size * 3];
             int samples = 3;
             float amt = 1.0f / (float)(samples);
             for (int l = 0; l < samples; l++) {
@@ -62,6 +62,7 @@ cPlanetmap::cPlanetmap() {
             }
             unsigned int texname = SGL::glBindTexture3D(0, true, true, true, true, true, size, size, size, texels);
             sTextures.push_back(texname);
+            delete texels;
         }
 
         string basepath = string("data/base/decals/");

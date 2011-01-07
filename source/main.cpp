@@ -869,7 +869,7 @@ int cMain::sdlmain(int argc, char** args) {
 // GOD begins below!
 //
 
-#ifdef n_WIN32
+#ifdef wonly_WIN32
 
 extern "C" int __stdcall WinMain(void* hInstance, void* hPrevInstance, char* lpCmdLine, int nCmdShow) {
     int argc = 2;
@@ -881,6 +881,8 @@ int main(int argc, char **args) {
     try {
         return cMain::sdlmain(argc, args);
     } catch (char* s) {
+        cout << "Fatal exception caught:\n" << s << endl;
+    } catch (const char* s) {
         cout << "Fatal exception caught:\n" << s << endl;
     }
 }

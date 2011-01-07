@@ -76,7 +76,7 @@ cMech::cMech(float* pos, float* rot) {
             cout << "Generating Camoflage..." << endl;
 
             const int SIZE = 1<<(7+MECHDETAIL);
-            unsigned char texels[SIZE * SIZE * SIZE * 3];
+            unsigned char* texels = new unsigned char[SIZE * SIZE * SIZE * 3];
 
             for (int l = 0; l < 4; l++) {
                 long t = 0;
@@ -109,6 +109,7 @@ cMech::cMech(float* pos, float* rot) {
                 unsigned int texname = SGL::glBindTexture3D(0, true, true, true, true, true, SIZE, SIZE, SIZE, texels);
                 sTextures[l] = texname;
             }
+            delete texels;
         }
     }
 

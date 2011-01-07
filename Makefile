@@ -10,7 +10,7 @@ OBJECTS=$(addprefix build/, $(subst .cpp,.o, $(wildcard source/*.cpp source/*/*.
 
 # Different Parameters and Programms for different OSes.
 ifneq (,$(findstring Win,$(OS)))
-	LIBRARIES= -lmingw32 -lSDLmain -lSDL -lOpenGL32 -lGLU32 -lopenal32 -lalut
+	LIBRARIES= -Wl,-subsystem,console -lmingw32 -lSDLmain -lSDL -lOpenGL32  -lglew32 -lGLU32 -lopenal32 -lalut
 	TARGET=dist\linwarrior.exe
 	MKDIR=mkdir
 	CP=copy
@@ -19,6 +19,7 @@ ifneq (,$(findstring Win,$(OS)))
 	CPP=c++
 	LIMITER=$(dir \file)
 	CFLAGS+= -static-libgcc
+	QUOTE='
 else
 	LIBRARIES= -lGLEW -lGLU -lSDL -lopenal -lalut
 	TARGET=dist/linwarrior
@@ -28,6 +29,7 @@ else
 	CP=cp
 	CPP=c++
 	LIMITER=/
+	QUOTE=
 endif
 
 # Creation of dependency information when compiling.
@@ -61,14 +63,9 @@ build: all
 # May call clean before build to delete previous relics.
 .PHONY: clean
 clean:
-	$(RM) $(TARGET)
-	$(RM) dep$(LIMITER)*.o.d
-	$(RM) build$(LIMITER)source$(LIMITER)*.o
-
-clean_win:
-	$(RM) '$(TARGET)'
-	$(RM) 'dep$(LIMITER)*.o.d'
-	$(RM) 'build$(LIMITER)source$(LIMITER)*.o'
+	$(RM) $(QUOTE)$(TARGET)$(QUOTE)
+	$(RM) $(QUOTE)dep$(LIMITER)*.o.d$(QUOTE)
+	$(RM) $(QUOTE)build$(LIMITER)source$(LIMITER)*.o$(QUOTE)
 
 # Target to compile doxygen helpfiles from code and comments see conf file.
 doxygen:

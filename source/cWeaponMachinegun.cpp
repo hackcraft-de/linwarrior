@@ -18,7 +18,7 @@ cWeaponMachinegun::cWeaponMachinegun() {
         //ALuint buffer = alutCreateBufferHelloWorld();
         ALuint buffer = alutCreateBufferFromFile("data/freesound/machinegun.wav");
         alGenSources(1, &soundSource);
-        if (alGetError() != AL_FALSE || !alIsSource(soundSource)) throw "sorry, could not create audio source for machine gun";
+        //if (alGetError() != AL_FALSE || !alIsSource(soundSource)) throw "sorry, could not create audio source for machine gun";
         alSourcei(soundSource, AL_BUFFER, buffer);
         alSourcef(soundSource, AL_PITCH, 1.0f);
         alSourcef(soundSource, AL_GAIN, 1.5f);

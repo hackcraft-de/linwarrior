@@ -33,8 +33,47 @@ enum Texids {
 unsigned int gPermutationTexture256 = 0;
 
 
+void ambient_sky(float x, float y, float z, float* color, float hour = 24.00f) {
+    // Remember 2pi ~ 360°
+    float t = ((hour / 24.0f * 2 * M_PI) - 0.5f * M_PI); // = [-0.5pi,+1.5pi]
 
+    float light = 0.1 + 0.8 * cos((hour - 12.0f) / 12.00f * 0.5f * M_PI);
 
+    // Daylight gradient.
+    // hour = [0,24]
+    // => [-90,   0, 90, 180, 270]
+    // => [ -1,   0,  1,   0,  -1] = sin
+    // => [  0, 0.5,  1, 0.5,   0] = s daylight sine-wave.
+    float s = sin(t) * 0.5f + 0.5f; // = [0,1]
+    float topColor[] = { s * 0.2 + 0.1, s * 0.2 + 0.1, s * 0.8 + 0.2, light };
+    float middleColor[] = { s * 0.95 + 0.05, s * 0.95 + 0.05, s * 0.95 + 0.05, 1 };
+    float bottomColor[] = { s * 0.55 + 0.05, s * 0.55 + 0.05, s * 0.55 + 0.05, 1 };
+
+    // Dusk and dawn gradient.
+    // => [ 0,    1,  0,   1,   0] = c
+    float c = pow(fabs(cos(t)) * 0.5f + 0.5f, 4); // = [0,1]
+    float top_[] = { c * 0.25, c * 0.25, c * 0.0, light };
+    float mid_[] = { c * 0.55, c * 0.25, c * 0.0, 1 };
+    float bot_[] = { c * 0.25, c * 0.11, c * 0.0, 1 };
+    vector_add(topColor, topColor, top_);
+    vector_add(middleColor, middleColor, mid_);
+    vector_add(bottomColor, bottomColor, bot_);
+
+    // Normalise direction vector.
+    float oolen = 1.0f / sqrt(x*x + y*y + z*z);
+    float yd = y * oolen;
+
+    // top = 1 when yd > 0, top = 0 otherwise.
+    float top = 0.5f + copysign(0.5f, yd);
+    float alpha = fabs(yd);
+
+    // middleColor could be factored out but it may change.
+    loopi(4) {
+        color[i] =
+                top * (alpha * topColor[i] + (1.0f-alpha) * middleColor[i]) +
+                (1.0f-top) * (alpha * bottomColor[i] + (1.0f-alpha) * middleColor[i]);
+    }
+}
 
 
 char vertexshader[] = " \
@@ -262,18 +301,17 @@ cBackground::cBackground() {
 
             float dx = (((float) j / (float) w) - 0.5f) * 2.0f;
             float dy = (((float) i / (float) h) - 0.5f) * 2.0f;
+            //float dz = sqrt(1.0f - dx * dx + dy * dy);
             float r = sqrt(dx * dx + dy * dy);
             float r_ = fmin(1.0f, r);
-            float a = 1.0f - pow(r_, 0.9);
+            float a = 1.0f - pow(r_, 0.6);
+            float rad = atan2(dx, dy);
 
-            const float f = 2.0f;
-            //float v3f[] = { f * (float)j / (float)w, 0, f * (float)i / (float)h };
-
-            float s = 4;
-            float c = 0.5f + 0.5f * cNoise::simplex3(s * f * (float) j / (float) w, 0, s * f * (float) i / (float) h, 21);
+            float c = 0.5f + 0.5f * cNoise::simplex3(rad/(2*M_PI)*256, 0, 0, 21);
+            float d = 0.5f + 0.5f * cNoise::simplex3(r*31, 0, 0, 21);
 
             float c4f[4] = {
-                cDistortion::exposure(3 * a + 3 * c * a),
+                cDistortion::exposure(3 * a + 3 * c * a + 3 * d*d*d * a),
                 cDistortion::exposure(3 * a),
                 cDistortion::exposure(1 * a),
                 a * a
@@ -553,38 +591,23 @@ void cBackground::drawBackground(float hour) {
     speed *= 2;
     // every quarter hour
     speed *= 2;
+    // every 5 minutes
+    speed *= 3;
     //speed = 1000;
     //speed = 10000;
     this->hour = fmod(speed*hour, 24.00f);
     //hour = rand()%24;
 
-    float t = ((this->hour * 360.0f / 24.0f) - 90.0f); // = [-90,+270]
-
-    // Daylight gradient.
-    // hour = [0,24]
-    // => [-90,   0, 90, 180, 270]
-    // => [ -1,   0,  1,   0,  -1] = sin
-    // => [  0, 0.5,  1, 0.5,   0] = s daylight sine-wave.
-    float s = sin(t * 0.017453)*0.5f + 0.5f; // = [0,1]
-    vector_set(topColor, s * 0.2 + 0.1, s * 0.2 + 0.1, s * 0.8 + 0.2); // original
-    vector_set(middleColor, s * 0.95 + 0.05, s * 0.95 + 0.05, s * 0.95 + 0.05); // original
-    vector_set(bottomColor, s * 0.95 + 0.05, s * 0.95 + 0.05, s * 0.95 + 0.05); // original
-
-    // Dusk and dawn gradient.
-    // => [ 0,    1,  0,   1,   0] = c
-    float c = pow(fabs(cos(t * 0.017453))*0.5f + 0.5f, 4); // = [0,1]
-    float top_[3] = { c * 0.25, c * 0.25, c * 0.0 };
-    float mid_[3] = { c * 0.55, c * 0.25, c * 0.0 };
-    float bot_[3] = { c * 0.55, c * 0.25, c * 0.0 };
-    vector_add(topColor, topColor, top_);
-    vector_add(middleColor, middleColor, mid_);
-    vector_add(bottomColor, bottomColor, bot_);
-
+    // Set ambient haze color.
+    float bottom[4];
+    float top[4];
+    ambient_sky(0,0.001,1, bottom, hour);
+    ambient_sky(0,1,0, top, hour);
     float alpha = 0.80f;
     float haze[4] = {
-        alpha * bottomColor[0] + (1.0f - alpha) * topColor[0],
-        alpha * bottomColor[1] + (1.0f - alpha) * topColor[1],
-        alpha * bottomColor[2] + (1.0f - alpha) * topColor[2],
+        alpha * bottom[0] + (1.0f - alpha) * top[0],
+        alpha * bottom[1] + (1.0f - alpha) * top[1],
+        alpha * bottom[2] + (1.0f - alpha) * top[2],
         0.0f
     };
     glFogfv(GL_FOG_COLOR, haze);
@@ -594,6 +617,8 @@ void cBackground::drawBackground(float hour) {
         float p[] = {0.7, 0.9, -0.3, 0};
         //float p[] = {70, 90, -30, 0};
         float a[] = {0.2 * haze[0], 0.2 * haze[1], 0.2 * haze[2], 1};
+        float t = ((hour / 24.0f * 2 * M_PI) - 0.5f * M_PI); // = [-0.5pi,+1.5pi]
+        float s = sin(t) * 0.5f + 0.5f;
         float d[] = {0.9 * s + (1-s)*0.15, 0.9 * s + (1-s)*0.15, 0.4 * s + (1-s)*0.2, 1};
         glLightfv(GL_LIGHT0, GL_POSITION, p);
         glLightfv(GL_LIGHT0, GL_AMBIENT, a);
@@ -618,7 +643,7 @@ void cBackground::drawBackground(float hour) {
         //drawGround();
         if (!true) drawRain();
     } else {
-        drawOrbit();
+        //drawOrbit();
         //drawUpperDome();
         //drawMountains();
         //drawLowerDome();
@@ -763,9 +788,6 @@ void cBackground::drawUpperDome() {
         loop3i(m[12 + i] = 0);
         m[12 + 1] = heightshift;
 
-        float light = 0.1 + 0.8 * cos((hour - 12.0f) / 12.00f * 0.5f * M_PI);
-        float density = light;
-
         glPushMatrix();
         {
             glLoadIdentity();
@@ -780,45 +802,34 @@ void cBackground::drawUpperDome() {
             double hf = 2.0 * M_PI / (double) hsteps;
             double h = 0;
 
-            float color1[3];
-            vector_cpy(color1, topColor);
-
-            float color2[3];
-            vector_cpy(color2, middleColor);
-
-            float slope[3];
-            vector_set3i(slope, (color2[i] - color1[i]) / (float) vsteps);
-
-            vector_cpy(color2, color1);
-            vector_add(color2, color2, slope);
-            //glColor3f(0.25,0.25,0.25);
             float s1 = sin(0);
             float c1 = cos(0);
-            float density1 = (1 - c1) + c1 * density;
             for (int i = 1; i <= vsteps; i++) {
                 float s2 = sin(i * vf);
                 float c2 = cos(i * vf);
-                float density2 = (1 - c2) + c2 * density;
                 glBegin(GL_TRIANGLE_STRIP);
                 for (int j = 0; j <= hsteps; j++) {
                     float s = sin(h);
                     float c = cos(h);
-                    glColor4f(color1[0], color1[1], color1[2], density1);
+
+                    float colour1[4];
+                    ambient_sky(s1*c, c1+0.0001f, s1 * s, colour1, hour);
+                    glColor4fv(colour1);
                     //glTexCoord2f(0.5f+0.5f*s1*c, 0.5f+0.5f*s1*s);
                     glNormal3f(s1*c, c1, s1 * s);
                     glVertex3f(s1*c, c1, s1 * s);
-                    glColor4f(color2[0], color2[1], color2[2], density2);
+
+                    float colour2[4];
+                    ambient_sky(s2*c, c2+0.0001f, s2 * s, colour2, hour);
+                    glColor4fv(colour2);
                     //glTexCoord2f(0.5f+0.5f*s2*c, 0.5f+0.5f*s2*s);
                     glNormal3f(s2*c, c2, s2 * s);
                     glVertex3f(s2*c, c2, s2 * s);
                     h += hf;
                 } // for hsteps
                 glEnd();
-                vector_cpy(color1, color2);
-                vector_add(color2, color2, slope);
                 s1 = s2;
                 c1 = c2;
-                density1 = density2;
             } // for vsteps
         }
         glPopMatrix();
@@ -854,22 +865,6 @@ void cBackground::drawLowerDome() {
             double hf = 2.0 * M_PI / (double) hsteps;
             double h = 0;
 
-            const float f = 0.75;
-            float color2[3] = {0.4, 0.2, 0.1};
-            vector_cpy(color2, bottomColor);
-            float color1[3] = {color2[0] * f, color2[1] * f, color2[2] * f};
-
-            float tmp[3];
-            vector_cpy(tmp, color1);
-            vector_cpy(color1, color2);
-            vector_cpy(color2, tmp);
-
-            float slope[3];
-            vector_set3i(slope, (color2[i] - color1[i]) / (float) vsteps);
-
-            vector_cpy(color2, color1);
-            vector_add(color2, color2, slope);
-
             float s1 = -sin(0);
             float c1 = -cos(0);
             for (int i = 1; i <= vsteps; i++) {
@@ -879,17 +874,21 @@ void cBackground::drawLowerDome() {
                 for (int j = 0; j <= hsteps; j++) {
                     float s = sin(h);
                     float c = cos(h);
-                    glColor3fv(color2);
+
+                    float colour2[4];
+                    ambient_sky(s2*c, c2-0.0001f, s2 * s, colour2, hour);
+                    glColor4fv(colour2);
                     glNormal3f(s2*c, c2, s2 * s);
                     glVertex3f(s2*c, c2, s2 * s);
-                    glColor3fv(color1);
+
+                    float colour1[4];
+                    ambient_sky(s1*c, c1-0.0001f, s1 * s, colour1, hour);
+                    glColor4fv(colour1);
                     glNormal3f(s1*c, c1, s1 * s);
                     glVertex3f(s1*c, c1, s1 * s);
                     h += hf;
                 };
                 glEnd();
-                vector_cpy(color1, color2);
-                vector_add(color2, color2, slope);
                 s1 = s2;
                 c1 = c2;
             } // for vsteps
@@ -900,7 +899,6 @@ void cBackground::drawLowerDome() {
 }
 
 void cBackground::drawGround() {
-    //return;
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_TEXTURE_BIT);
     {
         glDisable(GL_LIGHTING);
@@ -1121,24 +1119,25 @@ inline float InvSqrt(float x) {
 #endif
 
 void cBackground::drawSun() {
+    if (hour < 5.00 || hour > 22.00) return;
+
+    // Setup rotation only matrix.
     float m[16];
     glGetFloatv(GL_MODELVIEW_MATRIX, m);
-
     // 4th Row = 0.
     m[0 * 4 + 3] = m[1 * 4 + 3] = m[2 * 4 + 3] = 0.0f;
-
     // 4th Col = 0.
     m[3 * 4 + 0] = m[3 * 4 + 1] = m[3 * 4 + 2] = 0.0f;
     m[3 * 4 + 3] = 1.0f;
-
     //m[12 + 1] += heightshift;
 
     glPushAttrib(GL_ALL_ATTRIB_BITS | GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
-        //glDisable(GL_CULL_FACE);
+        glDisable(GL_CULL_FACE);
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_FOG);
         glDisable(GL_LIGHTING);
+        glEnable(GL_TEXTURE_2D);
 
         glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
@@ -1149,110 +1148,28 @@ void cBackground::drawSun() {
             //glScalef(1,0.3f,1);
 
             const float scale = 0.1 * 2400.0f;
-            float sun = 15 * 80 * 0.1;
-            //const float corona = 1.2f;
+            float sun = 15 * 80 * 0.15;
 
             static float angle = 0;
             angle -= 1;
-
             angle = 180 - ((360 / 24.00f) * hour + 90);
-            //  angle = 180-((360 / 24.00f) * 20 + 90);
-
-            //angle = 0;
 
             // Sun travels: dawn 0600:East, 1200:South, dusk 1800:West (2400:North -> other side of the globe).
             // 0000/2400: 0 degree, 0600: 90 degree, 1200: 180 degree, 1800: 270 degree, ...
-
             // Moon is traveling about 180 degree behind/ahead.
-
             // Well, that is, if you're down-under then east, north, west (not east, south, west).
 
             glRotatef(-90, 0, 1, 0);
-            //	glRotatef(45+7.5, 0, 0, 1); // Longitude? Aquator Angle Offset -> Germany. and for example Poland, GB and Canada.
+            // Longitude? Aquator Angle Offset -> Germany. and for example Poland, GB and Canada.
+            //glRotatef(45+7.5, 0, 0, 1);
             glRotatef(55, 0, 0, 1);
             glRotatef(0, 0, 0, 1); // Aquator.
 
-            const int detail = 7;
-
-            if (!true) { // atmospheric scattering
-                glPushMatrix();
-                {
-                    glRotatef(angle, 1, 0, 0);
-                    float dist = 0.005;
-                    glBegin(GL_TRIANGLE_FAN);
-                    {
-                        glColor4f(1, 1, 1, 0.99);
-                        glVertex3f(0, 0, scale);
-                        float alpha = 0;
-                        const float inc = 2.0f * M_PI / float(detail - 1);
-                        const float r = scale;
-
-                        loopi(detail) {
-                            glColor4f(0, 0, 0.3, 0.1);
-                            glVertex3f(sin(alpha) * r, cos(alpha) * r, scale * dist);
-                            alpha += inc;
-                        }
-                    }
-                    glEnd();
-                    glBegin(GL_TRIANGLE_STRIP);
-                    {
-                        float alpha = 0;
-                        const float inc = 2.0f * M_PI / float(detail - 1);
-                        const float r = scale;
-
-                        loopi(detail) {
-                            glColor4f(0, 0, 0.3, 0.1);
-                            glVertex3f(sin(alpha) * r, cos(alpha) * r, -scale * dist);
-                            glColor4f(0, 0, 0.3, 0.1);
-                            glVertex3f(sin(alpha) * r, cos(alpha) * r, +scale * dist);
-                            alpha -= inc;
-                        }
-                    }
-                    glEnd();
-                    glBegin(GL_TRIANGLE_FAN);
-                    {
-                        glColor4f(1, 1, 1, 0.3);
-                        glVertex3f(0, 0, -scale);
-                        float alpha = 0;
-                        const float inc = 2.0f * M_PI / float(detail - 1);
-                        const float r = scale;
-
-                        loopi(detail) {
-                            glColor4f(0, 0, 0.3, 0.1);
-                            glVertex3f(sin(alpha) * r, cos(alpha) * r, -scale * dist);
-                            alpha -= inc;
-                        }
-                    }
-                    glEnd();
-                }
-                glPopMatrix();
-            } // atmospheric scattering
-
-            glPushMatrix();
-            //if (hour > 6.50 && hour < 17.50)
-            {
-                glRotatef(angle, 1, 0, 0);
-                glTranslatef(0, 0, scale);
-                glColor4f(1, 0.95, 0.8, 0.8);
-                // Sun
-#if 1
-                glEnable(GL_TEXTURE_2D);
-                glBindTexture(GL_TEXTURE_2D, textures[T_SUN]);
-                cPrimitives::glXYCenteredTextureSquare(sun);
-                //cPrimitives::glDisk(detail, sun);
-#else
-                glPushMatrix();
-                glDisable(GL_CULL_FACE);
-                glDisable(GL_TEXTURE_2D);
-                sun *= 0.5;
-                glScalef(sun, sun, sun);
-                glRotatef(hour * 200000, 1, 4, 2);
-                drawBalloid();
-                glPopMatrix();
-#endif
-            }
-            glPopMatrix();
-
+            glRotatef(angle, 1, 0, 0);
+            glTranslatef(0, 0, scale);
+            glColor4f(1, 0.95, 0.8, 1);
+            glBindTexture(GL_TEXTURE_2D, textures[T_SUN]);
+            cPrimitives::glXYCenteredTextureSquare(sun);
         }
         glPopMatrix();
     }
@@ -1260,24 +1177,25 @@ void cBackground::drawSun() {
 }
 
 void cBackground::drawOrbit() {
+    if (hour > 10.00 && hour < 16.00) return;
+
+    // Setup rotation only matrix.
     float m[16];
     glGetFloatv(GL_MODELVIEW_MATRIX, m);
-
     // 4th Row = 0.
     m[0 * 4 + 3] = m[1 * 4 + 3] = m[2 * 4 + 3] = 0.0f;
-
     // 4th Col = 0.
     m[3 * 4 + 0] = m[3 * 4 + 1] = m[3 * 4 + 2] = 0.0f;
     m[3 * 4 + 3] = 1.0f;
-
     //m[12 + 1] += heightshift;
 
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
-        //glDisable(GL_CULL_FACE);
+        glDisable(GL_CULL_FACE);
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_FOG);
         glDisable(GL_LIGHTING);
+        glEnable(GL_TEXTURE_2D);
 
         glPushMatrix();
         {
@@ -1292,17 +1210,11 @@ void cBackground::drawOrbit() {
 
             static float angle = 0;
             angle -= 1;
-
             angle = 180 - ((360 / 24.00f) * hour + 90);
-            //  angle = 180-((360 / 24.00f) * 20 + 90);
-
-            //angle = 0;
 
             // Sun travels: dawn 0600:East, 1200:South, dusk 1800:West (2400:North -> other side of the globe).
             // 0000/2400: 0 degree, 0600: 90 degree, 1200: 180 degree, 1800: 270 degree, ...
-
             // Moon is traveling about 180 degree behind/ahead.
-
             // Well, that is, if you're down-under then east, north, west (not east, south, west).
 
             glRotatef(-90, 0, 1, 0);
@@ -1310,43 +1222,11 @@ void cBackground::drawOrbit() {
             glRotatef(55, 0, 0, 1);
             glRotatef(0, 0, 0, 1); // Aquator.
 
-            //const int detail = 7;
-
-            glPushMatrix();
-            //if (hour > 18.50 || hour < 5.50)
-            {
-                glRotatef(angle + 180, 1, 0, 0);
-
-                glTranslatef(0, 0, scale);
-                //glColor4f(0.6, 0.6, 0.7, 0.99);
-                glColor4f(0.8, 0.8, 0.8, 0.99);
-                //cPrimitives::glDisk(detail, moon);
-                // Moon
-#if 1
-                glEnable(GL_TEXTURE_2D);
-                glBindTexture(GL_TEXTURE_2D, textures[T_EARTH]);
-                glBegin(GL_QUADS);
-                glTexCoord2f(0, 0);
-                glVertex3f(-moon, -moon, 0);
-                glTexCoord2f(0, 1);
-                glVertex3f(-moon, +moon, 0);
-                glTexCoord2f(1, 1);
-                glVertex3f(+moon, +moon, 0);
-                glTexCoord2f(1, 0);
-                glVertex3f(+moon, -moon, 0);
-                glEnd();
-#else
-                glPushMatrix();
-                glDisable(GL_CULL_FACE);
-                glDisable(GL_TEXTURE_2D);
-                //moon*=0.5;
-                glScalef(moon, moon, moon);
-                glRotatef(hour * 200000, 1, 4, 2);
-                drawBalloid();
-                glPopMatrix();
-#endif
-            }
-            glPopMatrix();
+            glRotatef(angle + 180, 1, 0, 0);
+            glTranslatef(0, 0, scale);
+            glColor4f(0.8, 0.8, 0.8, 0.99);
+            glBindTexture(GL_TEXTURE_2D, textures[T_EARTH]);
+            cPrimitives::glXYCenteredTextureSquare(moon);
 
         }
         glPopMatrix();
