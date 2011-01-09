@@ -20,6 +20,9 @@ using std::endl;
 
 #define BKGDETAIL 1
 
+#define DOME_XRES 2*6
+#define DOME_YRES 7
+
 extern unsigned char* loadTGA(const char *fname, int *w, int* h, int* bpp);
 
 enum Texids {
@@ -453,9 +456,6 @@ cBackground::cBackground() {
             *p++ = 255 * fmax(0.8f * color0[2], 0.8f * color1[2]);
             *p++ = 255 * fmax(0.8f * color0[1], 0.8f * color1[1]);
             *p++ = 255 * fmax(0.8f * color0[0], 0.8f * color1[0]);
-            //*p++ = 255*(0.2*color0[2] + 0.8*color1[2]);
-            //*p++ = 255*(0.2*color0[1] + 0.8*color1[1]);
-            //*p++ = 255*(0.2*color0[0] + 0.8*color1[0]);
             *p++ = 255 * a;
         }
         bool soft = true;
@@ -573,8 +573,8 @@ cBackground::cBackground() {
         delete texels;
     }
 
-
-    heightshift = -10;
+    heightshift = -5;
+    rainstrength = 0;
 }
 
 void cBackground::drawBackground(float hour) {
@@ -593,24 +593,39 @@ void cBackground::drawBackground(float hour) {
     speed *= 2;
     // every 5 minutes
     speed *= 3;
+    // every minute
+    speed *= 5;
     //speed = 1000;
     //speed = 10000;
     this->hour = fmod(speed*hour, 24.00f);
     //hour = rand()%24;
 
-    // Set ambient haze color.
-    float bottom[4];
-    float top[4];
-    ambient_sky(0,0.001,1, bottom, hour);
-    ambient_sky(0,1,0, top, hour);
-    float alpha = 0.80f;
-    float haze[4] = {
-        alpha * bottom[0] + (1.0f - alpha) * top[0],
-        alpha * bottom[1] + (1.0f - alpha) * top[1],
-        alpha * bottom[2] + (1.0f - alpha) * top[2],
-        0.0f
-    };
+    // Sample and set ambient haze color.
+    float haze[4] = { 0,0,0,0 };
+    if (1) {
+        unsigned char s = 131;
+        int samples = 23;
+        loopi(samples) {
+            s = cNoise::LFSR8(s);
+            float alpha = s / 256.0f * 2 * M_PI;
+            s = cNoise::LFSR8(s);
+            float beta = s / 256.0f * 1 * M_PI;
+            float color[16];
+            float n[4] = { sin(alpha)*sin(beta),cos(beta),sin(beta)*cos(alpha), 1 };
+            //vector_print(n);
+            ambient_sky(n[0],n[1],n[2], color, hour);
+            //quat_print(color);
+            loopj(4) {
+                haze[j] += color[j];
+            }
+        }
+        loopj(4) {
+            haze[j] /= float(samples);
+        }
+    }
     glFogfv(GL_FOG_COLOR, haze);
+
+    //printf("Haze: "); quat_print(haze);
 
     // Directional sun and moonlight.
     if (1) {
@@ -641,7 +656,7 @@ void cBackground::drawBackground(float hour) {
         //drawMountains();
         drawLowerDome();
         //drawGround();
-        if (!true) drawRain();
+        drawRain();
     } else {
         //drawOrbit();
         //drawUpperDome();
@@ -779,7 +794,9 @@ void cBackground::drawUpperDome() {
         glEnable(GL_CULL_FACE);
         glDisable(GL_FOG);
         //glBlendFunc( GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA );
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // original
+        glEnable(GL_ALPHA_TEST);
+        glAlphaFunc(GL_GREATER, 0.1f);
 
         // Load current Camera Matrix and
         // set Position (4th Column) = 0.
@@ -795,10 +812,10 @@ void cBackground::drawUpperDome() {
             //glScalef(100, 100 * 0.3, 100); //*0.25 original
             glScalef(100, 100 * 0.25, 100); // original
 
-            int vsteps = 8;
+            int vsteps = DOME_YRES;
             double vf = 0.5 * M_PI / (double) vsteps;
 
-            int hsteps = 18;
+            int hsteps = DOME_XRES;
             double hf = 2.0 * M_PI / (double) hsteps;
             double h = 0;
 
@@ -815,15 +832,13 @@ void cBackground::drawUpperDome() {
                     float colour1[4];
                     ambient_sky(s1*c, c1+0.0001f, s1 * s, colour1, hour);
                     glColor4fv(colour1);
-                    //glTexCoord2f(0.5f+0.5f*s1*c, 0.5f+0.5f*s1*s);
-                    glNormal3f(s1*c, c1, s1 * s);
+                    //glNormal3f(s1*c, c1, s1 * s);
                     glVertex3f(s1*c, c1, s1 * s);
 
                     float colour2[4];
                     ambient_sky(s2*c, c2+0.0001f, s2 * s, colour2, hour);
                     glColor4fv(colour2);
-                    //glTexCoord2f(0.5f+0.5f*s2*c, 0.5f+0.5f*s2*s);
-                    glNormal3f(s2*c, c2, s2 * s);
+                    //glNormal3f(s2*c, c2, s2 * s);
                     glVertex3f(s2*c, c2, s2 * s);
                     h += hf;
                 } // for hsteps
@@ -858,10 +873,10 @@ void cBackground::drawLowerDome() {
             glMultMatrixf(m);
             glScalef(100, 100 * 0.1, 100);
 
-            int vsteps = 8;
+            int vsteps = DOME_YRES;
             double vf = 0.5f * M_PI / (double) vsteps;
 
-            int hsteps = 18;
+            int hsteps = DOME_XRES;
             double hf = 2.0 * M_PI / (double) hsteps;
             double h = 0;
 
@@ -878,13 +893,13 @@ void cBackground::drawLowerDome() {
                     float colour2[4];
                     ambient_sky(s2*c, c2-0.0001f, s2 * s, colour2, hour);
                     glColor4fv(colour2);
-                    glNormal3f(s2*c, c2, s2 * s);
+                    //glNormal3f(s2*c, c2, s2 * s);
                     glVertex3f(s2*c, c2, s2 * s);
 
                     float colour1[4];
                     ambient_sky(s1*c, c1-0.0001f, s1 * s, colour1, hour);
                     glColor4fv(colour1);
-                    glNormal3f(s1*c, c1, s1 * s);
+                    //glNormal3f(s1*c, c1, s1 * s);
                     glVertex3f(s1*c, c1, s1 * s);
                     h += hf;
                 };
@@ -929,8 +944,8 @@ void cBackground::drawGround() {
             glMultMatrixf(n); // Transpose to undo previous transpose.
             glTranslatef(0, p[Y], 0);
 
-            float color2[3] = {0.4, 0.2, 0.1};
-            vector_cpy(color2, bottomColor);
+            float color2[4] = {0.4, 0.2, 0.1, 1};
+            ambient_sky(0, -1, 0, color2, hour);
 
             //const float tdiv = 5; // original
             const float tdiv = 16;
@@ -940,13 +955,13 @@ void cBackground::drawGround() {
             float dz = -p[2] / tdiv;
 
             glBegin(GL_TRIANGLE_FAN);
-            glColor4f(bottomColor[0], bottomColor[1], bottomColor[2], 1.0f);
+            glColor4f(color2[0], color2[1], color2[2], 1.0f);
             //glColor4f(0.1,0.1,0.3,0.93); // water
             glColor4f(1, 1, 1, 1);
             glNormal3f(0, 1, 0);
             glTexCoord2f(dx, dz);
             glVertex3f(0.0, 0.0, 0.0);
-            glColor4f(bottomColor[0], bottomColor[1], bottomColor[2], 0.0f);
+            glColor4f(color2[0], color2[1], color2[2], 0.0f);
             //glColor4f(0.1,0.1,0.4,0); // water
             glColor4f(1, 1, 1, 1);
             float e = 20.0 * M_PI / 180.0f;
@@ -1235,23 +1250,24 @@ void cBackground::drawOrbit() {
 }
 
 void cBackground::drawRain() {
-
     srand(seed);
     seed = rand();
 
-    loopi(rand() % 5) {
-        if (rain.size() >= 1000) break;
-        float dx = 0.3;
-        float dz = 0.1;
-        cParticle* p = new cParticle();
-        float alpha = (rand() % 628) * 0.01;
-        float dist = 0.2 + 0.1 * (rand() % 75);
-        float h = 15;
-        vector_set(p->pos, sin(alpha) * dist - 0.3 * dx*h, h, cos(alpha) * dist - 0.3 * dz * h);
-        vector_cpy(p->old, p->pos);
-        vector_set(p->vel, dx, -2 - rand() % 3, dz);
-        vector_set(p->fce, 0, 0, 0);
-        rain.push_back(p);
+    if (rainstrength > 0) {
+        loopi(rand() % rainstrength) {
+            if (rain.size() >= 1000) break;
+            float dx = 0.3;
+            float dz = 0.1;
+            cParticle* p = new cParticle();
+            float alpha = (rand() % 628) * 0.01;
+            float dist = 0.2 + 0.1 * (rand() % 75);
+            float h = 15;
+            vector_set(p->pos, sin(alpha) * dist - 0.3 * dx*h, h, cos(alpha) * dist - 0.3 * dz * h);
+            vector_cpy(p->old, p->pos);
+            vector_set(p->vel, dx, -2 - rand() % 3, dz);
+            vector_set(p->fce, 0, 0, 0);
+            rain.push_back(p);
+        }
     }
 
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
@@ -1260,6 +1276,7 @@ void cBackground::drawRain() {
         glDisable(GL_LIGHTING);
         glEnable(GL_CULL_FACE);
         //glDisable(GL_FOG);
+        glLineWidth(1.25);
 
         glPushMatrix();
         {

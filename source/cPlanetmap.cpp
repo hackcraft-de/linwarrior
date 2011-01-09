@@ -887,6 +887,10 @@ void cPlanetmap::drawEffect() {
         glEnable(GL_LIGHTING);
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_FOG);
+
+        glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.45f);
+        
         glColor4f(0.8f, 0.8f, 0.8f, 1);
         glNormal3f(0,1,0);
 
@@ -969,7 +973,7 @@ void cPlanetmap::drawEffect() {
                         glTranslatef(x__, h-0.2, z__);
                         glMultMatrixf(n);
                         //glRotatef(rot*0.351563f, 0, 1, 0);
-                        float s = 0.6 + 1.1*(size * 0.003906f) + 0.2 * plantdensity;
+                        float s = 0.6f + 1.1f * (size * 0.003906f) + 0.2f * plantdensity;
                         glScalef(1*s,0.65*s,1*s);
                         //glAxis(0.9);
                         cPrimitives::glXCenteredTextureSquare();

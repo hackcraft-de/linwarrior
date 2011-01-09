@@ -26,10 +26,8 @@ class cBackground {
 public:
     float hour;
     std::map<int, unsigned int> textures;
-    float topColor[3];
-    float middleColor[3];
-    float bottomColor[3];
     std::list<cParticle*> rain;
+    int rainstrength;
     int seed;
     float heightshift;
 public:

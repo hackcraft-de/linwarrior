@@ -351,11 +351,11 @@ void cMain::drawFrame(int elapsed_msec) {
 
     //glFlush();
 
-    bool motionblur = !true;
+    float motionblur = 0.2f;
     if (game.nightvision) {
         SGL::glAccumBlurInverse(0.83f);
-    } else if (motionblur) {
-        SGL::glAccumBlur(0.4f);
+    } else if (motionblur > 0) {
+        SGL::glAccumBlur(motionblur);
     }
 
     if (picking) {

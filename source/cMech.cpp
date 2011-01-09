@@ -142,6 +142,7 @@ cMech::cMech(float* pos, float* rot) {
     misc->jetpower = 0;
     misc->throttle = 0;
     misc->camerastate = 1;
+    misc->avgspeed = 0;
 
     // Mech Speaker
     if (0) {
@@ -482,7 +483,7 @@ void cMech::animatePhysics(float spf) {
         }
 
         // Set friction for next frame - if there was a collision.
-        traceable->friction = (depth > 0) ? cWorld::instance->getGndfriction() : 0.0f;
+        traceable->friction = (depth > 0.0f) ? cWorld::instance->getGndfriction() : 0.0f;
     }
 }
 
@@ -494,7 +495,13 @@ void cMech::poseRunning(float spf) {
     quat_conj(ori_inv);
     quat_apply(v, ori_inv, traceable->vel);
 
-    float vel = copysign( sqrt(v[X] * v[X] + v[Z] * v[Z]), v[Z] ) * -0.16f;
+    {
+        float nowspeed = copysign( sqrt(v[X] * v[X] + v[Z] * v[Z]), v[Z] );
+        float alpha = 0.17f;
+        misc->avgspeed += alpha * (nowspeed - misc->avgspeed);
+    }
+
+    float vel = misc->avgspeed * -0.16f;
     if (vel > 2.8) vel = 2.8;
     if (vel < -1.0) vel = -1.0;
 
@@ -630,11 +637,11 @@ void cMech::animate(float spf) {
     // Rigid Body, Collisions etc.
     animatePhysics(spf);
 
-    vector_scale(rigged->rotators[rigged->TORSOR], misc->twr, 1.0f / 0.017453f);
+    vector_scale(rigged->rotators[rigged->TORSOR], misc->twr, 180.0f / M_PI);
 
     // Show fitting animation pose based on state and physics.
     //if (mJumpstate == GROUNDED) {
-    if (traceable->friction > 0.01) {
+    if (traceable->friction > 0.012) {
         poseRunning(spf);
     } else {
         poseJumping(spf);

@@ -93,6 +93,9 @@ protected:
 
         /// Current Camera mode, negative number is indicating transition.
         int camerastate;
+
+        /// Current average(d) speed.
+        float avgspeed;
     };
 
     rMisc* misc;
