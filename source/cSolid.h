@@ -36,7 +36,8 @@ struct cSolid {
     static void star_nebula(float x, float y, float z, float* color, unsigned char seed = 131);
 
     static void planet_cloud(float x, float y, float z, float* color, unsigned char seed = 131);
-    static void planet_ground(float x, float y, float z, float* color);
+    static void planet_ground(float x, float y, float z, float* color, unsigned char seed = 131);
+    static void planet_grain(float x, float y, float z, float* color, unsigned char seed = 131);
 
 };
 

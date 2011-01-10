@@ -322,21 +322,18 @@ void cSolid::planet_cloud(float x, float y, float z, float* color, unsigned char
 }
 
 
-void cSolid::planet_ground(float x, float y, float z, float* color) {
+void cSolid::planet_ground(float x, float y, float z, float* color, unsigned char seed) {
     const float scale = 4 * 512;
-    const int seed1 = 11;
     const float p1 = scale / 101.0f;
-    float o1 = cNoise::simplex3(37 + x*p1, 12 + y*p1, 97 + z*p1, seed1);
+    float o1 = cNoise::simplex3(37 + x*p1, 12 + y*p1, 97 + z*p1, seed + 0);
 
-    const int seed2 = seed1 + 43;
     const float p2 = scale / 47.0f;
-    float o2 = cNoise::simplex3(71 + x*p2, 45 + y*p2, 19 + z*p2, seed2);
+    float o2 = cNoise::simplex3(71 + x*p2, 45 + y*p2, 19 + z*p2, seed + 1);
 
     float h = (0.9f * o1 + 0.5f * o2) * 0.5 + 0.5;
 
-    const int seed3 = seed1 + 43;
     const float p3 = scale / 17.0f;
-    float o3 = cNoise::simplex3(21 + x*p3, 41 + y*p3, 79 + z*p3, seed3);
+    float o3 = cNoise::simplex3(21 + x*p3, 41 + y*p3, 79 + z*p3, seed + 2);
 
     float top[] = {0.59f, 0.50f, 0.18f};
     float bottom[] = {0.75f, 0.73f, 0.28f};
@@ -351,3 +348,28 @@ void cSolid::planet_ground(float x, float y, float z, float* color) {
     color[3] = 1;
     //color[BUMP] = h;
 }
+
+
+void cSolid::planet_grain(float x, float y, float z, float* color, unsigned char seed) {
+    //const float diffusion = 0.4;
+    //const float shift = 0.3;
+    //float a0 = ((cNoise::voronoi3(x*f, y*f, z*f, diffusion, shift) + 1.0f) * 0.5);
+    float f = 1;
+    float a0 = cNoise::simplex3(x*f, y*f, z*f, seed + 0);
+    f *= 2;
+    //float a1 = ((cNoise::voronoi3(x*f, y*f, z*f, diffusion, shift) + 1.0f) * 0.5);
+    float a1 = cNoise::simplex3(x*f, y*f, z*f, seed + 1);
+    f *= 2.171;
+    //float a2 = ((cNoise::voronoi3(x*f, y*f, z*f, diffusion, shift) + 1.0f) * 0.5);
+    float a2 = cNoise::simplex3(x*f, y*f, z*f, seed + 2);
+    float a = 0.5 + fabs(a0) * 0.3 + a1 * 0.15 + a2 * 0.075;
+    a = a > 1.0 ? 1.0 : a;
+    a = a < 0.0 ? 0.0 : a;
+    //float a = ((simplex3(x*f,y*f,z*f, 43) + 1.0f) * 0.5);
+    //a = (0.5 + 0.5 * (a - int(a))) * 255;
+    color[0] = a;
+    color[1] = a;
+    color[2] = a;
+    color[3] = 1;
+}
+

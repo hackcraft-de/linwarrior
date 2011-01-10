@@ -73,6 +73,10 @@ struct rRole {
         this->role = role;
     }
 
+    virtual rRole* clone() {
+        return new rRole;
+    }
+
     /// Enumeration of roles an object may assume.
     enum Roles {
         // Roles indicating Attributes
@@ -132,6 +136,10 @@ struct rBase : public rRole {
             seconds = original->seconds;
         }
     }
+
+    virtual rRole* clone() {
+        return new rBase(this);
+    }
 };
 
 /**
@@ -157,6 +165,10 @@ struct rNameable : public rRole {
             designation = original->designation;
         }
     }
+
+    virtual rRole* clone() {
+        return new rNameable(this);
+    }
 };
 
 /**
@@ -170,6 +182,10 @@ struct rTraceable : public cParticle, public rRole {
     /// Copy Constructor.
 
     rTraceable(cParticle * original) : cParticle(original), rRole("TRACEABLE") {
+    }
+
+    virtual rRole* clone() {
+        return new rTraceable(this);
     }
 };
 
@@ -186,6 +202,10 @@ struct rCollideable : public rRole {
 
     rCollideable(rCollideable * original) : rRole("COLLIDEABLE") {
     };
+
+    virtual rRole* clone() {
+        return new rCollideable(this);
+    }
 };
 
 /**
@@ -223,6 +243,10 @@ struct rDamageable : public rRole {
             loopi(MAX_PARTS) hp[i] = original->hp[i];
         }
     }
+
+    virtual rRole* clone() {
+        return new rDamageable(this);
+    }
 };
 
 /**
@@ -257,6 +281,10 @@ struct rControlled : public rRole {
             controller = original->controller;
         }
     }
+
+    virtual rRole* clone() {
+        return new rControlled(this);
+    }
 };
 
 /**
@@ -278,6 +306,10 @@ struct rSocialised : public rRole {
             allies = original->allies;
             enemies = original->enemies;
         }
+    }
+
+    virtual rRole* clone() {
+        return new rSocialised(this);
     }
 
     /// Check wether an object playing a certain role is an ally.
@@ -336,6 +368,10 @@ struct rGrouping : public rRole {
             //mMembers.insert(mMembers.begin(), original->mMembers.begin(), original->mMembers.end());
         }
     }
+
+    virtual rRole* clone() {
+        return new rGrouping(this);
+    }
 };
 
 
@@ -371,7 +407,7 @@ public: // Predefined Roles
 public: // Experimental Role "Managing"
 
     static std::map<std::string, OID> roleids;
-    static std::map<OID, std::string> rolenames;
+    static std::map<OID, rRole*> roletypes;
     std::map<OID, rRole*> roles;
     std::set<OID> roleset;
 
@@ -379,13 +415,13 @@ public:
 
     cObject() {
         if (roleids.empty()) {
-            registerRole(rRole::BASE, "BASE");
-            registerRole(rRole::TRACEABLE, "TRACEABLE");
-            registerRole(rRole::COLLIDEABLE, "COLLIDEABLE");
-            registerRole(rRole::DAMAGEABLE, "DAMAGEABLE");
-            registerRole(rRole::CONTROLLED, "CONTROLLED");
-            registerRole(rRole::SOCIALISED, "SOCIALISED");
-            registerRole(rRole::GROUPING, "GROUPING");
+            registerRole(rRole::BASE, new rBase);
+            registerRole(rRole::TRACEABLE, new rTraceable);
+            registerRole(rRole::COLLIDEABLE, new rCollideable);
+            registerRole(rRole::DAMAGEABLE, new rDamageable);
+            registerRole(rRole::CONTROLLED, new rControlled);
+            registerRole(rRole::SOCIALISED, new rSocialised);
+            registerRole(rRole::GROUPING, new rGrouping);
         }
         base = new rBase;
         nameable = new rNameable;
@@ -395,9 +431,9 @@ public:
         controlled = NULL;
         socialised = NULL;
         grouping = NULL;
-        roles[rRole::BASE] = base;
-        roles[rRole::NAMEABLE] = nameable;
-        roles[rRole::TRACEABLE] = traceable;
+        addRole(rRole::BASE, base);
+        addRole(rRole::NAMEABLE, nameable);
+        addRole(rRole::TRACEABLE, traceable);
     }
 
     cObject(cObject* original) {
@@ -429,9 +465,9 @@ public:
         delete this->traceable;
     }
 
-    static void registerRole(OID id, std::string name) {
-        rolenames[id] = name;
-        roleids[name] = id;
+    static void registerRole(OID id, rRole* prototype) {
+        roletypes[id] = prototype;
+        roleids[prototype->role] = id;
     }
 
     bool anyRoles(std::set<OID>* test) {

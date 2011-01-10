@@ -436,6 +436,7 @@ struct SGL {
         glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, repeat_x ? GL_REPEAT : GL_CLAMP);
         glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, repeat_y ? GL_REPEAT : GL_CLAMP);
         glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, repeat_z ? GL_REPEAT : GL_CLAMP);
+        if (!true && min_linear) glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
         glTexImage3D(GL_TEXTURE_3D, 0, GL_RGB8, WIDTH, HEIGHT, DEPTH, 0, GL_RGB, GL_UNSIGNED_BYTE, texture_ptr);
         return texnamevar;
     }

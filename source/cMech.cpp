@@ -604,7 +604,7 @@ void cMech::animate(float spf) {
             this->computerised->tarcom->prevTarget();
         }
 
-        if (controlled->pad->getButton(cPad::MECH_FIRE_BUTTON)) {
+        if (controlled->pad->getButton(cPad::MECH_FIRE_BUTTON1) || controlled->pad->getButton(cPad::MECH_FIRE_BUTTON2)) {
             if (true && misc->weapons.size() > 0) {
                 misc->currentWeapon %= misc->weapons.size();
                 fireWeapon(misc->currentWeapon);
@@ -615,7 +615,7 @@ void cMech::animate(float spf) {
             }
         }
 
-        if (controlled->pad->getButton(cPad::MECH_JET_BUTTON)) {
+        if (controlled->pad->getButton(cPad::MECH_JET_BUTTON1) || controlled->pad->getButton(cPad::MECH_JET_BUTTON2)) {
             misc->jetpower += (100 - misc->jetpower) * 0.1;
         } else {
             misc->jetpower -= (misc->jetpower * 0.05);
@@ -1414,7 +1414,7 @@ void cMech::do_fireAt() {
     cParticle::rotationTo(rd, traceable->pos.data(), target_pos, this->traceable->ori.data(), tower_ori);
     // Fire at random and only if angle small enough.
     if (rand() % 100 <= 40 && fabs(rd[X]) < 0.5) {
-        controlled->pad->setButton(cPad::MECH_FIRE_BUTTON, true);
+        controlled->pad->setButton(cPad::MECH_FIRE_BUTTON1, true);
         //cout "fire\n";
     }
 }

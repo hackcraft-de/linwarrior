@@ -5,6 +5,7 @@
 #include "psi3d/snippetsgl.h"
 
 #include "cTree.h"
+#include "cSolid.h"
 
 #include <cassert>
 
@@ -12,6 +13,7 @@
 
 using namespace std;
 
+#define GROUNDDETAIL 0
 
 int cPlanetmap::sInstances = 0;
 std::vector<long> cPlanetmap::sTextures;
@@ -20,13 +22,12 @@ std::vector<long> cPlanetmap::sTextures;
 cPlanetmap::cPlanetmap() {
     sInstances++;
     if (sInstances == 1) {
-        // Solid Ground
         {
-            const float diffusion = 0.4;
-            const float shift = 0.3;
-            const int size = 64;
+            cout << "Generating solid ground...\n";
+            unsigned char seed = 131;
+            const int size = 1 << (6 + GROUNDDETAIL);
             unsigned char* texels = new unsigned char[size * size * size * 3];
-            int samples = 3;
+            int samples = 5;
             float amt = 1.0f / (float)(samples);
             for (int l = 0; l < samples; l++) {
                 unsigned char* texel = texels;
@@ -35,28 +36,20 @@ cPlanetmap::cPlanetmap() {
                     float i_ = (rand()&127) * 0.0078f;
                     float j_ = (rand()&127) * 0.0078f;
                     float k_ = (rand()&127) * 0.0078f;
-                    unsigned char r = 0, g = 0, b = 0;
-                    float a0 = ((cNoise::voronoi3((i+i_)*f,(j+j_)*f,(k+k_)*f, diffusion, shift) + 1.0f) * 0.5);
-                    f *= 2;
-                    float a1 = ((cNoise::voronoi3((i+i_)*f,(j+j_)*f,(k+k_)*f, diffusion, shift) + 1.0f) * 0.5);
-                    f *= 2.171;
-                    float a2 = ((cNoise::voronoi3((i+i_)*f,(j+j_)*f,(k+k_)*f, diffusion, shift) + 1.0f) * 0.5);
-                    float a = 0.5 + fabs(a0) * 0.3 + a1 * 0.15 + a2 * 0.075;
-                    a = a > 1.0 ? 1.0 : a;
-                    a = a < 0.0 ? 0.0 : a;
-                    r = a * 255;
 
-                    //float a = ((simplex3(i*f,j*f,k*f, 43) + 1.0f) * 0.5);
-                    //r = (0.5 + 0.5 * (a - int(a))) * 255;
-                    g = b = r ;
+                    float color[16];
+                    //cSolid::planet_grain((i+i_), (j+j_)*f,(k+k_)*f, color, seed);
+                    //cSolid::camo_desert((i+i_), (j+j_)*f,(k+k_)*f, color, seed);
+                    cSolid::camo_snow((i+i_)*f, (j+j_)*f,(k+k_)*f, color, seed);
+
                     if (l == 0) {
-                        *texel++ = r * amt;
-                        *texel++ = g * amt;
-                        *texel++ = b * amt;
+                        *texel++ = 255 * color[0] * amt;
+                        *texel++ = 255 * color[1] * amt;
+                        *texel++ = 255 * color[2] * amt;
                     } else {
-                        *texel++ += r * amt;
-                        *texel++ += g * amt;
-                        *texel++ += b * amt;
+                        *texel++ += 255 * color[0] * amt;
+                        *texel++ += 255 * color[1] * amt;
+                        *texel++ += 255 * color[2] * amt;
                     }
                 }
             }
@@ -76,6 +69,7 @@ cPlanetmap::cPlanetmap() {
 
         loopi (4) {
             string name = string(basepath).append(filenames[i]);
+            cout << "Loading [" << name << "] ...\n";
             unsigned int texname;
             int w, h, bpp;
             unsigned char* texels = loadTGA(name.c_str(), &w, &h, &bpp);

@@ -590,13 +590,11 @@ void cBackground::drawBackground(float hour) {
     // every half hour
     speed *= 2;
     // every quarter hour
-    speed *= 2;
+    //speed *= 2;
     // every 5 minutes
-    speed *= 3;
+    //speed *= 3;
     // every minute
-    speed *= 5;
-    //speed = 1000;
-    //speed = 10000;
+    //speed *= 5;
     this->hour = fmod(speed*hour, 24.00f);
     //hour = rand()%24;
 
