@@ -605,7 +605,7 @@ void cMech::animate(float spf) {
         }
 
         if (controlled->pad->getButton(cPad::MECH_FIRE_BUTTON)) {
-            if (true) {
+            if (true && misc->weapons.size() > 0) {
                 misc->currentWeapon %= misc->weapons.size();
                 fireWeapon(misc->currentWeapon);
                 misc->currentWeapon++;
