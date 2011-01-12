@@ -180,7 +180,7 @@ void cMain::initGL(int width, int height) {
         glinfo = (const char*) glGetString(GL_EXTENSIONS);
         std::cout << glinfo << std::endl << std::endl;
         if (glinfo.find("GL_EXT_texture3D", 0) == std::string::npos) {
-            cObject::ENABLE_TEXTURE_3D = 0;
+            std::cout << "NO SUPPORT for GL_EXT_texture3D !!!\n";
         }
     }
 
@@ -314,7 +314,6 @@ void cMain::drawFrame(int elapsed_msec) {
 
     SGL::glPushPerspectiveProjection(game.fov);
     {
-
         // Setup camera.
         glLoadIdentity();
         if (game.camera) {
@@ -345,7 +344,6 @@ void cMain::drawFrame(int elapsed_msec) {
 
         // Draw the Head-Up-Display of the currently spectating Object.
         game.camera->drawHUD();
-
     }
     SGL::glPopProjection();
 
@@ -379,9 +377,7 @@ void cMain::drawFrame(int elapsed_msec) {
 }
 
 void cMain::updateKey(Uint8 keysym) {
-    if (keysym == _TEXTURE_KEY) {
-        cObject::ENABLE_TEXTURE_3D = !cObject::ENABLE_TEXTURE_3D;
-    } else if (keysym == _WIREFRAME_KEY) {
+    if (keysym == _WIREFRAME_KEY) {
         game.wireframe = !game.wireframe;
     } else if (keysym == _NIGHTVISION_KEY) {
         game.nightvision = !game.nightvision;
@@ -462,9 +458,14 @@ void cMain::updatePad(cPad* pad, SDL_Joystick* joy, int* mapping) {
         if (keystate[SDLK_i]) pad->setButton(cPad::BT_HU, true);
         if (keystate[SDLK_k]) pad->setButton(cPad::BT_HD, true);
     };
+    // Alternate Coolie-Hat keys.
+    if (keystate[SDLK_INSERT] == 1) pad->setButton(cPad::BT_PL, true);
+    if (keystate[SDLK_PAGEUP] == 1) pad->setButton(cPad::BT_PU, true);
+    if (keystate[SDLK_PAGEDOWN] == 1) pad->setButton(cPad::BT_PD, true);
+    if (keystate[SDLK_DELETE] == 1) pad->setButton(cPad::BT_PR, true);
     // Stick Buttons
-    if (keystate[SDLK_PERIOD]) pad->setButton(cPad::BT_J1B, true);
-    if (keystate[SDLK_COMMA]) pad->setButton(cPad::BT_J2B, true);
+    if (keystate[SDLK_PERIOD] || keystate[SDLK_HOME]) pad->setButton(cPad::BT_J1B, true);
+    if (keystate[SDLK_COMMA] || keystate[SDLK_END]) pad->setButton(cPad::BT_J2B, true);
 
 
     // Optional Mouse Input.
@@ -609,10 +610,10 @@ int job_output(void* data) {
 }
 
 int cMain::sdlmain(int argc, char** args) {
-    jobs.push(job_bgm);
-    jobs.push(job_output);
-    jobs.push(job_render);
-    std::cout.rdbuf( oss.rdbuf() );
+    //jobs.push(job_bgm);
+    //jobs.push(job_output);
+    //jobs.push(job_render);
+    //std::cout.rdbuf( oss.rdbuf() );
 
     std::cout << "LinWarrior 3D  (Build " __DATE__ ") by hackcraft.de" << std::endl << std::endl;
 

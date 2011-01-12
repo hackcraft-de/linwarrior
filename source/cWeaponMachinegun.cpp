@@ -63,7 +63,7 @@ void cWeaponMachinegun::fire(OID target) {
     {
         cParticle* s = new cParticle();
         assert(s != NULL);
-        s->fuel = 4;
+        s->fuel = 1.0f;
 
         vector_cpy(s->pos, pos);
 
@@ -159,7 +159,7 @@ void cWeaponMachinegun::drawSolid() {
             }
             glPopMatrix();
 
-            if (this->ready() == 0 && remainingAmmo != 0) glRotatef(this->weaponOwner->base->seconds * 8 * 90, 0, 1, 0);
+            if (this->ready() == 0 && remainingAmmo != 0) glRotatef(this->weaponOwner->seconds * 8 * 90, 0, 1, 0);
 
             glColor4f(0.3, 0.3, 0.3, 1.0);
             glPushMatrix();

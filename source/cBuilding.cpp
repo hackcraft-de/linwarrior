@@ -313,11 +313,10 @@ cBuilding::cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
             }
         }
     }
-    collideable = new rCollideable;
+    
     damageable = new rDamageable;
-    addRole(rRole::COLLIDEABLE);
-    addRole(rRole::DAMAGEABLE);
-    addRole(rRole::BUILDING);
+    socialised = new rSocialised;
+
     quat_set(traceable->ori, 0, 0, 0, 1);
     buildingRooms[0] = 3 * rooms_x;
     buildingRooms[1] = 3 * rooms_y;
@@ -328,14 +327,21 @@ cBuilding::cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
 }
 
 void cBuilding::damageByParticle(float* localpos, float damage, cObject* enactor) {
+    if (!damageable->alife) return;
+    
     if (damage > 0) {
-        this->damageable->hp[rDamageable::BODY] -= damage;
-        if (this->damageable->hp[rDamageable::BODY] <= 0 && !hasRole(rRole::DEAD)) {
-            //this->remRole(DAMAGEABLE);
-            this->addRole(rRole::DEAD);
+        int body = rDamageable::BODY;
+        damageable->hp[body] -= damage;
+        if (damageable->hp[body] < 0) damageable->hp[body] = 0;
+        if (damageable->hp[body] <= 0) {
+            damageable->alife = false;
             cout << "cBuilding::damageByParticle(): DEAD\n";
             explosionObject.fire(0);
         }
+        if (damageable->hp[body] <= 75) addTag(WOUNDED);
+        if (damageable->hp[body] <= 50) addTag(SERIOUS);
+        if (damageable->hp[body] <= 25) addTag(CRITICAL);
+        if (damageable->hp[body] <= 0) addTag(DEAD);
     }
 }
 
@@ -938,7 +944,6 @@ void cTile::drawSolid() {
     float r[] = {0, 0, 0};
 
     glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_TEXTURE_BIT);
-    //glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
         long ground = sTextures[tileKind];
         glEnable(GL_TEXTURE_2D);
@@ -973,56 +978,6 @@ void cTile::drawSolid() {
             cPrimitives::glVertex3fv2fv(p[2], t[2]);
             cPrimitives::glVertex3fv2fv(p[3], t[3]);
             glEnd();
-#if 0
-            if (!true) cPrimitives::glAxis();
-            glDisable(GL_LIGHTING);
-            float h = 2;
-            glColor3f(0.3, 0.3, 0.3);
-            if (tileKind == KIND_ROAD_NEWS && false) {
-                glBegin(GL_LINES);
-                glVertex3f(2, 0, 2);
-                glVertex3f(2, h, 2);
-                glVertex3f(7, 0, 2);
-                glVertex3f(7, h, 2);
-                glVertex3f(7, 0, 7);
-                glVertex3f(7, h, 7);
-                glVertex3f(2, 0, 7);
-                glVertex3f(2, h, 7);
-                glEnd();
-            } else if (tileKind == cTile::KIND_ROAD_EW) {
-                glBegin(GL_LINE_STRIP);
-                if ((int(traceable->pos[0] / 9) & 1) == 0) {
-                    glVertex3f(5, 0, 2);
-                    glColor3f(0.7, 0.7, 0.6);
-                    glVertex3f(5, h, 2);
-                    glColor3f(1, 0.9, 0.7);
-                    glVertex3f(5, h + 0.2 * h, 2 + 0.3 * h);
-                } else {
-                    glVertex3f(5, 0, 7);
-                    glColor3f(0.7, 0.7, 0.6);
-                    glVertex3f(5, h, 7);
-                    glColor3f(1, 0.9, 0.7);
-                    glVertex3f(5, h + 0.2 * h, 7 - 0.3 * h);
-                }
-                glEnd();
-            } else if (tileKind == cTile::KIND_ROAD_NS) {
-                glBegin(GL_LINE_STRIP);
-                if ((int(traceable->pos[2] / 9) & 1) == 0) {
-                    glVertex3f(2, 0, 5);
-                    glColor3f(0.7, 0.7, 0.6);
-                    glVertex3f(2, h, 5);
-                    glColor3f(1, 0.9, 0.7);
-                    glVertex3f(2 + 0.3 * h, h + 0.2 * h, 5);
-                } else {
-                    glVertex3f(7, 0, 5);
-                    glColor3f(0.7, 0.7, 0.6);
-                    glVertex3f(7, h, 5);
-                    glColor3f(1, 0.9, 0.7);
-                    glVertex3f(7 - 0.3 * h, h + 0.2 * h, 5);
-                }
-                glEnd();
-            }
-#endif
         }
         glPopMatrix();
     }

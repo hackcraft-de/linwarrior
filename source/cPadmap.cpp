@@ -66,9 +66,6 @@ cPadmap::cPadmap(float x, float y, float z) {
     vector_set(traceable->pos, x, y, z);
     quat_set(traceable->ori, 0, 0, 0, 1);
 
-    collideable = new rCollideable;
-    addRole(rRole::COLLIDEABLE);
-
     float h[16 * 16] = {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -273,7 +270,6 @@ float cPadmap::constrainParticle(float* worldpos, float radius, float* localpos,
     return 0.0f; // !!!!!!!!!!
 
     //if (enactor == NULL) return 0.0;
-    //if (!enactor->hasRole(rRole::HUMANPLAYER)) return 0.0;
     float localpos_[3];
     vector_cpy(localpos_, worldpos);
 

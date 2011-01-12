@@ -17,14 +17,14 @@ using std::endl;
 void cMission::checkConditions() {
     // Destroyed all necessary enemies?
     unsigned int n = 0;
-    loopiv(mVictory) if (mVictory[i]->hasRole(rRole::DEAD)) n++;
+    loopiv(mVictory) if (mVictory[i]->hasTag(cObject::DEAD)) n++;
     if (n != 0 && n == mVictory.size()) {
         onVictory();
         return;
     }
     // Destroyed any neccessary friend?
     n = 0;
-    loopiv(mDefeat) if (mDefeat[i]->hasRole(rRole::DEAD)) n++;
+    loopiv(mDefeat) if (mDefeat[i]->hasTag(cObject::DEAD)) n++;
     if (n != 0) {
         onDefeat();
         return;
@@ -70,14 +70,16 @@ cObject* cEmptyMission::init(cWorld* world) {
         float pos[3] = {-50, 0, -50};
         cMech* mech = new cMech(pos);
         assert(mech != NULL);
+        mech->name = "Playermech";
 
-        mech->controlled->pad = new cPad;
         mech->nameable->name = "Alpha";
 
+        mech->controlled->pad = new cPad;
         mech->controlled->controller->controllerEnabled = false; // Disable Autopilot.
-        mech->addRole(rRole::BLUE);
-        mech->addRole(rRole::HUMANPLAYER);
-        mech->socialised->addEnemy(rRole::RED);
+        mech->addTag(cObject::BLUE);
+        mech->addTag(cObject::HUMANPLAYER);
+        mech->socialised->addEnemy(cObject::RED);
+        mech->socialised->addEnemy(cObject::DEAD, false);
 
         player = mech;
 
@@ -128,7 +130,8 @@ void cOpenMission::onVictory() {
     //cMission::onVictory();
     if (mState != -1) {
         mState = -1;
-        cWorld::instance->sendMessage(0, 0, group_alliance_player.base->oid,
+        cout << "onVictory!";
+        cWorld::instance->sendMessage(0, 0, group_alliance_player.oid,
                 "DISPLAY",
                 //std::string("   (+) Primary target fullfilled.\n   (+) You Won!\n   (+) Hit ESC to finish Mission\n")
                 std::string("Stortebeker:\n  Good work!\n  We now have control over the town.\n  You may have a look around:\n  Pyra Nano Corp: SW of Skytide.\n  Starcircle: E of Skytide\n  Spaceport: NW\n  And don't get yourself killed.")
@@ -140,9 +143,11 @@ void cOpenMission::onDefeat() {
     //cMission::onDefeat();
     if (mState != -2) {
         mState = -2;
-        cWorld::instance->sendMessage(0, 0, group_alliance_player.base->oid,
+        cout << "onDefeat!";
+        cWorld::instance->sendMessage(0, 0, group_alliance_player.oid,
                 "DISPLAY",
-                std::string("   (-) You Lost!\n   (+) Hit ESC to finish Mission\n")
+                //std::string("   (-) You Lost!\n   (+) Hit ESC to finish Mission\n")
+                std::string("Stortebeker:\n  And I told you not to die!\n  We will share your booty evenly\n  and spread your ashes in space.\n")
                 );
     }
 }
@@ -166,25 +171,27 @@ cObject* cOpenMission::init(cWorld* world) {
 
     cout << "Initialising call groups...\n";
     {
-        group_alliance_player.nameable->name = "/alliance/player";
+        group_alliance_player.name = "/call/alliance/player";
         group_alliance_player.grouping = new rGrouping();
-        group_alliance_player.addRole(rRole::GROUPING, group_alliance_player.grouping);
         world->spawnObject(&group_alliance_player);
 
-        group_alliance_wingmen.nameable->name = "/alliance/wingmen";
+        group_alliance_wingmen.name = "/call/alliance/wingmen";
         group_alliance_wingmen.grouping = new rGrouping();
-        group_alliance_wingmen.addRole(rRole::GROUPING, group_alliance_wingmen.grouping);
         world->spawnObject(&group_alliance_wingmen);
 
-        group_alliance_all.nameable->name = "/alliance/all";
+        group_alliance_all.name = "/call/alliance/all";
         group_alliance_all.grouping = new rGrouping();
-        group_alliance_all.addRole(rRole::GROUPING, group_alliance_all.grouping);
         world->spawnObject(&group_alliance_all);
 
-        group_enemies_all.nameable->name = "/enemies/all";
+        group_enemies_all.name = "/call/enemies/all";
         group_enemies_all.grouping = new rGrouping();
-        group_enemies_all.addRole(rRole::GROUPING, group_enemies_all.grouping);
         world->spawnObject(&group_enemies_all);
+    }
+
+    cout << "Initialising default sensitivities...\n";
+    {
+        inc_sense.insert(cObject::HUMANPLAYER);
+        exc_sense.insert(cObject::DEAD);
     }
 
     cout << "Initialising Skytide City...\n";
@@ -233,13 +240,13 @@ cObject* cOpenMission::init(cWorld* world) {
         {
             float pos[] = {50, -1, 50};
             float range[] = {400, 100, 400};
-            OID group = group_alliance_player.base->oid;
+            OID group = group_alliance_player.oid;
             std::string type = "RADIO";
             std::string message = std::string("YOU ARE LEAVING THE MISSION AREA!");
             bool positive = false;
             bool posedge = true;
             OID delay = 0;
-            cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, type, message, group, positive, posedge, delay);
+            cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, type, message, group, &inc_sense, &exc_sense, positive, posedge, delay);
             world->spawnObject(oob);
         }
 
@@ -247,13 +254,13 @@ cObject* cOpenMission::init(cWorld* world) {
         {
             float pos[] = {50, -1, 50};
             float range[] = {490, 190, 490};
-            OID group = group_alliance_player.base->oid;
+            OID group = group_alliance_player.oid;
             std::string type = "RADIO";
             std::string message = std::string("YOU HAVE LEFT THE MISSION AREA, CONTRACT VOIDED!");
             bool positive = false;
             bool posedge = true;
             OID delay = 0;
-            cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, type, message, group, positive, posedge, delay);
+            cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, type, message, group, &inc_sense, &exc_sense, positive, posedge, delay);
             world->spawnObject(oob);
         }
         // Defeated when killed.
@@ -276,20 +283,21 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap) {
         cMech* mech = new cMech(pos, rot);
         if (mech == NULL) throw "No memory for player mech!";
         player = mech;
-
+        mech->name = "Playermech";
         mech->controlled->pad = new cPad;
         if (mech->controlled->pad == NULL) throw "No memory for player pad!";
         mech->nameable->name = "Alpha";
         mech->controlled->controller->controllerEnabled = false; // Disable Autopilot.
-        mech->addRole(rRole::BLUE);
-        mech->addRole(rRole::HUMANPLAYER);
-        mech->socialised->addEnemy(rRole::RED);
+        mech->addTag(cObject::BLUE);
+        mech->addTag(cObject::HUMANPLAYER);
+        mech->socialised->addEnemy(cObject::RED);
+        mech->socialised->addEnemy(cObject::DEAD, false);
 
         world->spawnObject(mech);
-        group_alliance_player.grouping->mMembers.insert(mech->base->oid);
-        group_alliance_wingmen.grouping->mMembers.insert(mech->base->oid);
-        group_alliance_all.grouping->mMembers.insert(mech->base->oid);
-        //cout << "after first spawn\n";
+        group_alliance_player.grouping->members.insert(mech->oid);
+        group_alliance_wingmen.grouping->members.insert(mech->oid);
+        group_alliance_all.grouping->members.insert(mech->oid);
+        cout << "after first spawn\n";
 
         if (true) {
             if (!true) {
@@ -313,7 +321,7 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap) {
                 mech->mountWeapon((char*) "RTorsor", new cWeaponRaybeam);
             }
         }
-        //cout << "after first weapons\n";
+        cout << "after first weapons\n";
     }
 
     // Wing 1
@@ -327,16 +335,18 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap) {
         assert(mech != NULL);
 
         mech->controlled->pad = new cPad();
-        mech->nameable->name = "Wing 1";
+        mech->name = "Player's Wing 1";
+        mech->nameable->name = "Biggs";
 
-        mech->addRole(rRole::BLUE);
-        mech->socialised->addEnemy(rRole::RED);
+        mech->addTag(cObject::BLUE);
+        mech->socialised->addEnemy(cObject::RED);
+        mech->socialised->addEnemy(cObject::DEAD, false);
 
         world->spawnObject(mech);
-        group_alliance_wingmen.grouping->mMembers.insert(mech->base->oid);
-        group_alliance_all.grouping->mMembers.insert(mech->base->oid);
+        group_alliance_wingmen.grouping->members.insert(mech->oid);
+        group_alliance_all.grouping->members.insert(mech->oid);
         bool patrol = true;
-        mech->controlled->controller->pushFollowLeader(player->base->oid, patrol);
+        mech->controlled->controller->pushFollowLeader(player->oid, patrol);
         mech->mountWeapon((char*) "LLoArm", new cWeaponMachinegun);
     }
 
@@ -351,22 +361,24 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap) {
         assert(mech != NULL);
 
         mech->controlled->pad = new cPad();
-        mech->nameable->name = "Wing 2";
+        mech->name = "Player's Wing 2";
+        mech->nameable->name = "Wedge";
 
-        mech->addRole(rRole::BLUE);
-        mech->socialised->addEnemy(rRole::RED);
+        mech->addTag(cObject::BLUE);
+        mech->socialised->addEnemy(cObject::RED);
+        mech->socialised->addEnemy(cObject::DEAD, false);
 
         world->spawnObject(mech);
-        group_alliance_wingmen.grouping->mMembers.insert(mech->base->oid);
-        group_alliance_all.grouping->mMembers.insert(mech->base->oid);
+        group_alliance_wingmen.grouping->members.insert(mech->oid);
+        group_alliance_all.grouping->members.insert(mech->oid);
         bool patrol = true;
-        mech->controlled->controller->pushFollowLeader(player->base->oid, patrol);
+        mech->controlled->controller->pushFollowLeader(player->oid, patrol);
         mech->mountWeapon((char*) "RLoArm", new cWeaponMachinegun);
     }
 
-    world->sendMessage(0, player->base->oid, group_alliance_all.base->oid, "RADIO", string("Stay alert there have been intruders!"));
-    world->sendMessage(0, player->base->oid, group_alliance_wingmen.base->oid, "RADIO", string("Wingmen into formation!"));
-    world->sendMessage(0, player->base->oid, group_alliance_player.base->oid, "RADIO", string("Stortebeker:\n  You guys search the town for offenders.\n  Then I'll give you more work!\n  I'll search the sourrounding."));
+    world->sendMessage(0, player->oid, group_alliance_all.oid, "RADIO", string("Stay alert there have been intruders!"));
+    world->sendMessage(0, player->oid, group_alliance_wingmen.oid, "RADIO", string("Wingmen into formation!"));
+    world->sendMessage(0, player->oid, group_alliance_player.oid, "RADIO", string("Stortebeker:\n  You guys search the town for offenders.\n  Then I'll give you more work!\n  I'll search the sourrounding."));
 
     return player;
 }
@@ -395,12 +407,12 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
     roundForrest(loc[0]+50, loc[1], loc[2]+50, world, 65, 150, 1);
 
     {
-        OID group = group_alliance_player.base->oid;
+        OID group = group_alliance_player.oid;
         float pos[] = { loc[0]+48, loc[1] + 9, loc[2]+58 };
         float range[] = {60.5, 40.5, 60.5};
         string message = string("Skytide City");
-        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group);
-        oob->nameable->name = message;
+        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
+        oob->name = message;
         world->spawnObject(oob);
     }
 
@@ -412,13 +424,15 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
         assert(mech != NULL);
 
         mech->controlled->pad = new cPad();
+        mech->name = "Mech/Stortebeker";
         mech->nameable->name = "Stortebeker";
 
-        mech->addRole(rRole::BLUE);
-        mech->socialised->addEnemy(rRole::RED);
+        mech->addTag(cObject::BLUE);
+        mech->socialised->addEnemy(cObject::RED);
+        mech->socialised->addEnemy(cObject::DEAD, false);
 
         world->spawnObject(mech);
-        group_alliance_all.grouping->mMembers.insert(mech->base->oid);
+        group_alliance_all.grouping->members.insert(mech->oid);
 
         if (true) {
             //mech->mountWeapon((char*)"LLoArm",  new cMachineGun);
@@ -447,10 +461,12 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
         assert(mech != NULL);
 
         mech->controlled->pad = new cPad();
+        mech->name = "Mech/OffendingVillain";
         mech->nameable->name = "Offending Villain";
 
-        mech->addRole(rRole::RED);
-        mech->socialised->addEnemy(rRole::BLUE);
+        mech->addTag(cObject::RED);
+        mech->socialised->addEnemy(cObject::BLUE);
+        mech->socialised->addEnemy(cObject::DEAD, false);
 
         //ai->newState(cController::WAIT, (char*) NULL);
         //ai->newState(cController::TARGET, "Delta");
@@ -459,7 +475,7 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
         mVictory.push_back(mech);
 
         world->spawnObject(mech);
-        group_enemies_all.grouping->mMembers.insert(mech->base->oid);
+        group_enemies_all.grouping->members.insert(mech->oid);
 
         if (true) {
             //mech->mountWeapon((char*)"LTorsor", new cExplosion);
@@ -476,17 +492,19 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
         assert(mech != NULL);
 
         mech->controlled->pad = new cPad();
+        mech->name = "Mech/LurkingBandit";
         mech->nameable->name = "Lurking Bandit";
 
-        mech->addRole(rRole::RED);
-        mech->socialised->addEnemy(rRole::BLUE);
+        mech->addTag(cObject::RED);
+        mech->socialised->addEnemy(cObject::BLUE);
+        mech->socialised->addEnemy(cObject::DEAD, false);
 
         //ai->newState(cController::ENGAGE, "Charly");
         //ai->newState(cController::ROUTE, navs);
 
         //gCameraEntity = mech;
         world->spawnObject(mech);
-        group_enemies_all.grouping->mMembers.insert(mech->base->oid);
+        group_enemies_all.grouping->members.insert(mech->oid);
 
         if (true) {
             mech->mountWeapon((char*) "LLoArm", new cWeaponSparkgun);
@@ -517,12 +535,12 @@ void cOpenMission::initStarcircleTown(cWorld* world, cPlanetmap* planetmap) {
     planetmap->mods.push_back(mod);
 
     {
-        OID group = group_alliance_player.base->oid;
+        OID group = group_alliance_player.oid;
         float pos[] = { loc[0], loc[1]+9, loc[2] };
         float range[] = {50.5, 40.5, 50.5};
         string message = string("Starcircle Town\n(currently under bandit control)");
-        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group);
-        oob->nameable->name = message;
+        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
+        oob->name = message;
         world->spawnObject(oob);
     }
     
@@ -530,21 +548,21 @@ void cOpenMission::initStarcircleTown(cWorld* world, cPlanetmap* planetmap) {
     roundForrest(loc[0],loc[1], loc[2], world, 7*2, 22*2, 3);
     
     if (true) {
-        smallArmy(loc[0], loc[1], loc[2], world, "Ambusher", 1, false, 1);
-        smallArmy(loc[0]-48, loc[1], loc[2]+17, world, "Def A", 3, false, 3);
-        smallArmy(loc[0]-50, loc[1], loc[2]-50, world, "Def B", 2, false, 2);
+        smallArmy(loc[0], loc[1], loc[2], world, "Bandit Leader", 1, false, 1);
+        smallArmy(loc[0]-48, loc[1], loc[2]+17, world, "Bandits A", 3, false, 3);
+        smallArmy(loc[0]-50, loc[1], loc[2]-50, world, "Bandits B", 2, false, 2);
     }
     
     {
         float pos[] = STARCIRCLE;
         float range[] = {10, 3, 10};
-        OID group = group_alliance_player.base->oid;
+        OID group = group_alliance_player.oid;
         std::string type = "RADIO";
         std::string message = std::string("EVACUATION ZONE REACHED, FINISHING MISSION!");
         bool positive = true;
         bool posedge = true;
         OID delay = 0;
-        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, type, message, group, positive, posedge, delay);
+        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, type, message, group, &inc_sense, &exc_sense, positive, posedge, delay);
         world->spawnObject(oob);
     }
 }
@@ -566,12 +584,12 @@ void cOpenMission::initAcroloidMines(cWorld* world, cPlanetmap* planetmap) {
     planetmap->mods.push_back(mod);
 
     {
-        OID group = group_alliance_player.base->oid;
+        OID group = group_alliance_player.oid;
         float pos[] = { loc[0], loc[1]+9, loc[2] };
         float range[] = {0.5, 0.5, 0.5};
         string message = string("Acroloid Surface Mining Ltd. Co.\n(under construction)");
-        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group);
-        oob->nameable->name = message;
+        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
+        oob->name = message;
         world->spawnObject(oob);
     }
 }
@@ -593,12 +611,12 @@ void cOpenMission::initCollapsiumFactory(cWorld* world, cPlanetmap* planetmap) {
     planetmap->mods.push_back(mod);
 
     {
-        OID group = group_alliance_player.base->oid;
+        OID group = group_alliance_player.oid;
         float pos[] = { loc[0], loc[1]+9, loc[2] };
         float range[] = {0.5, 0.5, 0.5};
         string message = string("Collapsium Factory Ltd.\n(under construction)");
-        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group);
-        oob->nameable->name = message;
+        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
+        oob->name = message;
         world->spawnObject(oob);
     }
 }
@@ -620,12 +638,12 @@ void cOpenMission::initJurataJail(cWorld* world, cPlanetmap* planetmap) {
     planetmap->mods.push_back(mod);
 
     {
-        OID group = group_alliance_player.base->oid;
+        OID group = group_alliance_player.oid;
         float pos[] = { loc[0], loc[1]+9, loc[2] };
         float range[] = {0.5, 0.5, 0.5};
         string message = string("Jurata Jail Ltd.\n- Service Company -\n(under construction)");
-        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group);
-        oob->nameable->name = message;
+        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
+        oob->name = message;
         world->spawnObject(oob);
     }
 }
@@ -647,12 +665,12 @@ void cOpenMission::initSpadenixFactory(cWorld* world, cPlanetmap* planetmap) {
     planetmap->mods.push_back(mod);
 
     {
-        OID group = group_alliance_player.base->oid;
+        OID group = group_alliance_player.oid;
         float pos[] = { loc[0], loc[1]+9, loc[2] };
         float range[] = {0.5, 0.5, 0.5};
         string message = string("Spadenix Mechanical Factory Ltd.\n(under construction)");
-        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group);
-        oob->nameable->name = message;
+        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
+        oob->name = message;
         world->spawnObject(oob);
     }
 }
@@ -674,18 +692,18 @@ void cOpenMission::initPyraNanoCorp(cWorld* world, cPlanetmap* planetmap) {
     planetmap->mods.push_back(mod);
     
     {
-        OID group = group_alliance_player.base->oid;
+        OID group = group_alliance_player.oid;
         float pos[] = { loc[0], loc[1] + 9, loc[2] };
         float range[] = {50.5, 40.5, 50.5};
         string message = string("Pyra Nano Corporation\n(currently under bandit control)");
-        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group);
-        oob->nameable->name = message;
+        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
+        oob->name = message;
         world->spawnObject(oob);
     }
 
     pyramidBuilding(loc[0], loc[1], loc[2], world);
     roundForrest(loc[0], loc[1], loc[2], world, 28, 50, 3);
-    smallArmy(loc[0]+15, loc[1], loc[2]-30, world, "Pyramid Guard", 3, false);
+    smallArmy(loc[0]+15, loc[1], loc[2]-30, world, "Bandito", 3, false);
 }
 
 void cOpenMission::initPentaSpaceport(cWorld* world, cPlanetmap* planetmap) {
@@ -705,12 +723,12 @@ void cOpenMission::initPentaSpaceport(cWorld* world, cPlanetmap* planetmap) {
     planetmap->mods.push_back(mod);
     
     {
-        OID group = group_alliance_player.base->oid;
+        OID group = group_alliance_player.oid;
         float pos[] = { loc[0] + 5, loc[1] + 9, loc[2] + 3 };
         float range[] = {90.5, 40.5, 90.5};
         string message = string("Penta Interstellar Spaceport\n(currently under bandit control)");
-        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group);
-        oob->nameable->name = message;
+        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
+        oob->name = message;
         world->spawnObject(oob);
     }
 
@@ -752,9 +770,11 @@ void cOpenMission::initPentaSpaceport(cWorld* world, cPlanetmap* planetmap) {
         if (mech == NULL) throw "No memory for cMech in spacePortMechs.";
         mech->controlled->pad = new cPad;
         if (mech->controlled->pad == NULL) throw "No memory for cPad in spacePortMechs.";
-        mech->nameable->name = "Space Port Guard";
-        mech->addRole(rRole::RED);
-        mech->socialised->addEnemy(rRole::BLUE);
+        mech->name = "Mech/SpacePortGuard_i";
+        mech->nameable->name = "Space-Bandit";
+        mech->addTag(cObject::RED);
+        mech->socialised->addEnemy(cObject::BLUE);
+        mech->socialised->addEnemy(cObject::DEAD, false);
         world->spawnObject(mech);
         mech->mountWeapon((char*) "Center", new cWeaponMachinegun);
     }
@@ -770,9 +790,10 @@ void cOpenMission::battleField(cWorld* world) {
 
         mech->controlled->pad = new cPad();
         if (mech->controlled->pad == NULL) throw "No memory for cPad in battleField.";
-        mech->nameable->name = "X";
-        mech->addRole(rRole::RED);
-        mech->socialised->addEnemy(rRole::BLUE);
+        mech->name = "Mech/Battlemech_i";
+        mech->addTag(cObject::RED);
+        mech->socialised->addEnemy(cObject::BLUE);
+        mech->socialised->addEnemy(cObject::DEAD, false);
 
         world->spawnObject(mech);
 
@@ -791,9 +812,10 @@ void cOpenMission::battleField(cWorld* world) {
 
         mech->controlled->pad = new cPad();
         if (mech->controlled->pad == NULL) throw "No memory for cPad in battleField.";
-        mech->nameable->name = "Y";
-        mech->addRole(rRole::BLUE);
-        mech->socialised->addEnemy(rRole::RED);
+        mech->name = "Mech/Fieldmech_i";
+        mech->addTag(cObject::BLUE);
+        mech->socialised->addEnemy(cObject::RED);
+        mech->socialised->addEnemy(cObject::DEAD, false);
 
         world->spawnObject(mech);
 
@@ -821,13 +843,16 @@ void cOpenMission::smallArmy(int wx, int wy, int wz, cWorld* world, const char* 
         if (mech == NULL) throw "No memory for cMech in smallArmy.";
         mech->controlled->pad = new cPad;
         if (mech->controlled->pad == NULL) throw "No memory for cPad in smallArmy.";
+        mech->name = name;
         mech->nameable->name = name;
         if (blue) {
-            mech->addRole(rRole::BLUE);
-            mech->socialised->addEnemy(rRole::RED);
+            mech->addTag(cObject::BLUE);
+            mech->socialised->addEnemy(cObject::RED);
+            mech->socialised->addEnemy(cObject::DEAD, false);
         } else {
-            mech->addRole(rRole::RED);
-            mech->socialised->addEnemy(rRole::BLUE);
+            mech->addTag(cObject::RED);
+            mech->socialised->addEnemy(cObject::BLUE);
+            mech->socialised->addEnemy(cObject::DEAD, false);
         }
         world->spawnObject(mech);
         if (wpn == 0) {
@@ -837,7 +862,7 @@ void cOpenMission::smallArmy(int wx, int wy, int wz, cWorld* world, const char* 
         } else if (wpn == 2) {
             mech->mountWeapon((char*) "Left", new cWeaponHoming);
         } else if (wpn == 3) {
-            mech->mountWeapon((char*) "Center", new cWeaponMachinegun);
+            mech->mountWeapon((char*) "LLoArm", new cWeaponMachinegun);
         }
 
         a += M_PI * 0.2f;

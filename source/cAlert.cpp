@@ -14,7 +14,7 @@ DEFINE_glprintf
 bool cAlert::sDrawzone = !true;
 
 
-cAlert::cAlert(float* center, float* range, int shapetype, std::string msgtype, std::string msgtext, OID receiver, bool positive, bool posedge, bool once, OID fusedelay) {
+cAlert::cAlert(float* center, float* range, int shapetype, std::string msgtype, std::string msgtext, OID receiver, std::set<OID>* include, std::set<OID>* exclude, bool positive, bool posedge, bool once, OID fusedelay) {
     vector_cpy(shape.center, center);
     vector_cpy(shape.range, range);
     this->traceable->radius = 1 + fmax(fabs(shape.range[0]), fmax(fabs(shape.range[1]), fabs(shape.range[2])));
@@ -32,10 +32,9 @@ cAlert::cAlert(float* center, float* range, int shapetype, std::string msgtype, 
     this->msgtype = msgtype;
     this->msgtext = msgtext;
     this->receiver = receiver;
-    collideable = new rCollideable;
-    addRole(rRole::COLLIDEABLE, collideable);
     shape.type = shapetype;
-    sensitivity.insert(rRole::HUMANPLAYER);
+    inc_sense = *include;
+    exc_sense = *exclude;
     fusedelay = 0;
 }
 
@@ -45,7 +44,7 @@ float cAlert::constrainParticle(float* worldpos, float radius, float* localpos, 
     // Don't react on scanning and shooting.
     if (enactor == NULL) return 0;
     if (once && fired) return 0;
-    if (! enactor->allRoles(&sensitivity) ) return 0;
+    if (! enactor->anyTags(&inc_sense) || enactor->anyTags(&exc_sense) ) return 0;
 
     rShape* s = &shape;
     float depth = 0;
@@ -86,23 +85,23 @@ float cAlert::constrainParticle(float* worldpos, float radius, float* localpos, 
     }
     //std::cout << depth << std::endl;
     // Is that possible intruder yet unknown.
-    if (intruders.find(enactor->base->oid) == intruders.end()) {
+    if (intruders.find(enactor->oid) == intruders.end()) {
         // The intruder was outside and now there is an intrusion.
         if ((depth != 0) == positive) {
-            intruders.insert(enactor->base->oid);
+            intruders.insert(enactor->oid);
             if (posedge) {
                 fired = true;
                 //cout << "fusedelay=" << fusedelay << endl;
-                cWorld::instance->sendMessage(fusedelay, base->oid, receiver, msgtype, msgtext, NULL);
+                cWorld::instance->sendMessage(fusedelay, oid, receiver, msgtype, msgtext, NULL);
             }
         }
     } else  {
         // The intruder was inside and now the intruder left the zone.
         if ((depth == 0) == positive) {
-            intruders.erase(enactor->base->oid);
+            intruders.erase(enactor->oid);
             if (!posedge) {
                 fired = true;
-                cWorld::instance->sendMessage(fusedelay, base->oid, receiver, msgtype, msgtext, NULL);
+                cWorld::instance->sendMessage(fusedelay, oid, receiver, msgtype, msgtext, NULL);
             }
         }
     }
@@ -126,7 +125,7 @@ void cAlert::drawEffect() {
     float* center = s->center;
     float* range = s->range;
 
-    glPushName((GLuint)(this->base->oid & 0xFFFF));
+    glPushName((GLuint)(this->oid & 0xFFFF));
 
     if (nameable) {
         glColor4f(0.99, 0.99, 0.2, 1);

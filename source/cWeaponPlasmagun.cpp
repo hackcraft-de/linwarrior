@@ -38,7 +38,7 @@ void cWeaponPlasmagun::fire(OID target) {
 
     cParticle* s = new cParticle();
     assert(s != NULL);
-    s->fuel = 3;
+    s->fuel = 1.0f;
 
     float* pos = &source[12];
     vector_cpy(s->pos, pos)
@@ -107,8 +107,8 @@ void cWeaponPlasmagun::drawSolid() {
                 glPushMatrix();
                 {
                     glScalef(0.02, 0.02, 0.02);
-                    glTranslatef(0, (0.5 + 0.5 * sin(this->weaponOwner->base->seconds * 2 * M_PI))* 1.7 / 0.02, 0);
-                    glRotatef(this->weaponOwner->base->seconds * 2 * 360, 1, 3, 7);
+                    glTranslatef(0, (0.5 + 0.5 * sin(this->weaponOwner->seconds * 2 * M_PI))* 1.7 / 0.02, 0);
+                    glRotatef(this->weaponOwner->seconds * 2 * 360, 1, 3, 7);
                     cPrimitives::glUnitBlock();
                 }
                 glPopMatrix();
@@ -116,8 +116,8 @@ void cWeaponPlasmagun::drawSolid() {
                 glPushMatrix();
                 {
                     glScalef(0.02, 0.02, 0.02);
-                    glTranslatef(0, (0.5 + 0.5 * cos(this->weaponOwner->base->seconds * 2 * M_PI))* 1.7 / 0.02, 0);
-                    glRotatef(this->weaponOwner->base->seconds * 2 * 360, 1, 3, 7);
+                    glTranslatef(0, (0.5 + 0.5 * cos(this->weaponOwner->seconds * 2 * M_PI))* 1.7 / 0.02, 0);
+                    glRotatef(this->weaponOwner->seconds * 2 * 360, 1, 3, 7);
                     cPrimitives::glUnitBlock();
                 }
                 glPopMatrix();
@@ -125,8 +125,8 @@ void cWeaponPlasmagun::drawSolid() {
                 glPushMatrix();
                 {
                     glScalef(0.02, 0.02, 0.02);
-                    glTranslatef(0, (0.5 - 0.5 * sin(this->weaponOwner->base->seconds * 2 * M_PI))* 1.7 / 0.02, 0);
-                    glRotatef(this->weaponOwner->base->seconds * 2 * 360, 1, 3, 7);
+                    glTranslatef(0, (0.5 - 0.5 * sin(this->weaponOwner->seconds * 2 * M_PI))* 1.7 / 0.02, 0);
+                    glRotatef(this->weaponOwner->seconds * 2 * 360, 1, 3, 7);
                     cPrimitives::glUnitBlock();
                 }
                 glPopMatrix();

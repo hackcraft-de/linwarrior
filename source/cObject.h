@@ -59,12 +59,12 @@ int saveTGA(const char *fname, int w, int h, int bpp, unsigned char* image);
 
 
 /**
- * Base-Class of all roles (mainy to just replace void*).
+ * Base-Class of all roles.
  * An instance of it may be used to flag a role as being "set" (future).
- * Note that a Role of an Object can be sub-classed individually and
- * replace the parent role.
  * A role can be understood as a set of object attributes reflecting
  * a certain part or aspect of the object.
+ * Did you know that a Role of an Object can be sub-classed individually
+ * to replace the parent role in an Object?
  */
 struct rRole {
     std::string role;
@@ -74,72 +74,9 @@ struct rRole {
     }
 
     virtual rRole* clone() {
-        return new rRole;
+        return new rRole(role);
     }
 
-    /// Enumeration of roles an object may assume.
-    enum Roles {
-        // Roles indicating Attributes
-        BASE,
-        NAMEABLE,
-        SOCIALISED,
-        TRACEABLE,
-        COLLIDEABLE,
-        DAMAGEABLE,
-        CONTROLLED,
-        GROUPING,
-
-        // Roles indicating Kind of Objects
-        MECH,
-        BUILDING,
-        TREE,
-        IMMOBILE,
-
-        // Roles indicating belonging to certain Social-Parties
-        RED,
-        BLUE,
-        GREEN,
-        YELLOW,
-        CIVIL,
-
-        // Roles indicating State
-        WOUNDED, //  <= 75% hp
-        SERIOUS, // <= 50% hp
-        CRITICAL, // <= 25% hp
-        DEAD, // <= 0% hp, note that the later include the former.
-
-        // Special Roles
-        HUMANPLAYER,
-        FRAGGED,
-
-        MAX_ROLES
-    };
-};
-
-/**
- * Role containing the very basic traits of an object - for world managing etc.
- */
-struct rBase : public rRole {
-    /// Unique Object ID, simulation date:time:deltacycle of spawn.
-    OID oid;
-    /// Age in seconds since spawn, update in animate().
-    double seconds;
-    /// Constructor.
-
-    rBase() : rRole("BASE"), oid(0), seconds(0) {
-    }
-    /// Copy Constructor.
-
-    rBase(rBase * original) : rRole("BASE"), oid(0), seconds(0) {
-        if (original != NULL) {
-            oid = original->oid;
-            seconds = original->seconds;
-        }
-    }
-
-    virtual rRole* clone() {
-        return new rBase(this);
-    }
 };
 
 /**
@@ -189,31 +126,15 @@ struct rTraceable : public cParticle, public rRole {
     }
 };
 
-/**
- * Marks an object being collideable.
- */
-struct rCollideable : public rRole {
-    /// Constructor.
-
-    rCollideable() : rRole("COLLIDEABLE") {
-    };
-
-    /// Copy Constructor.
-
-    rCollideable(rCollideable * original) : rRole("COLLIDEABLE") {
-    };
-
-    virtual rRole* clone() {
-        return new rCollideable(this);
-    }
-};
 
 /**
  * Encapsulates attributes related to body damage and armor state.
  */
 struct rDamageable : public rRole {
-    /// Enumeration of entity body part units: Body, Legs, Left, Right.
+    /// Marks object as still alife for internal state reference.
+    bool alife;
 
+    /// Enumeration of entity body part units: Body, Legs, Left, Right.
     enum Parts {
         BODY = 0, // Some Objects only have this
         LEGS,
@@ -232,6 +153,7 @@ struct rDamageable : public rRole {
     /// Constructor.
 
     rDamageable() : rRole("DAMAGEABLE") {
+        alife = true;
         loopi(MAX_PARTS) hp[i] = 100.0f;
     }
     /// Copy Constructor.
@@ -240,6 +162,7 @@ struct rDamageable : public rRole {
         if (original == NULL) {
             rDamageable();
         } else {
+            alife = original->alife;
             loopi(MAX_PARTS) hp[i] = original->hp[i];
         }
     }
@@ -291,20 +214,26 @@ struct rControlled : public rRole {
  *  Encapsulates social behavior related attributes (merge with entity?).
  */
 struct rSocialised : public rRole {
-    /// future: Bitmask, lists Roles which Allies have.
-    std::set<OID> allies;
-    /// Bitmask, lists Roles which Enemies play.
-    std::set<OID> enemies;
+    /// Set lists Tags of allies.
+    std::set<OID> inc_allies;
+    /// Set lists Tags of explicitly excluded allied (like dead ones).
+    std::set<OID> exc_allies;
+    /// Set lists Tags of enemies.
+    std::set<OID> inc_enemies;
+    /// Set lists Tags of explicitly excluded enemies (like dead ones).
+    std::set<OID> exc_enemies;
+    
     /// Constructor.
-
     rSocialised() : rRole("SOCIALISED") {
     }
-    /// Copy Constructor.
 
+    /// Copy Constructor.
     rSocialised(rSocialised * original) : rRole("SOCIALISED") {
         if (original != NULL) {
-            allies = original->allies;
-            enemies = original->enemies;
+            inc_allies = original->inc_allies;
+            inc_enemies = original->inc_enemies;
+            exc_allies = original->exc_allies;
+            exc_enemies = original->exc_enemies;
         }
     }
 
@@ -312,40 +241,58 @@ struct rSocialised : public rRole {
         return new rSocialised(this);
     }
 
-    /// Check wether an object playing a certain role is an ally.
-
-    bool hasAllied(Roles role) {
-        return ( allies.find(role) != allies.end());
+    /// Check wether an tag-set is identified as an ally.
+    bool isAllied(std::set<OID>* tags) {
+        std::set<OID> inclusion;
+        std::set_intersection(tags->begin(), tags->end(), inc_allies.begin(), inc_allies.end(), std::inserter(inclusion, inclusion.begin()));
+        std::set<OID> exclusion;
+        std::set_intersection(tags->begin(), tags->end(), exc_allies.begin(), exc_allies.end(), std::inserter(exclusion, exclusion.begin()));
+        return (!inclusion.empty() && exclusion.empty());
     }
 
-    /// Add roles which allies of this object play.
-
-    void addAllied(Roles role) {
-        allies.insert(role);
+    /// Add tags which allies of this object have (not).
+    void addAllied(OID tag, bool include = false) {
+        if (include) {
+            inc_allies.insert(tag);
+        } else {
+            exc_allies.insert(tag);
+        }
     }
 
-    /// Remove objects playing a certain role from ally list.
-
-    void remAllied(Roles role) {
-        allies.erase(role);
+    /// Remove tags which alies of this object have (not).
+    void remAllied(OID tag, bool include = false) {
+        if (include) {
+            inc_allies.erase(tag);
+        } else {
+            exc_allies.erase(tag);
+        }
     }
 
-    /// Check wether an object playing a certain role is an enemy.
-
-    bool hasEnemy(Roles role) {
-        return ( enemies.find(role) != enemies.end());
+    /// Check wether an tag-set is identified as an enemy.
+    bool isEnemy(std::set<OID>* tags) {
+        std::set<OID> inclusion;
+        std::set_intersection(tags->begin(), tags->end(), inc_enemies.begin(), inc_enemies.end(), std::inserter(inclusion, inclusion.begin()));
+        std::set<OID> exclusion;
+        std::set_intersection(tags->begin(), tags->end(), exc_enemies.begin(), exc_enemies.end(), std::inserter(exclusion, exclusion.begin()));
+        return (!inclusion.empty() && exclusion.empty());
     }
 
     /// Add roles which enemies of this object play.
-
-    void addEnemy(Roles role) {
-        enemies.insert(role);
+    void addEnemy(OID tag, bool include = true) {
+        if (include) {
+            inc_enemies.insert(tag);
+        } else {
+            exc_enemies.insert(tag);
+        }
     }
 
     /// Remove objects playing a certain role from enemy list.
-
-    void remEnemy(Roles role) {
-        enemies.erase(role);
+    void remEnemy(OID tag, bool include = false) {
+        if (include) {
+            inc_enemies.erase(tag);
+        } else {
+            exc_enemies.erase(tag);
+        }
     }
 };
 
@@ -354,17 +301,17 @@ struct rSocialised : public rRole {
  */
 struct rGrouping : public rRole {
     /// Group name.
-    std::string mName;
+    std::string name;
     /// Lists registered members of this group.
-    std::set<OID> mMembers;
+    std::set<OID> members;
 
-    rGrouping() : rRole("GROUPING"), mName("Unnamed") {
+    rGrouping() : rRole("GROUPING"), name("Unnamed") {
     }
 
-    rGrouping(rGrouping * original) : rRole("GROUPING"), mName("Unnamed") {
+    rGrouping(rGrouping * original) : rRole("GROUPING"), name("Unnamed") {
         if (original != NULL) {
-            mName = original->mName;
-            mMembers.clear();
+            name = original->name;
+            members.clear();
             //mMembers.insert(mMembers.begin(), original->mMembers.begin(), original->mMembers.end());
         }
     }
@@ -374,6 +321,9 @@ struct rGrouping : public rRole {
     }
 };
 
+#define FIELDOFS(attribute)     (((OID)&attribute) - ((OID)this))
+#define ROLEPTR(attribute)      ((rRole* cObject::*) &attribute)
+#define GETROLE(offset)         ((rRole*) *((OID*)( ((OID)this) + offset )))
 
 /**
  * Generic Game-Object (Object with Roles) which
@@ -388,88 +338,107 @@ struct rGrouping : public rRole {
  */
 class cObject {
     friend class cWorld;
-public:
 
-    /// Switches 3D-Texturing on and off.
-    static int ENABLE_TEXTURE_3D;
+public: // Basic Object attributes for managing.
+
+    /// Unique Object ID, simulation date:time:deltacycle of spawn.
+    OID oid;
+    /// Age in seconds since spawn, updated by world before animate() call.
+    double seconds;
+    /// Internal qualified name of the object.
+    std::string name;
 
 public: // Predefined Roles
 
-    rBase* base;
     rNameable* nameable;
     rSocialised* socialised;
     rTraceable* traceable;
-    rCollideable* collideable;
     rDamageable* damageable;
     rControlled* controlled;
     rGrouping* grouping;
 
 public: // Experimental Role "Managing"
 
-    static std::map<std::string, OID> roleids;
-    static std::map<OID, rRole*> roletypes;
-    std::map<OID, rRole*> roles;
-    std::set<OID> roleset;
+    static std::map<std::string, rRole*> roleprotos;
+    static std::map<std::string, OID> roleoffsets;
+    //static std::map<std::string, OID> roleids;
+    //static std::map<OID, rRole*> roletypes;
+    //std::map<OID, rRole*> roles;
+    //std::set<OID> roleset;
+
+public: // Object Tags
+
+    /// Tags (IDs, Social-Roles, Parties, States...) this object has.
+    std::set<OID> tags;
+    
+    enum DefaultTags {
+        // Roles indicating belonging to certain Social-Parties
+        RED,
+        BLUE,
+        GREEN,
+        YELLOW,
+
+        // Roles indicating State
+        WOUNDED, //  <= 75% hp
+        SERIOUS, // <= 50% hp
+        CRITICAL, // <= 25% hp
+        DEAD, // <= 0% hp, note that the later include the former.
+
+        // Special Roles
+        HUMANPLAYER,
+
+        MAX_PARTIES
+    };
 
 public:
 
     cObject() {
-        if (roleids.empty()) {
-            registerRole(rRole::BASE, new rBase);
-            registerRole(rRole::TRACEABLE, new rTraceable);
-            registerRole(rRole::COLLIDEABLE, new rCollideable);
-            registerRole(rRole::DAMAGEABLE, new rDamageable);
-            registerRole(rRole::CONTROLLED, new rControlled);
-            registerRole(rRole::SOCIALISED, new rSocialised);
-            registerRole(rRole::GROUPING, new rGrouping);
+        oid = 0;
+        seconds = 0;
+        name = "";
+        if (roleprotos.empty()) {
+            registerRole(new rNameable, FIELDOFS(nameable), ROLEPTR(cObject::nameable));
+            registerRole(new rSocialised, FIELDOFS(socialised), ROLEPTR(cObject::socialised));
+            registerRole(new rTraceable, FIELDOFS(traceable), ROLEPTR(cObject::traceable));
+            registerRole(new rDamageable, FIELDOFS(damageable), ROLEPTR(cObject::damageable));
+            registerRole(new rControlled, FIELDOFS(controlled), ROLEPTR(cObject::controlled));
+            registerRole(new rGrouping, FIELDOFS(grouping), ROLEPTR(cObject::grouping));
         }
-        base = new rBase;
         nameable = new rNameable;
+        socialised = NULL;
         traceable = new rTraceable;
-        collideable = NULL;
         damageable = NULL;
         controlled = NULL;
-        socialised = NULL;
         grouping = NULL;
-        addRole(rRole::BASE, base);
-        addRole(rRole::NAMEABLE, nameable);
-        addRole(rRole::TRACEABLE, traceable);
+        //rRole* r = GETROLE(FIELDOFS(nameable));
+        //std::cout << "TEST: " << r << " vs " << nameable << "\n";
     }
 
     cObject(cObject* original) {
-        if (original->base) base = new rBase(original->base);
         if (original->nameable) nameable = new rNameable(original->nameable);
         if (original->traceable) traceable = new rTraceable(original->traceable);
-        if (original->collideable) collideable = new rCollideable(original->collideable);
         if (original->damageable) damageable = new rDamageable(original->damageable);
         if (original->controlled) controlled = new rControlled(original->controlled);
         if (original->socialised) socialised = new rSocialised(original->socialised);
         if (original->grouping) grouping = new rGrouping(original->grouping);
-        if (original->base) roles[rRole::BASE] = base;
-        if (original->nameable) roles[rRole::NAMEABLE] = nameable;
-        if (original->traceable) roles[rRole::TRACEABLE] = traceable;
-        if (original->collideable) roles[rRole::COLLIDEABLE] = collideable;
-        if (original->damageable) roles[rRole::DAMAGEABLE] = damageable;
-        if (original->controlled) roles[rRole::CONTROLLED] = controlled;
-        if (original->socialised) roles[rRole::SOCIALISED] = socialised;
-        if (original->grouping) roles[rRole::GROUPING] = grouping;
     }
 
     virtual ~cObject() {
-        delete this->base;
-        delete this->damageable;
-        delete this->collideable;
-        delete this->controlled;
         delete this->nameable;
-        delete this->socialised;
         delete this->traceable;
+        delete this->damageable;
+        delete this->controlled;
+        delete this->socialised;
+        delete this->grouping;
     }
 
-    static void registerRole(OID id, rRole* prototype) {
-        roletypes[id] = prototype;
-        roleids[prototype->role] = id;
+    static void registerRole(rRole* prototype, OID attribute_offset, rRole* cObject::* ptr = NULL) {
+        roleprotos[prototype->role] = prototype;
+        roleoffsets[prototype->role] = attribute_offset;
+        std::cout << "NEW ROLE " << prototype->role << " @ " << attribute_offset << " # " << ptr << "\n";
     }
 
+    /*
     bool anyRoles(std::set<OID>* test) {
         std::set<OID> result;
         std::set_intersection(roleset.begin(), roleset.end(), test->begin(), test->end(), std::inserter(result, result.begin()));
@@ -502,7 +471,36 @@ public:
         roles.erase(role);
         roleset.erase(role);
     }
+    */
 
+    /// Check wether this Object has at least one of the given tags.
+    bool anyTags(std::set<OID>* tagset) {
+        std::set<OID> result;
+        std::set_intersection(tags.begin(), tags.end(), tagset->begin(), tagset->end(), std::inserter(result, result.begin()));
+        return (!result.empty());
+    }
+
+    /// Check wether this Object has all the given tags.
+    bool allTags(std::set<OID>* tagset) {
+        std::set<OID> result;
+        std::set_intersection(tags.begin(), tags.end(), tagset->begin(), tagset->end(), std::inserter(result, result.begin()));
+        return (result.size() == tagset->size());
+    }
+
+    /// Check wether this Object has the given tag.
+    bool hasTag(OID tag) {
+        return (tags.find(tag) != tags.end());
+    }
+
+    /// Add a tag to this object.
+    void addTag(OID tag) {
+        tags.insert(tag);
+    }
+
+    /// Remove a tag from this object.
+    void remTag(OID tag) {
+        tags.erase(tag);
+    }
 
     /// Called right after object was spawned into the world.
 
@@ -532,7 +530,6 @@ public:
     /// Advance internal timers,animation state and pose, check gamepad.
 
     virtual void animate(float dt) {
-        base->seconds += dt;
     }
 
     /// Precalculate neccessary transformations - matrices, mountpoints, pos ..

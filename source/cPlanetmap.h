@@ -16,10 +16,10 @@ class cPlanetmap;
 #include "cLandscape.h"
 
 // Amount of cached patches.
-#define PLANETMAP_CACHESIZE 64
+#define PLANETMAP_CACHESIZE 512
 
 // Size of cache patch (8 => [256 * 256])
-#define PLANETMAP_TILESIZE 8
+#define PLANETMAP_TILESIZE 7
 
 // Submetre detail (2 => 4th of a metre).
 #define PLANETMAP_DIVISIONS 2

@@ -99,8 +99,6 @@ void cWeapon::transform() {
 int cWeapon::damageByParticle(float* worldpos, float radius, int roles, float damage) {
     roles = 0;//(1UL << cObject::DAMAGEABLE) | (1UL << cObject::COLLIDEABLE);
     float scaled_damage = damage * weaponScale;
-    // Roles to test for.
-    std::set<OID> test;
     int damaged = 0;
     float maxrange = 25;
     float worldpos_[3];
@@ -111,15 +109,12 @@ int cWeapon::damageByParticle(float* worldpos, float radius, int roles, float da
 
         foreach(i, *range) {
             cObject* object = *i;
-            if (! object->allRoles(&test) ) continue;
             float localpos_[3];
             float depth = object->constrainParticle(worldpos_, radius, localpos_, NULL);
             //cout << object->nameable->name << " depth: " << depth << endl;
             if (depth == 0) continue;
-            if (object->hasRole(rRole::DAMAGEABLE)) {
-                damaged++;
-                object->damageByParticle(localpos_, scaled_damage, weaponOwner);
-            }
+            damaged++;
+            object->damageByParticle(localpos_, scaled_damage, weaponOwner);
             break;
         }
     }

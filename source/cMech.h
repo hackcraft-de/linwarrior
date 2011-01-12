@@ -35,6 +35,72 @@ class cWeapon;
 #define MECH_NEXT_BUTTON      BT_PR
 #define MECH_PREV_BUTTON      BT_PL
 
+
+struct rRigged : public rRole {
+    /// Model scale.
+    float scale;
+    /// The "static" model just as it is loaded.
+    MD5Format::model* model;
+    /// Actual local-(model-)space joints for this instance.
+    MD5Format::joint* joints;
+    /// Maps jointpoint identifier to actual joint index of the model.
+    std::map<int, int> jointpoints;
+    /// Joint angles for animation.
+    std::map<int, std::map<int, float> > rotators;
+    // Mech Joint and Mountpoint Matrices.
+    float HDMount[16];
+    float CTMount[16];
+    float BKMount[16];
+    float RSMount[16];
+    float RAMount[16];
+    float LSMount[16];
+    float LAMount[16];
+    // Untransformed vertices.
+    std::map<int, float*> baseverts;
+    // Untransformed normals.
+    std::map<int, float*> basenorms;
+    /// Enumeration for indexing joints in animation.
+
+    enum Jointpoints {
+        EYE, HEAD, NECK,
+        CTMOUNT, LAMOUNT, RAMOUNT, LSMOUNT, RSMOUNT, BKMOUNT,
+        JET0, JET1, JET2, JET3, JET4,
+        SPINE, TORSOR, LEFTLEG, RIGHTLEG, LEFTCALF, RIGHTCALF, MAX_JOINTPOINTS
+    };
+
+    /// Constructor
+
+    rRigged() : rRole("RIGGED"), scale(1.0f), model(NULL), joints(NULL) {
+    }
+
+    rRigged(rRigged* original) : rRole("RIGGED"), scale(1.0f), model(NULL), joints(NULL) {
+        assert(0);
+    }
+    
+    /// Destructor
+
+    ~rRigged() {
+        delete model;
+        delete joints;
+    }
+
+    virtual rRole* clone() {
+        return new rRigged(this);
+    }
+
+    std::string getJointname(unsigned int num) {
+        const char* names[] = {
+            "EYE", "HEAD", "NECK",
+            "CTMOUNT", "LAMOUNT", "RAMOUNT", "LSMOUNT", "RSMOUNT", "BKMOUNT",
+            "JET0", "JET1", "JET2", "JET3", "JET4",
+            "SPINE", "TORSOR", "LEFTLEG", "RIGHTLEG", "LEFTCALF", "RIGHTCALF"
+        };
+        if (num >= MAX_JOINTPOINTS) return string("");
+        return string(names[num]);
+    }
+};
+
+
 /**
  * Models Mechlike Objects.
  * 
@@ -96,6 +162,9 @@ protected:
 
         /// Current average(d) speed.
         float avgspeed;
+
+        /// Behave like a immobile gunpod.
+        bool immobile;
     };
 
     rMisc* misc;
@@ -117,61 +186,6 @@ protected:
     };
 
     rComputerised* computerised;
-
-    struct rRigged {
-        /// Model scale.
-        float scale;
-        /// The "static" model just as it is loaded.
-        MD5Format::model* model;
-        /// Actual local-(model-)space joints for this instance.
-        MD5Format::joint* joints;
-        /// Maps jointpoint identifier to actual joint index of the model.
-        std::map<int, int> jointpoints;
-        /// Joint angles for animation.
-        std::map<int, std::map<int, float> > rotators;
-        // Mech Joint and Mountpoint Matrices.
-        float HDMount[16];
-        float CTMount[16];
-        float BKMount[16];
-        float RSMount[16];
-        float RAMount[16];
-        float LSMount[16];
-        float LAMount[16];
-        // Untransformed vertices.
-        std::map<int, float*> baseverts;
-        // Untransformed normals.
-        std::map<int, float*> basenorms;
-        /// Enumeration for indexing joints in animation.
-
-        enum Jointpoints {
-            EYE, HEAD, NECK,
-            CTMOUNT, LAMOUNT, RAMOUNT, LSMOUNT, RSMOUNT, BKMOUNT,
-            JET0, JET1, JET2, JET3, JET4,
-            SPINE, TORSOR, LEFTLEG, RIGHTLEG, LEFTCALF, RIGHTCALF, MAX_JOINTPOINTS
-        };
-
-        /// Constructor
-
-        rRigged() : scale(1.0f), model(NULL), joints(NULL) {
-        }
-        /// Destructor
-
-        ~rRigged() {
-            delete model;
-            delete joints;
-        }
-
-        std::string getJointname(unsigned int num) {
-            const char* names[] = {
-                "EYE", "HEAD", "NECK",
-                "CTMOUNT", "LAMOUNT", "RAMOUNT", "LSMOUNT", "RSMOUNT", "BKMOUNT",
-                "JET0", "JET1", "JET2", "JET3", "JET4",
-                "SPINE", "TORSOR", "LEFTLEG", "RIGHTLEG", "LEFTCALF", "RIGHTCALF"
-            };
-            if (num >= MAX_JOINTPOINTS) return string("");
-            return string(names[num]);
-        }
-    };
 
     rRigged* rigged;
 

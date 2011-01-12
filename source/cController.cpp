@@ -29,7 +29,7 @@ cController::~cController() {
 void cController::printState() {
     int framesize = getFrameSize();
     string framename = getFrameName();
-    cout << "CtrlSt of " << controlledDevice->nameable->name.c_str() << "#" << controlledDevice->base->oid << "  Frame: " << framename << "  Framesize:" << framesize << "  Stack: " << commandStack.size() << endl;
+    cout << "CtrlSt of " << controlledDevice->name.c_str() << "#" << controlledDevice->oid << "  Frame: " << framename << "  Framesize:" << framesize << "  Stack: " << commandStack.size() << endl;
 }
 
 string cController::getFrameName() {
@@ -73,7 +73,7 @@ void cController::push(OID value) {
 
 void cController::pop() {
     if (debug_transitions) {
-        cout << controlledDevice->nameable->name.c_str() << "#" << controlledDevice->base->oid << ".pop()\n";
+        cout << controlledDevice->name.c_str() << "#" << controlledDevice->oid << ".pop()\n";
     }
     int size = getFrameSize(); // Important: eval outside loop-condition!
     loopi(size) commandStack.pop_back();
@@ -136,10 +136,10 @@ void cController::waitEvent() {
         if (enemy == 0) enemy = controlledDevice->enemyNearby();
         if (enemy) {
             {
-                OID self = controlledDevice->base->oid;
+                OID self = controlledDevice->oid;
                 std::stringstream s;
                 s << self << ": Intruder!\n";
-                cWorld::instance->sendMessage(0, 0, 0, "DEBUG", s.str());
+                cWorld::instance->sendMessage(0, self, 0, "DEBUG", s.str());
             }
             pushAttackEnemy(enemy);
         }
@@ -159,7 +159,7 @@ void cController::waitEvent() {
 
 void cController::pushAttackEnemy(OID entity) {
     if (debug_transitions) {
-        cout << controlledDevice->nameable->name.c_str() << "#" << controlledDevice->base->oid << ".pushAttackEnemy( " << entity << " )\n";
+        cout << controlledDevice->name.c_str() << "#" << controlledDevice->oid << ".pushAttackEnemy( " << entity << " )\n";
     }
     {
         //OID self = mDevice->mSerial;
@@ -183,28 +183,29 @@ void cController::attackEnemy() {
     }
     
     cObject* target = cWorld::instance->getObject(entity);
-    if (controlledDevice->inTargetRange() < 0.01) {
+    if (target == NULL) {
+        // Target disappeared (removed from world: fragged).
+        controlledDevice->do_aimFor(NULL);
+        pop();
+        return;
+    } else if (!controlledDevice->socialised->isEnemy(&target->tags)) {
+        // Not an enemy anymore (maybe dead or not interesting anymore).
+        controlledDevice->do_aimFor(NULL);
+        pop();
+        return;
+    } else if (controlledDevice->inTargetRange() < 0.01) {
+        // Target is out of targeting range.
         controlledDevice->do_aimFor(NULL);
         pop();
         return;
     }
-    if (target == NULL) { // Target disappeared
-        controlledDevice->do_aimFor(NULL);
-        pop();
-        return;
-    } else if (target->hasRole(rRole::DEAD)) {
-        controlledDevice->do_aimFor(NULL);
-        pop();
-        return;
-    }
-
 }
 
 // -------------------------------------------------------------
 
 void cController::pushFollowLeader(OID entity, bool patrol) {
     if (debug_transitions) {
-        cout << controlledDevice->nameable->name.c_str() << "#" << controlledDevice->base->oid << ".pushFollowLeader( " << entity << ", " << patrol << " )\n";
+        cout << controlledDevice->name.c_str() << "#" << controlledDevice->oid << ".pushFollowLeader( " << entity << ", " << patrol << " )\n";
     }
     push(patrol ? 1 : 0);
     push(entity);
@@ -237,7 +238,7 @@ void cController::followLeader() {
 void cController::pushGotoDestination(float* v, bool patrol) {
     if (v == NULL) return;
     if (debug_transitions) {
-        cout << controlledDevice->nameable->name.c_str() << "#" << controlledDevice->base->oid << ".pushGotoDestination( <" << v[0] << "," << v[1] << "," << v[2] << ">, " << patrol << " )\n";
+        cout << controlledDevice->name.c_str() << "#" << controlledDevice->oid << ".pushGotoDestination( <" << v[0] << "," << v[1] << "," << v[2] << ">, " << patrol << " )\n";
     }
     unsigned long *p = (unsigned long*) v;
     push(patrol ? !0 : 0);
@@ -286,7 +287,7 @@ void cController::gotoDestination() {
 
 void cController::pushRepeatInstructions(int n) {
     if (debug_transitions) {
-        cout << controlledDevice->nameable->name.c_str() << "#" << controlledDevice->base->oid << ".pushRepeatInstructions( " << n << " )\n";
+        cout << controlledDevice->name.c_str() << "#" << controlledDevice->oid << ".pushRepeatInstructions( " << n << " )\n";
     }
     push(n);
     push(REPEAT);

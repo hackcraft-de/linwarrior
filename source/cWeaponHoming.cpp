@@ -188,7 +188,7 @@ void cWeaponHoming::drawSolid() {
             glPopMatrix();
 
             glColor4f(0.1, 0.1, 0.1, 1.0);
-            if (this->ready() == 0 && remainingAmmo != 0) glRotatef(this->weaponOwner->base->seconds * 1 * 90, 0, 1, 0);
+            if (this->ready() == 0 && remainingAmmo != 0) glRotatef(this->weaponOwner->seconds * 1 * 90, 0, 1, 0);
             int n = 4;
 
             loopi(n) {

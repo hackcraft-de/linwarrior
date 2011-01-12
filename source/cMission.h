@@ -85,6 +85,8 @@ private:
     cObject group_alliance_wingmen;
     cObject group_alliance_all;
     cObject group_enemies_all;
+    std::set<OID> inc_sense;
+    std::set<OID> exc_sense;
 private:
     virtual void onVictory();
     virtual void onDefeat();

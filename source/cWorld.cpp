@@ -104,7 +104,8 @@ void cWorld::spawnObject(cObject *object) {
     assert(serid != 0);
     cout << serid << " spawning at deltacycle " << mTiming.getDeltacycle() << endl;
     mIndex[serid] = object;
-    object->base->oid = serid;
+    object->oid = serid;
+    object->seconds = 0;
     mTiming.advanceDelta();
     
     mObjects.push_back(object);
@@ -113,12 +114,12 @@ void cWorld::spawnObject(cObject *object) {
 }
 
 void cWorld::fragObject(cObject *object) {
-    if (object->hasRole(rRole::FRAGGED)) return;
-    object->addRole(rRole::FRAGGED);
+    if (object->oid == 0) return;
     mObjects.remove(object);
     mCorpses.push_back(object);
-    mIndex.erase(object->base->oid);
+    mIndex.erase(object->oid);
     object->onFrag();
+    object->oid = 0;
 }
 
 void cWorld::bagFragged() {
@@ -182,13 +183,13 @@ void cWorld::dispatchMessages() {
                 // Deliver.
                 object->onMessage(message);
                 // Later this shall be handled by the object/role itself in onMessage(message).
-                if (object->hasRole(rRole::GROUPING)) {
+                if (object->grouping) {
                     // Message to group receivers.
                     rGrouping* group = object->grouping;
                     // Unable to deliver message to non-existent group?
                     if (group == NULL) continue;
                     // Inform each group member of the new message.
-                    foreach(i, group->mMembers) {
+                    foreach(i, group->members) {
                         OID oid = *i;
                         this->sendMessage(0, message->getSender(), oid, message->getType(), message->getText(), message->getBlob());
                     }
@@ -207,6 +208,7 @@ void cWorld::animateObjects() {
 
     foreachNoInc(i, mObjects) {
         cObject* object = *i++;
+        object->seconds += spf;
         object->animate(spf);
     }
 }
@@ -341,17 +343,14 @@ string cWorld::getNames(std::list<cObject*>* objects) {
     foreach(i, *objects) {
         cObject* o = *i;
         s << " ";
-        if (o->nameable) {
-            s << (o->nameable->name);
-        }
+        s << (o->name);
         s << "#";
-        s << (o->base->oid);
+        s << (o->oid);
         if (o->socialised) {
             s << "(";
-            //s << (o->socialised->roles.to_ulong());
-            foreach(j, o->roleset) {
-                OID oid = *j;
-                s << " " << oid << " ";
+            foreach(j, o->tags) {
+                OID tag = *j;
+                s << " " << tag << " ";
             }
             s << ")";
         }
@@ -360,7 +359,8 @@ string cWorld::getNames(std::list<cObject*>* objects) {
     return s.str();
 }
 
-std::list<cObject*>* cWorld::filterByRole(cObject* ex, std::set<OID>* rolemask, bool all, int maxamount, std::list<cObject*>* objects) {
+
+std::list<cObject*>* cWorld::filterByTags(cObject* ex, std::set<OID>* rolemask, bool all, int maxamount, std::list<cObject*>* objects) {
     std::list<cObject*>* result = new std::list<cObject*>;
     assert(result != NULL);
     int amount = maxamount;
@@ -369,12 +369,12 @@ std::list<cObject*>* cWorld::filterByRole(cObject* ex, std::set<OID>* rolemask, 
     foreach(i, *objects) {
         if (amount == 0) break;
         cObject *object = *i;
-        if (object->hasRole(rRole::FRAGGED)) continue;
+        if (object->oid == 0) continue;
         // Filter Condition
         if (all) {
-            if (! object->allRoles(rolemask) ) continue;
+            if (! object->allTags(rolemask) ) continue;
         } else {
-            if (! object->anyRoles(rolemask) ) continue;
+            if (! object->anyTags(rolemask) ) continue;
         }
         if (object == ex) continue;
         amount--;
@@ -403,7 +403,7 @@ std::list<cObject*>* cWorld::filterByRange(cObject* ex, float* origin, float min
         if (amount == 0) break;
         cObject *object = *i;
         if (object == ex) continue;
-        if (object->hasRole(rRole::FRAGGED)) continue;
+        if (object->oid == 0) continue;
         // Filter Condition
         float diff[3];
         vector_sub(diff, origin, object->traceable->pos);
@@ -434,9 +434,9 @@ std::list<cObject*>* cWorld::filterByName(cObject* ex, char* name, int maxamount
         if (amount == 0) break;
         cObject *object = *i;
         if (object == ex) continue;
-        if (object->hasRole(rRole::FRAGGED)) continue;
+        if (object->oid == 0) continue;
         // Filter Condition
-        if (object->nameable != NULL && strcmp(object->nameable->name.c_str(), name) != 0) continue;
+        if (strcmp(object->name.c_str(), name) != 0) continue;
         amount--;
         result->push_back(object);
     }
@@ -455,7 +455,7 @@ std::list<cObject*>* cWorld::filterByBeam(cObject* ex, float* pointa, float* poi
         if (amount == 0) break;
         cObject *object = *i;
         if (object == ex) continue;
-        if (object->hasRole(rRole::FRAGGED)) continue;
+        if (object->oid == 0) continue;
         // Filter Condition
 
         float* x0 = object->traceable->pos.data();

@@ -76,17 +76,17 @@ void cTarcom::nextTarget() {
     foreach(i, *near) {
         cObject* o = *i;
         if (last == selected) {
-            selected = o->base->oid;
+            selected = o->oid;
             found = true;
             break;
         }
-        last = o->base->oid;
+        last = o->oid;
     }
     if (!found) {
         if (near->empty()) {
             selected = 0;
         } else {
-            selected = near->front()->base->oid;
+            selected = near->front()->oid;
         }
     }
 }
@@ -96,18 +96,18 @@ void cTarcom::prevTarget() {
     OID last = 0;
     foreach(i, *near) {
         cObject* o = *i;
-        if (o->base->oid == selected) {
+        if (o->oid == selected) {
             selected = last;
             found = true;
             break;
         }
-        last = o->base->oid;
+        last = o->oid;
     }
     if (!found) {
         if (near->empty()) {
             selected = 0;
         } else {
-            selected = near->back()->base->oid;
+            selected = near->back()->oid;
         }
     }
 }
@@ -160,12 +160,12 @@ void cTarcom::drawHUD() {
             glBegin(GL_POINTS);
             {
                 cObject* o = *i;
-                if (o->hasRole(rRole::RED)) glColor4f(1, 0, 0, 1);
-                else if (o->hasRole(rRole::GREEN)) glColor4f(0, 1, 0, 1);
-                else if (o->hasRole(rRole::BLUE)) glColor4f(0, 0, 1, 1);
-                else if (o->hasRole(rRole::YELLOW)) glColor4f(0, 1, 0, 1);
-                else glColor4f(0.5, 0.5, 0.5, 1);
-                if (o->base->oid == selected) glColor4f(1,0,1,1);
+                glColor4f(0.5, 0.5, 0.5, 1);
+                if (o->hasTag(cObject::RED)) glColor4f(1, 0, 0, 1);
+                else if (o->hasTag(cObject::GREEN)) glColor4f(0, 1, 0, 1);
+                else if (o->hasTag(cObject::BLUE)) glColor4f(0, 0, 1, 1);
+                else if (o->hasTag(cObject::YELLOW)) glColor4f(0, 1, 0, 1);
+                if (o->oid == selected) glColor4f(1,0,1,1);
                 float dx = o->traceable->pos[0] - mDevice->traceable->pos[0];
                 float dz = o->traceable->pos[2] - mDevice->traceable->pos[2];
                 float r = sqrt(dx * dx + dz * dz);

@@ -193,11 +193,11 @@ public: // World-Filtering, World-Scanning, World-Sense for objects.
     std::string getNames(std::list<cObject*>* objects = NULL);
 
     /**
-     * Filters the given objectlist (or all mObjects if NULL) by roles (ORed Bitmask) (excluding ex Object).
-     * There is the option to match all roles (true=AND) or to select any given role (false=OR).
+     * Filters the given objectlist (or all mObjects if NULL) by tags (ORed Bitmask) (excluding ex Object).
+     * There is the option to match all tags (true=AND) or to select any given tag (false=OR).
      * The returned list is fresh allocated - caller delete responsibility.
      */
-    std::list<cObject*>* filterByRole(cObject* ex, std::set<OID>* rolemask, bool all, int maxamount, std::list<cObject*>* objects = NULL);
+    std::list<cObject*>* filterByTags(cObject* ex, std::set<OID>* rolemask, bool all, int maxamount, std::list<cObject*>* objects = NULL);
 
     /** Returns a List of objects which are within minimum and maximum range (excluding ex Object).
      * The returned list is fresh allocated - caller delete responsibility.

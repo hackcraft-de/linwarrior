@@ -12,9 +12,10 @@ using std::cout;
 using std::endl;
 
 
-int cObject::ENABLE_TEXTURE_3D = 1;
-std::map<std::string, OID> cObject::roleids;
-std::map<OID, rRole*> cObject::roletypes;
+std::map<std::string, rRole*> cObject::roleprotos;
+std::map<std::string, OID> cObject::roleoffsets;
+//std::map<std::string, OID> cObject::roleids;
+//std::map<OID, rRole*> cObject::roletypes;
 
 
 unsigned char* loadTGA(const char *fname, int *w, int* h, int* bpp) {

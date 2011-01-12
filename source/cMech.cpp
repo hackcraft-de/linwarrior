@@ -20,7 +20,7 @@ using std::vector;
 using std::cout;
 using std::endl;
 
-#define MECHDETAIL 0
+#define MECHDETAIL -1
 
 DEFINE_glprintf
 
@@ -73,6 +73,8 @@ cMech::cMech(float* pos, float* rot) {
     sInstances++;
     if (sInstances == 1) {
         if (1) {
+            registerRole(new rRigged, FIELDOFS(rigged), ROLEPTR(cMech::rigged));
+
             cout << "Generating Camoflage..." << endl;
 
             const int SIZE = 1<<(7+MECHDETAIL);
@@ -114,19 +116,11 @@ cMech::cMech(float* pos, float* rot) {
     }
 
     rigged = new rRigged;
-    collideable = new rCollideable;
     damageable = new rDamageable;
     misc = new rMisc;
     computerised = new rComputerised(this);
-
     controlled = new rControlled();
     socialised = new rSocialised();
-
-    addRole(rRole::COLLIDEABLE);
-    addRole(rRole::DAMAGEABLE);
-    addRole(rRole::SOCIALISED, socialised);
-    addRole(rRole::CONTROLLED, controlled);
-    addRole(rRole::MECH);
 
     if (pos != NULL) vector_cpy(traceable->pos, pos);
     vector_cpy(traceable->old, traceable->pos);
@@ -143,6 +137,7 @@ cMech::cMech(float* pos, float* rot) {
     misc->throttle = 0;
     misc->camerastate = 1;
     misc->avgspeed = 0;
+    misc->immobile = false;
 
     // Mech Speaker
     if (0) {
@@ -234,7 +229,7 @@ cMech::~cMech() {
 }
 
 void cMech::onMessage(cMessage* message) {
-    cout << "I (" << this->base->oid << ":" << this->nameable->name << ") just received: \"" << message->getText() << "\" from sender " << message->getSender() << endl;
+    cout << "I (" << this->oid << ":" << this->name << ") just received: \"" << message->getText() << "\" from sender " << message->getSender() << endl;
     this->computerised->forcom->addMessage(message->getText());
 }
 
@@ -242,8 +237,8 @@ void cMech::onSpawn() {
     //cout << "cMech::onSpawn()\n";
     this->mountWeapon((char*) "CTorsor", &misc->explosion, false);
     ALuint soundsource = traceable->sound;
-    if (hasRole(rRole::HUMANPLAYER) && alIsSource(soundsource)) alSourcePlay(soundsource);
-    //cout << "Mech spawned " << base->oid << "\n";
+    if (hasTag(HUMANPLAYER) && alIsSource(soundsource)) alSourcePlay(soundsource);
+    //cout << "Mech spawned " << oid << "\n";
 }
 
 #define grand() ((rand()%100 + rand()%100 + rand()%100 + rand()%100 + rand()%100) * 0.01f * 0.2f - 0.5f)
@@ -355,7 +350,7 @@ float cMech::TowerLR(float radians) {
     if (e > +steplimit) e = +steplimit;
     if (e < -steplimit) e = -steplimit;
     misc->twr[Y] += e;
-    if (this->hasRole(rRole::IMMOBILE)) {
+    if (misc->immobile) {
         const float fullcircle = 2 * M_PI; // 360
         misc->twr[Y] = fmod(misc->twr[Y], fullcircle);
         return 0.0f;
@@ -402,6 +397,7 @@ void cMech::mountWeapon(char* point, cWeapon *weapon, bool add) {
     else if (strcmp(point, "RLoArm") == 0) weapon->weaponBasefv = rigged->RAMount;
     else if (point[0] == 'L') weapon->weaponBasefv = rigged->LSMount;
     else if (point[0] == 'R') weapon->weaponBasefv = rigged->RSMount;
+    else if (point[0] == 'C') weapon->weaponBasefv = rigged->CTMount;
     else weapon->weaponBasefv = rigged->BKMount;
 
     weapon->weaponOwner = this;
@@ -508,7 +504,7 @@ void cMech::poseRunning(float spf) {
     // This is full of hand crafted magic numbers and magic code don't ask...
     const float e = 0.017453;
     float o = e * -60;
-    float t = e * base->seconds * 180;
+    float t = e * seconds * 180;
 
     float l1 = 30 * (+sin(t)* 1) * vel;
     float l2 = 21 * (+sin(copysign(t, vel) + o) + 1) * fabs(vel);
@@ -545,18 +541,7 @@ void cMech::poseJumping(float spf) {
 }
 
 void cMech::animate(float spf) {
-    // Update time since spawn
-    base->seconds += spf;
-
-    int body = rDamageable::BODY;
-    if (damageable->hp[body] <= 75) addRole(rRole::WOUNDED);
-    if (damageable->hp[body] <= 50) addRole(rRole::SERIOUS);
-    if (damageable->hp[body] <= 25) addRole(rRole::CRITICAL);
-    //if (damageable->mHp[body] <= 0) this->addRole(rRole::DEAD);
-
-    if (hasRole(rRole::DEAD)) {
-        remRole(rRole::COLLIDEABLE);
-        remRole(rRole::DAMAGEABLE);
+    if (!damageable->alife) {
         // Stop movement when dead
         misc->throttle = 0;
         misc->jetpower = 0;
@@ -573,7 +558,7 @@ void cMech::animate(float spf) {
     }
 
     // Process computers and Pad-input when not dead.
-    if (!hasRole(rRole::DEAD)) {
+    if (damageable->alife) {
         assert(controlled->pad != NULL);
         //cout << mPad->toString();
 
@@ -589,7 +574,7 @@ void cMech::animate(float spf) {
         float excess = this->TowerLR(0.25f * M_PI * spf * -controlled->pad->getAxis(cPad::MECH_TURRET_LR_AXIS));
         this->TowerUD(50 * spf * controlled->pad->getAxis(cPad::MECH_TURRET_UD_AXIS) * 0.017453f);
 
-        if (!this->hasRole(rRole::IMMOBILE)) {
+        if (!misc->immobile) {
             // Steer left right
             this->ChassisLR(excess + 0.25f * M_PI * spf * -controlled->pad->getAxis(cPad::MECH_CHASSIS_LR_AXIS));
             // Speed
@@ -804,7 +789,7 @@ void cMech::transform() {
 }
 
 void cMech::drawSolid() {
-    if (hasRole(rRole::HUMANPLAYER)) {
+    if (hasTag(HUMANPLAYER)) {
         int light = GL_LIGHT1;
         if (misc->jetpower > 0.1) {
             float p[] = {traceable->pos[0], traceable->pos[1]+1.2, traceable->pos[2], 1};
@@ -840,10 +825,10 @@ void cMech::drawSolid() {
             glFrontFace(GL_CW);
             glDisable(GL_LIGHTING);
             int texture = 0;
-            texture = hasRole(rRole::RED) ? 0 : texture;
-            texture = hasRole(rRole::BLUE) ? 1 : texture;
-            texture = hasRole(rRole::GREEN) ? 2 : texture;
-            texture = hasRole(rRole::YELLOW) ? 3 : texture;
+            texture = hasTag(RED) ? 0 : texture;
+            texture = hasTag(BLUE) ? 1 : texture;
+            texture = hasTag(GREEN) ? 2 : texture;
+            texture = hasTag(YELLOW) ? 3 : texture;
             glBindTexture(GL_TEXTURE_3D, sTextures[texture]);
             glPushMatrix();
             {
@@ -887,8 +872,7 @@ void cMech::drawSolid() {
                 } // draw skeleton
 
                 if (true) { // draw models meshes
-                    //glEnable(GL_TEXTURE_2D);
-                    if (ENABLE_TEXTURE_3D) glEnable(GL_TEXTURE_3D);
+                    glEnable(GL_TEXTURE_3D);
 
                     // Generate base vertices and normals for 3d-tex-coords.
                     if (rigged->baseverts.empty()) {
@@ -964,6 +948,7 @@ void cMech::drawSolid() {
                         }
                         glEnd();
                         delete vtx;
+                        delete nrm;
                         msh = MD5Format::getNextMesh(msh);
                     }
                 } // draw models meshes
@@ -983,7 +968,7 @@ void cMech::drawSolid() {
 
 void cMech::drawEffect() {
     // Draw name above head.
-    if (!hasRole(rRole::HUMANPLAYER)) {
+    if (!hasTag(HUMANPLAYER)) {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
             glDisable(GL_CULL_FACE);
@@ -991,9 +976,9 @@ void cMech::drawEffect() {
             glDisable(GL_TEXTURE_2D);
             glDepthMask(GL_FALSE);
             //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-            if (hasRole(rRole::RED)) glColor4f(1, 0, 0, 0.4);
-            else if (hasRole(rRole::GREEN)) glColor4f(0, 1, 0, 0.4);
-            else if (hasRole(rRole::BLUE)) glColor4f(0, 0, 1, 0.4);
+            if (hasTag(RED)) glColor4f(1, 0, 0, 0.4);
+            else if (hasTag(GREEN)) glColor4f(0, 1, 0, 0.4);
+            else if (hasTag(BLUE)) glColor4f(0, 0, 1, 0.4);
             else glColor4f(1, 1, 0, 0.4);
             glPushMatrix();
             {
@@ -1004,21 +989,23 @@ void cMech::drawEffect() {
                 cPrimitives::glDisk(7, 1.3f);
             }
             glPopMatrix();
-            glColor4f(0.95, 0.95, 1, 1);
-            glPushMatrix();
-            {
-                glMultMatrixf(rigged->HDMount);
-                glTranslatef(0, +0.9, 0);
-                float s = 0.65;
-                glScalef(s, s, s);
-                float n[16];
-                SGL::glGetTransposeInverseRotationMatrix(n);
-                glMultMatrixf(n);
-                int l = nameable->name.length();
-                glTranslatef(-l * 0.5f, 0, 0);
-                glprintf(nameable->name.c_str());
+            if (nameable) {
+                glColor4f(0.95, 0.95, 1, 1);
+                glPushMatrix();
+                {
+                    glMultMatrixf(rigged->HDMount);
+                    glTranslatef(0, +0.9, 0);
+                    float s = 0.65;
+                    glScalef(s, s, s);
+                    float n[16];
+                    SGL::glGetTransposeInverseRotationMatrix(n);
+                    glMultMatrixf(n);
+                    int l = nameable->name.length();
+                    glTranslatef(-l * 0.5f, 0, 0);
+                    glprintf(nameable->name.c_str());
+                }
+                glPopMatrix();
             }
-            glPopMatrix();
         }
         glPopAttrib();
     }
@@ -1156,22 +1143,27 @@ void cMech::drawHUD() {
 }
 
 void cMech::damageByParticle(float* localpos, float damage, cObject* enactor) {
+    if (!damageable->alife) return;
+
     int hitzone = rDamageable::BODY;
-    if (localpos[1] < 1.3 && this->damageable->hp[rDamageable::LEGS] > 0) hitzone = rDamageable::LEGS;
-    else if (localpos[0] < -0.5 && this->damageable->hp[rDamageable::LEFT] > 0) hitzone = rDamageable::LEFT;
-    else if (localpos[0] > +0.5 && this->damageable->hp[rDamageable::RIGHT] > 0) hitzone = rDamageable::RIGHT;
+    if (localpos[1] < 1.3 && damageable->hp[rDamageable::LEGS] > 0) hitzone = rDamageable::LEGS;
+    else if (localpos[0] < -0.5 && damageable->hp[rDamageable::LEFT] > 0) hitzone = rDamageable::LEFT;
+    else if (localpos[0] > +0.5 && damageable->hp[rDamageable::RIGHT] > 0) hitzone = rDamageable::RIGHT;
 
     if (damage != 0.0f) {
-        if (enactor != NULL) controlled->disturber = enactor->base->oid;
-        this->damageable->hp[hitzone] -= damage;
-        if (this->damageable->hp[hitzone] < 0) this->damageable->hp[hitzone] = 0;
-        if (this->damageable->hp[rDamageable::BODY] <= 0 && !this->hasRole(rRole::DEAD)) {
-            this->remRole(rRole::DAMAGEABLE);
-            this->remRole(rRole::COLLIDEABLE);
-            this->addRole(rRole::DEAD);
+        if (enactor != NULL) controlled->disturber = enactor->oid;
+        damageable->hp[hitzone] -= damage;
+        if (damageable->hp[hitzone] < 0) damageable->hp[hitzone] = 0;
+        if (damageable->hp[rDamageable::BODY] <= 0) {
+            damageable->alife = false;
             cout << "cMech::damageByParticle(): DEAD\n";
             misc->explosion.fire(0);
         }
+        int body = rDamageable::BODY;
+        if (damageable->hp[body] <= 75) addTag(WOUNDED);
+        if (damageable->hp[body] <= 50) addTag(SERIOUS);
+        if (damageable->hp[body] <= 25) addTag(CRITICAL);
+        if (damageable->hp[body] <= 0) addTag(DEAD);
     }
 }
 
@@ -1231,19 +1223,18 @@ float cMech::constrainParticleToWorld(float* worldpos, float radius) {
 
 OID cMech::enemyNearby() {
     OID result = 0;
-    std::set<OID> test;
-    test.insert(rRole::DAMAGEABLE);
     // Filter objects by distance
-    std::list<cObject*>* scan = cWorld::instance->filterByRange(this, this->traceable->pos.data(), 0.0f, 50.0f, -1, NULL);
+    std::list<cObject*>* scan = cWorld::instance->filterByRange(this, traceable->pos.data(), 0.0f, 50.0f, -1, NULL);
     if (!scan->empty()) {
         // Find all objects belonging to any enemy party/role.
-        std::list<cObject*>* roles = cWorld::instance->filterByRole(this, &this->socialised->enemies, false, -1, scan);
+        std::list<cObject*>* roles = cWorld::instance->filterByTags(this, &socialised->inc_enemies, false, -1, scan);
         if (!roles->empty()) {
-            // Only those objects which are damageable->
-            std::list<cObject*>* damages = cWorld::instance->filterByRole(this, &test, false, 1, roles);
-            //cout << cWorld::instance->getNames(damages) << endl;
-            if (!damages->empty()) result = damages->front()->base->oid;
-            delete damages;
+            for (std::list<cObject*>::iterator i=roles->begin(); i != roles->end(); i++) {
+                cObject* o = *i;
+                if (!o->anyTags(&socialised->exc_enemies)) {
+                    result = o->oid;
+                }
+            }
         }
         delete roles;
     }
