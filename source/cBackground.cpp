@@ -31,10 +31,36 @@ enum Texids {
     T_GALAXY_NEGX, T_GALAXY_POSX,
     T_GALAXY_NEGY, T_GALAXY_POSY,
     T_GALAXY_NEGZ, T_GALAXY_POSZ,
+    T_SKY_NEGX, T_SKY_POSX,
+    T_SKY_NEGY, T_SKY_POSY,
+    T_SKY_NEGZ, T_SKY_POSZ,
+    T_CLOUDS_NEGX, T_CLOUDS_POSX,
+    T_CLOUDS_NEGY, T_CLOUDS_POSY,
+    T_CLOUDS_NEGZ, T_CLOUDS_POSZ,
 };
 
 unsigned int gPermutationTexture256 = 0;
 
+
+
+void ambient_galaxy(float x, float y, float z, float* color, float scale) {
+    // Normalise direction vector and scale.
+    float oolen = (0.5 * scale) / sqrt(x*x + y*y + z*z);
+    float v[3] = {
+        0.0f + x * oolen,
+        0.0f + y * oolen,
+        0.0f + z * oolen
+    };
+    //cSolid::star_nebula(v[0], v[1], v[2], color);
+    cSolid::star_fastnebula(v[0], v[1], v[2], color);
+}
+
+void ambient_clouds(float x, float y, float z, float* color) {
+    // Normalise direction vector.
+    float oolen = 1.0f / sqrt(x*x + y*y + z*z);
+    float v[3] = { x * oolen, y * oolen, z * oolen };
+    cSolid::planet_cloud(v[0], v[1], v[2], color);
+}
 
 void ambient_sky(float x, float y, float z, float* color, float hour = 24.00f) {
     // Remember 2pi ~ 360°
@@ -79,134 +105,7 @@ void ambient_sky(float x, float y, float z, float* color, float hour = 24.00f) {
 }
 
 
-char vertexshader[] = " \
-    varying vec3 normal, position, lightdir; \
-    varying float direction; \
-    void main() \
-    { \
-        gl_FrontColor = gl_Color; \
-        gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0; \
-        gl_Position = ftransform(); \
-        position = vec3(gl_ModelViewMatrix * gl_Vertex); \
-        normal = normalize(gl_NormalMatrix * gl_Normal); \
-        vec3 lightdir = normalize(vec3(gl_LightSource[0].position.xyz - position)); \
-        direction = max(dot(lightdir,normalize(normal)),0.0); \
-    } \
-";
-
-char fragmentshader3D[] = " \
-    varying vec3 normal, position, lightdir; \
-    varying float direction; \
-    uniform sampler3D tex; \
-    void main() \
-    { \
-        vec4 ambient = gl_LightSource[0].ambient; \
-        vec4 diffuse = gl_LightSource[0].diffuse * direction; \
-        vec4 basecolor = texture3D(tex,gl_TexCoord[0].xyz) * gl_Color; \
-        gl_FragColor = vec4(basecolor.rgb * diffuse + basecolor.rgb * ambient, basecolor.a); \
-    } \
-";
-
-char fragmentshader2D[] = " \
-    varying vec3 normal, position, lightdir; \
-    varying float direction; \
-    uniform sampler2D tex; \
-    void main() \
-    { \
-        vec4 ambient = gl_LightSource[0].ambient; \
-        vec4 diffuse = gl_LightSource[0].diffuse * direction; \
-        vec4 basecolor = texture2D(tex,gl_TexCoord[0].xy) * gl_Color; \
-        gl_FragColor = vec4(basecolor.rgb * diffuse + basecolor.rgb * ambient, basecolor.a); \
-    } \
-";
-
-//        float shade = direction*0.8 + 0.0 * (0.1 * float(int(direction*9.99))) * 0.8 + 0.2; \
-
-
-char vertexshader_[] = " \
-    varying vec3 normal, position; \
-    void main() \
-    { \
-        gl_FrontColor = gl_Color; \
-        gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0; \
-        gl_Position = ftransform(); \
-        position = vec3(gl_ModelViewMatrix * gl_Vertex); \
-        normal = normalize(gl_NormalMatrix * gl_Normal); \
-    } \
-";
-
-char fragmentshader3D_[] = " \
-    varying vec3 normal, position; \
-    uniform sampler3D tex; \
-    void main() \
-    { \
-        vec3 lightDir = normalize(gl_LightSource[0].position.xyz - 1.0*position); \
-        float direction = max(dot(lightDir,normalize(normal)),0.0); \
-        float shade = direction + 0.0 * 0.1 * float(int(direction*10.0)); \
-        vec3 lightcolor = 1.0*shade * gl_FrontMaterial.diffuse.rgb + 0.7*gl_FrontMaterial.ambient.rgb; \
-        vec4 basecolor = texture3D(tex,gl_TexCoord[0].xyz) * gl_Color * 1.0 + 0.0 * gl_Color; \
-        gl_FragColor = vec4(0.99 * shade * basecolor.rgb, basecolor.a); \
-    } \
-";
-
-char fragmentshader2D_[] = " \
-    varying vec3 normal, position; \
-    uniform sampler2D tex; \
-    void main() \
-    { \
-        vec3 lightDir = normalize(gl_LightSource[0].position.xyz - 1.0*position); \
-        float direction = max(dot(lightDir,normalize(normal)),0.0); \
-        float shade = direction + 0.0 * 0.1 * float(int(direction*10.0)); \
-        vec3 lightcolor = 1.0*shade * gl_FrontMaterial.diffuse.rgb + 0.7*gl_FrontMaterial.ambient.rgb; \
-        vec4 basecolor = texture2D(tex,gl_TexCoord[0].xy) * gl_Color * 1.0 + 0.0 * gl_Color; \
-        gl_FragColor = vec4(0.99 * shade * basecolor.rgb, basecolor.a); \
-    } \
-";
-
-
 cBackground::cBackground() {
-
-    if (0) {
-        GLenum p = glCreateProgramObjectARB();
-
-        GLenum vs = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
-        const GLcharARB* vs_source = vertexshader;
-        glShaderSourceARB(vs, 1, &vs_source, NULL);
-        glCompileShaderARB(vs);
-        glAttachObjectARB(p, vs);
-
-        {
-            int length;
-            glGetShaderiv(vs, GL_INFO_LOG_LENGTH, &length);
-            char* log = new char[length];
-            glGetShaderInfoLog(vs, length, &length, log);
-            cout << "Vertex Shader Log:\n" << log << "\n";
-            delete log;
-        }
-
-        GLenum fs = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
-        const GLcharARB* fs_source = fragmentshader3D;
-        glShaderSourceARB(fs, 1, &fs_source, NULL);
-        glCompileShaderARB(fs);
-        glAttachObjectARB(p, fs);
-
-        {
-            int length;
-            glGetShaderiv(fs, GL_INFO_LOG_LENGTH, &length);
-            char* log = new char[length];
-            glGetShaderInfoLog(fs, length, &length, log);
-            cout << "Fragment Shader Log:\n" << log << "\n";
-            delete log;
-        }
-
-        glLinkProgramARB(p);
-        glUseProgramObjectARB(p);
-
-        // Back to normal
-        //glUseProgramObjectARB(0);
-        //glUseProgram(0);
-    }
-
     /*
     struct Texture {
         const char* filename;
@@ -273,7 +172,6 @@ cBackground::cBackground() {
 
             float dx = ((float) j / (float) w);
             float dz = ((float) i / (float) h);
-            //float v3f[] = { dx, 0, dz };
 
             float c = cDistortion::sig(cNoise::voronoi3_16(dx * 16, 0, dz * 16) * 8 + 4);
             float c4f[4] = {c, c, c};
@@ -281,7 +179,6 @@ cBackground::cBackground() {
             *p++ = 255 * c4f[2];
             *p++ = 255 * c4f[1];
             *p++ = 255 * c4f[0];
-            //*p++ = 255*c4f[3];
         }
         bool soft = false;
         bool repeat = true;
@@ -304,7 +201,6 @@ cBackground::cBackground() {
 
             float dx = (((float) j / (float) w) - 0.5f) * 2.0f;
             float dy = (((float) i / (float) h) - 0.5f) * 2.0f;
-            //float dz = sqrt(1.0f - dx * dx + dy * dy);
             float r = sqrt(dx * dx + dy * dy);
             float r_ = fmin(1.0f, r);
             float a = 1.0f - pow(r_, 0.6);
@@ -326,7 +222,7 @@ cBackground::cBackground() {
             *p++ = 255 * c4f[3];
         }
         bool soft = true;
-        bool repeat = true;
+        bool repeat = false;
         unsigned int texname;
         texname = SGL::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
         textures[T_SUN] = texname;
@@ -369,7 +265,7 @@ cBackground::cBackground() {
             *p++ = 255 * a;
         }
         bool soft = true;
-        bool repeat = true;
+        bool repeat = false;
         unsigned int texname;
         texname = SGL::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
         textures[T_EARTH] = texname;
@@ -414,7 +310,7 @@ cBackground::cBackground() {
             *p++ = 255 * a;
         }
         bool soft = true;
-        bool repeat = true;
+        bool repeat = false;
         unsigned int texname;
         texname = SGL::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
         textures[T_LAVOS] = texname;
@@ -459,7 +355,7 @@ cBackground::cBackground() {
             *p++ = 255 * a;
         }
         bool soft = true;
-        bool repeat = true;
+        bool repeat = false;
         unsigned int texname;
         texname = SGL::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
         textures[T_MOON] = texname;
@@ -521,37 +417,24 @@ cBackground::cBackground() {
             unsigned char* p = texels;
 
             loopij(h, w) {
-                const float f = 0.1;
-                const float t = f;
-
-                // Project onto Sphere
-                float u = 2.0f * ((float) j / (float) (w)) - 1.0f;
-                float v = 2.0f * ((float) i / (float) (h)) - 1.0f;
-                float a = sign;
-                float oolen = 1.0f / sqrt(u * u + v * v + 1.0f);
-                u *= oolen;
-                v *= oolen;
-                a *= oolen;
-
-                float v3f[] = {a, u, v};
-
+                const float scale = 0.2;
+                // Point on cube
+                float v[3] = {
+                    2.0f * ((float) j / (float) (w)) - 1.0f,
+                    2.0f * ((float) i / (float) (h)) - 1.0f,
+                    sign
+                };
                 loop(l, rotation) {
-                    float tmp = v3f[2];
-                    v3f[2] = v3f[1];
-                    v3f[1] = v3f[0];
-                    v3f[0] = tmp;
+                    float tmp = v[2];
+                    v[2] = v[1];
+                    v[1] = v[0];
+                    v[0] = tmp;
                 }
-
-                v3f[0] = v3f[0] * f + t;
-                v3f[1] = v3f[1] * f + t;
-                v3f[2] = v3f[2] * f + t;
-
                 float color[16];
-                cSolid::star_nebula(v3f[0], v3f[1], v3f[2], color);
+                ambient_galaxy(v[0], v[1], v[2], color, scale);
                 *p++ = 255 * color[2];
                 *p++ = 255 * color[1];
                 *p++ = 255 * color[0];
-                //*p++ = 255 * color[3];
             }
             const bool soft = true;
             const bool repeat = false;
@@ -573,7 +456,7 @@ cBackground::cBackground() {
         delete texels;
     }
 
-    heightshift = -5;
+    heightshift = -3;
     rainstrength = 0;
 }
 
@@ -597,6 +480,7 @@ void cBackground::drawBackground(float hour) {
     //speed *= 5;
     this->hour = fmod(speed*hour, 24.00f);
     //hour = rand()%24;
+    this->hour = 0;
 
     // Sample and set ambient haze color.
     float haze[4] = { 0,0,0,0 };

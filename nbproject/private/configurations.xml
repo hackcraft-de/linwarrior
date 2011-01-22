@@ -9,7 +9,7 @@
         <configurationname>GizmoSimple</configurationname>
       </gizmo_options>
       <runprofile version="6">
-        <args>-w -r 900x700 -m 0 -l 0 -s 2</args>
+        <args>-w -r 900x700 -m 0 -l 0</args>
         <rundir></rundir>
         <buildfirst>true</buildfirst>
         <console-type>2</console-type>

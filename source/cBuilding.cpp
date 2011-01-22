@@ -12,7 +12,7 @@
 using std::cout;
 using std::endl;
 
-
+#define BUILDINGDETAIL -1
 
 static void getVStrings(float x, float y, float* color4f, unsigned char seed = 131) {
     float x_ = fmod(x,1.0f);
@@ -249,7 +249,7 @@ cBuilding::cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
 
         {
             cout << "Generating Rooftops..." << endl;
-            int w = 1<<5;
+            int w = 1<<(5+BUILDINGDETAIL);
             int h = w;
             int bpp = 3;
             unsigned char* texels = new unsigned char[((unsigned long)w)*h*bpp];
@@ -273,7 +273,7 @@ cBuilding::cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
             //glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
             cout << "Generating Facades..." << endl;
                 loopk(17) {
-                int w = 1<<7;
+                int w = 1<<(7+BUILDINGDETAIL);
                 int h = w;
                 int bpp = 3;
                 unsigned char* texels = new unsigned char[((unsigned long)w)*h*bpp];
@@ -294,7 +294,7 @@ cBuilding::cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
                     }
                 }
 
-                texname = SGL::glBindTextureMipmap2D(0, true, true, true, true, w, h, bpp, texels);
+                texname = SGL::glBindTextureMipmap2D(0, true, true, true, true, w, h, texels);
                 //texname = SGL::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
                 sTextures[k+1] = texname;
 
@@ -713,7 +713,7 @@ cTile::cTile(int x, int y, int z, int kind) {
         bool save = false;
 
         unsigned int texname;
-        int w_ = 1 << 8;
+        int w_ = 1 << (8+BUILDINGDETAIL);
 
         // NEWS-Road
         {

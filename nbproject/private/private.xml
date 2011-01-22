@@ -2,17 +2,17 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1">
         <file>
-            <url>source/cPlanetmap.cpp</url>
-            <line>434</line>
+            <url>source/cBackground.cpp</url>
+            <line>64</line>
+            <line>806</line>
         </file>
         <file>
             <url>source/cMech.cpp</url>
-            <line>1312</line>
+            <line>1313</line>
         </file>
         <file>
-            <url>source/cBackground.cpp</url>
-            <line>67</line>
-            <line>809</line>
+            <url>source/cPlanetmap.cpp</url>
+            <line>434</line>
         </file>
     </editor-bookmarks>
 </project-private>

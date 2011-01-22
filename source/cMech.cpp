@@ -137,6 +137,7 @@ cMech::cMech(float* pos, float* rot) {
     misc->throttle = 0;
     misc->camerastate = 1;
     misc->avgspeed = 0;
+    misc->grounded = 0.5;
     misc->immobile = false;
 
     // Mech Speaker
@@ -171,12 +172,13 @@ cMech::cMech(float* pos, float* rot) {
     try {
         if (true) {
             model = MD5Format::mapMD5Mesh("data/base/wanzers/gorilla/gorilla_ii.md5mesh");
+            //model = MD5Format::mapMD5Mesh("/media/44EA-7693/workspaces/blender_workspace/Mech4/Mech43.md5mesh");
         } else {
             model = MD5Format::mapMD5Mesh("data/base/wanzers/lemur/lemur.md5mesh");
         }
         assert(model != NULL);
 
-        //cout << MD5Format::getModelStats(model) << endl;
+        cout << MD5Format::getModelStats(model) << endl;
 
         MD5Format::joint* joints = MD5Format::getJoints(model);
 
@@ -192,6 +194,7 @@ cMech::cMech(float* pos, float* rot) {
 
         loopi(rigged->MAX_JOINTPOINTS) {
             jointpoints[i] = MD5Format::findJoint(model, rigged->getJointname(i).c_str());
+            if (jointpoints[i] < 0) jointpoints[i] = MD5Format::findJoint(model, rigged->getJointname2(i).c_str());
         }
 
         rigged->model = model;
@@ -478,8 +481,12 @@ void cMech::animatePhysics(float spf) {
 
         }
 
-        // Set friction for next frame - if there was a collision.
-        traceable->friction = (depth > 0.0f) ? cWorld::instance->getGndfriction() : 0.0f;
+        // Assume ground contact if there was a collision.
+        float onground = (depth > 0.0f) ? 1.0f : 0.0f;
+        // Average groundedness for animation.
+        misc->grounded += 0.1 * (onground - misc->grounded);
+        // Set friction for next frame.
+        traceable->friction = ((misc->grounded > 0.1)?1.0f:0.0f) * cWorld::instance->getGndfriction();
     }
 }
 
@@ -625,8 +632,7 @@ void cMech::animate(float spf) {
     vector_scale(rigged->rotators[rigged->TORSOR], misc->twr, 180.0f / M_PI);
 
     // Show fitting animation pose based on state and physics.
-    //if (mJumpstate == GROUNDED) {
-    if (traceable->friction > 0.012) {
+    if (misc->grounded > 0.15) {
         poseRunning(spf);
     } else {
         poseJumping(spf);
@@ -696,8 +702,10 @@ void cMech::transform() {
             if (true) {
                 float qx[4];
                 quat_rotaxis(qx, +misc->twr[0], xaxis);
-                int jidx = jointpoints[rigged->HEAD];
-                quat_cpy(manipulators[jidx].q, qx);
+                int jidx = jointpoints[rigged->EYE];
+                if (jidx < 0) jidx = jointpoints[rigged->HEAD];
+                if (jidx < 0) jidx = jointpoints[rigged->TORSOR];
+                if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
             }
 
             bool left = true;

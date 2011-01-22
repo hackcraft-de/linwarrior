@@ -13,7 +13,7 @@
 
 using namespace std;
 
-#define GROUNDDETAIL 0
+#define GROUNDDETAIL -1
 
 int cPlanetmap::sInstances = 0;
 std::vector<long> cPlanetmap::sTextures;

@@ -459,22 +459,18 @@ struct SGL {
         return texnamevar;
     }
 
-    static unsigned int glBindTextureMipmap2D(unsigned int texnamevar, bool min_linear, bool mag_linear, bool repeat_x, bool repeat_y, int WIDTH, int HEIGHT, int DEPTH, void* texture_ptr)
+    static unsigned int glBindTextureMipmap2D(unsigned int texnamevar, bool min_linear, bool mag_linear, bool repeat_x, bool repeat_y, int WIDTH, int HEIGHT, void* texture_ptr, GLenum internalformat = GL_RGB8, GLenum format = GL_BGR, GLenum dataformat = GL_UNSIGNED_BYTE)
     {
         if (texnamevar == 0) {
             glGenTextures(1, &texnamevar);
         }
         glBindTexture(GL_TEXTURE_2D, texnamevar);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_linear ? GL_LINEAR_MIPMAP_NEAREST : GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_linear ? GL_LINEAR : GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, repeat_x ? GL_REPEAT : GL_CLAMP);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, repeat_y ? GL_REPEAT : GL_CLAMP);
         if (min_linear) glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
-        if (DEPTH == 3) {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, WIDTH, HEIGHT, 0, GL_BGR, GL_UNSIGNED_BYTE, texture_ptr);
-        } else {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, WIDTH, HEIGHT, 0, GL_BGRA, GL_UNSIGNED_BYTE, texture_ptr);
-        }
+        glTexImage2D(GL_TEXTURE_2D, 0, internalformat, WIDTH, HEIGHT, 0, format, dataformat, texture_ptr);
         return texnamevar;
     }
 
@@ -549,6 +545,49 @@ struct SGL {
         glAccum(GL_MULT, -1.0f); glAccum(GL_ADD, 1.0f); /* inversion */
         glAccum(GL_RETURN, 1.0f); /* color = accum * factor */
         glAccum(GL_ADD, -1.0f); glAccum(GL_MULT, -1.0f); /* inversion */
+    }
+
+    // Shader related.
+
+    static GLenum glCompileProgram(char* vertexshader, char* fragmentshader, std::ostream& str) {
+        GLenum program = glCreateProgramObjectARB();
+
+        GLenum vs = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
+        const GLcharARB* vs_source = vertexshader;
+        glShaderSourceARB(vs, 1, &vs_source, NULL);
+        glCompileShaderARB(vs);
+        glAttachObjectARB(program, vs);
+
+        {
+            int length;
+            glGetShaderiv(vs, GL_INFO_LOG_LENGTH, &length);
+            char* log = new char[length];
+            glGetShaderInfoLog(vs, length, &length, log);
+            str << "Vertex Shader Log:\n" << log << "\n";
+            delete log;
+        }
+
+        GLenum fs = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
+        const GLcharARB* fs_source = fragmentshader;
+        glShaderSourceARB(fs, 1, &fs_source, NULL);
+        glCompileShaderARB(fs);
+        glAttachObjectARB(program, fs);
+
+        {
+            int length;
+            glGetShaderiv(fs, GL_INFO_LOG_LENGTH, &length);
+            char* log = new char[length];
+            glGetShaderInfoLog(fs, length, &length, log);
+            str << "Fragment Shader Log:\n" << log << "\n";
+            delete log;
+        }
+
+        glLinkProgramARB(program);
+        // Use unique progam.
+        //glUseProgramObjectARB(postprocess);
+        // Back to normal.
+        //glUseProgramObjectARB(0);
+        return program;
     }
 
     /**

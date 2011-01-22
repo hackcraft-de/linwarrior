@@ -237,23 +237,22 @@ void cSolid::metal_sheets(float x, float y, float z, float* color, unsigned char
 void cSolid::star_nebula(float x, float y, float z, float* color, unsigned char seed) {
     float c[4];
 
-    loopj(3) {
+    loopj(2) {
         unsigned char seed2 = seed + j;//31 + j * 17;
         float sum = 0;
         float fsum = 0;
         float p = 1;
-        float gain = 0.77f;
-        float f = 0.4f;
+        float gain = -0.77f;
+        float f = 0.4f * 60.0f;
         float lac = 1.81f;
-        for (int i = 1; i < 7; i++) {
-            sum += f * fabs(cNoise::simplex3(x*f, y*f, z*f, seed2));
+        for (int i = 1; i < 3; i++) {
+            sum += p * (0.5f + 0.5f * cNoise::simplex3(x*f, y*f, z*f, seed2));
             fsum += p;
             seed += 7;
             p *= gain;
             f *= lac;
         }
-        sum /= fsum;
-        c[j] = sum;//cDistortion::sig(12 * sum - 1);
+        c[j] = cDistortion::sig(2 * (sum-0.9));
     }
 
     //float z = 100;
@@ -280,11 +279,56 @@ void cSolid::star_nebula(float x, float y, float z, float* color, unsigned char 
     //c[3] = stars*exposure( spots1*0.6 + 0.8*spots0 );
     c[3] = stars * (spots2 * 0.8f + spots1 * 0.9f + 0.99f * spots0);
 
-    float nebula = 0.05f;
+    float nebula = 0.07f;
 
     color[0] = fmin(1, 0.00f + 0.91f * nebula * c[0] + c[3]);
-    color[1] = fmin(1, 0.00f + 0.91f * nebula * c[1] + c[3]);
-    color[2] = fmin(1, 0.05f + 0.99f * nebula * c[2] + c[3]);
+    color[1] = fmin(1, 0.00f + 0.91f * nebula * (c[0]+c[1]) + c[3]);
+    color[2] = fmin(1, 0.05f + 0.99f * nebula * c[1] + c[3]);
+    color[3] = 1.0f;
+}
+
+
+void cSolid::star_fastnebula(float x, float y, float z, float* color, unsigned char seed) {
+    float c[4];
+
+    loopj(2) {
+        unsigned char seed2 = seed + j;//31 + j * 17;
+        float sum = 0;
+        float fsum = 0;
+        float p = 1;
+        float gain = -0.77f;
+        float f = 0.4f * 30;
+        float lac = 1.81f;
+        for (int i = 1; i < 4; i++) {
+            sum += p * (0.5 + 0.5 * cNoise::simplex3(127.5f + x*f, 127.5f + y*f, 127.5f + z*f, seed2+i));
+            fsum += p;
+            seed += 7;
+            p *= gain;
+            f *= lac;
+        }
+        c[j] = cDistortion::sig(2 * (sum-0.9));
+    }
+
+    float specular = 0.95f;
+
+    float shift = c[0]+c[1];
+
+    float p0 = 1023;
+    float sn = cNoise::simplex3(x*p0, y*p0, z*p0, seed + 5);
+    float spots0_ = (0.5f + 0.51f * sn * (0.5 + 0.6 * shift));
+    float spots0 = specular * pow(-spots0_, 54) + (1.0f-specular) * 0.3 * pow(spots0_, 0.05);
+
+    float spots1_ = (0.5f + 0.525f * sn);
+    float spots1 = specular * pow(-spots1_, 24) + (1.0f-specular) * 0.3 * pow(spots1_, 0.05);
+
+    float stars = 0.46f;
+    c[3] = stars * fmax(0.0f, (spots1*1.2 + 0.7*spots0) - 0.4);
+
+    float nebula = 0.13f;
+
+    color[0] = fmin(1, c[3] + 0.00f + 0.91f * nebula * c[0]);
+    color[1] = fmin(1, c[3] + 0.00f + 0.91f * nebula * (c[0]+c[1]));
+    color[2] = fmin(1, c[3] + 0.05f + 0.99f * nebula * c[1]);
     color[3] = 1.0f;
 }
 

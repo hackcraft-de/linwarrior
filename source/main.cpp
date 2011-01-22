@@ -236,6 +236,84 @@ void cMain::initGL(int width, int height) {
     glUploadFont();
 }
 
+static char* loadTextFile(const char* filename) {
+    FILE* f = fopen(filename, "rb");
+    if (f == NULL) {
+        char* cstr = new char[1];
+        cstr[0] = 0;
+        return cstr;
+    }
+    fseek (f , 0 , SEEK_END);
+    unsigned long s = ftell(f);
+    char* cstr = new char[s+1];
+    rewind(f);
+    if (fread(cstr, s, 1, f) != 1) cstr[0] = 0;
+    cstr[s] = 0;
+    fclose(f);
+    return cstr;
+}
+
+static void postProcess(int width, int height) {
+    static bool fail = false;
+    static GLenum postprocess = 0;
+
+    if (postprocess == 0 && !fail) {
+        char* vtx = loadTextFile("data/base/prgs/post.v");
+        if (vtx) cout << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
+        char* fgm = loadTextFile("data/base/prgs/post.f");
+        if (fgm) cout << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
+        fail = (vtx[0] == 0 && fgm[0] == 0);
+        if (!fail) {
+            postprocess = SGL::glCompileProgram(vtx, fgm, cout);
+        }
+        delete vtx;
+        delete fgm;
+    }
+
+    if (fail) return;
+
+    glFlush();
+    SGL::glPushOrthoProjection(-0.5,+0.5, -0.0,+1.0, -1,+1);
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    {
+        glDisable(GL_LIGHTING);
+        glDisable(GL_FOG);
+        glDisable(GL_DEPTH_TEST);
+        glEnable(GL_TEXTURE_2D);
+        glColor4f(1,1,1,1);
+        
+        glUseProgramObjectARB(postprocess);
+        {
+            // Capture Color.
+            static long screencolor = 0;
+            if (screencolor == 0) screencolor = SGL::glBindTextureMipmap2D(0, true, true, false, false, width, height, NULL);
+            glUniform1i(glGetUniformLocation(postprocess, "tex"), 0);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, screencolor);
+            glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, 0, 0, width, height, 0);
+
+            // Capture Depth.
+            static long screendepth = 0;
+            if (screendepth == 0) screendepth = SGL::glBindTextureMipmap2D(0, true, true, false, false, width, height, NULL, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT);
+            glUniform1i(glGetUniformLocation(postprocess, "dep"), 1);
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, screendepth);
+            glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, width, height);
+
+            glPushMatrix();
+            {
+                glLoadIdentity();
+                cPrimitives::glXCenteredTextureSquare();
+            }
+            glPopMatrix();
+        }
+        glUseProgramObjectARB(0);
+    }
+    glPopAttrib();
+    SGL::glPopProjection();
+}
+
+
 void cMain::drawFrame(int elapsed_msec) {
     //std::cout << "elapsed: " << (elapsed_msec / 1000.0f) << std::endl;
     //if (hurlmotion) elapsed = int(elapsed * 1.0f);
@@ -312,7 +390,7 @@ void cMain::drawFrame(int elapsed_msec) {
     }
 
 
-    SGL::glPushPerspectiveProjection(game.fov);
+    SGL::glPushPerspectiveProjection(game.fov, 0.07,300);
     {
         // Setup camera.
         glLoadIdentity();
@@ -342,17 +420,21 @@ void cMain::drawFrame(int elapsed_msec) {
         // Delete list of visible objects.
         delete visobjects;
 
+        bool postprocessing = true;
+        if (postprocessing) postProcess(game.width, game.height);
+
         // Draw the Head-Up-Display of the currently spectating Object.
         game.camera->drawHUD();
     }
     SGL::glPopProjection();
 
-    //glFlush();
 
-    float motionblur = 0.2f;
-    if (game.nightvision) {
+    float motionblur = 0.0f;
+    if (game.nightvision > 0.0001f) {
+        glFlush();
         SGL::glAccumBlurInverse(0.83f);
-    } else if (motionblur > 0) {
+    } else if (motionblur > 0.0001) {
+        glFlush();
         SGL::glAccumBlur(motionblur);
     }
 
@@ -539,6 +621,7 @@ void cleanup() {
 
 
 #include <SDL/SDL_thread.h>
+#include <iosfwd>
 
 SDL_mutex* jobsmutex;
 std::queue<int (*)(void*)> jobs;
@@ -859,7 +942,7 @@ int cMain::sdlmain(int argc, char** args) {
 
     // Better set global signal and SDL_WaitThread.
     loopi(maxminions) {
-        SDL_KillThread(minions[i]);
+        //SDL_KillThread(minions[i]);
     }
 
     return 0;

@@ -43,7 +43,7 @@ struct rRigged : public rRole {
     MD5Format::model* model;
     /// Actual local-(model-)space joints for this instance.
     MD5Format::joint* joints;
-    /// Maps jointpoint identifier to actual joint index of the model.
+    /// Maps jointpoint identifier to actual joint index of the model (-1 ~ NULL).
     std::map<int, int> jointpoints;
     /// Joint angles for animation.
     std::map<int, std::map<int, float> > rotators;
@@ -86,6 +86,17 @@ struct rRigged : public rRole {
 
     virtual rRole* clone() {
         return new rRigged(this);
+    }
+
+    std::string getJointname2(unsigned int num) {
+        const char* names[] = {
+            "EYE", "HEAD", "NECK",
+            "FRONT", "HAND_L", "HAND_R", "SHOULDER_L", "SHOULDER_R", "BACKPACK",
+            "JET0", "JET1", "JET2", "JET3", "JET4",
+            "SPINE", "TORSO", "LEG_L", "LEG_R", "CALF_L", "CALF_R"
+        };
+        if (num >= MAX_JOINTPOINTS) return string("");
+        return string(names[num]);
     }
 
     std::string getJointname(unsigned int num) {
@@ -162,6 +173,9 @@ protected:
 
         /// Current average(d) speed.
         float avgspeed;
+
+        /// Average friction for groundedness and pose.
+        float grounded;
 
         /// Behave like a immobile gunpod.
         bool immobile;
