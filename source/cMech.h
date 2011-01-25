@@ -60,20 +60,21 @@ struct rRigged : public rRole {
     // Untransformed normals.
     std::map<int, float*> basenorms;
     /// Enumeration for indexing joints in animation.
-
     enum Jointpoints {
-        EYE, HEAD, NECK,
+        EYE, HEADPITCH, HEADYAW,
         CTMOUNT, LAMOUNT, RAMOUNT, LSMOUNT, RSMOUNT, BKMOUNT,
         JET0, JET1, JET2, JET3, JET4,
-        SPINE, TORSOR, LEFTLEG, RIGHTLEG, LEFTCALF, RIGHTCALF, MAX_JOINTPOINTS
+        YAW, PITCH, LEFTLEG, RIGHTLEG, LEFTCALF, RIGHTCALF, LEFTFOOT, RIGHTFOOT, MAX_JOINTPOINTS
     };
+    /// Animation time counter in seconds.
+    float seconds;
 
     /// Constructor
 
-    rRigged() : rRole("RIGGED"), scale(1.0f), model(NULL), joints(NULL) {
+    rRigged() : rRole("RIGGED"), scale(1.0f), model(NULL), joints(NULL), seconds(0.0f) {
     }
 
-    rRigged(rRigged* original) : rRole("RIGGED"), scale(1.0f), model(NULL), joints(NULL) {
+    rRigged(rRigged* original) : rRole("RIGGED"), scale(1.0f), model(NULL), joints(NULL), seconds(0.0f) {
         assert(0);
     }
     
@@ -88,23 +89,12 @@ struct rRigged : public rRole {
         return new rRigged(this);
     }
 
-    std::string getJointname2(unsigned int num) {
-        const char* names[] = {
-            "EYE", "HEAD", "NECK",
-            "FRONT", "HAND_L", "HAND_R", "SHOULDER_L", "SHOULDER_R", "BACKPACK",
-            "JET0", "JET1", "JET2", "JET3", "JET4",
-            "SPINE", "TORSO", "LEG_L", "LEG_R", "CALF_L", "CALF_R"
-        };
-        if (num >= MAX_JOINTPOINTS) return string("");
-        return string(names[num]);
-    }
-
     std::string getJointname(unsigned int num) {
         const char* names[] = {
-            "EYE", "HEAD", "NECK",
+            "EYE", "HEADPITCH", "HEADYAW",
             "CTMOUNT", "LAMOUNT", "RAMOUNT", "LSMOUNT", "RSMOUNT", "BKMOUNT",
             "JET0", "JET1", "JET2", "JET3", "JET4",
-            "SPINE", "TORSOR", "LEFTLEG", "RIGHTLEG", "LEFTCALF", "RIGHTCALF"
+            "YAW", "PITCH", "LEFTLEG", "RIGHTLEG", "LEFTCALF", "RIGHTCALF", "LEFTFOOT", "RIGHTFOOT"
         };
         if (num >= MAX_JOINTPOINTS) return string("");
         return string(names[num]);

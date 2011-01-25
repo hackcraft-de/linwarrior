@@ -3,7 +3,7 @@
 # Run LinWarrior
 #./dist/linwarrior -r 320 -m 0
 #./dist/linwarrior -r 640 -m 0 -w
-./dist/linwarrior -r 800 -m 0 -s 2
+./dist/linwarrior -r 800 -m 0 -s 0 -l 1
 #./dist/linwarrior -r 1024 -m 0
 #./dist/linwarrior -r 1280 -m 0
 #./dist/linwarrior -r 1680x1050 -m 0

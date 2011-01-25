@@ -170,12 +170,18 @@ cMech::cMech(float* pos, float* rot) {
     MD5Format::model* model = NULL;
     MD5Format::joint* modeljoints = NULL;
     try {
-        if (true) {
-            model = MD5Format::mapMD5Mesh("data/base/wanzers/gorilla/gorilla_ii.md5mesh");
-            //model = MD5Format::mapMD5Mesh("/media/44EA-7693/workspaces/blender_workspace/Mech4/Mech43.md5mesh");
-        } else {
-            model = MD5Format::mapMD5Mesh("data/base/wanzers/lemur/lemur.md5mesh");
+        int mod = (6+rand())%7;
+        switch(mod) {
+            case 0: model = MD5Format::mapMD5Mesh("data/base/wanzers/frogger/frogger.md5mesh"); break;
+            case 1: model = MD5Format::mapMD5Mesh("data/base/wanzers/gorilla/gorilla_ii.md5mesh"); break;
+            case 2: model = MD5Format::mapMD5Mesh("data/skorpio/wanzers/scorpion/scorpion.md5mesh"); break;
+            case 3: model = MD5Format::mapMD5Mesh("data/base/wanzers/lemur/lemur.md5mesh"); break;
+            case 4: model = MD5Format::mapMD5Mesh("data/base/tanks/bug/bug.md5mesh"); break;
+            case 5: model = MD5Format::mapMD5Mesh("data/base/tanks/ant/ant.md5mesh"); break;
+            case 6: model = MD5Format::mapMD5Mesh("data/base/wanzers/kibitz/kibitz.md5mesh"); break;
+            //case 7: model = MD5Format::mapMD5Mesh("data/base/tanks/pod/pod.md5mesh"); break;
         }
+        if (model == NULL) model = MD5Format::mapMD5Mesh("data/base/wanzers/frogger/frogger.md5mesh");
         assert(model != NULL);
 
         cout << MD5Format::getModelStats(model) << endl;
@@ -194,7 +200,7 @@ cMech::cMech(float* pos, float* rot) {
 
         loopi(rigged->MAX_JOINTPOINTS) {
             jointpoints[i] = MD5Format::findJoint(model, rigged->getJointname(i).c_str());
-            if (jointpoints[i] < 0) jointpoints[i] = MD5Format::findJoint(model, rigged->getJointname2(i).c_str());
+            //if (jointpoints[i] < 0) jointpoints[i] = MD5Format::findJoint(model, rigged->getJointname2(i).c_str());
         }
 
         rigged->model = model;
@@ -511,25 +517,51 @@ void cMech::poseRunning(float spf) {
     // This is full of hand crafted magic numbers and magic code don't ask...
     const float e = 0.017453;
     float o = e * -60;
-    float t = e * seconds * 180;
+    //float t = e * seconds * 180 * (1.2f + 0.02f * fabs(vel));
+    rigged->seconds += e * spf * 180.0f * (1.0f + 0.2 * fabs(vel));
+    float t = rigged->seconds;
 
-    float l1 = 30 * (+sin(t)* 1) * vel;
-    float l2 = 21 * (+sin(copysign(t, vel) + o) + 1) * fabs(vel);
+    float l1 = 25 * +sin(t) * vel;
+    float l2 = 15 * (+sin(copysign(t, vel) + o) + 1) * fabs(vel);
+    float l3 = 10 * +cos(t) * vel;
 
-    float r1 = 30 * (-sin(t)* 1) * vel;
-    float r2 = 21 * (-sin(copysign(t, vel) + o) + 1) * fabs(vel);
+    float r1 = 20 * -sin(t) * vel;
+    float r2 = 20 * (-sin(copysign(t, vel) + o) + 1) * fabs(vel);
+    float r3 = 15 * -cos(t) * vel;
+
+    bool bird = false;
+    if (rigged->model != NULL) {
+        if (MD5Format::findJoint(rigged->model, "BIRD") >= 0) {
+            bird = true;
+        }
+    }
+    float bf = bird ? -1.0f : +1.0f;
+
+    float l1scale = 0.65;
+    if (bf*l1 > 0) l1 *= l1scale;
+    if (bf*r1 > 0) r1 *= l1scale;
+
+    float l2scale = 0.45;
+    if (bf*l2 < 0) l2 *= l2scale;
+    if (bf*r2 < 0) r2 *= l2scale;
+
+    float l3scale = 0.25;
+    if (bf*l3 > 0) l3 *= l3scale;
+    if (bf*r3 > 0) r3 *= l3scale;
 
     std::map<int, std::map<int, float> > &rotators = rigged->rotators;
     rotators[rigged->LEFTLEG][X] = -l1;
     rotators[rigged->LEFTCALF][X] = -l2;
+    rotators[rigged->LEFTFOOT][X] = -l3;
     rotators[rigged->RIGHTLEG][X] = -r1;
     rotators[rigged->RIGHTCALF][X] = -r2;
+    rotators[rigged->RIGHTFOOT][X] = -r3;
 }
 
 void cMech::poseJumping(float spf) {
     // Hanging Legs
-    const float a = -50;
-    const float b = -130;
+    const float a = -30;
+    const float b = -60;
     const float s = 30;
     const float f = b / a;
 
@@ -629,7 +661,7 @@ void cMech::animate(float spf) {
     // Rigid Body, Collisions etc.
     animatePhysics(spf);
 
-    vector_scale(rigged->rotators[rigged->TORSOR], misc->twr, 180.0f / M_PI);
+    vector_scale(rigged->rotators[rigged->PITCH], misc->twr, 180.0f / M_PI);
 
     // Show fitting animation pose based on state and physics.
     if (misc->grounded > 0.15) {
@@ -668,9 +700,9 @@ void cMech::transform() {
 
             std::map<int, std::map<int, float> > &rotators = rigged->rotators;
 
-            int spine_idx = jointpoints[rigged->SPINE];
-            int torsor_idx = jointpoints[rigged->TORSOR];
-            if (spine_idx < 0) spine_idx = torsor_idx;
+            int yaw_idx = jointpoints[rigged->YAW];
+            int pitch_idx = jointpoints[rigged->PITCH];
+            if (yaw_idx < 0) yaw_idx = pitch_idx;
 
             if (0) {
                 float qy[4];
@@ -678,33 +710,31 @@ void cMech::transform() {
                 quat_cpy(manipulators[0].q, qy);
             }
 
-            if (spine_idx == torsor_idx && torsor_idx >= 0) {
+            if (yaw_idx == pitch_idx && pitch_idx >= 0) {
                 float qy[4];
                 quat_rotaxis(qy, -misc->twr[1], yaxis);
                 float qx[4];
                 quat_rotaxis(qx, +misc->twr[0], xaxis);
                 float q[4];
                 quat_mul(q, qy, qx);
-                quat_cpy(manipulators[torsor_idx].q, q);
+                quat_cpy(manipulators[pitch_idx].q, q);
             } else {
-                if (spine_idx >= 0) {
+                if (yaw_idx >= 0) {
                     float qy[4];
                     quat_rotaxis(qy, -misc->twr[1], yaxis);
-                    quat_cpy(manipulators[spine_idx].q, qy);
+                    quat_cpy(manipulators[yaw_idx].q, qy);
                 }
-                if (torsor_idx >= 0) {
+                if (pitch_idx >= 0) {
                     float qx[4];
                     quat_rotaxis(qx, +misc->twr[0], xaxis);
-                    quat_cpy(manipulators[torsor_idx].q, qx);
+                    quat_cpy(manipulators[pitch_idx].q, qx);
                 }
             }
 
             if (true) {
                 float qx[4];
                 quat_rotaxis(qx, +misc->twr[0], xaxis);
-                int jidx = jointpoints[rigged->EYE];
-                if (jidx < 0) jidx = jointpoints[rigged->HEAD];
-                if (jidx < 0) jidx = jointpoints[rigged->TORSOR];
+                int jidx = jointpoints[rigged->HEADPITCH];
                 if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
             }
 
@@ -721,6 +751,12 @@ void cMech::transform() {
                 int jidx = jointpoints[rigged->LEFTCALF];
                 if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
             }
+            if (left) {
+                float qx[4];
+                quat_rotaxis(qx, rotators[rigged->LEFTFOOT][0]*0.017453, xaxis);
+                int jidx = jointpoints[rigged->LEFTFOOT];
+                if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
+            }
             bool right = true;
             if (right) {
                 float qx[4];
@@ -732,6 +768,12 @@ void cMech::transform() {
                 float qx[4];
                 quat_rotaxis(qx, rotators[rigged->RIGHTCALF][0]*0.017453, xaxis);
                 int jidx = jointpoints[rigged->RIGHTCALF];
+                if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
+            }
+            if (right) {
+                float qx[4];
+                quat_rotaxis(qx, rotators[rigged->RIGHTFOOT][0]*0.017453, xaxis);
+                int jidx = jointpoints[rigged->RIGHTFOOT];
                 if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
             }
         } // set joint manipulators

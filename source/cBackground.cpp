@@ -480,7 +480,7 @@ void cBackground::drawBackground(float hour) {
     //speed *= 5;
     this->hour = fmod(speed*hour, 24.00f);
     //hour = rand()%24;
-    this->hour = 0;
+    //this->hour = 0;
 
     // Sample and set ambient haze color.
     float haze[4] = { 0,0,0,0 };
