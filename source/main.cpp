@@ -149,7 +149,7 @@ void cGame::initMission() {
     this->world = new cWorld();
     assert(this->world != NULL);
     if (this->mission == 1) {
-        this->world->mMission = new cEmptyMission();
+        this->world->mMission = new cMission();
         assert(this->world->mMission != NULL);
         this->camera = this->world->mMission->init(this->world);
         this->pad1 = this->camera->controlled->pad;
@@ -164,11 +164,6 @@ void cGame::initMission() {
 }
 
 void cMain::initGL(int width, int height) {    
-#ifdef __WIN32
-    glTexImage3D = SDL_GL_GetProcAddress("glTexImage3D");
-    assert(glTexImage3D != NULL);
-#endif
-
     if (true) {
         std::string glinfo;
         glinfo = (const char*) glGetString(GL_RENDERER);
@@ -279,6 +274,7 @@ static void postProcess(int width, int height) {
         glDisable(GL_LIGHTING);
         glDisable(GL_FOG);
         glDisable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
         glEnable(GL_TEXTURE_2D);
         glColor4f(1,1,1,1);
         

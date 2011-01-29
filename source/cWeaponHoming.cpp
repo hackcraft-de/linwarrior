@@ -158,8 +158,8 @@ void cWeaponHoming::drawSolid() {
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
-        glEnable(GL_NORMALIZE);
-        glDisable(GL_CULL_FACE);
+        SGL::glUseProgram_fglitcolor();
+
         glPushMatrix();
         {
             glMultMatrixf(weaponPosef);
@@ -209,10 +209,7 @@ void cWeaponHoming::drawSolid() {
     // Missiles themselves:
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
-
-        glDisable(GL_CULL_FACE);
-        glDisable(GL_LIGHTING);
-        glDisable(GL_TEXTURE_2D);
+        SGL::glUseProgram_fglitcolor();
 
         const float size = 0.8;
         const float length = size * 1.4;
@@ -252,6 +249,7 @@ void cWeaponHoming::drawSolid() {
                 glMultMatrixf(b);
                 //glNormAxis();
                 glBegin(GL_TRIANGLE_FAN);
+                glNormal3f(0,0,1);
                 glVertex3f(0, 0, length);
                 glVertex3f(s1, c1, 0);
                 glVertex3f(s2, c2, 0);
@@ -269,18 +267,12 @@ void cWeaponHoming::drawSolid() {
 void cWeaponHoming::drawEffect() {
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
-
-        glDisable(GL_CULL_FACE);
-        glDisable(GL_LIGHTING);
-        glDisable(GL_TEXTURE_2D);
-        glDepthMask(GL_FALSE);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+        SGL::glUseProgram_fgaddcolor();
 
         float n[16];
         SGL::glGetTransposeInverseRotationMatrix(n);
 
         // Draw Missile's flare.
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
         foreachNoInc(i, missileParticles) {
             cParticle* s = *i++;
@@ -297,12 +289,11 @@ void cWeaponHoming::drawEffect() {
                 cPrimitives::glDisk(7 + WEAPONDETAIL, size * 0.07f);
             }
             glPopMatrix();
-        }
+        } // missiles
 
         // Draw Missile's trails.
-        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-        glEnable(GL_TEXTURE_2D);
+        SGL::glUseProgram_fgaddtexture();
+        
         glBindTexture(GL_TEXTURE_2D, sTextures[0]);
 
         foreachNoInc(i, missileParticles) {
@@ -320,8 +311,8 @@ void cWeaponHoming::drawEffect() {
                     cPrimitives::glDisk(5 + WEAPONDETAIL, size);
                 }
                 glPopMatrix();
-            }
-        }
+            } // trails
+        } // missiles
 
     }
     glPopAttrib();

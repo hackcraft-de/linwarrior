@@ -140,8 +140,8 @@ void cWeaponMachinegun::animate(float spf) {
 void cWeaponMachinegun::drawSolid() {
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
-        glEnable(GL_NORMALIZE);
-        glDisable(GL_CULL_FACE);
+        SGL::glUseProgram_fglitcolor();
+        
         glPushMatrix();
         {
             glMultMatrixf(weaponPosef);
@@ -193,13 +193,9 @@ void cWeaponMachinegun::drawSolid() {
 void cWeaponMachinegun::drawEffect() {
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
+        SGL::glUseProgram_fgaddcolor();
 
         glLineWidth(2);
-        glDisable(GL_CULL_FACE);
-        glDisable(GL_LIGHTING);
-        glDisable(GL_TEXTURE_2D);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-        glDepthMask(GL_FALSE);
 
         foreachNoInc(i, shrapnelParticles) {
             cParticle* s = *i++;

@@ -60,15 +60,17 @@ typedef  SCALAR          MATRIX[4*4];
 
 //--[Array Accessors]--------------->
 
-#define  X 0
-#define  Y 1
-#define  Z 2
-#define  W 3
-#define  D 3
+//#define  X 0
+//#define  Y 1
+//#define  Z 2
+//#define  W 3
+//#define  D 3
 
 // better try not to use those letters for variables etc.
 // ...but who would use that short-uppercase-names anyway?
 
+//typedef float vec4[4];
+//typedef float mat4[16];
 
 //--[Misc Defines]------------------>
 
@@ -109,13 +111,13 @@ typedef  SCALAR          MATRIX[4*4];
 
 // -1.0 <= u <= 2.0
 
-#define spline_b1(u)    ((u) * ((u) - 1) * ((u) - 2) / (-6.0F))
+#define spline_b1(u)    ((u) * ((u) - 1) * ((u) - 2) / (-6.0f))
 
-#define spline_b2(u)    (((u) + 1) * ((u) - 1) * ((u) - 2) / (2.0F))
+#define spline_b2(u)    (((u) + 1) * ((u) - 1) * ((u) - 2) / (2.0f))
 
-#define spline_b3(u)    (((u) + 1) * (u) * ((u) - 2) / (-2.0F))
+#define spline_b3(u)    (((u) + 1) * (u) * ((u) - 2) / (-2.0f))
 
-#define spline_b4(u)    (((u) + 1) * (u) * ((u) - 1) / (6.0F))
+#define spline_b4(u)    (((u) + 1) * (u) * ((u) - 1) / (6.0f))
 
 #define spline_func(a, b, c, d, u) ((a) * spline_b1((u)) + (b) * spline_b2((u)) + (c) * spline_b3((u)) + (d) * spline_b4((u)))
 
@@ -130,23 +132,23 @@ typedef  SCALAR          MATRIX[4*4];
 // v = slope of line/ray
 // d = "D" from the plane equation
 
-#define calcT(n, p, v, d)            (-(n[X]*p[X]+n[Y]*p[Y]+n[Z]*p[Z]+d)/(n[X]*v[X]+n[Y]*v[Y]+n[Z]*v[Z]))
+#define calcT(n, p, v, d)            (-(n[0]*p[0]+n[1]*p[1]+n[2]*p[2]+d)/(n[0]*v[0]+n[1]*v[1]+n[2]*v[2]))
 
-#define calcP(nrml, pnt, d)          (nrml[X]*pnt[X]+nrml[Y]*pnt[Y]+nrml[Z]*pnt[Z]+d)
+#define calcP(nrml, pnt, d)          (nrml[0]*pnt[0]+nrml[1]*pnt[1]+nrml[2]*pnt[2]+d)
 
-#define calcA(nrml, pnt, d)          (-(nrml[Y]*pnt[Y]+nrml[Z]*pnt[Z]+d)/pnt[X])
+#define calcA(nrml, pnt, d)          (-(nrml[1]*pnt[1]+nrml[2]*pnt[2]+d)/pnt[0])
 
-#define calcB(nrml, pnt, d)          (-(nrml[X]*pnt[X]+nrml[Z]*pnt[Z]+d)/pnt[Y])
+#define calcB(nrml, pnt, d)          (-(nrml[0]*pnt[0]+nrml[2]*pnt[2]+d)/pnt[1])
 
-#define calcC(nrml, pnt, d)          (-(nrml[X]*pnt[X]+nrml[Y]*pnt[Y]+d)/pnt[Z])
+#define calcC(nrml, pnt, d)          (-(nrml[0]*pnt[0]+nrml[1]*pnt[1]+d)/pnt[2])
 
-#define calcD(nrml, pnt)             (-(nrml[X]*pnt[X]+nrml[Y]*pnt[Y]+nrml[Z]*pnt[Z]))
+#define calcD(nrml, pnt)             (-(nrml[0]*pnt[0]+nrml[1]*pnt[1]+nrml[2]*pnt[2]))
 
-#define calcX(nrml, pnt, d)          (-(nrml[Y]*pnt[Y]+nrml[Z]*pnt[Z]+d)/nrml[X])
+#define calcX(nrml, pnt, d)          (-(nrml[1]*pnt[1]+nrml[2]*pnt[2]+d)/nrml[0])
 
-#define calcY(nrml, pnt, d)          (-(nrml[X]*pnt[X]+nrml[Z]*pnt[Z]+d)/nrml[Y])
+#define calcY(nrml, pnt, d)          (-(nrml[0]*pnt[0]+nrml[2]*pnt[2]+d)/nrml[1])
 
-#define calcZ(nrml, pnt, d)          (-(nrml[X]*pnt[X]+nrml[Y]*pnt[Y]+d)/nrml[Z])
+#define calcZ(nrml, pnt, d)          (-(nrml[0]*pnt[0]+nrml[1]*pnt[1]+d)/nrml[2])
 
 #define clip(a1, b1, a2, b2, clp)    ( (a1) - ( (a1) - (a2) ) / ( (b1) - (b2) ) * ( (b1) - (clp) ) )
 
@@ -163,9 +165,9 @@ typedef  SCALAR          MATRIX[4*4];
   float d1 = calcP((normal), (p1), (d)); \
   if ( copysign(1.0, d0) != copysign(1.0, d1) ) { \
     float dd = d0 / (d0 - d1); \
-    (resultp)[X] = (p0)[X] - (((p0)[X] - (p1)[X]) * dd); \
-    (resultp)[Y] = (p0)[Y] - (((p0)[Y] - (p1)[Y]) * dd); \
-    (resultp)[Z] = (p0)[Z] - (((p0)[Z] - (p1)[Z]) * dd); \
+    (resultp)[0] = (p0)[0] - (((p0)[0] - (p1)[0]) * dd); \
+    (resultp)[1] = (p0)[1] - (((p0)[1] - (p1)[1]) * dd); \
+    (resultp)[2] = (p0)[2] - (((p0)[2] - (p1)[2]) * dd); \
     result = 1; \
   } \
 }
@@ -225,9 +227,9 @@ typedef  SCALAR          MATRIX[4*4];
 // applyMatrix3(VECTOR result, MATRIX M, VECTOR V)
 #define matrix_apply3(result, M, V) \
 { \
-  (result)[X] = ((V)[0]*(M)[0]) + ((V)[1]*(M)[4]) + ((V)[2]*(M)[ 8]) + ((M)[12]); \
-  (result)[Y] = ((V)[0]*(M)[1]) + ((V)[1]*(M)[5]) + ((V)[2]*(M)[ 9]) + ((M)[13]); \
-  (result)[Z] = ((V)[0]*(M)[2]) + ((V)[1]*(M)[6]) + ((V)[2]*(M)[10]) + ((M)[14]); \
+  (result)[0] = ((V)[0]*(M)[0]) + ((V)[1]*(M)[4]) + ((V)[2]*(M)[ 8]) + ((M)[12]); \
+  (result)[1] = ((V)[0]*(M)[1]) + ((V)[1]*(M)[5]) + ((V)[2]*(M)[ 9]) + ((M)[13]); \
+  (result)[2] = ((V)[0]*(M)[2]) + ((V)[1]*(M)[6]) + ((V)[2]*(M)[10]) + ((M)[14]); \
 }
 
 // Multiplies Matrices M and N and stores result to M
@@ -467,33 +469,33 @@ typedef  SCALAR          MATRIX[4*4];
     printf("< %3.4f %3.4f %3.4f >\n", (A)[0], (A)[1], (A)[2]); \
 }
 
-#define vector_cpy(result, A)           { (result)[X] = (A)[X]; (result)[Y] = (A)[Y]; (result)[Z] = (A)[Z]; }
+#define vector_cpy(result, A)           { (result)[0] = (A)[0]; (result)[1] = (A)[1]; (result)[2] = (A)[2]; }
 
-#define vector_set(result, x, y, z)     { (result)[X] = x; (result)[Y] = y; (result)[Z] = z; }
+#define vector_set(result, x, y, z)     { (result)[0] = x; (result)[1] = y; (result)[2] = z; }
 
 #define vector_set3i(result, fun_of_i)  { loop3i(result[i] = fun_of_i;) }
 
 #define vector_norm(result, A)          { typeof(A[0]) inv = ((typeof(A[0]))1)/vector_mag(A); vector_scale( (result), (A), inv); }
 
-#define vector_mag(A)                   ( sqrt( pow((A)[X],2) + pow((A)[Y],2) + pow((A)[Z],2) ) )
+#define vector_mag(A)                   ( sqrt( pow((A)[0],2) + pow((A)[1],2) + pow((A)[2],2) ) )
 
-#define vector_dot(A, B)                ((A)[X] * (B)[X] + (A)[Y] * (B)[Y] + (A)[Z] * (B)[Z] )
+#define vector_dot(A, B)                ((A)[0] * (B)[0] + (A)[1] * (B)[1] + (A)[2] * (B)[2] )
 
-#define vector_neg(result, A)           { (result)[X] = -(A)[X]; (result)[Y] = -(A)[Y]; (result)[Z] = -(A)[Z]; }
+#define vector_neg(result, A)           { (result)[0] = -(A)[0]; (result)[1] = -(A)[1]; (result)[2] = -(A)[2]; }
 
-#define vector_cross(result, A, B)      { (result)[X] = (A)[Y] * (B)[Z] - (A)[Z] * (B)[Y]; (result)[Y] = (A)[Z] * (B)[X] - (A)[X] * (B)[Z]; (result)[Z] = (A)[X] * (B)[Y] - (A)[Y] * (B)[X]; }
+#define vector_cross(result, A, B)      { (result)[0] = (A)[1] * (B)[2] - (A)[2] * (B)[1]; (result)[1] = (A)[2] * (B)[0] - (A)[0] * (B)[2]; (result)[2] = (A)[0] * (B)[1] - (A)[1] * (B)[0]; }
 
-#define vector_add(result, A, B)        { (result)[X] = (A)[X] + (B)[X]; (result)[Y] = (A)[Y] + (B)[Y]; (result)[Z] = (A)[Z] + (B)[Z]; }
+#define vector_add(result, A, B)        { (result)[0] = (A)[0] + (B)[0]; (result)[1] = (A)[1] + (B)[1]; (result)[2] = (A)[2] + (B)[2]; }
 
-#define vector_sub(result, A, B)        { (result)[X] = (A)[X] - (B)[X]; (result)[Y] = (A)[Y] - (B)[Y]; (result)[Z] = (A)[Z] - (B)[Z]; }
+#define vector_sub(result, A, B)        { (result)[0] = (A)[0] - (B)[0]; (result)[1] = (A)[1] - (B)[1]; (result)[2] = (A)[2] - (B)[2]; }
 
-#define vector_scale(result, A, B)      { (result)[X] = (A)[X] * (B); (result)[Y] = (A)[Y] * (B); (result)[Z] = (A)[Z] * (B); }
+#define vector_scale(result, A, B)      { (result)[0] = (A)[0] * (B); (result)[1] = (A)[1] * (B); (result)[2] = (A)[2] * (B); }
 
-#define vector_sqrdist(A, B)            ( ((A)[X]-(B)[X]) * ((A)[X]-(B)[X]) + ((A)[Y]-(B)[Y]) * ((A)[Y]-(B)[Y]) + ((A)[Z]-(B)[Z]) * ((A)[Z]-(B)[Z]) )
+#define vector_sqrdist(A, B)            ( ((A)[0]-(B)[0]) * ((A)[0]-(B)[0]) + ((A)[1]-(B)[1]) * ((A)[1]-(B)[1]) + ((A)[2]-(B)[2]) * ((A)[2]-(B)[2]) )
 
-#define vector_distance(A, B)           ( sqrt( ((A)[X]-(B)[X]) * ((A)[X]-(B)[X]) + ((A)[Y]-(B)[Y]) * ((A)[Y]-(B)[Y]) + ((A)[Z]-(B)[Z]) * ((A)[Z]-(B)[Z]) ) )
+#define vector_distance(A, B)           ( sqrt( ((A)[0]-(B)[0]) * ((A)[0]-(B)[0]) + ((A)[1]-(B)[1]) * ((A)[1]-(B)[1]) + ((A)[2]-(B)[2]) * ((A)[2]-(B)[2]) ) )
 
-#define vector_manhattan(A, B)          ( fabs((A)[X]-(B)[X])) + fabs((A)[Y]-(B)[Y])) + fabs((A)[Z]-(B)[Z]))  )
+#define vector_manhattan(A, B)          ( fabs((A)[0]-(B)[0])) + fabs((A)[1]-(B)[1])) + fabs((A)[2]-(B)[2]))  )
 
 #define vector_rotx(result, radx) \
 { \

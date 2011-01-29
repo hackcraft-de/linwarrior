@@ -130,7 +130,7 @@ cMech::cMech(float* pos, float* rot) {
     if (rot != NULL) vector_scale(misc->bse, rot, 0.017453);
 
     float axis[] = {0, 1, 0};
-    quat_rotaxis(traceable->ori, misc->bse[Y], axis);
+    quat_rotaxis(traceable->ori, misc->bse[1], axis);
 
     misc->currentWeapon = 0;
     misc->jetpower = 0;
@@ -332,12 +332,12 @@ void cMech::ChassisLR(float radians) {
     float e = radians;
     if (e > +limit) e = +limit;
     if (e < -limit) e = -limit;
-    misc->bse[Y] += e;
+    misc->bse[1] += e;
     const float fullcircle = 2 * M_PI;
-    misc->bse[Y] = fmod(misc->bse[Y], fullcircle);
+    misc->bse[1] = fmod(misc->bse[1], fullcircle);
 
     float axis[] = {0, 1, 0};
-    quat_rotaxis(traceable->ori, misc->bse[Y], axis);
+    quat_rotaxis(traceable->ori, misc->bse[1], axis);
 }
 
 void cMech::ChassisUD(float radians) {
@@ -345,12 +345,12 @@ void cMech::ChassisUD(float radians) {
     const float limit = 0.005 * M_PI;
     if (e > +limit) e = +limit;
     if (e < -limit) e = -limit;
-    misc->bse[X] += e;
+    misc->bse[0] += e;
     const float fullcircle = 2 * M_PI;
-    misc->bse[X] = fmod(misc->bse[X], fullcircle);
+    misc->bse[0] = fmod(misc->bse[0], fullcircle);
 
     float axis[] = {1, 0, 0};
-    quat_rotaxis(traceable->ori, misc->bse[X], axis);
+    quat_rotaxis(traceable->ori, misc->bse[0], axis);
 }
 
 float cMech::TowerLR(float radians) {
@@ -358,16 +358,16 @@ float cMech::TowerLR(float radians) {
     const float steplimit = 0.01 * M_PI;
     if (e > +steplimit) e = +steplimit;
     if (e < -steplimit) e = -steplimit;
-    misc->twr[Y] += e;
+    misc->twr[1] += e;
     if (misc->immobile) {
         const float fullcircle = 2 * M_PI; // 360
-        misc->twr[Y] = fmod(misc->twr[Y], fullcircle);
+        misc->twr[1] = fmod(misc->twr[1], fullcircle);
         return 0.0f;
     } else {
         const float limit = 0.4 * M_PI;
-        float excess = copysign( (fabs(misc->twr[Y]) > limit ? fabs(misc->twr[Y]) - limit : 0), misc->twr[Y]);
-        if (misc->twr[Y] > +limit) misc->twr[Y] = +limit;
-        if (misc->twr[Y] < -limit) misc->twr[Y] = -limit;
+        float excess = copysign( (fabs(misc->twr[1]) > limit ? fabs(misc->twr[1]) - limit : 0), misc->twr[1]);
+        if (misc->twr[1] > +limit) misc->twr[1] = +limit;
+        if (misc->twr[1] < -limit) misc->twr[1] = -limit;
         return excess;
     }
 }
@@ -377,10 +377,10 @@ void cMech::TowerUD(float radians) {
     const float steplimit = 0.01 * M_PI;
     if (e > +steplimit) e = +steplimit;
     if (e < -steplimit) e = -steplimit;
-    misc->twr[X] += e;
+    misc->twr[0] += e;
     const float limit = 0.4 * M_PI;
-    if (misc->twr[X] > +limit) misc->twr[X] = +limit;
-    if (misc->twr[X] < -limit) misc->twr[X] = -limit;
+    if (misc->twr[0] > +limit) misc->twr[0] = +limit;
+    if (misc->twr[0] < -limit) misc->twr[0] = -limit;
 }
 
 void cMech::fireAllWeapons() {
@@ -505,7 +505,7 @@ void cMech::poseRunning(float spf) {
     quat_apply(v, ori_inv, traceable->vel);
 
     {
-        float nowspeed = copysign( sqrt(v[X] * v[X] + v[Z] * v[Z]), v[Z] );
+        float nowspeed = copysign( sqrt(v[0] * v[0] + v[2] * v[2]), v[2] );
         float alpha = 0.17f;
         misc->avgspeed += alpha * (nowspeed - misc->avgspeed);
     }
@@ -550,12 +550,12 @@ void cMech::poseRunning(float spf) {
     if (bf*r3 > 0) r3 *= l3scale;
 
     std::map<int, std::map<int, float> > &rotators = rigged->rotators;
-    rotators[rigged->LEFTLEG][X] = -l1;
-    rotators[rigged->LEFTCALF][X] = -l2;
-    rotators[rigged->LEFTFOOT][X] = -l3;
-    rotators[rigged->RIGHTLEG][X] = -r1;
-    rotators[rigged->RIGHTCALF][X] = -r2;
-    rotators[rigged->RIGHTFOOT][X] = -r3;
+    rotators[rigged->LEFTLEG][0] = -l1;
+    rotators[rigged->LEFTCALF][0] = -l2;
+    rotators[rigged->LEFTFOOT][0] = -l3;
+    rotators[rigged->RIGHTLEG][0] = -r1;
+    rotators[rigged->RIGHTCALF][0] = -r2;
+    rotators[rigged->RIGHTFOOT][0] = -r3;
 }
 
 void cMech::poseJumping(float spf) {
@@ -566,17 +566,17 @@ void cMech::poseJumping(float spf) {
     const float f = b / a;
 
     std::map<int, std::map<int, float> > &rotators = rigged->rotators;
-    if (rotators[rigged->LEFTLEG][X] > -a) rotators[rigged->LEFTLEG][X] -= s * spf;
-    if (rotators[rigged->LEFTLEG][X] < -a + 1) rotators[rigged->LEFTLEG][X] += s * spf;
+    if (rotators[rigged->LEFTLEG][0] > -a) rotators[rigged->LEFTLEG][0] -= s * spf;
+    if (rotators[rigged->LEFTLEG][0] < -a + 1) rotators[rigged->LEFTLEG][0] += s * spf;
 
-    if (rotators[rigged->LEFTCALF][X] > +b) rotators[rigged->LEFTCALF][X] -= f * s * spf;
-    if (rotators[rigged->LEFTCALF][X] < +b + 1) rotators[rigged->LEFTCALF][X] += f * s * spf;
+    if (rotators[rigged->LEFTCALF][0] > +b) rotators[rigged->LEFTCALF][0] -= f * s * spf;
+    if (rotators[rigged->LEFTCALF][0] < +b + 1) rotators[rigged->LEFTCALF][0] += f * s * spf;
 
-    if (rotators[rigged->RIGHTLEG][X] > -a) rotators[rigged->RIGHTLEG][X] -= s * spf;
-    if (rotators[rigged->RIGHTLEG][X] < -a + 1) rotators[rigged->RIGHTLEG][X] += s * spf;
+    if (rotators[rigged->RIGHTLEG][0] > -a) rotators[rigged->RIGHTLEG][0] -= s * spf;
+    if (rotators[rigged->RIGHTLEG][0] < -a + 1) rotators[rigged->RIGHTLEG][0] += s * spf;
 
-    if (rotators[rigged->RIGHTCALF][X] > +b) rotators[rigged->RIGHTCALF][X] -= f * s * spf;
-    if (rotators[rigged->RIGHTCALF][X] < +b + 1) rotators[rigged->RIGHTCALF][X] += f * s * spf;
+    if (rotators[rigged->RIGHTCALF][0] > +b) rotators[rigged->RIGHTCALF][0] -= f * s * spf;
+    if (rotators[rigged->RIGHTCALF][0] < +b + 1) rotators[rigged->RIGHTCALF][0] += f * s * spf;
 }
 
 void cMech::animate(float spf) {
@@ -871,9 +871,6 @@ void cMech::drawSolid() {
         MD5Format::joint* joints_ = rigged->joints;
         glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
-            glColor3f(1, 1, 1);
-            glFrontFace(GL_CW);
-            glDisable(GL_LIGHTING);
             int texture = 0;
             texture = hasTag(RED) ? 0 : texture;
             texture = hasTag(BLUE) ? 1 : texture;
@@ -898,7 +895,7 @@ void cMech::drawSolid() {
                 glScalef(rscale, rscale, rscale);
 
                 if (DRAWJOINTS) { // draw skeleton
-                    glDisable(GL_TEXTURE_2D);
+                    SGL::glUseProgram_fgplaincolor();
 
                     loopi(model->numJoints) {
                         glPushMatrix();
@@ -922,7 +919,6 @@ void cMech::drawSolid() {
                 } // draw skeleton
 
                 if (true) { // draw models meshes
-                    glEnable(GL_TEXTURE_3D);
 
                     // Generate base vertices and normals for 3d-tex-coords.
                     if (rigged->baseverts.empty()) {
@@ -959,7 +955,10 @@ void cMech::drawSolid() {
                             msh = MD5Format::getNextMesh(msh);
                         }
                     }
-                    glEnable(GL_LIGHTING);
+
+                    SGL::glUseProgram_fglittexture3d();
+                    glColor4f(1, 1, 1, 1);
+                    glFrontFace(GL_CW);
 
                     MD5Format::mesh* msh = MD5Format::getFirstMesh(model);
 
@@ -973,7 +972,6 @@ void cMech::drawSolid() {
                         // For 3d texturing.
                         float* vox = rigged->baseverts[i];
                         //
-                        glColor4f(0.8, 0.9, 1, 1);
                         glBegin(GL_TRIANGLES);
                         const float s = 0.25f;
                         for (int j = 0; j < msh->numtris; j++) {
@@ -1021,25 +1019,28 @@ void cMech::drawEffect() {
     if (!hasTag(HUMANPLAYER)) {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
-            glDisable(GL_CULL_FACE);
-            glDisable(GL_LIGHTING);
-            glDisable(GL_TEXTURE_2D);
-            glDepthMask(GL_FALSE);
-            //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-            if (hasTag(RED)) glColor4f(1, 0, 0, 0.4);
-            else if (hasTag(GREEN)) glColor4f(0, 1, 0, 0.4);
-            else if (hasTag(BLUE)) glColor4f(0, 0, 1, 0.4);
-            else glColor4f(1, 1, 0, 0.4);
+            SGL::glUseProgram_fgaddcolor();
+            
+            // Draw colored base.
             glPushMatrix();
             {
                 glTranslatef(traceable->pos[0], traceable->pos[1], traceable->pos[2]);
                 SGL::glRotateq(this->traceable->ori.data());
                 glTranslatef(0, +0.1, 0);
                 glRotatef(90, 1, 0, 0);
-                cPrimitives::glDisk(7, 1.3f);
+                //glColor4f(0.1,0.1,0.1,0.9);
+                //cPrimitives::glDisk(4, 1.3f);
+                if (hasTag(RED)) glColor4f(1, 0, 0, 0.9);
+                else if (hasTag(GREEN)) glColor4f(0, 1, 0, 0.9);
+                else if (hasTag(BLUE)) glColor4f(0, 0, 1, 0.9);
+                else glColor4f(1, 1, 0, 0.9);
+                cPrimitives::glDisk(1, -1.3f);
             }
             glPopMatrix();
+
+            // Print name above head.
             if (nameable) {
+                SGL::glUseProgram_fgplaintexture();
                 glColor4f(0.95, 0.95, 1, 1);
                 glPushMatrix();
                 {
@@ -1064,11 +1065,7 @@ void cMech::drawEffect() {
     if (this->misc->jetpower > 30.0f) {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
-            glDisable(GL_CULL_FACE);
-            glDisable(GL_LIGHTING);
-            glDisable(GL_TEXTURE_2D);
-            glDepthMask(GL_FALSE);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+            SGL::glUseProgram_fgaddcolor();
 
             std::map<int, int>& jointpoints = rigged->jointpoints;
             int jet[5];
@@ -1130,12 +1127,9 @@ void cMech::drawEffect() {
 void cMech::drawHUD() {
     glPushAttrib(GL_ALL_ATTRIB_BITS /* more secure */);
     {
-        glLineWidth(2);
-        glDisable(GL_LIGHTING);
-        glDisable(GL_TEXTURE_2D);
-        glDisable(GL_FOG);
-        glDisable(GL_DEPTH_TEST);
+        SGL::glUseProgram_bkplaincolor();
         glDisable(GL_CULL_FACE);
+        glLineWidth(2);
 
         SGL::glPushOrthoProjection();
         {
@@ -1362,10 +1356,10 @@ void cMech::do_moveTowards() {
     // Determine nearest rotation direction
     float rd[2];
     cParticle::rotationTo(rd, traceable->pos.data(), target_pos, this->traceable->ori.data());
-    controlled->pad->setAxis(cPad::MECH_CHASSIS_LR_AXIS, rd[X]);
+    controlled->pad->setAxis(cPad::MECH_CHASSIS_LR_AXIS, rd[0]);
 
-    //float thr = 20.0f * (1.0f - fabs(rd[X]) / 360.0f);
-    float thr = 1.0f * (1.0f - 0.6 * fabs(rd[X]));
+    //float thr = 20.0f * (1.0f - fabs(rd[0]) / 360.0f);
+    float thr = 1.0f * (1.0f - 0.6 * fabs(rd[0]));
     //cout << "Throttle: " << thr << "\n";
     //mPad->setAxis(cPad::MECH_THROTTLE_AXIS, (char) - thr);
     controlled->pad->setAxis(cPad::MECH_THROTTLE_AXIS, -thr);
@@ -1392,11 +1386,11 @@ void cMech::do_moveNear() {
     // Determine nearest rotation direction
     float rd[2];
     cParticle::rotationTo(rd, traceable->pos.data(), target_pos, this->traceable->ori.data());
-    controlled->pad->setAxis(cPad::MECH_CHASSIS_LR_AXIS, 2 * rd[X]);
+    controlled->pad->setAxis(cPad::MECH_CHASSIS_LR_AXIS, 2 * rd[0]);
 
     float d = vector_distance(this->traceable->pos, target_pos);
 
-    float thr = 1.0f * (1.0f - 0.7 * fabs(rd[X]));
+    float thr = 1.0f * (1.0f - 0.7 * fabs(rd[0]));
 
     float f = (d - 23);
     if (f < -1) f = -1;
@@ -1423,17 +1417,17 @@ void cMech::do_aimAt() {
 
     // Determine nearest rotation direction
     float tower_ori[4];
-    quat_set(tower_ori, 0, sin(0.5 * this->misc->twr[Y]), 0, cos(0.5 * this->misc->twr[Y]));
+    quat_set(tower_ori, 0, sin(0.5 * this->misc->twr[1]), 0, cos(0.5 * this->misc->twr[1]));
 
     float tower_ori_v[4];
-    quat_set(tower_ori_v, sin(0.5 * this->misc->twr[X]), 0, 0, cos(0.5 * this->misc->twr[X]));
+    quat_set(tower_ori_v, sin(0.5 * this->misc->twr[0]), 0, 0, cos(0.5 * this->misc->twr[0]));
 
     quat_mul(tower_ori, tower_ori, tower_ori_v);
 
     float rd[2];
     cParticle::rotationTo(rd, traceable->pos.data(), target_pos, this->traceable->ori.data(), tower_ori);
-    controlled->pad->setAxis(cPad::MECH_TURRET_LR_AXIS, 2 * rd[X]);
-    controlled->pad->setAxis(cPad::MECH_TURRET_UD_AXIS, rd[Y]);
+    controlled->pad->setAxis(cPad::MECH_TURRET_LR_AXIS, 2 * rd[0]);
+    controlled->pad->setAxis(cPad::MECH_TURRET_UD_AXIS, rd[1]);
 }
 
 void cMech::do_fireAt() {
@@ -1450,11 +1444,11 @@ void cMech::do_fireAt() {
 
     // Determine nearest rotation direction
     float tower_ori[4];
-    quat_set(tower_ori, 0, sin(0.5 * this->misc->twr[Y]), 0, cos(0.5 * this->misc->twr[Y]));
+    quat_set(tower_ori, 0, sin(0.5 * this->misc->twr[1]), 0, cos(0.5 * this->misc->twr[1]));
     float rd[2];
     cParticle::rotationTo(rd, traceable->pos.data(), target_pos, this->traceable->ori.data(), tower_ori);
     // Fire at random and only if angle small enough.
-    if (rand() % 100 <= 40 && fabs(rd[X]) < 0.5) {
+    if (rand() % 100 <= 40 && fabs(rd[0]) < 0.5) {
         controlled->pad->setButton(cPad::MECH_FIRE_BUTTON1, true);
         //cout "fire\n";
     }

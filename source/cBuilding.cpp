@@ -421,8 +421,8 @@ void cBuilding::drawSolid() {
 
     glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_TEXTURE_BIT);
     {
-        glEnable(GL_CULL_FACE);
-        glEnable(GL_TEXTURE_2D);
+        SGL::glUseProgram_fglittexture();
+        
         long roof = sTextures[0];
         long wall = 0;
         if (this->damageable->hp[rDamageable::BODY] <= 0) {
@@ -945,8 +945,9 @@ void cTile::drawSolid() {
 
     glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_TEXTURE_BIT);
     {
+        SGL::glUseProgram_fglittexture();
+
         long ground = sTextures[tileKind];
-        glEnable(GL_TEXTURE_2D);
         glColor4f(1, 1, 1, 1);
         glBindTexture(GL_TEXTURE_2D, ground);
         

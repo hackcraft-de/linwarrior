@@ -130,11 +130,7 @@ void cWeaponExplosion::drawSolid() {
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
-
-        glEnable(GL_NORMALIZE);
-        glDisable(GL_CULL_FACE);
-        glDisable(GL_LIGHTING);
-        glDisable(GL_TEXTURE_2D);
+        SGL::glUseProgram_fglitcolor();
 
         glColor4f(0.7, 0.7, 0.7, 1.0);
 
@@ -175,6 +171,7 @@ void cWeaponExplosion::drawSolid() {
                 glMultMatrixf(b);
                 //glNormAxis();
                 glBegin(GL_TRIANGLE_FAN);
+                glNormal3f(0,0,1);
                 glVertex3f(0, 0, length);
                 glVertex3f(s1, c1, 0);
                 glVertex3f(s2, c2, 0);
@@ -192,41 +189,13 @@ void cWeaponExplosion::drawSolid() {
 void cWeaponExplosion::drawEffect() {
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
-
-        glDisable(GL_CULL_FACE);
-        glDisable(GL_LIGHTING);
-        glDisable(GL_TEXTURE_2D);
-        glDepthMask(GL_FALSE);
+        SGL::glUseProgram_fgaddtexture();
 
         float n[16];
         SGL::glGetTransposeInverseRotationMatrix(n);
 
-        /*
-        // Draw Missile's flare.
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-
-        foreachNoInc(i, mMissiles) {
-            Particle* s = *i++;
-
-            glPushMatrix();
-            {
-                glTranslatef(s->pos[0], s->pos[1], s->pos[2]);
-                glMultMatrixf(n);
-                float size = 2.5 + 2.5 * 0.01f * (rand() % 100);
-                glColor4f(0.8, 0.5, 0.1, 0.99f);
-                cPrimitives::(9 + DETAIL, size * 0.1f);
-                size = 2.5 + 2.5 * 0.01f * (rand() % 100);
-                glColor4f(0.9, 0.9, 0.9, 0.99f);
-                cPrimitives::(7 + DETAIL, size * 0.07f);
-            }
-            glPopMatrix();
-        }
-         */
-
         // Draw Missile's trails.
-        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-        glEnable(GL_TEXTURE_2D);
+
         glBindTexture(GL_TEXTURE_2D, sTextures[0]);
 
         foreachNoInc(i, missileParticles) {

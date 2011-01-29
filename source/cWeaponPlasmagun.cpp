@@ -90,8 +90,8 @@ void cWeaponPlasmagun::animate(float spf) {
 void cWeaponPlasmagun::drawSolid() {
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
-        glEnable(GL_NORMALIZE);
-        glDisable(GL_CULL_FACE);
+        SGL::glUseProgram_fglitcolor();
+
         glPushMatrix();
         {
             glMultMatrixf(weaponPosef);
@@ -102,7 +102,6 @@ void cWeaponPlasmagun::drawSolid() {
             glScalef(scale, scale, scale);
 
             if (this->ready() == 0 && remainingAmmo != 0) {
-                glDisable(GL_LIGHTING);
                 glColor4f(0.2, 0.2, 0.3, 1);
                 glPushMatrix();
                 {
@@ -132,7 +131,6 @@ void cWeaponPlasmagun::drawSolid() {
                 glPopMatrix();
             }
 
-            glEnable(GL_LIGHTING);
             glColor4f(0.2, 0.2, 0.3, 1.0);
             glPushMatrix();
             {
@@ -161,12 +159,7 @@ void cWeaponPlasmagun::drawSolid() {
 void cWeaponPlasmagun::drawEffect() {
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_ALL_ATTRIB_BITS);
     {
-
-        glDisable(GL_CULL_FACE);
-        glDisable(GL_LIGHTING);
-        glDisable(GL_TEXTURE_2D);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-        glDepthMask(GL_FALSE);
+        SGL::glUseProgram_fgaddcolor();
 
         float n[16];
         SGL::glGetTransposeInverseRotationMatrix(n);

@@ -88,8 +88,8 @@ void cWeaponSparkgun::animate(float spf) {
 void cWeaponSparkgun::drawSolid() {
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
-        glEnable(GL_NORMALIZE);
-        glDisable(GL_CULL_FACE);
+        SGL::glUseProgram_fglitcolor();
+
         glPushMatrix();
         {
             glMultMatrixf(weaponPosef);
@@ -110,7 +110,6 @@ void cWeaponSparkgun::drawSolid() {
             }
             glPopMatrix();
 
-            glEnable(GL_LIGHTING);
             glColor4f(0.1, 0.1, 0.1, 1.0);
             glPushMatrix();
             {
@@ -128,12 +127,7 @@ void cWeaponSparkgun::drawSolid() {
 void cWeaponSparkgun::drawEffect() {
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
-
-        glDisable(GL_CULL_FACE);
-        glDisable(GL_LIGHTING);
-        glDisable(GL_TEXTURE_2D);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-        glDepthMask(GL_FALSE);
+        SGL::glUseProgram_fgaddcolor();
 
         float n[16];
         SGL::glGetTransposeInverseRotationMatrix(n);

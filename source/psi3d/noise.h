@@ -17,7 +17,6 @@
  * noise transformation and distortion.
  */
 struct cDistortion {
-
     /// [-inf,+inf] => [0,+1]
     static inline float sig(float x) {
         return (1.0f / (1.0f + (float) exp(-x)));
@@ -128,6 +127,17 @@ struct cDistortion {
         return (float(nm - 490) / float(510 - 490));
     }
 
+#if 0
+    // Approximate 1/sqrt(x) - put it here for now.
+    static inline float InvSqrt(float x) {
+        float xhalf = 0.5f * x;
+        int i = *(int*) &x;
+        i = 0x5f3759df - (i >> 1);
+        x = *(float*) &i;
+        x = x * (1.5f - xhalf * x * x);
+        return x;
+    }
+#endif
 };
 
 

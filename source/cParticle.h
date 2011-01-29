@@ -465,9 +465,9 @@ public:
         float dir_local[4];
         quat_apply(dir_local, ori_inv, dir_global);
         vector_norm(dir_local, dir_local);
-        result2f[X] = dir_local[X];
-        if (dir_local[Z] > 0) result2f[X] += copysign(1.0f, result2f[X]);
-        result2f[Y] = dir_local[Y];
+        result2f[0] = dir_local[0];
+        if (dir_local[2] > 0) result2f[0] += copysign(1.0f, result2f[0]);
+        result2f[1] = dir_local[1];
     }
 
 private:

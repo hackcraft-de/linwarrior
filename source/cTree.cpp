@@ -31,8 +31,9 @@ void cTree::drawSolid() {
     if ((int) tree.list == -1) tree.list = compileTreeDisplaylist(tree.seed, tree.type, tree.age);
     glPushAttrib(GL_ENABLE_BIT);
     {
-        glEnable(GL_NORMALIZE);
-        glDisable(GL_TEXTURE_2D);
+        SGL::glUseProgram_fglitcolor();
+        glDisable(GL_CULL_FACE);
+
         glPushMatrix();
         {
             glTranslatef(traceable->pos[0], traceable->pos[1], traceable->pos[2]);
@@ -180,96 +181,86 @@ int cTree::drawTreePart(int depth, int maxdepth, float length, int seed, GLuint 
 }
 
 void cTree::drawRubberTreeLeaf() {
-    glPushAttrib(GL_ENABLE_BIT);
-    {
-        glDisable(GL_CULL_FACE);
-        glBegin(GL_TRIANGLE_FAN);
-        // 0 back
-        glNormal3f(0, +1, 0);
-        glColor3f(0.2f, 0.1f, 0.0f);
-        glVertex3f(0.0, 0.0, 0.0);
-        // 1 right
-        glNormal3f(-1, +1, 0);
-        glColor3f(0.0f, 0.4f, 0.0f);
-        glVertex3f(+0.3, +0.1, +0.1);
-        // 2 right
-        glColor3f(0.0f, 0.3f, 0.0f);
-        glVertex3f(+0.4, +0.2, +0.2);
-        // 3 right
-        glColor3f(0.0f, 0.4f, 0.0f);
-        glVertex3f(+0.35, +0.2, +0.5);
-        // 4 right
-        glColor3f(0.0f, 0.3f, 0.0f);
-        glVertex3f(+0.15, +0.1, +0.8);
-        // 5 tip
-        glNormal3f(+1, +1, 0);
-        glColor3f(0.0f, 0.2f, 0.0f);
-        glVertex3f(0.0, 0.0, +1.1);
-        // 4 left
-        glColor3f(0.0f, 0.3f, 0.0f);
-        glVertex3f(-0.15, +0.1, +0.8);
-        // 3 left
-        glColor3f(0.0f, 0.4f, 0.0f);
-        glVertex3f(-0.35, +0.2, +0.5);
-        // 2 left
-        glColor3f(0.0f, 0.3f, 0.0f);
-        glVertex3f(-0.4, +0.2, +0.2);
-        // 1 left
-        glColor3f(0.0f, 0.4f, 0.0f);
-        glVertex3f(-0.3, +0.1, +0.0);
-        // 0 back
-        glNormal3f(0, +1, 0);
-        glColor3f(0.2f, 0.1f, 0.0f);
-        glVertex3f(0.0, 0.0, 0.0);
-        glEnd();
-    }
-    glPopAttrib();
+    glBegin(GL_TRIANGLE_FAN);
+    // 0 back
+    glNormal3f(0, +1, 0);
+    glColor3f(0.2f, 0.1f, 0.0f);
+    glVertex3f(0.0, 0.0, 0.0);
+    // 1 right
+    glNormal3f(-1, +1, 0);
+    glColor3f(0.0f, 0.4f, 0.0f);
+    glVertex3f(+0.3, +0.1, +0.1);
+    // 2 right
+    glColor3f(0.0f, 0.3f, 0.0f);
+    glVertex3f(+0.4, +0.2, +0.2);
+    // 3 right
+    glColor3f(0.0f, 0.4f, 0.0f);
+    glVertex3f(+0.35, +0.2, +0.5);
+    // 4 right
+    glColor3f(0.0f, 0.3f, 0.0f);
+    glVertex3f(+0.15, +0.1, +0.8);
+    // 5 tip
+    glNormal3f(+1, +1, 0);
+    glColor3f(0.0f, 0.2f, 0.0f);
+    glVertex3f(0.0, 0.0, +1.1);
+    // 4 left
+    glColor3f(0.0f, 0.3f, 0.0f);
+    glVertex3f(-0.15, +0.1, +0.8);
+    // 3 left
+    glColor3f(0.0f, 0.4f, 0.0f);
+    glVertex3f(-0.35, +0.2, +0.5);
+    // 2 left
+    glColor3f(0.0f, 0.3f, 0.0f);
+    glVertex3f(-0.4, +0.2, +0.2);
+    // 1 left
+    glColor3f(0.0f, 0.4f, 0.0f);
+    glVertex3f(-0.3, +0.1, +0.0);
+    // 0 back
+    glNormal3f(0, +1, 0);
+    glColor3f(0.2f, 0.1f, 0.0f);
+    glVertex3f(0.0, 0.0, 0.0);
+    glEnd();
 }
 
 void cTree::drawCaribeanTreeLeaf() {
-    glPushAttrib(GL_ENABLE_BIT);
-    {
-        glDisable(GL_CULL_FACE);
-        const float step = 6 * M_PI / 180.0f;
-        float alpha = step * 0.5;
-        glBegin(GL_TRIANGLES);
+    const float step = 6 * M_PI / 180.0f;
+    float alpha = step * 0.5;
+    glBegin(GL_TRIANGLES);
 
-        loopi(5) {
-            float l[] = {1.0, 0.7, 0.5, 0.3, 0.2};
-            //float length = 1-sin(10*i*0.6*i * 0.017453); //3.0 / (1.0f + i);
-            //length *= 3;
-            float length = 2.5 * l[i];
-            float ulength = 1.7 * length;
-            //cout << "len" << i << " = " << length << "\n";
-            float tips = 0.7;
-            // 0 back
-            glNormal3f(0, +1, 0);
-            glColor3f(0.0f, 0.3f, 0.0f);
-            glVertex3f(0.0, 0.0, 0.0);
-            glColor3f(0.5f, 0.4f, 0.2f);
-            // 1
-            glNormal3f(0, +1, 0);
-            glVertex3f(length * sin(alpha), ulength * cos(alpha), 0.0);
-            // 2
-            glNormal3f(0, +1, 0);
-            glVertex3f(tips * length * sin(alpha + step), tips * ulength * cos(alpha + step), 0.0);
-            // 0 back
-            glNormal3f(0, +1, 0);
-            glColor3f(0.0f, 0.3f, 0.0f);
-            glVertex3f(0.0, 0.0, 0.0);
-            glColor3f(0.5f, 0.4f, 0.2f);
-            // 1
-            glNormal3f(0, +1, 0);
-            glVertex3f(length * sin(-alpha), ulength * cos(-alpha), 0.0);
-            // 2
-            glNormal3f(0, +1, 0);
-            glVertex3f(tips * length * sin(-alpha - step), tips * ulength * cos(-alpha - step), 0.0);
-            //
-            alpha += 2 * step;
-        }
-        glEnd();
+    loopi(5) {
+        float l[] = {1.0, 0.7, 0.5, 0.3, 0.2};
+        //float length = 1-sin(10*i*0.6*i * 0.017453); //3.0 / (1.0f + i);
+        //length *= 3;
+        float length = 2.5 * l[i];
+        float ulength = 1.7 * length;
+        //cout << "len" << i << " = " << length << "\n";
+        float tips = 0.7;
+        // 0 back
+        glNormal3f(0, +1, 0);
+        glColor3f(0.0f, 0.3f, 0.0f);
+        glVertex3f(0.0, 0.0, 0.0);
+        glColor3f(0.5f, 0.4f, 0.2f);
+        // 1
+        glNormal3f(0, +1, 0);
+        glVertex3f(length * sin(alpha), ulength * cos(alpha), 0.0);
+        // 2
+        glNormal3f(0, +1, 0);
+        glVertex3f(tips * length * sin(alpha + step), tips * ulength * cos(alpha + step), 0.0);
+        // 0 back
+        glNormal3f(0, +1, 0);
+        glColor3f(0.0f, 0.3f, 0.0f);
+        glVertex3f(0.0, 0.0, 0.0);
+        glColor3f(0.5f, 0.4f, 0.2f);
+        // 1
+        glNormal3f(0, +1, 0);
+        glVertex3f(length * sin(-alpha), ulength * cos(-alpha), 0.0);
+        // 2
+        glNormal3f(0, +1, 0);
+        glVertex3f(tips * length * sin(-alpha - step), tips * ulength * cos(-alpha - step), 0.0);
+        //
+        alpha += 2 * step;
     }
-    glPopAttrib();
+    glEnd();
 }
 
 void cTree::drawHalmTreeLeaf() {

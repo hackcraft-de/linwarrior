@@ -51,11 +51,7 @@ void cMission::onDefeat() {
     }
 }
 
-
-// ------------------------------------------------------------
-
-
-cObject* cEmptyMission::init(cWorld* world) {
+cObject* cMission::init(cWorld* world) {
     if (true) {
         world->getTiming()->setTime(12);
     } else {

@@ -205,14 +205,14 @@ struct cPrimitives {
     static inline void glXCenteredTextureSquare() {
         glBegin(GL_QUADS);
         {
-            glTexCoord2i(0, 0);
-            glVertex3f(-0.5f, 0.0f, 0);
             glTexCoord2i(1, 0);
             glVertex3f(+0.5f, 0.0f, 0);
-            glTexCoord2i(1, 1);
-            glVertex3f(+0.5f, +1.0f, 0);
+            glTexCoord2i(0, 0);
+            glVertex3f(-0.5f, 0.0f, 0);
             glTexCoord2i(0, 1);
             glVertex3f(-0.5f, +1.0f, 0);
+            glTexCoord2i(1, 1);
+            glVertex3f(+0.5f, +1.0f, 0);
         }
         glEnd();
     }
@@ -220,14 +220,14 @@ struct cPrimitives {
     static inline void glXYCenteredTextureSquare(float s = 0.5f) {
         glBegin(GL_QUADS);
         {
-            glTexCoord2i(0, 0);
-            glVertex3f(-s, -s, 0);
             glTexCoord2i(1, 0);
             glVertex3f(+s, -s, 0);
-            glTexCoord2i(1, 1);
-            glVertex3f(+s, +s, 0);
+            glTexCoord2i(0, 0);
+            glVertex3f(-s, -s, 0);
             glTexCoord2i(0, 1);
             glVertex3f(-s, +s, 0);
+            glTexCoord2i(1, 1);
+            glVertex3f(+s, +s, 0);
         }
         glEnd();
     }
@@ -549,6 +549,111 @@ struct SGL {
 
     // Shader related.
 
+    /// Background plain colored
+    static void glUseProgram_bkplaincolor() {
+        glEnable(GL_CULL_FACE);
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_LIGHTING);
+        glDisable(GL_FOG);
+        glDisable(GL_ALPHA_TEST);
+        glAlphaFunc(GL_GREATER, 0.1f);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    /// Background plain textured
+    static void glUseProgram_bkplaintexture() {
+        glEnable(GL_TEXTURE_2D);
+        glEnable(GL_CULL_FACE);
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_LIGHTING);
+        glDisable(GL_FOG);
+        glDisable(GL_ALPHA_TEST);
+        glAlphaFunc(GL_GREATER, 0.1f);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    /// Background additive textured
+    static void glUseProgram_bkaddtexture() {
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_TEXTURE_2D);
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_FOG);
+        glDisable(GL_LIGHTING);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    }
+
+    /// Foreground plain colored
+    static void glUseProgram_fgplaincolor() {
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_DEPTH_TEST);
+        glDisable(GL_FOG);
+        glDisable(GL_LIGHTING);
+        glDisable(GL_TEXTURE_2D);
+    }
+
+    /// Foreground lit colored
+    static void glUseProgram_fglitcolor() {
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_FOG);
+        glEnable(GL_LIGHTING);
+        glEnable(GL_NORMALIZE);
+        glDisable(GL_TEXTURE_2D);
+    }
+
+    /// Foreground plain textured
+    static void glUseProgram_fgplaintexture() {
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_TEXTURE_2D);
+        glDisable(GL_FOG);
+        glDisable(GL_LIGHTING);
+    }
+
+    /// Foreground lit textured
+    static void glUseProgram_fglittexture() {
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_TEXTURE_2D);
+        glEnable(GL_FOG);
+        glEnable(GL_LIGHTING);
+        glDisable(GL_ALPHA_TEST);
+        glAlphaFunc(GL_GREATER, 0.4f);
+    }
+
+    /// Foreground lit textured 3d
+    static void glUseProgram_fglittexture3d() {
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_TEXTURE_3D);
+        glEnable(GL_FOG);
+        glEnable(GL_LIGHTING);
+        glDisable(GL_ALPHA_TEST);
+        glAlphaFunc(GL_GREATER, 0.4f);
+    }
+
+    /// Foreground additive textured
+    static void glUseProgram_fgaddtexture() {
+        glEnable(GL_TEXTURE_2D);
+        glEnable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
+        glDisable(GL_FOG);
+        glDisable(GL_LIGHTING);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+        glDepthMask(GL_FALSE);
+    }
+
+    /// Foreground additive colored
+    static void glUseProgram_fgaddcolor() {
+        glEnable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
+        glDisable(GL_TEXTURE_2D);
+        glDisable(GL_FOG);
+        glDisable(GL_LIGHTING);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+        glDepthMask(GL_FALSE);
+    }
+
     static GLenum glCompileProgram(char* vertexshader, char* fragmentshader, std::ostream& str) {
         GLenum program = glCreateProgramObjectARB();
 
@@ -632,10 +737,10 @@ struct SGL {
     /// Multiplies a quaternion rotation into the current matrix.
     static void glRotateq(float* quat4fv) \
     {
-        float x = -(quat4fv)[X];
-        float y = -(quat4fv)[Y];
-        float z = -(quat4fv)[Z];
-        float w =  (quat4fv)[W];
+        float x = -(quat4fv)[0];
+        float y = -(quat4fv)[1];
+        float z = -(quat4fv)[2];
+        float w =  (quat4fv)[3];
         float x2 = x*x;
         float y2 = y*y;
         float z2 = z*z;

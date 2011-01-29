@@ -157,9 +157,12 @@ void cAlert::drawEffect() {
     {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
+            SGL::glUseProgram_fgplaincolor();
+            /*
             glDisable(GL_LIGHTING);
             glDisable(GL_FOG);
             glDisable(GL_CULL_FACE);
+            */
 
             glLineWidth(3);
             glLineStipple(0.01, 0xFC);

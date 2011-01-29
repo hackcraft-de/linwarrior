@@ -473,14 +473,15 @@ void cBackground::drawBackground(float hour) {
     // every half hour
     speed *= 2;
     // every quarter hour
-    //speed *= 2;
+    speed *= 2;
     // every 5 minutes
-    //speed *= 3;
+    speed *= 3;
     // every minute
     //speed *= 5;
     this->hour = fmod(speed*hour, 24.00f);
     //hour = rand()%24;
     //this->hour = 0;
+    //this->hour = 12;
 
     // Sample and set ambient haze color.
     float haze[4] = { 0,0,0,0 };
@@ -523,7 +524,6 @@ void cBackground::drawBackground(float hour) {
         //glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.0);
         //glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.0001);
         //glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.000001);
-        //glEnable(GL_NORMALIZE);
         glEnable(GL_LIGHT0);
     }
 
@@ -553,11 +553,7 @@ void cBackground::drawBackground(float hour) {
 void cBackground::drawGalaxy() {
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_TEXTURE_BIT);
     {
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_LIGHTING);
-        glEnable(GL_TEXTURE_2D);
-        glDisable(GL_FOG);
-        glEnable(GL_CULL_FACE);
+        SGL::glUseProgram_bkplaintexture();
 
         glColor4f(1, 1, 1, 1);
 
@@ -671,14 +667,7 @@ void cBackground::drawGalaxy() {
 void cBackground::drawUpperDome() {
     glPushAttrib(GL_ALL_ATTRIB_BITS | GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_LIGHTING);
-        glEnable(GL_CULL_FACE);
-        glDisable(GL_FOG);
-        //glBlendFunc( GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA );
-        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // original
-        glEnable(GL_ALPHA_TEST);
-        glAlphaFunc(GL_GREATER, 0.1f);
+        SGL::glUseProgram_bkplaincolor();
 
         // Load current Camera Matrix and
         // set Position (4th Column) = 0.
@@ -737,10 +726,7 @@ void cBackground::drawUpperDome() {
 void cBackground::drawLowerDome() {
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_LIGHTING);
-        glEnable(GL_CULL_FACE);
-        glDisable(GL_FOG);
+        SGL::glUseProgram_bkplaincolor();
 
         // Load current Camera Matrix and
         // set Position (4th Column) = 0.
@@ -798,10 +784,8 @@ void cBackground::drawLowerDome() {
 void cBackground::drawGround() {
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_TEXTURE_BIT);
     {
-        glDisable(GL_LIGHTING);
-        glEnable(GL_TEXTURE_2D);
-        glDisable(GL_FOG);
-        glDisable(GL_CULL_FACE);
+        SGL::glUseProgram_bkplaintexture();
+
         glBindTexture(GL_TEXTURE_2D, textures[T_ICE]);
 
         // Get current Camera-Matrix.
@@ -824,7 +808,7 @@ void cBackground::drawGround() {
         {
             glLoadIdentity();
             glMultMatrixf(n); // Transpose to undo previous transpose.
-            glTranslatef(0, p[Y], 0);
+            glTranslatef(0, p[1], 0);
 
             float color2[4] = {0.4, 0.2, 0.1, 1};
             ambient_sky(0, -1, 0, color2, hour);
@@ -863,11 +847,8 @@ void cBackground::drawGround() {
 void cBackground::drawClouds() {
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_LIGHTING);
-        glDisable(GL_CULL_FACE);
-        glDisable(GL_FOG);
-        glEnable(GL_TEXTURE_2D);
+        SGL::glUseProgram_bkplaintexture();
+        //SGL::glUseProgram_2();
 
         glBindTexture(GL_TEXTURE_2D, textures[T_CLOUDS]);
 
@@ -927,11 +908,11 @@ void cBackground::drawClouds() {
                 glVertex3f(1, 0, 0);
                 glEnd();
                  */
-
+                
                 glPushMatrix();
                 {
-                    glRotatef(yrad / 0.017454, 0, 1, 0);
-                    glRotatef(xrad / 0.017454, 1, 0, 0);
+                    glRotatef(yrad / PI_OVER_180, 0, 1, 0);
+                    glRotatef(xrad / PI_OVER_180, 1, 0, 0);
                     glTranslatef(0, 0, 1.7);
                     glColor4f(light, light, light, density);
                     cPrimitives::glXYCenteredTextureSquare(1);
@@ -950,11 +931,8 @@ void cDomeBackground::drawMountains() {
     srand(762381);
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
-        glEnable(GL_FOG);
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_LIGHTING);
+        SGL::glUseProgram_bkplaintexture();
         glDisable(GL_CULL_FACE);
-        glEnable(GL_TEXTURE_2D);
 
         glBindTexture(GL_TEXTURE_2D, textures[T_MOUNTAIN]);
         glColor3fv(bottomColor);
@@ -1003,18 +981,6 @@ void cDomeBackground::drawMountains() {
  */
 
 
-#if 0
-
-inline float InvSqrt(float x) {
-    float xhalf = 0.5f * x;
-    int i = *(int*) &x;
-    i = 0x5f3759df - (i >> 1);
-    x = *(float*) &i;
-    x = x * (1.5f - xhalf * x * x);
-    return x;
-}
-#endif
-
 void cBackground::drawSun() {
     if (hour < 5.00 || hour > 22.00) return;
 
@@ -1030,13 +996,7 @@ void cBackground::drawSun() {
 
     glPushAttrib(GL_ALL_ATTRIB_BITS | GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
-        glDisable(GL_CULL_FACE);
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_FOG);
-        glDisable(GL_LIGHTING);
-        glEnable(GL_TEXTURE_2D);
-
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+        SGL::glUseProgram_bkaddtexture();
 
         glPushMatrix();
         {
@@ -1088,11 +1048,7 @@ void cBackground::drawOrbit() {
 
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
-        glDisable(GL_CULL_FACE);
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_FOG);
-        glDisable(GL_LIGHTING);
-        glEnable(GL_TEXTURE_2D);
+        SGL::glUseProgram_bkplaintexture();
 
         glPushMatrix();
         {
@@ -1138,15 +1094,15 @@ void cBackground::drawRain() {
     if (rainstrength > 0) {
         loopi(rand() % rainstrength) {
             if (rain.size() >= 1000) break;
-            float dx = 0.3;
-            float dz = 0.1;
+            float dx = 0.25f;
+            float dz = 0.10f;
             cParticle* p = new cParticle();
             float alpha = (rand() % 628) * 0.01;
             float dist = 0.2 + 0.1 * (rand() % 75);
             float h = 15;
             vector_set(p->pos, sin(alpha) * dist - 0.3 * dx*h, h, cos(alpha) * dist - 0.3 * dz * h);
             vector_cpy(p->old, p->pos);
-            vector_set(p->vel, dx, -2 - rand() % 3, dz);
+            vector_set(p->vel, dx, -2 - 0.03f * (rand() % 100), dz);
             vector_set(p->fce, 0, 0, 0);
             rain.push_back(p);
         }
@@ -1154,10 +1110,7 @@ void cBackground::drawRain() {
 
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
-        //glDisable(GL_DEPTH_TEST);
-        glDisable(GL_LIGHTING);
-        glEnable(GL_CULL_FACE);
-        //glDisable(GL_FOG);
+        SGL::glUseProgram_fgplaincolor();
         glLineWidth(1.25);
 
         glPushMatrix();

@@ -84,8 +84,8 @@ void cWeaponRaybeam::animate(float spf) {
 void cWeaponRaybeam::drawSolid() {
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
-        glEnable(GL_NORMALIZE);
-        glDisable(GL_CULL_FACE);
+        SGL::glUseProgram_fglitcolor();
+        
         glPushMatrix();
         {
             glMultMatrixf(weaponPosef);
@@ -106,7 +106,6 @@ void cWeaponRaybeam::drawSolid() {
             }
             glPopMatrix();
 
-            glEnable(GL_LIGHTING);
             glColor4f(0.1, 0.1, 0.1, 1.0);
             glPushMatrix();
             {
@@ -178,11 +177,7 @@ void cWeaponRaybeam::drawEffect() {
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
-        glDisable(GL_CULL_FACE);
-        glDisable(GL_LIGHTING);
-        glDisable(GL_TEXTURE_2D);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-        glDepthMask(GL_FALSE);
+        SGL::glUseProgram_fgaddcolor();
 
         glPushMatrix();
         {

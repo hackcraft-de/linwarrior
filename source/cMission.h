@@ -40,7 +40,7 @@ public:
      * So this method should spawn objects into the world and setup
      * other mission critical data of the derived mission.
      */
-    virtual cObject* init(cWorld* world) = 0;
+    virtual cObject* init(cWorld* world);
     
     /**
      * Through this method mission objectives can be traced.
@@ -65,14 +65,6 @@ public:
      * Indicates wether this Mission is a failure.
      */
     //virtual bool isFailure() = 0;
-};
-
-
-/**
- * Just a Mech in an infinite empty plane world.
- */
-class cEmptyMission : public cMission {
-    virtual cObject* init(cWorld* world);
 };
 
 
