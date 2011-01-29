@@ -26,12 +26,10 @@ cWorld::cWorld() {
 
     mMission = NULL;
 
-    mGravity.reserve(3);
-    mGravity.resize(3);
-    mGravity[0] = 0;
-    mGravity[1] = -9.80665f; // Earth
-    //mGravity[1] = -3.69f; // Mars
-    mGravity[2] = 0;
+    // Earth
+    vector_set(mGravity, 0.0f, -9.80665f, 0.0f);
+    // Mars
+    //vector_set(mGravity, 0.0f, -3.69f, 0.0f);
 
     //mAirdensity = 0.1785; // Loose Helium Space
     //mAirdensity = 1.204f / 3.0f; // Terraformed Mars Air
@@ -63,8 +61,8 @@ cObject* cWorld::getObject(OID oid) {
     return mIndex[oid];
 }
 
-std::vector<float>* cWorld::getGravity() {
-    return &mGravity;
+float* cWorld::getGravity() {
+    return mGravity;
 }
 
 float cWorld::getGndfriction() {
@@ -231,7 +229,7 @@ void cWorld::drawBack() {
 
 void cWorld::drawSolid(cObject* camera, std::list<cObject*>* objects) {
     //cout << "drawSolid()\n";
-    float* origin = camera->traceable->pos.data();
+    float* origin = camera->traceable->pos;
     if (objects == NULL) objects = &mObjects;
 
     float maxrange = mViewdistance;
@@ -253,7 +251,7 @@ void cWorld::drawSolid(cObject* camera, std::list<cObject*>* objects) {
 
 void cWorld::drawEffect(cObject* camera, std::list<cObject*>* objects) {
     //cout << "drawEffect()\n";
-    float* origin = camera->traceable->pos.data();
+    float* origin = camera->traceable->pos;
     if (objects == NULL) objects = &mObjects;
 
     float maxrange2 = mViewdistance * mViewdistance;
@@ -458,7 +456,7 @@ std::list<cObject*>* cWorld::filterByBeam(cObject* ex, float* pointa, float* poi
         if (object->oid == 0) continue;
         // Filter Condition
 
-        float* x0 = object->traceable->pos.data();
+        float* x0 = object->traceable->pos;
         float u[] = {x0[0] - x1[0], x0[1] - x1[1], x0[2] - x1[2]};
         float v[] = {x2[0] - x1[0], x2[1] - x1[1], x2[2] - x1[2]};
         float a = u[0] * v[0] + u[1] * v[1] + u[2] * v[2];

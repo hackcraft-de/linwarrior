@@ -58,9 +58,7 @@ void cWeaponPlasmagun::animate(float spf) {
 
     foreachNoInc(i, shrapnelParticles) {
         cParticle* s = *i++;
-        s->pos[0] += s->vel[0] * spf;
-        s->pos[1] += s->vel[1] * spf;
-        s->pos[2] += s->vel[2] * spf;
+        vector_muladd(s->pos, s->pos, s->vel, spf);
         s->fuel -= spf;
         if (s->fuel < 0) {
             shrapnelParticles.remove(s);
@@ -69,7 +67,7 @@ void cWeaponPlasmagun::animate(float spf) {
             float radius = 0.2;
             int roles = 0;
             float damage = 13;
-            int damaged = this->damageByParticle(s->pos.data(), radius, roles, damage);
+            int damaged = damageByParticle(s->pos, radius, roles, damage);
             if (damaged) {
                 shrapnelParticles.remove(s);
                 delete s;

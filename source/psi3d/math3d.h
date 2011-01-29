@@ -58,19 +58,13 @@ typedef  SCALAR          MATRIX[4*4];
 
 //typedef  float          MATRIX[4*4];
 
-//--[Array Accessors]--------------->
+typedef float vec2[3];
+typedef float vec3[3];
+typedef float vec4[4];
+typedef float mat4[16];
 
-//#define  X 0
-//#define  Y 1
-//#define  Z 2
-//#define  W 3
-//#define  D 3
-
-// better try not to use those letters for variables etc.
-// ...but who would use that short-uppercase-names anyway?
-
-//typedef float vec4[4];
-//typedef float mat4[16];
+typedef vec4 rgba;
+typedef vec4 quat;
 
 //--[Misc Defines]------------------>
 
@@ -346,6 +340,13 @@ typedef  SCALAR          MATRIX[4*4];
     if ((q0)[3] > 0) { (q0)[0] = -(q0)[0];  (q0)[1] = -(q0)[1];  (q0)[2] = -(q0)[2];  (q0)[3] = -(q0)[3]; } \
 }
 
+#define quat_zero(result) \
+{ \
+    (result)[0] =  \
+    (result)[1] =  \
+    (result)[2] = 0.0f; \
+    (result)[3] = 1.0f; \
+}
 
 #define quat_set(result, x, y, z, w) \
 { \
@@ -383,8 +384,8 @@ typedef  SCALAR          MATRIX[4*4];
 { \
     const float _v4f_[] = { (v)[0], (v)[1], (v)[2], 0.0f }; \
     const float _q_conj_[] = { -(q0)[0], -(q0)[1], -(q0)[2], (q0)[3] }; \
-    float _temp0_[4]; \
-    float _temp1_[4]; \
+    quat _temp0_; \
+    quat _temp1_; \
     quat_mul(_temp0_, (q0), _v4f_); \
     quat_mul(_temp1_, _temp0_, _q_conj_); \
     vector_set((result), _temp1_[0],_temp1_[1],_temp1_[2]); \
@@ -392,9 +393,9 @@ typedef  SCALAR          MATRIX[4*4];
 
 #define quat_nlerp(result, q0, q1, delta) \
 { \
-    float _q0_part_[4]; \
-    float _q1_part_[4]; \
-    float _unnorm_[4]; \
+    quat _q0_part_; \
+    quat _q1_part_; \
+    quat _unnorm_; \
     quat_scale(_q0_part_, (q0), (1.0f - (delta))); \
     quat_scale(_q1_part_, (q1), delta); \
     quat_add(_unnorm_, _q0_part_, _q1_part_); \
@@ -422,10 +423,11 @@ typedef  SCALAR          MATRIX[4*4];
 
 #define quat_scale(q_, q0, scale) \
 { \
-    (q_)[0] = (q0)[0] * (scale); \
-    (q_)[1] = (q0)[1] * (scale); \
-    (q_)[2] = (q0)[2] * (scale); \
-    (q_)[3] = (q0)[3] * (scale); \
+    typeof((q_)[0]) _sf_ = scale; \
+    (q_)[0] = (q0)[0] * (_sf_); \
+    (q_)[1] = (q0)[1] * (_sf_); \
+    (q_)[2] = (q0)[2] * (_sf_); \
+    (q_)[3] = (q0)[3] * (_sf_); \
 }
 
 #define quat_add(q_, q0, q1) \
@@ -469,6 +471,8 @@ typedef  SCALAR          MATRIX[4*4];
     printf("< %3.4f %3.4f %3.4f >\n", (A)[0], (A)[1], (A)[2]); \
 }
 
+#define vector_zero(result)             { (result)[0] = (result)[1] = (result)[2] = 0.0f; }
+
 #define vector_cpy(result, A)           { (result)[0] = (A)[0]; (result)[1] = (A)[1]; (result)[2] = (A)[2]; }
 
 #define vector_set(result, x, y, z)     { (result)[0] = x; (result)[1] = y; (result)[2] = z; }
@@ -489,7 +493,9 @@ typedef  SCALAR          MATRIX[4*4];
 
 #define vector_sub(result, A, B)        { (result)[0] = (A)[0] - (B)[0]; (result)[1] = (A)[1] - (B)[1]; (result)[2] = (A)[2] - (B)[2]; }
 
-#define vector_scale(result, A, B)      { (result)[0] = (A)[0] * (B); (result)[1] = (A)[1] * (B); (result)[2] = (A)[2] * (B); }
+#define vector_scale(result, A, B)      { typeof((result)[0]) _sf_ = (B); (result)[0] = (A)[0] * _sf_; (result)[1] = (A)[1] * _sf_; (result)[2] = (A)[2] * _sf_; }
+
+#define vector_muladd(result, A, B, C)  { typeof((result)[0]) _sf_ = (C); (result)[0] = (A)[0] + (B)[0] * _sf_; (result)[1] = (A)[1] + (B)[1] * _sf_; (result)[2] = (A)[2] + (B)[2] * _sf_; }
 
 #define vector_sqrdist(A, B)            ( ((A)[0]-(B)[0]) * ((A)[0]-(B)[0]) + ((A)[1]-(B)[1]) * ((A)[1]-(B)[1]) + ((A)[2]-(B)[2]) * ((A)[2]-(B)[2]) )
 

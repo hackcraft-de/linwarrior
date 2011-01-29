@@ -131,8 +131,8 @@ void cWeaponRaybeam::drawEffect() {
 
     struct appearance {
         float width, length;
-        float icolor[4];
-        float ocolor[4];
+        rgba icolor;
+        rgba ocolor;
     } app[] = {
         {
             0.10, 8 * len,

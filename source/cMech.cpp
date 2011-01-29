@@ -153,8 +153,8 @@ cMech::cMech(float* pos, float* rot) {
                 alSourcei(*soundsource, AL_BUFFER, buffer);
                 alSourcef(*soundsource, AL_PITCH, 1.0f);
                 alSourcef(*soundsource, AL_GAIN, 1.0f);
-                alSourcefv(*soundsource, AL_POSITION, traceable->pos.data());
-                alSourcefv(*soundsource, AL_VELOCITY, traceable->vel.data());
+                alSourcefv(*soundsource, AL_POSITION, traceable->pos);
+                alSourcefv(*soundsource, AL_VELOCITY, traceable->vel);
                 alSourcei(*soundsource, AL_LOOPING, AL_FALSE);
             }
         } catch (...) {
@@ -440,7 +440,7 @@ void cMech::animatePhysics(float spf) {
     }
 
     // Accumulate environmental forces
-    traceable->applyGravityForce(cWorld::instance->getGravity()->data());
+    traceable->applyGravityForce(cWorld::instance->getGravity());
     traceable->applyFrictionForce(spf);
     traceable->applyAirdragForce(cWorld::instance->getAirdensity());
 
@@ -499,7 +499,7 @@ void cMech::animatePhysics(float spf) {
 void cMech::poseRunning(float spf) {
     // Animate legs according to real velocity.
     float v[3];
-    float ori_inv[4];
+    quat ori_inv;
     quat_cpy(ori_inv, traceable->ori);
     quat_conj(ori_inv);
     quat_apply(v, ori_inv, traceable->vel);
@@ -676,8 +676,8 @@ void cMech::animate(float spf) {
         misc->weapons[i]->animate(spf);
     }
 
-    alSourcefv(traceable->sound, AL_POSITION, traceable->pos.data());
-    //alSourcefv(traceable->sound, AL_VELOCITY, traceable->vel.data());
+    alSourcefv(traceable->sound, AL_POSITION, traceable->pos);
+    //alSourcefv(traceable->sound, AL_VELOCITY, traceable->vel);
 }
 
 void cMech::transform() {    
@@ -705,34 +705,34 @@ void cMech::transform() {
             if (yaw_idx < 0) yaw_idx = pitch_idx;
 
             if (0) {
-                float qy[4];
+                quat qy;
                 quat_rotaxis(qy, +1 * M_PI, yaxis);
                 quat_cpy(manipulators[0].q, qy);
             }
 
             if (yaw_idx == pitch_idx && pitch_idx >= 0) {
-                float qy[4];
+                quat qy;
                 quat_rotaxis(qy, -misc->twr[1], yaxis);
-                float qx[4];
+                quat qx;
                 quat_rotaxis(qx, +misc->twr[0], xaxis);
-                float q[4];
+                quat q;
                 quat_mul(q, qy, qx);
                 quat_cpy(manipulators[pitch_idx].q, q);
             } else {
                 if (yaw_idx >= 0) {
-                    float qy[4];
+                    quat qy;
                     quat_rotaxis(qy, -misc->twr[1], yaxis);
                     quat_cpy(manipulators[yaw_idx].q, qy);
                 }
                 if (pitch_idx >= 0) {
-                    float qx[4];
+                    quat qx;
                     quat_rotaxis(qx, +misc->twr[0], xaxis);
                     quat_cpy(manipulators[pitch_idx].q, qx);
                 }
             }
 
             if (true) {
-                float qx[4];
+                quat qx;
                 quat_rotaxis(qx, +misc->twr[0], xaxis);
                 int jidx = jointpoints[rigged->HEADPITCH];
                 if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
@@ -740,38 +740,38 @@ void cMech::transform() {
 
             bool left = true;
             if (left) {
-                float qx[4];
+                quat qx;
                 quat_rotaxis(qx, rotators[rigged->LEFTLEG][0]*0.017453, xaxis);
                 int jidx = jointpoints[rigged->LEFTLEG];
                 if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
             }
             if (left) {
-                float qx[4];
+                quat qx;
                 quat_rotaxis(qx, rotators[rigged->LEFTCALF][0]*0.017453, xaxis);
                 int jidx = jointpoints[rigged->LEFTCALF];
                 if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
             }
             if (left) {
-                float qx[4];
+                quat qx;
                 quat_rotaxis(qx, rotators[rigged->LEFTFOOT][0]*0.017453, xaxis);
                 int jidx = jointpoints[rigged->LEFTFOOT];
                 if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
             }
             bool right = true;
             if (right) {
-                float qx[4];
+                quat qx;
                 quat_rotaxis(qx, rotators[rigged->RIGHTLEG][0]*0.017453, xaxis);
                 int jidx = jointpoints[rigged->RIGHTLEG];
                 if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
             }
             if (right) {
-                float qx[4];
+                quat qx;
                 quat_rotaxis(qx, rotators[rigged->RIGHTCALF][0]*0.017453, xaxis);
                 int jidx = jointpoints[rigged->RIGHTCALF];
                 if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
             }
             if (right) {
-                float qx[4];
+                quat qx;
                 quat_rotaxis(qx, rotators[rigged->RIGHTFOOT][0]*0.017453, xaxis);
                 int jidx = jointpoints[rigged->RIGHTFOOT];
                 if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
@@ -809,7 +809,7 @@ void cMech::transform() {
 
                 const float f = rigged->scale;
                 glTranslatef(traceable->pos[0], traceable->pos[1], traceable->pos[2]);
-                SGL::glRotateq(this->traceable->ori.data());
+                SGL::glRotateq(traceable->ori);
                 glRotatef(180, 0, 1, 0);
                 // Swap axes (it's actually a rotation around x)
                 float m[] = {
@@ -880,7 +880,7 @@ void cMech::drawSolid() {
             glPushMatrix();
             {
                 glTranslatef(traceable->pos[0], traceable->pos[1], traceable->pos[2]);
-                SGL::glRotateq(this->traceable->ori.data());
+                SGL::glRotateq(traceable->ori);
                 // The model was modelled facing to the camera.
                 glRotatef(180, 0, 1, 0);
                 // Swap axes (it's actually a rotation around x)
@@ -1025,7 +1025,7 @@ void cMech::drawEffect() {
             glPushMatrix();
             {
                 glTranslatef(traceable->pos[0], traceable->pos[1], traceable->pos[2]);
-                SGL::glRotateq(this->traceable->ori.data());
+                SGL::glRotateq(traceable->ori);
                 glTranslatef(0, +0.1, 0);
                 glRotatef(90, 1, 0, 0);
                 //glColor4f(0.1,0.1,0.1,0.9);
@@ -1083,7 +1083,7 @@ void cMech::drawEffect() {
                         float f = misc->jetpower * 0.003 * 5;
 
                         glTranslatef(traceable->pos[0], traceable->pos[1], traceable->pos[2]);
-                        SGL::glRotateq(this->traceable->ori.data());
+                        SGL::glRotateq(traceable->ori);
                         // The model was modelled facing to the camera.
                         glRotatef(180, 0, 1, 0);
                         // Swap axes (it's actually a rotation around x)
@@ -1214,7 +1214,7 @@ void cMech::damageByParticle(float* localpos, float damage, cObject* enactor) {
 float cMech::constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor) {
     float localpos_[3];
     { // Transform to local.
-        float ori_inv[4];
+        quat ori_inv;
         quat_cpy(ori_inv, traceable->ori);
         quat_conj(ori_inv);
 
@@ -1268,7 +1268,7 @@ float cMech::constrainParticleToWorld(float* worldpos, float radius) {
 OID cMech::enemyNearby() {
     OID result = 0;
     // Filter objects by distance
-    std::list<cObject*>* scan = cWorld::instance->filterByRange(this, traceable->pos.data(), 0.0f, 50.0f, -1, NULL);
+    std::list<cObject*>* scan = cWorld::instance->filterByRange(this, traceable->pos, 0.0f, 50.0f, -1, NULL);
     if (!scan->empty()) {
         // Find all objects belonging to any enemy party/role.
         std::list<cObject*>* roles = cWorld::instance->filterByTags(this, &socialised->inc_enemies, false, -1, scan);
@@ -1342,11 +1342,11 @@ void cMech::do_moveTowards() {
     // Determine Target (ie. Move- or Aim-Target if former is not available).
     float* target_pos = NULL;
     if (finitef(controlled->destination[0])) {
-        target_pos = controlled->destination.data();
+        target_pos = controlled->destination;
     } else if (controlled->target != 0) {
         cObject* target = cWorld::instance->getObject(controlled->target);
         if (target != NULL) {
-            target_pos = target->traceable->pos.data();
+            target_pos = target->traceable->pos;
         } else {
             controlled->target = 0;
             return;
@@ -1354,8 +1354,8 @@ void cMech::do_moveTowards() {
     } else return;
 
     // Determine nearest rotation direction
-    float rd[2];
-    cParticle::rotationTo(rd, traceable->pos.data(), target_pos, this->traceable->ori.data());
+    vec2 rd;
+    cParticle::rotationTo(rd, traceable->pos, target_pos, traceable->ori);
     controlled->pad->setAxis(cPad::MECH_CHASSIS_LR_AXIS, rd[0]);
 
     //float thr = 20.0f * (1.0f - fabs(rd[0]) / 360.0f);
@@ -1372,11 +1372,11 @@ void cMech::do_moveNear() {
     // Determine Target (ie. Move- or Aim-Target if former is not available).
     float* target_pos = NULL;
     if (finitef(controlled->destination[0])) {
-        target_pos = controlled->destination.data();
+        target_pos = controlled->destination;
     } else if (controlled->target != 0) {
         cObject* target = cWorld::instance->getObject(controlled->target);
         if (target != NULL) {
-            target_pos = target->traceable->pos.data();
+            target_pos = target->traceable->pos;
         } else {
             controlled->target = 0;
             return;
@@ -1384,11 +1384,11 @@ void cMech::do_moveNear() {
     } else return;
 
     // Determine nearest rotation direction
-    float rd[2];
-    cParticle::rotationTo(rd, traceable->pos.data(), target_pos, this->traceable->ori.data());
+    vec2 rd;
+    cParticle::rotationTo(rd, traceable->pos, target_pos, traceable->ori);
     controlled->pad->setAxis(cPad::MECH_CHASSIS_LR_AXIS, 2 * rd[0]);
 
-    float d = vector_distance(this->traceable->pos, target_pos);
+    float d = vector_distance(traceable->pos, target_pos);
 
     float thr = 1.0f * (1.0f - 0.7 * fabs(rd[0]));
 
@@ -1411,21 +1411,21 @@ void cMech::do_aimAt() {
     float* target_pos = NULL;
     if (controlled->target != 0) {
         cObject* target = cWorld::instance->getObject(controlled->target);
-        if (target != NULL) target_pos = target->traceable->pos.data();
+        if (target != NULL) target_pos = target->traceable->pos;
         else return;
     } else return;
 
     // Determine nearest rotation direction
-    float tower_ori[4];
+    quat tower_ori;
     quat_set(tower_ori, 0, sin(0.5 * this->misc->twr[1]), 0, cos(0.5 * this->misc->twr[1]));
 
-    float tower_ori_v[4];
+    quat tower_ori_v;
     quat_set(tower_ori_v, sin(0.5 * this->misc->twr[0]), 0, 0, cos(0.5 * this->misc->twr[0]));
 
     quat_mul(tower_ori, tower_ori, tower_ori_v);
 
-    float rd[2];
-    cParticle::rotationTo(rd, traceable->pos.data(), target_pos, this->traceable->ori.data(), tower_ori);
+    vec2 rd;
+    cParticle::rotationTo(rd, traceable->pos, target_pos, traceable->ori, tower_ori);
     controlled->pad->setAxis(cPad::MECH_TURRET_LR_AXIS, 2 * rd[0]);
     controlled->pad->setAxis(cPad::MECH_TURRET_UD_AXIS, rd[1]);
 }
@@ -1438,15 +1438,15 @@ void cMech::do_fireAt() {
     float* target_pos = NULL;
     if (controlled->target != 0) {
         cObject* target = cWorld::instance->getObject(controlled->target);
-        if (target != NULL) target_pos = target->traceable->pos.data();
+        if (target != NULL) target_pos = target->traceable->pos;
         else return;
     } else return;
 
     // Determine nearest rotation direction
-    float tower_ori[4];
+    quat tower_ori;
     quat_set(tower_ori, 0, sin(0.5 * this->misc->twr[1]), 0, cos(0.5 * this->misc->twr[1]));
-    float rd[2];
-    cParticle::rotationTo(rd, traceable->pos.data(), target_pos, this->traceable->ori.data(), tower_ori);
+    vec2 rd;
+    cParticle::rotationTo(rd, traceable->pos, target_pos, traceable->ori, tower_ori);
     // Fire at random and only if angle small enough.
     if (rand() % 100 <= 40 && fabs(rd[0]) < 0.5) {
         controlled->pad->setButton(cPad::MECH_FIRE_BUTTON1, true);
@@ -1471,7 +1471,7 @@ void cMech::do_moveFor(float* dest) {
         // Set XYZ to Not-A-Number (NaN) for no location.
         // Note that NaN-ity can only be tested either by
         // isnanf(x), !finite(x) or by x!=x as NaN always != NaN.
-        controlled->destination[0] = controlled->destination[1] = controlled->destination[2] = float_NAN;
+        vector_set(controlled->destination, float_NAN, float_NAN, float_NAN);
         assert(controlled->destination[0] != controlled->destination[0]);
         //cout << "Destination is " << ((finitef(mDestination[0])) ? "finite" : "infinite" ) << "\n";
     }

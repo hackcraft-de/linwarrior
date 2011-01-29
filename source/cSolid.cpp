@@ -1,5 +1,6 @@
 #include "cSolid.h"
 
+#include "psi3d/math3d.h"
 #include "psi3d/noise.h"
 #include <cmath>
 
@@ -156,8 +157,8 @@ void cSolid::camo_rust(float x, float y, float z, float* color, unsigned char se
     float shiny = cNoise::simplex3(f*x, f*y, f*z, seed);
     shiny = cDistortion::sig(9.0f * shiny + 3);
 
-    float camo[4] = { 0.60f, 0.65f, 0.70f };
-    float rust[4];
+    rgba camo;
+    rgba rust;
     camo_urban(x, y, z, camo);
     metal_rust(x, y, z, rust);
     color[0] = shiny * camo[0] + (1.0f - shiny) * rust[0];
@@ -235,7 +236,7 @@ void cSolid::metal_sheets(float x, float y, float z, float* color, unsigned char
 
 
 void cSolid::star_nebula(float x, float y, float z, float* color, unsigned char seed) {
-    float c[4];
+    rgba c;
 
     loopj(2) {
         unsigned char seed2 = seed + j;//31 + j * 17;
@@ -289,7 +290,7 @@ void cSolid::star_nebula(float x, float y, float z, float* color, unsigned char 
 
 
 void cSolid::star_fastnebula(float x, float y, float z, float* color, unsigned char seed) {
-    float c[4];
+    rgba c;
 
     loopj(2) {
         unsigned char seed2 = seed + j;//31 + j * 17;

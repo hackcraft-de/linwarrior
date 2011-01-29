@@ -78,10 +78,8 @@ cPlanetmap::cPlanetmap() {
             sTextures.push_back(texname);
         }
     }
-    this->traceable->radius = 10;
-    this->traceable->pos[0] = float_NAN;
-    this->traceable->pos[1] = float_NAN;
-    this->traceable->pos[2] = float_NAN;
+    traceable->radius = 10;
+    vector_set(traceable->pos, float_NAN, float_NAN, float_NAN);
     name = "PLANETMAP";
 }
 

@@ -114,7 +114,7 @@ void cTarcom::prevTarget() {
 
 void cTarcom::process(float spf) {
     delete near;
-    near = cWorld::instance->filterByRange(mDevice, mDevice->traceable->pos.data(), 0, 150, -1, NULL);
+    near = cWorld::instance->filterByRange(mDevice, mDevice->traceable->pos, 0, 150, -1, NULL);
 }
 
 void cTarcom::drawHUD() {
@@ -142,7 +142,7 @@ void cTarcom::drawHUD() {
         glScalef(r2, r2, 1);
         cPrimitives::glDisk(16, 1.0f);
         glScalef(1.0 / r2, 1.0 / r2, 1);
-        float ori[4];
+        quat ori;
         quat_cpy(ori, mDevice->traceable->ori);
         quat_conj(ori);
         glRotatef(90, 1,0,0);
@@ -624,7 +624,7 @@ void cNavcom::drawHUD() {
 
         // Draw arrow direction indicator
         {
-            float ori[4];
+            quat ori;
             quat_cpy(ori, mDevice->traceable->ori);
             glRotatef(90, 1,0,0);
             SGL::glRotateq(ori);

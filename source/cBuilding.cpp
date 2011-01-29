@@ -139,7 +139,7 @@ static inline void getFacade(float x, float y, int gx, int gy, float age, float*
         inside[i] = (pyr[i] >= 0) ? 1.0f : 0.0f;
     }
 
-    float colors[][4] = {
+    rgba colors[] = {
         { 1,0,0,1 },
         { 0,1,0,1 },
         { 0,0,1,1 },
@@ -398,9 +398,9 @@ void cBuilding::transform() {
         dirtyBase = false;
         glPushMatrix();
         {
-            float* p = this->traceable->pos.data();
+            float* p = traceable->pos;
             float r[] = {0, 0, 0};
-            float* w = this->buildingRooms;
+            float* w = buildingRooms;
             glTranslatef(p[0], p[1], p[2]);
             if (r[1] < -0.00001f || r[1] > 0.00001f) glRotatef(r[1] * 0.017453f, 0, 1, 0);
             glTranslatef(0, 0.125f * 3.5f * w[1], 0);
@@ -415,9 +415,9 @@ void cBuilding::transform() {
 void cBuilding::drawSolid() {
     explosionObject.drawSolid();
 
-    float* p = this->traceable->pos.data();
+    float* p = traceable->pos;
     float r[] = {0, 0, 0};
-    float* w = this->buildingRooms;
+    float* w = buildingRooms;
 
     glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_TEXTURE_BIT);
     {
@@ -940,7 +940,7 @@ cTile::cTile(int x, int y, int z, int kind) {
 }
 
 void cTile::drawSolid() {
-    float* p = this->traceable->pos.data();
+    float* p = traceable->pos;
     float r[] = {0, 0, 0};
 
     glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_TEXTURE_BIT);

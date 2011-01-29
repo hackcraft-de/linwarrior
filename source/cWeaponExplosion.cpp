@@ -82,8 +82,7 @@ void cWeaponExplosion::animate(float spf) {
             s->spawn = 0.12;
             cParticle* smoke = new cParticle();
             assert(smoke != NULL);
-            smoke->pos = s->pos;
-            //vector_cpy(smoke->pos, s->pos);
+            vector_cpy(smoke->pos, s->pos);
             smoke->fuel = 1.2f;
             smoke->timer = 0.0f;
             s->trail.push_back(smoke);
@@ -93,9 +92,7 @@ void cWeaponExplosion::animate(float spf) {
         loop3i(s->vel[i] *= alpha);
 
         const float speed = 5;
-        s->pos[0] += speed * s->vel[0] * spf;
-        s->pos[1] += speed * s->vel[1] * spf;
-        s->pos[2] += speed * s->vel[2] * spf;
+        vector_muladd(s->pos, s->pos, s->vel, speed * spf);
         s->fuel -= spf;
         s->timer += spf;
 
@@ -113,7 +110,7 @@ void cWeaponExplosion::animate(float spf) {
             float radius = 0.25;
             int roles = 0;
             float damage = 10;
-            int damaged = this->damageByParticle(s->pos.data(), radius, roles, damage);
+            int damaged = this->damageByParticle(s->pos, radius, roles, damage);
             if (damaged) {
                 missileParticles.remove(s);
                 delete s;

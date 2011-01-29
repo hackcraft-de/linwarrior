@@ -89,10 +89,8 @@ void cWeaponMachinegun::animate(float spf) {
         int damaged = 0;
 
         loopi(5) {
-            s->pos[0] += s->vel[0] * dt;
-            s->pos[1] += s->vel[1] * dt;
-            s->pos[2] += s->vel[2] * dt;
-            damaged = this->damageByParticle(s->pos.data(), 0.2f, 0, damage);
+            vector_muladd(s->pos, s->pos, s->vel, dt);
+            damaged = this->damageByParticle(s->pos, 0.2f, 0, damage);
             if (damaged != 0) break;
         }
         s->fuel -= spf;
@@ -104,10 +102,8 @@ void cWeaponMachinegun::animate(float spf) {
 
     foreachNoInc(i, castoffParticles) {
         cParticle* s = *i++;
-        s->vel[1] += (*cWorld::instance->getGravity())[1] * spf;
-        s->pos[0] += s->vel[0] * spf;
-        s->pos[1] += s->vel[1] * spf;
-        s->pos[2] += s->vel[2] * spf;
+        s->vel[1] += cWorld::instance->getGravity()[1] * spf;
+        vector_muladd(s->pos, s->pos, s->vel, spf);
         s->fuel -= spf;
         if (s->fuel < 0) {
             castoffParticles.remove(s);
@@ -117,9 +113,7 @@ void cWeaponMachinegun::animate(float spf) {
 
     foreachNoInc(i, damageParticles) {
         cParticle* s = *i++;
-        s->pos[0] += s->vel[0] * spf;
-        s->pos[1] += s->vel[1] * spf;
-        s->pos[2] += s->vel[2] * spf;
+        vector_muladd(s->pos, s->pos, s->vel, spf);
         s->fuel -= spf;
         if (s->fuel < 0) {
             damageParticles.remove(s);
@@ -203,7 +197,7 @@ void cWeaponMachinegun::drawEffect() {
             const float len2 = 0.02;
             glBegin(GL_LINE_STRIP);
             glColor4f(1, 1, 1, 1);
-            glVertex3fv(s->pos.data());
+            glVertex3fv(s->pos);
             glColor4f(1, 1, 0, 1);
             glVertex3f(s->pos[0] - s->vel[0] * len1, s->pos[1] - s->vel[1] * len1, s->pos[2] - s->vel[2] * len1);
             glColor4f(1, 0, 0, 0.3);
@@ -216,7 +210,7 @@ void cWeaponMachinegun::drawEffect() {
             const float len2 = 0.02;
             glBegin(GL_LINE_STRIP);
             glColor4f(1, 1, 1, 1);
-            glVertex3fv(s->pos.data());
+            glVertex3fv(s->pos);
             //glColor4f(1, 1, 0, 1);
             //glVertex3f(s->pos[0] - s->vel[0] * len1, s->pos[1] - s->vel[1] * len1, s->pos[2] - s->vel[2] * len1);
             glColor4f(1, 0, 0, 0.3);

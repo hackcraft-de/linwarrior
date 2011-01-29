@@ -93,8 +93,7 @@ void cWeaponHoming::animate(float spf) {
             s->spawn = 0.04;
             cParticle* smoke = new cParticle();
             assert(smoke != NULL);
-            smoke->pos = s->pos;
-            //vector_cpy(smoke->pos, s->pos);
+            vector_cpy(smoke->pos, s->pos);
             smoke->fuel = 0.9f;
             smoke->timer = 0.0f;
             s->trail.push_back(smoke);
@@ -115,9 +114,7 @@ void cWeaponHoming::animate(float spf) {
         }
         vector_norm(s->vel, s->vel);
         const float speed = 30;
-        s->pos[0] += speed * s->vel[0] * spf;
-        s->pos[1] += speed * s->vel[1] * spf;
-        s->pos[2] += speed * s->vel[2] * spf;
+        vector_muladd(s->pos, s->pos, s->vel, speed * spf);
         s->fuel -= spf;
         s->timer += spf;
 
@@ -135,7 +132,7 @@ void cWeaponHoming::animate(float spf) {
             float radius = 0.25;
             int roles = 0;
             float damage = 16;
-            int damaged = this->damageByParticle(s->pos.data(), radius, roles, damage);
+            int damaged = this->damageByParticle(s->pos, radius, roles, damage);
             if (damaged) {
                 missileParticles.remove(s);
                 delete s;

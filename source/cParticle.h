@@ -36,15 +36,15 @@
  */
 struct cParticle {
     /// Particle orientation quaternion - may use as euler.
-    std::vector<float> ori;
+    quat ori;
     /// Particle position vector.
-    std::vector<float> pos;
+    vec3 pos;
     /// Particle old position vector.
-    std::vector<float> old;
+    vec3 old;
     /// Particle velocity vector.
-    std::vector<float> vel;
+    vec3 vel;
     /// Particle force accumulation vector.
-    std::vector<float> fce;
+    vec3 fce;
     /// Particle mass.
     float mass;
     /// The inverse of the particle mass is often neccessary.
@@ -75,9 +75,13 @@ struct cParticle {
     std::list<cParticle*> trail;
 
     cParticle() :
-    ori(4), pos(3), old(3), vel(3), fce(3),
     mass(1.0f), mass_inv(1.0f), friction(0.0f), cwm2(0.0f), fuel(1), timer(0),
     spawn(-1), target(0), radius(0), sound(-1), texture(-1), type(0), data(NULL) {
+        quat_zero(ori);
+        vector_zero(pos);
+        vector_zero(old);
+        vector_zero(vel);
+        vector_zero(fce);
     }
 
     /// Copy Constructor.
@@ -87,11 +91,11 @@ struct cParticle {
             cParticle();
             return;
         }
-        ori = original->ori;
-        pos = original->pos;
-        old = original->old;
-        vel = original->vel;
-        fce = original->fce;
+        quat_cpy(ori, original->ori);
+        vector_cpy(pos, original->pos);
+        vector_cpy(old, original->old);
+        vector_cpy(vel, original->vel);
+        vector_cpy(fce, original->fce);
         mass = original->mass;
         mass_inv = original->mass_inv;
         friction = original->friction;
@@ -125,9 +129,7 @@ struct cParticle {
     inline void applyFrictionForce(float dt) {
         if (friction == 0.0f) return;
         float c_step = friction / dt; //(1.0f - friction);
-        fce[0] += -c_step * vel[0] * mass;
-        fce[1] += -c_step * vel[1] * mass;
-        fce[2] += -c_step * vel[2] * mass;
+        vector_muladd(fce, fce, vel, -c_step * mass);
     }
 
     /// Apply billboard airdrag based on front surface area and cw-value.
@@ -142,16 +144,14 @@ struct cParticle {
         float velocity_inv = (velocity != 0) ? (1.0f / velocity) : (0.0f);
         float pstau = p * 0.5f * velocity * velocity;
         float F = cwm2 * pstau;
-        fce[0] += F * -vel[0] * velocity_inv;
-        fce[1] += F * -vel[1] * velocity_inv;
-        fce[2] += F * -vel[2] * velocity_inv;
+        vector_muladd(fce, fce, vel, -F * velocity_inv);
     }
 
     /// Apply spring force to both particles and return force.
 
     inline float applySpringForce(cParticle* other, float strength, float rest_length) {
-        float* c = this->pos.data();
-        float* p = other->pos.data();
+        float* c = this->pos;
+        float* p = other->pos;
         float cp[3] = {
             (p[0] - c[0]),
             (p[1] - c[1]),
@@ -185,7 +185,7 @@ struct cParticle {
      * @param damping pseudo damping factor within [0,1], typically very small.
      */
     inline void stepEuler(float dt, float damping = 0.01f) {
-        cParticle::stepEuler(pos.data(), old.data(), vel.data(), fce.data(), mass_inv, dt, damping);
+        cParticle::stepEuler(pos, old, vel, fce, mass_inv, dt, damping);
     }
 
     /**
@@ -229,7 +229,7 @@ struct cParticle {
      * @param damping pseudo damping factor within [0,1], typically very small.
      */
     inline void stepVerlet(float dt_inv, float dt2, float damping = 0.01f) {
-        cParticle::stepVerlet(pos.data(), old.data(), vel.data(), fce.data(), mass_inv, dt_inv, dt2, damping);
+        cParticle::stepVerlet(pos, old, vel, fce, mass_inv, dt_inv, dt2, damping);
     }
 
     /**
@@ -458,11 +458,11 @@ public:
     static void rotationTo(float* result2f, float* own_pos, float* tgt_pos, float* base_ori, float*tower_ori = NULL) {
         float dir_global[3];
         vector_sub(dir_global, tgt_pos, own_pos);
-        float ori_inv[4];
+        quat ori_inv;
         quat_cpy(ori_inv, base_ori);
         if (tower_ori) quat_mul(ori_inv, ori_inv, tower_ori);
         quat_conj(ori_inv);
-        float dir_local[4];
+        quat dir_local;
         quat_apply(dir_local, ori_inv, dir_global);
         vector_norm(dir_local, dir_local);
         result2f[0] = dir_local[0];

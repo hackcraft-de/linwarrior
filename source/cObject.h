@@ -181,15 +181,15 @@ struct rControlled : public rRole {
     /// Who disturbed me? Replace with a map of (OID, intensity)-pairs?
     OID disturber;
     /// Movement target, set Not-a-Number for non-validity.
-    std::vector<float> destination;
+    vec3 destination;
     /// Human, AI/Remote Pad-Control over the Object.
     cPad* pad;
     /// Command Stack controlls the pad when enabled.
     cController* controller;
     /// Constructor.
 
-    rControlled() : rRole("CONTROLLED"), target(0), disturber(0), destination(3), pad(NULL), controller(NULL) {
-        destination[0] = destination[1] = destination[2] = float_NAN;
+    rControlled() : rRole("CONTROLLED"), target(0), disturber(0), pad(NULL), controller(NULL) {
+        vector_set(destination, float_NAN, float_NAN, float_NAN);
     }
     /// Copy Constructor.
 
@@ -199,7 +199,7 @@ struct rControlled : public rRole {
         } else {
             target = original->target;
             disturber = original->disturber;
-            destination = original->destination;
+            vector_cpy(destination, original->destination);
             pad = original->pad;
             controller = original->controller;
         }

@@ -272,10 +272,7 @@ float cPadmap::constrainParticle(float* worldpos, float radius, float* localpos,
     //if (enactor == NULL) return 0.0;
     float localpos_[3];
     vector_cpy(localpos_, worldpos);
-
-    localpos_[0] -= traceable->pos[0];
-    localpos_[1] -= traceable->pos[1];
-    localpos_[2] -= traceable->pos[2];
+    vector_sub(localpos_, localpos_, traceable->pos);
     
     //localpos_[0] /= mapscale[0];
     //localpos_[1] /= mapscale[1];
@@ -349,9 +346,7 @@ float cPadmap::constrainParticle(float* worldpos, float radius, float* localpos,
         //localpos_[0] *= mapscale[0];
         //localpos_[1] *= mapscale[1];
         //localpos_[2] *= mapscale[2];
-        localpos_[0] += traceable->pos[0];
-        localpos_[1] += traceable->pos[1];
-        localpos_[2] += traceable->pos[2];
+        vector_add(localpos_, localpos_, traceable->pos);
         vector_cpy(worldpos, localpos_);
         if (localpos != NULL) vector_cpy(localpos, localpos_);
     }

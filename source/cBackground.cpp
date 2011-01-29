@@ -174,7 +174,7 @@ cBackground::cBackground() {
             float dz = ((float) i / (float) h);
 
             float c = cDistortion::sig(cNoise::voronoi3_16(dx * 16, 0, dz * 16) * 8 + 4);
-            float c4f[4] = {c, c, c};
+            rgba c4f = {c, c, c, 1};
 
             *p++ = 255 * c4f[2];
             *p++ = 255 * c4f[1];
@@ -209,7 +209,7 @@ cBackground::cBackground() {
             float c = 0.5f + 0.5f * cNoise::simplex3(rad/(2*M_PI)*256, 0, 0, 21);
             float d = 0.5f + 0.5f * cNoise::simplex3(r*31, 0, 0, 21);
 
-            float c4f[4] = {
+            rgba c4f = {
                 cDistortion::exposure(3 * a + 3 * c * a + 3 * d*d*d * a),
                 cDistortion::exposure(3 * a),
                 cDistortion::exposure(1 * a),
@@ -342,7 +342,7 @@ cBackground::cBackground() {
             float v3f[] = {f * dx, f * dy, f * dz};
 
             v3f[0] *= 0.1f;
-            float color0[4];
+            float color0[16];
             cSolid::planet_cloud(v3f[0], v3f[1], v3f[2], color0);
             v3f[0] *= 10.0;
 
@@ -484,7 +484,7 @@ void cBackground::drawBackground(float hour) {
     //this->hour = 12;
 
     // Sample and set ambient haze color.
-    float haze[4] = { 0,0,0,0 };
+    rgba haze = { 0,0,0,0 };
     if (1) {
         unsigned char s = 131;
         int samples = 23;
@@ -494,7 +494,7 @@ void cBackground::drawBackground(float hour) {
             s = cNoise::LFSR8(s);
             float beta = s / 256.0f * 1 * M_PI;
             float color[16];
-            float n[4] = { sin(alpha)*sin(beta),cos(beta),sin(beta)*cos(alpha), 1 };
+            vec3 n = { sin(alpha)*sin(beta),cos(beta),sin(beta)*cos(alpha) };
             //vector_print(n);
             ambient_sky(n[0],n[1],n[2], color, hour);
             //quat_print(color);
@@ -700,13 +700,13 @@ void cBackground::drawUpperDome() {
                     float s = sin(h);
                     float c = cos(h);
 
-                    float colour1[4];
+                    rgba colour1;
                     ambient_sky(s1*c, c1+0.0001f, s1 * s, colour1, hour);
                     glColor4fv(colour1);
                     //glNormal3f(s1*c, c1, s1 * s);
                     glVertex3f(s1*c, c1, s1 * s);
 
-                    float colour2[4];
+                    rgba colour2;
                     ambient_sky(s2*c, c2+0.0001f, s2 * s, colour2, hour);
                     glColor4fv(colour2);
                     //glNormal3f(s2*c, c2, s2 * s);
@@ -758,13 +758,13 @@ void cBackground::drawLowerDome() {
                     float s = sin(h);
                     float c = cos(h);
 
-                    float colour2[4];
+                    rgba colour2;
                     ambient_sky(s2*c, c2-0.0001f, s2 * s, colour2, hour);
                     glColor4fv(colour2);
                     //glNormal3f(s2*c, c2, s2 * s);
                     glVertex3f(s2*c, c2, s2 * s);
 
-                    float colour1[4];
+                    rgba colour1;
                     ambient_sky(s1*c, c1-0.0001f, s1 * s, colour1, hour);
                     glColor4fv(colour1);
                     //glNormal3f(s1*c, c1, s1 * s);
@@ -810,7 +810,7 @@ void cBackground::drawGround() {
             glMultMatrixf(n); // Transpose to undo previous transpose.
             glTranslatef(0, p[1], 0);
 
-            float color2[4] = {0.4, 0.2, 0.1, 1};
+            rgba color2;
             ambient_sky(0, -1, 0, color2, hour);
 
             //const float tdiv = 5; // original
@@ -884,19 +884,19 @@ void cBackground::drawClouds() {
 
                 /*
                 float xaxis[] = { 1,0,0 };
-                float qx[4];
+                quat qx;
                 quat_rotaxis(qx, xrad, xaxis);
 
                 float yaxis[] = { 0,1,0 };
-                float qy[4];
+                quat qy;
                 quat_rotaxis(qy, yrad, yaxis);
 
-                float qxy[4];
+                quat qxy;
                 quat_mul(qxy, qx, qy);
 
-                float x[] = {1,0,0};
-                float y[] = {0,1,0};
-                float z[] = {0,0,1};
+                vec3 x = {1,0,0};
+                vec3 y = {0,1,0};
+                vec3 z = {0,0,1};
                 quat_apply(x, qxy, x);
                 quat_apply(y, qxy, y);
                 quat_apply(z, qxy, z);
@@ -1131,7 +1131,7 @@ void cBackground::drawRain() {
                 glColor4f(0.8, 0.8, 0.8, 0.3);
                 glVertex3fv(end);
                 glColor4f(0.3, 0.3, 0.5, 0.9);
-                glVertex3fv(p->pos.data());
+                glVertex3fv(p->pos);
                 p->stepEuler(0.1, 0);
                 //std::cout << p->pos[0] << " " << p->pos[1] << " " << p->pos[2] << "\n";
                 if (p->pos[1] < -10) rain.remove(p);

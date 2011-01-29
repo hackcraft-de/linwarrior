@@ -57,7 +57,7 @@ private:
     //cWeather mWeather;
     
     /// Gravity acceleration vector [m/s²]. space = (0,0,0), earth = (0,-9.8,0).
-    std::vector<float> mGravity;
+    vec3 mGravity;
 
     /// Air density in kg per cubic meter (default 1.204 kg/m3 Air at 20°C).
     float mAirdensity;
@@ -109,7 +109,7 @@ public: // Accessors
 
     cObject* getObject(OID oid);
 
-    std::vector<float>* getGravity();
+    float* getGravity();
 
     float getGndfriction();
 
