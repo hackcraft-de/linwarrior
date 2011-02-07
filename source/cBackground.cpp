@@ -41,11 +41,9 @@ enum Texids {
 
 unsigned int gPermutationTexture256 = 0;
 
-
-
 void ambient_galaxy(float x, float y, float z, float* color, float scale) {
     // Normalise direction vector and scale.
-    float oolen = (0.5 * scale) / sqrt(x*x + y*y + z*z);
+    float oolen = (0.5 * scale) / sqrtf(x*x + y*y + z*z);
     float v[3] = {
         0.0f + x * oolen,
         0.0f + y * oolen,
@@ -57,7 +55,7 @@ void ambient_galaxy(float x, float y, float z, float* color, float scale) {
 
 void ambient_clouds(float x, float y, float z, float* color) {
     // Normalise direction vector.
-    float oolen = 1.0f / sqrt(x*x + y*y + z*z);
+    float oolen = 1.0f / sqrtf(x*x + y*y + z*z);
     float v[3] = { x * oolen, y * oolen, z * oolen };
     cSolid::planet_cloud(v[0], v[1], v[2], color);
 }
@@ -89,7 +87,7 @@ void ambient_sky(float x, float y, float z, float* color, float hour = 24.00f) {
     vector_add(bottomColor, bottomColor, bot_);
 
     // Normalise direction vector.
-    float oolen = 1.0f / sqrt(x*x + y*y + z*z);
+    float oolen = 1.0f / sqrtf(x*x + y*y + z*z);
     float yd = y * oolen;
 
     // top = 1 when yd > 0, top = 0 otherwise.
@@ -201,7 +199,7 @@ cBackground::cBackground() {
 
             float dx = (((float) j / (float) w) - 0.5f) * 2.0f;
             float dy = (((float) i / (float) h) - 0.5f) * 2.0f;
-            float r = sqrt(dx * dx + dy * dy);
+            float r = sqrtf(dx * dx + dy * dy);
             float r_ = fmin(1.0f, r);
             float a = 1.0f - pow(r_, 0.6);
             float rad = atan2(dx, dy);
@@ -242,9 +240,9 @@ cBackground::cBackground() {
 
             float dx = (((float) j / (float) w) - 0.5f) * 2.0f;
             float dy = (((float) i / (float) h) - 0.5f) * 2.0f;
-            float r = sqrt(dx * dx + dy * dy);
+            float r = sqrtf(dx * dx + dy * dy);
 
-            float dz = sqrt(1 - dx * dx - dy * dy);
+            float dz = sqrtf(1 - dx * dx - dy * dy);
 
             float r_ = fmin(1.0f, r);
             float a = 1.0f - pow(r_, 16);
@@ -286,9 +284,9 @@ cBackground::cBackground() {
 
             float dx = (((float) j / (float) w) - 0.5f) * 2.0f;
             float dy = (((float) i / (float) h) - 0.5f) * 2.0f;
-            float r = sqrt(dx * dx + dy * dy);
+            float r = sqrtf(dx * dx + dy * dy);
 
-            float dz = sqrt(1 - dx * dx - dy * dy);
+            float dz = sqrtf(1 - dx * dx - dy * dy);
 
             float r_ = fmin(1.0f, r);
             float a = 1.0f - pow(r_, 16);
@@ -331,9 +329,9 @@ cBackground::cBackground() {
 
             float dx = (((float) j / (float) w) - 0.5f) * 2.0f;
             float dy = (((float) i / (float) h) - 0.5f) * 2.0f;
-            float r = sqrt(dx * dx + dy * dy);
+            float r = sqrtf(dx * dx + dy * dy);
 
-            float dz = sqrt(1 - dx * dx - dy * dy);
+            float dz = sqrtf(1 - dx * dx - dy * dy);
 
             float r_ = fmin(1.0f, r);
             float a = 1.0f - pow(r_, 16);
@@ -375,7 +373,7 @@ cBackground::cBackground() {
 
             float dx = (((float) j / (float) w) - 0.5f) * 2.0f;
             float dy = (((float) i / (float) h) - 0.5f) * 2.0f;
-            float r = sqrt(dx * dx + dy * dy);
+            float r = sqrtf(dx * dx + dy * dy);
             float r_ = fmin(1.0f, r);
             float a = 1.0f - pow(r_, 1.2);
 

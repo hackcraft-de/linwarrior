@@ -27,27 +27,442 @@ DEFINE_glprintf
 #define DRAWJOINTS !true
 
 
-cMech::rComputerised::rComputerised(cObject* o) {
-    comcom = new cComcom(o);
+void rRigged::drawBones() {
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    {
+        SGL::glUseProgram_fgplaincolor();
+
+        loopi(model->numJoints) {
+            glPushMatrix();
+            {
+                glTranslatef(joints[i].v[0], joints[i].v[1], joints[i].v[2]);
+                SGL::glRotateq(joints[i].q);
+                cPrimitives::glAxis(0.7);
+            }
+            glPopMatrix();
+            glColor3f(0.5, 0.5, 0.5);
+            glBegin(GL_LINES);
+            {
+                int j = joints[i].parent;
+                if (j >= 0) {
+                    glVertex3fv(joints[i].v);
+                    glVertex3fv(joints[j].v);
+                }
+            }
+            glEnd();
+        }
+    }
+    glPopAttrib();
+}
+
+void rRigged::drawMeshes() {
+    // Generate base vertices and normals for 3d-tex-coords.
+    if (baseverts.empty()) {
+        MD5Format::mesh* msh = MD5Format::getFirstMesh(model);
+        MD5Format::joint* staticjoints = MD5Format::getJoints(model);
+
+        loopi(model->numMeshes) {
+            float* cur_baseverts = new float[msh->numverts * 3];
+            float* cur_basenorms = new float[msh->numverts * 3];
+            MD5Format::animatedMeshVertices(msh, staticjoints, cur_baseverts, cur_basenorms);
+            baseverts[i] = cur_baseverts;
+            basenorms[i] = cur_basenorms;
+            // TODO: recalculate normals, invert and to weights.
+            {
+                MD5Format::tri* tris = MD5Format::getTris(msh);
+                // TODO: Normals need to be averaged/smoothed.
+                for (int j = 0; j < msh->numtris; j++) {
+                    float* a = &cur_baseverts[3*tris[j].a];
+                    float* b = &cur_baseverts[3*tris[j].b];
+                    float* c = &cur_baseverts[3*tris[j].c];
+                    float ab[3];
+                    float bc[3];
+                    float n[3];
+                    vector_sub(ab, b, a);
+                    vector_sub(bc, c, b);
+                    vector_cross(n, bc, ab);
+                    vector_norm(n, n);
+                    vector_cpy(&cur_basenorms[3*tris[j].a], n);
+                    vector_cpy(&cur_basenorms[3*tris[j].b], n);
+                    vector_cpy(&cur_basenorms[3*tris[j].c], n);
+                }
+            }
+            MD5Format::unanimatedMeshNormals(msh, staticjoints, cur_basenorms);
+            msh = MD5Format::getNextMesh(msh);
+        }
+    }
+
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    {
+        SGL::glUseProgram_fglittexture3d();
+        glColor4f(1, 1, 1, 1);
+        glFrontFace(GL_CW);
+
+        MD5Format::mesh* msh = MD5Format::getFirstMesh(model);
+
+        loopi(model->numMeshes) {
+            //cout << curr->numverts << " " << curr->numtris << " " << curr->numweights << endl;
+            float* vtx = new float[msh->numverts * 3];
+            float* nrm = new float[msh->numverts * 3];
+            MD5Format::animatedMeshVertices(msh, joints, vtx, nrm);
+            MD5Format::tri* tris = MD5Format::getTris(msh);
+            //MD5Format::vert* verts = MD5Format::getVerts(msh);
+            // For 3d texturing.
+            float* vox = baseverts[i];
+            //
+            glBegin(GL_TRIANGLES);
+            const float s = 0.25f;
+            for (int j = 0; j < msh->numtris; j++) {
+                int k = tris[j].a;
+                //glTexCoord2fv(verts[k].tmap);
+                //glTexCoord3fv(&vox[3 * k]);
+                glNormal3fv(&nrm[3 * k]);
+                glTexCoord3f(vox[3 * k+0]*s, vox[3 * k+1]*s, vox[3 * k+2]*s);
+                glVertex3fv(&vtx[3 * k]);
+                k = tris[j].b;
+                //glTexCoord2fv(verts[k].tmap);
+                //glTexCoord3fv(&vox[3 * k]);
+                glNormal3fv(&nrm[3 * k]);
+                glTexCoord3f(vox[3 * k+0]*s, vox[3 * k+1]*s, vox[3 * k+2]*s);
+                glVertex3fv(&vtx[3 * k]);
+                k = tris[j].c;
+                //glTexCoord2fv(verts[k].tmap);
+                //glTexCoord3fv(&vox[3 * k]);
+                glNormal3fv(&nrm[3 * k]);
+                glTexCoord3f(vox[3 * k+0]*s, vox[3 * k+1]*s, vox[3 * k+2]*s);
+                glVertex3fv(&vtx[3 * k]);
+            }
+            glEnd();
+            delete vtx;
+            delete nrm;
+            msh = MD5Format::getNextMesh(msh);
+        }
+    }
+    glPopAttrib();
+}
+
+void rRigged::poseJumping(float spf) {
+    // Hanging Legs
+    float one = PI_OVER_180;
+    const float a = -30.0f * one;
+    const float b = -60.0f * one;
+    const float s = +30.0f * one;
+    const float f = b / a;
+
+    if (rotators[LEFTLEG][0] > -a) rotators[LEFTLEG][0] -= s * spf;
+    if (rotators[LEFTLEG][0] < -a + one) rotators[LEFTLEG][0] += s * spf;
+
+    if (rotators[LEFTCALF][0] > +b) rotators[LEFTCALF][0] -= f * s * spf;
+    if (rotators[LEFTCALF][0] < +b + one) rotators[LEFTCALF][0] += f * s * spf;
+
+    if (rotators[RIGHTLEG][0] > -a) rotators[RIGHTLEG][0] -= s * spf;
+    if (rotators[RIGHTLEG][0] < -a + one) rotators[RIGHTLEG][0] += s * spf;
+
+    if (rotators[RIGHTCALF][0] > +b) rotators[RIGHTCALF][0] -= f * s * spf;
+    if (rotators[RIGHTCALF][0] < +b + one) rotators[RIGHTCALF][0] += f * s * spf;
+}
+
+void rRigged::poseRunning(float spf) {
+    // Animate legs according to real forward velocity.
+    vec3 v;
+    if (vel != NULL && ori != NULL) {
+        quat ori_inv;
+        quat_cpy(ori_inv, ori);
+        quat_conj(ori_inv);
+        quat_apply(v, ori_inv, vel);
+    } else if (vel != NULL){
+        vector_cpy(v, vel);
+    } else {
+        vector_zero(v);
+    }
+
+    float fwdvel = copysign( sqrtf(v[0] * v[0] + v[2] * v[2]), v[2] ) * -0.16f;
+    if (fwdvel > 2.8) fwdvel = 2.8;
+    if (fwdvel < -1.0) fwdvel = -1.0;
+
+    // This is full of hand crafted magic numbers and magic code don't ask...
+    const float e = 0.017453;
+    float o = e * -60;
+    seconds += e * spf * 180.0f * (1.0f + 0.2 * fabs(fwdvel));
+    float t = seconds;
+
+    float l1 = 25 * +sin(t) * fwdvel;
+    float l2 = 15 * (+sin(copysign(t, fwdvel) + o) + 1) * fabs(fwdvel);
+    float l3 = 10 * +cos(t) * fwdvel;
+
+    float r1 = 20 * -sin(t) * fwdvel;
+    float r2 = 20 * (-sin(copysign(t, fwdvel) + o) + 1) * fabs(fwdvel);
+    float r3 = 15 * -cos(t) * fwdvel;
+
+    bool bird = false;
+    if (model != NULL) {
+        if (MD5Format::findJoint(model, "BIRD") >= 0) {
+            bird = true;
+        }
+    }
+    float bf = bird ? -1.0f : +1.0f;
+
+    float l1scale = 0.65;
+    if (bf*l1 > 0) l1 *= l1scale;
+    if (bf*r1 > 0) r1 *= l1scale;
+
+    float l2scale = 0.45;
+    if (bf*l2 < 0) l2 *= l2scale;
+    if (bf*r2 < 0) r2 *= l2scale;
+
+    float l3scale = 0.25;
+    if (bf*l3 > 0) l3 *= l3scale;
+    if (bf*r3 > 0) r3 *= l3scale;
+
+    float s = PI_OVER_180;
+    rotators[LEFTLEG][0] = -l1 * s;
+    rotators[LEFTCALF][0] = -l2 * s;
+    rotators[LEFTFOOT][0] = -l3 * s;
+    rotators[RIGHTLEG][0] = -r1 * s;
+    rotators[RIGHTCALF][0] = -r2 * s;
+    rotators[RIGHTFOOT][0] = -r3 * s;
+}
+
+void rRigged::transformJoints() {
+    MD5Format::joint* manipulators = new MD5Format::joint[model->numJoints];
+    assert(manipulators != NULL);
+
+    loopi(model->numJoints) {
+        quat_set(manipulators[i].q, 0, 0, 0, -1);
+        vector_set(manipulators[i].v, 0, 0, 0);
+    }
+
+    { // set joint manipulators
+        float xaxis[] = {-1, 0, 0};
+        float yaxis[] = {0, -1, 0};
+        //float zaxis[] = {0, 0, -1};
+
+        int yaw_idx = jointpoints[YAW];
+        int pitch_idx = jointpoints[PITCH];
+        if (yaw_idx < 0) yaw_idx = pitch_idx;
+
+        if (0) {
+            quat qy;
+            quat_rotaxis(qy, +1 * M_PI, yaxis);
+            quat_cpy(manipulators[0].q, qy);
+        }
+
+        if (yaw_idx == pitch_idx && pitch_idx >= 0) {
+            quat qy;
+            quat_rotaxis(qy, rotators[YAW][1], yaxis);
+            quat qx;
+            quat_rotaxis(qx, rotators[PITCH][0], xaxis);
+            quat q;
+            quat_mul(q, qy, qx);
+            quat_cpy(manipulators[pitch_idx].q, q);
+        } else {
+            if (yaw_idx >= 0) {
+                quat qy;
+                quat_rotaxis(qy, rotators[YAW][1], yaxis);
+                quat_cpy(manipulators[yaw_idx].q, qy);
+            }
+            if (pitch_idx >= 0) {
+                quat qx;
+                quat_rotaxis(qx, rotators[PITCH][0], xaxis);
+                quat_cpy(manipulators[pitch_idx].q, qx);
+            }
+        }
+
+        if (true) {
+            quat qx;
+            quat_rotaxis(qx, rotators[HEADPITCH][0], xaxis);
+            int jidx = jointpoints[HEADPITCH];
+            if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
+        }
+
+        bool left = true;
+        if (left) {
+            quat qx;
+            quat_rotaxis(qx, rotators[LEFTLEG][0], xaxis);
+            int jidx = jointpoints[LEFTLEG];
+            if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
+        }
+        if (left) {
+            quat qx;
+            quat_rotaxis(qx, rotators[LEFTCALF][0], xaxis);
+            int jidx = jointpoints[LEFTCALF];
+            if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
+        }
+        if (left) {
+            quat qx;
+            quat_rotaxis(qx, rotators[LEFTFOOT][0], xaxis);
+            int jidx = jointpoints[LEFTFOOT];
+            if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
+        }
+        bool right = true;
+        if (right) {
+            quat qx;
+            quat_rotaxis(qx, rotators[RIGHTLEG][0], xaxis);
+            int jidx = jointpoints[RIGHTLEG];
+            if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
+        }
+        if (right) {
+            quat qx;
+            quat_rotaxis(qx, rotators[RIGHTCALF][0], xaxis);
+            int jidx = jointpoints[RIGHTCALF];
+            if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
+        }
+        if (right) {
+            quat qx;
+            quat_rotaxis(qx, rotators[RIGHTFOOT][0], xaxis);
+            int jidx = jointpoints[RIGHTFOOT];
+            if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
+        }
+    } // set joint manipulators
+
+    // Transform local skeleton using manipulators to global skeleton.
+    MD5Format::joint* joints_orig = MD5Format::getJoints(model);
+    MD5Format::toGlobalJoints(model->numJoints, joints_orig, joints, manipulators);
+    delete manipulators;
+}
+
+void rRigged::transformMounts() {
+    // Create mountpoint matrices. Later only quaternions and points.
+    float* matrices[] = {
+        HDMount,
+        CTMount, BKMount,
+        LSMount, RSMount,
+        LAMount, RAMount
+    };
+
+    int mounts[] = {
+        EYE,
+        CTMOUNT, BKMOUNT,
+        LSMOUNT, RSMOUNT,
+        LAMOUNT, RAMOUNT,
+    };
+
+    MD5Format::joint* joints_ = joints;
+    loopi(7) {
+        int jidx = jointpoints[mounts[i]];
+        if (jidx < 0) continue;
+
+        glPushMatrix();
+        {
+            glLoadIdentity();
+
+            const float f = scale;
+            if (pos != NULL) glTranslatef(pos[0], pos[1], pos[2]);
+            if (ori != NULL) SGL::glRotateq(ori);
+            glRotatef(180, 0, 1, 0);
+            // Swap axes (it's actually a rotation around x)
+            float m[] = {
+                1, 0, 0, 0,
+                0, 0, -1, 0,
+                0, 1, 0, 0,
+                0, 0, 0, 1
+            };
+            glMultMatrixf(m);
+            glScalef(f, f, f);
+
+            glTranslatef(joints_[jidx].v[0], joints_[jidx].v[1], joints_[jidx].v[2]);
+            SGL::glRotateq(joints_[jidx].q);
+            glScalef(1.0f / f, 1.0f / f, 1.0f / f);
+            glRotatef(180, 0, 1, 0); // Hack, need to invert weapons and camera.
+            if (matrices[i] != NULL) glGetFloatv(GL_MODELVIEW_MATRIX, matrices[i]);
+        }
+        glPopMatrix();
+    }
+}
+
+void rRigged::loadModel(std::string filename) {
+    model = MD5Format::mapMD5Mesh(filename.c_str());
+
+    if (!true) cout << MD5Format::getModelStats(model) << endl;
+
+    // Make joints local for later animation and transformation to global.
+    MD5Format::joint* joints_ = MD5Format::getJoints(model);
+    MD5Format::toLocalJoints(model->numJoints, joints_, joints_);
+
+    // Allocate space for animated global joints.
+    joints = new MD5Format::joint[model->numJoints];
+    memcpy(joints, joints_, sizeof (MD5Format::joint) * model->numJoints);
+
+    loopi(MAX_JOINTPOINTS) {
+        jointpoints[i] = MD5Format::findJoint(model, getJointname(i).c_str());
+        //if (jointpoints[i] < 0) jointpoints[i] = MD5Format::findJoint(model, getJointname2(i).c_str());
+    }
+}
+
+void rRigged::transform() {
+    transformJoints();
+    transformMounts();
+}
+
+void rRigged::drawSolid() {
+    glPushMatrix();
+    {
+        if (pos != NULL) glTranslatef(pos[0], pos[1], pos[2]);
+        if (ori != NULL) SGL::glRotateq(ori);
+        // The model was modelled facing to the camera.
+        glRotatef(180, 0, 1, 0);
+        // Swap axes (it's actually a rotation around x)
+        float m[] = {
+            1, 0, 0, 0,
+            0, 0, -1, 0,
+            0, 1, 0, 0,
+            0, 0, 0, 1
+        };
+        glMultMatrixf(m);
+        float rscale = scale;
+        glScalef(rscale, rscale, rscale);
+        drawMeshes();
+    }
+    glPopMatrix();
+}
+
+void rRigged::drawEffect() {
+    if (!DRAWJOINTS) return;
+    glPushMatrix();
+    {
+        if (pos != NULL) glTranslatef(pos[0], pos[1], pos[2]);
+        if (ori != NULL) SGL::glRotateq(ori);
+        // The model was modelled facing to the camera.
+        glRotatef(180, 0, 1, 0);
+        // Swap axes (it's actually a rotation around x)
+        float m[] = {
+            1, 0, 0, 0,
+            0, 0, -1, 0,
+            0, 1, 0, 0,
+            0, 0, 0, 1
+        };
+        glMultMatrixf(m);
+        float rscale = scale;
+        glScalef(rscale, rscale, rscale);
+        drawBones();
+    }
+    glPopMatrix();
+}
+
+
+rComputerised::rComputerised(cObject* obj) : rRole("COMPUTERISED") {
+    object = obj;
+    
+    comcom = new cComcom(object);
     assert(comcom != NULL);
 
-    tarcom = new cTarcom(o);
+    tarcom = new cTarcom(object);
     assert(tarcom != NULL);
 
-    syscom = new cSyscom(o);
+    syscom = new cSyscom(object);
     assert(syscom != NULL);
 
-    wepcom = new cWepcom(o);
+    wepcom = new cWepcom(object);
     assert(wepcom != NULL);
 
-    forcom = new cForcom((cMech*) o);
+    forcom = new cForcom((cMech*) object);
     assert(forcom != NULL);
 
-    navcom = new cNavcom(o);
+    navcom = new cNavcom(object);
     assert(navcom != NULL);
 };
 
-cMech::rComputerised::~rComputerised() {
+rComputerised::~rComputerised() {
     delete comcom;
     delete tarcom;
     delete syscom;
@@ -56,7 +471,7 @@ cMech::rComputerised::~rComputerised() {
     delete navcom;
 }
 
-void cMech::rComputerised::process(float dt) {
+void rComputerised::animate(float dt) {
     comcom->process(dt);
     tarcom->process(dt);
     syscom->process(dt);
@@ -64,6 +479,69 @@ void cMech::rComputerised::process(float dt) {
     forcom->process(dt);
     navcom->process(dt);
 }
+
+void rComputerised::drawHUD() {
+    glPushAttrib(GL_ALL_ATTRIB_BITS /* more secure */);
+    {
+        SGL::glUseProgram_bkplaincolor();
+        glDisable(GL_CULL_FACE);
+        glLineWidth(2);
+
+        SGL::glPushOrthoProjection();
+        {
+            glPushMatrix();
+            {
+                glLoadIdentity();
+
+                float bk[] = {0.0, 0.2, 0.3, 0.2};
+                //float bk[] = {0, 0, 0, 0.0};
+                float w = 5;
+                float h = 4;
+                float sx = 1.0f / w;
+                float sy = 1.0f / h;
+
+                cComputer * displays[4][5] = {
+                    { navcom, NULL, NULL, NULL, comcom},
+                    { NULL, NULL, NULL, NULL, NULL},
+                    { NULL, NULL, NULL, NULL, NULL},
+                    { tarcom, NULL, wepcom, NULL, syscom}
+                };
+
+                loopj(4) {
+
+                    loopi(5) {
+                        if (displays[j][i] == NULL) continue;
+                        glPushMatrix();
+                        {
+                            glScalef(sx, sy, 1);
+                            glTranslatef(i, 3 - j, 0);
+                            glColor4fv(bk);
+                            displays[j][i]->drawHUD();
+                        }
+                        glPopMatrix();
+                    }
+                }
+
+                if (true) {
+                    glPushMatrix();
+                    {
+                        glTranslatef(0.25, 0.25, 0);
+                        glScalef(0.5, 0.5, 1);
+                        glTranslatef(0, 0, 0);
+                        glColor4fv(bk);
+                        forcom->drawHUD();
+                    }
+                    glPopMatrix();
+                }
+
+            }
+            glPopMatrix();
+        }
+        SGL::glPopProjection();
+    }
+    glPopAttrib();
+}
+
 
 int cMech::sInstances = 0;
 std::map<int, long> cMech::sTextures;
@@ -73,7 +551,9 @@ cMech::cMech(float* pos, float* rot) {
     sInstances++;
     if (sInstances == 1) {
         if (1) {
-            registerRole(new rRigged, FIELDOFS(rigged), ROLEPTR(cMech::rigged));
+            registerRole(new rMobile((cObject*)NULL), FIELDOFS(mobile), ROLEPTR(cMech::mobile));
+            registerRole(new rRigged((cObject*)NULL), FIELDOFS(rigged), ROLEPTR(cMech::rigged));
+            registerRole(new rComputerised((cObject*)NULL), FIELDOFS(computerised), ROLEPTR(cMech::computerised));
 
             cout << "Generating Camoflage..." << endl;
 
@@ -115,30 +595,29 @@ cMech::cMech(float* pos, float* rot) {
         }
     }
 
-    rigged = new rRigged;
-    damageable = new rDamageable;
-    misc = new rMisc;
+    rigged = new rRigged(this);
+    damageable = new rDamageable(this);
     computerised = new rComputerised(this);
-    controlled = new rControlled();
-    socialised = new rSocialised();
+    controlled = new rControlled(this);
+    socialised = new rSocialised(this);
+    mobile = new rMobile(this);
+
+    vector_set(mobile->twr, 0, 0, 0);
+    vector_set(mobile->bse, 0, 0, 0);
+    if (rot != NULL) vector_scale(mobile->bse, rot, PI_OVER_180);
+
+    mobile->currentWeapon = 0;
+    mobile->jetpower = 0;
+    mobile->throttle = 0;
+    mobile->camerastate = 1;
+    mobile->grounded = 0.5;
+    mobile->immobile = false;
 
     if (pos != NULL) vector_cpy(traceable->pos, pos);
     vector_cpy(traceable->old, traceable->pos);
     vector_set(traceable->vel, 0, 0, 0);
-    vector_set(misc->twr, 0, 0, 0);
-    vector_set(misc->bse, 0, 0, 0);
-    if (rot != NULL) vector_scale(misc->bse, rot, 0.017453);
-
     float axis[] = {0, 1, 0};
-    quat_rotaxis(traceable->ori, misc->bse[1], axis);
-
-    misc->currentWeapon = 0;
-    misc->jetpower = 0;
-    misc->throttle = 0;
-    misc->camerastate = 1;
-    misc->avgspeed = 0;
-    misc->grounded = 0.5;
-    misc->immobile = false;
+    quat_rotaxis(traceable->ori, mobile->bse[1], axis);
 
     // Mech Speaker
     if (0) {
@@ -167,48 +646,22 @@ cMech::cMech(float* pos, float* rot) {
 
     do_moveFor(NULL);
 
-    MD5Format::model* model = NULL;
-    MD5Format::joint* modeljoints = NULL;
     try {
         int mod = (6+rand())%7;
-        switch(mod) {
-            case 0: model = MD5Format::mapMD5Mesh("data/base/wanzers/frogger/frogger.md5mesh"); break;
-            case 1: model = MD5Format::mapMD5Mesh("data/base/wanzers/gorilla/gorilla_ii.md5mesh"); break;
-            case 2: model = MD5Format::mapMD5Mesh("data/skorpio/wanzers/scorpion/scorpion.md5mesh"); break;
-            case 3: model = MD5Format::mapMD5Mesh("data/base/wanzers/lemur/lemur.md5mesh"); break;
-            case 4: model = MD5Format::mapMD5Mesh("data/base/tanks/bug/bug.md5mesh"); break;
-            case 5: model = MD5Format::mapMD5Mesh("data/base/tanks/ant/ant.md5mesh"); break;
-            case 6: model = MD5Format::mapMD5Mesh("data/base/wanzers/kibitz/kibitz.md5mesh"); break;
-            //case 7: model = MD5Format::mapMD5Mesh("data/base/tanks/pod/pod.md5mesh"); break;
-        }
-        if (model == NULL) model = MD5Format::mapMD5Mesh("data/base/wanzers/frogger/frogger.md5mesh");
-        assert(model != NULL);
-
-        cout << MD5Format::getModelStats(model) << endl;
-
-        MD5Format::joint* joints = MD5Format::getJoints(model);
-
-        // Allocate space for animated global joints.
-        modeljoints = new MD5Format::joint[model->numJoints];
-        memcpy(modeljoints, joints, sizeof (MD5Format::joint) * model->numJoints);
-
-        // Make joints local for later animation and transformation to global.
-        MD5Format::toLocalJoints(model->numJoints, joints, joints);
-
-        // Map enums to actual joint index.
-        std::map<int, int>& jointpoints = rigged->jointpoints;
-
-        loopi(rigged->MAX_JOINTPOINTS) {
-            jointpoints[i] = MD5Format::findJoint(model, rigged->getJointname(i).c_str());
-            //if (jointpoints[i] < 0) jointpoints[i] = MD5Format::findJoint(model, rigged->getJointname2(i).c_str());
-        }
-
-        rigged->model = model;
-        rigged->joints = modeljoints;
+        const char* fns[] = {
+            "data/base/wanzers/frogger/frogger.md5mesh",
+            "data/base/wanzers/gorilla/gorilla_ii.md5mesh",
+            "data/skorpio/wanzers/scorpion/scorpion.md5mesh",
+            "data/base/wanzers/lemur/lemur.md5mesh",
+            "data/base/tanks/bug/bug.md5mesh",
+            "data/base/tanks/ant/ant.md5mesh",
+            "data/base/wanzers/kibitz/kibitz.md5mesh",
+            "data/base/tanks/pod/pod.md5mesh"
+        };
+        rigged->loadModel(string(fns[mod]));
     } catch (const char* s) {
         cout << "CATCHING: " << s << endl;
-        delete model;
-        delete modeljoints;
+        rigged->loadModel(string("data/base/wanzers/frogger/frogger.md5mesh"));
     }
 
     //rigged->scale = 1.0f;
@@ -244,7 +697,7 @@ void cMech::onMessage(cMessage* message) {
 
 void cMech::onSpawn() {
     //cout << "cMech::onSpawn()\n";
-    this->mountWeapon((char*) "CTorsor", &misc->explosion, false);
+    this->mountWeapon((char*) "CTorsor", &mobile->explosion, false);
     ALuint soundsource = traceable->sound;
     if (hasTag(HUMANPLAYER) && alIsSource(soundsource)) alSourcePlay(soundsource);
     //cout << "Mech spawned " << oid << "\n";
@@ -257,7 +710,7 @@ void cMech::multEyeMatrix() {
     float rot_inv[16];
     float pos_inv[16];
 
-    float intensity = 0.0 + pow(this->misc->jetpower * 0.01f, 1.5f);
+    float intensity = 0.0 + pow(this->mobile->jetpower * 0.01f, 1.5f);
     float shake = 0.004f * intensity;
     float jerk = 0.95f * intensity;
 
@@ -280,26 +733,26 @@ void cMech::multEyeMatrix() {
     }
     glPopMatrix();
 
-    if (abs(misc->camerastate) == 1) { // 1st
+    if (abs(mobile->camerastate) == 1) { // 1st
         glMultMatrixf(camera);
-    } else if (abs(misc->camerastate) == 2) { // 3rd
+    } else if (abs(mobile->camerastate) == 2) { // 3rd
         glTranslatef(0, 0, -5);
         glRotatef(15, 1, 0, 0);
         glMultMatrixf(camera);
-    } else if (abs(misc->camerastate) == 3) { // 3rd Far
+    } else if (abs(mobile->camerastate) == 3) { // 3rd Far
         glTranslatef(0, 0, -15);
         glRotatef(15, 1, 0, 0);
         glMultMatrixf(camera);
-    } else if (abs(misc->camerastate) == 4) { // Reverse 3rd Far
+    } else if (abs(mobile->camerastate) == 4) { // Reverse 3rd Far
         glTranslatef(0, 0, -15);
         glRotatef(15, 1, 0, 0);
         glRotatef(180, 0, 1, 0);
         glMultMatrixf(camera);
-    } else if (abs(misc->camerastate) == 5) { // Map Near
+    } else if (abs(mobile->camerastate) == 5) { // Map Near
         glTranslatef(0, 0, -50);
         glRotatef(90, 1, 0, 0);
         glMultMatrixf(pos_inv);
-    } else if (abs(misc->camerastate) == 6) { // Map Far
+    } else if (abs(mobile->camerastate) == 6) { // Map Far
         glTranslatef(0, 0, -100);
         glRotatef(90, 1, 0, 0);
         glMultMatrixf(pos_inv);
@@ -326,73 +779,73 @@ void cMech::setAsAudioListener() {
     };
     alListenerfv(AL_ORIENTATION, at_and_up);
 }
-
+// move to rMobile?
 void cMech::ChassisLR(float radians) {
     const float limit = 0.01 * M_PI;
     float e = radians;
     if (e > +limit) e = +limit;
     if (e < -limit) e = -limit;
-    misc->bse[1] += e;
+    mobile->bse[1] += e;
     const float fullcircle = 2 * M_PI;
-    misc->bse[1] = fmod(misc->bse[1], fullcircle);
+    mobile->bse[1] = fmod(mobile->bse[1], fullcircle);
 
     float axis[] = {0, 1, 0};
-    quat_rotaxis(traceable->ori, misc->bse[1], axis);
+    quat_rotaxis(traceable->ori, mobile->bse[1], axis);
 }
-
+// move to rMobile?
 void cMech::ChassisUD(float radians) {
     float e = radians;
     const float limit = 0.005 * M_PI;
     if (e > +limit) e = +limit;
     if (e < -limit) e = -limit;
-    misc->bse[0] += e;
+    mobile->bse[0] += e;
     const float fullcircle = 2 * M_PI;
-    misc->bse[0] = fmod(misc->bse[0], fullcircle);
+    mobile->bse[0] = fmod(mobile->bse[0], fullcircle);
 
     float axis[] = {1, 0, 0};
-    quat_rotaxis(traceable->ori, misc->bse[0], axis);
+    quat_rotaxis(traceable->ori, mobile->bse[0], axis);
 }
-
+// move to rMobile?
 float cMech::TowerLR(float radians) {
     float e = radians;
     const float steplimit = 0.01 * M_PI;
     if (e > +steplimit) e = +steplimit;
     if (e < -steplimit) e = -steplimit;
-    misc->twr[1] += e;
-    if (misc->immobile) {
+    mobile->twr[1] += e;
+    if (mobile->immobile) {
         const float fullcircle = 2 * M_PI; // 360
-        misc->twr[1] = fmod(misc->twr[1], fullcircle);
+        mobile->twr[1] = fmod(mobile->twr[1], fullcircle);
         return 0.0f;
     } else {
         const float limit = 0.4 * M_PI;
-        float excess = copysign( (fabs(misc->twr[1]) > limit ? fabs(misc->twr[1]) - limit : 0), misc->twr[1]);
-        if (misc->twr[1] > +limit) misc->twr[1] = +limit;
-        if (misc->twr[1] < -limit) misc->twr[1] = -limit;
+        float excess = copysign( (fabs(mobile->twr[1]) > limit ? fabs(mobile->twr[1]) - limit : 0), mobile->twr[1]);
+        if (mobile->twr[1] > +limit) mobile->twr[1] = +limit;
+        if (mobile->twr[1] < -limit) mobile->twr[1] = -limit;
         return excess;
     }
 }
-
+// move to rMobile?
 void cMech::TowerUD(float radians) {
     float e = radians;
     const float steplimit = 0.01 * M_PI;
     if (e > +steplimit) e = +steplimit;
     if (e < -steplimit) e = -steplimit;
-    misc->twr[0] += e;
+    mobile->twr[0] += e;
     const float limit = 0.4 * M_PI;
-    if (misc->twr[0] > +limit) misc->twr[0] = +limit;
-    if (misc->twr[0] < -limit) misc->twr[0] = -limit;
+    if (mobile->twr[0] > +limit) mobile->twr[0] = +limit;
+    if (mobile->twr[0] < -limit) mobile->twr[0] = -limit;
 }
 
 void cMech::fireAllWeapons() {
 
-    loopi(misc->weapons.size()) {
-        misc->weapons[i]->fire(controlled->target);
+    loopi(mobile->weapons.size()) {
+        mobile->weapons[i]->fire(controlled->target);
     }
 }
 
 void cMech::fireWeapon(unsigned n) {
-    if (n >= misc->weapons.size()) return;
-    misc->weapons[n]->fire(controlled->target);
+    if (n >= mobile->weapons.size()) return;
+    mobile->weapons[n]->fire(controlled->target);
 }
 
 void cMech::mountWeapon(char* point, cWeapon *weapon, bool add) {
@@ -411,17 +864,18 @@ void cMech::mountWeapon(char* point, cWeapon *weapon, bool add) {
 
     weapon->weaponOwner = this;
     weapon->weaponScale = this->rigged->scale * 2.5f;
-    if (add) misc->weapons.push_back(weapon);
+    if (add) mobile->weapons.push_back(weapon);
 }
 
+// move to traceable?
 void cMech::animatePhysics(float spf) {
 
     // Accumulate steering forces
     {
         // Jump Jet accelleration
         {
-            const float jetforce = 130000.0f * (0.01f * misc->jetpower);
-            float driveforce = -20000.0f * (0.01f * misc->throttle) * (0.01f * misc->jetpower);
+            const float jetforce = 130000.0f * (0.01f * mobile->jetpower);
+            float driveforce = -20000.0f * (0.01f * mobile->throttle) * (0.01f * mobile->jetpower);
             float turbo = 1;
             float fwd[] = {0, jetforce, turbo*driveforce};
             quat_apply(fwd, traceable->ori, fwd);
@@ -430,7 +884,7 @@ void cMech::animatePhysics(float spf) {
 
         // Engine acceleration
         {
-            float driveforce = -150000.0 * (0.01f * misc->throttle);
+            float driveforce = -150000.0 * (0.01f * mobile->throttle);
             if (traceable->friction <= 0.01f) driveforce = 0.0f;
             float turbo = 1.0f;
             float fwd[] = {0, 0, turbo*driveforce};
@@ -445,7 +899,7 @@ void cMech::animatePhysics(float spf) {
     traceable->applyAirdragForce(cWorld::instance->getAirdensity());
 
     // Integrate position and estimate current velocity...
-    traceable->stepVerlet(1.0f / spf, spf*spf, 0.001f);
+    traceable->stepVerlet(1.0f / spf, spf*spf, 0.001f, 0.99f);
 
 
     // Constraint position...
@@ -490,104 +944,21 @@ void cMech::animatePhysics(float spf) {
         // Assume ground contact if there was a collision.
         float onground = (depth > 0.0f) ? 1.0f : 0.0f;
         // Average groundedness for animation.
-        misc->grounded += 0.1 * (onground - misc->grounded);
+        mobile->grounded += 0.1 * (onground - mobile->grounded);
         // Set friction for next frame.
-        traceable->friction = ((misc->grounded > 0.1)?1.0f:0.0f) * cWorld::instance->getGndfriction();
+        traceable->friction = ((mobile->grounded > 0.1)?1.0f:0.0f) * cWorld::instance->getGndfriction();
     }
-}
-
-void cMech::poseRunning(float spf) {
-    // Animate legs according to real velocity.
-    float v[3];
-    quat ori_inv;
-    quat_cpy(ori_inv, traceable->ori);
-    quat_conj(ori_inv);
-    quat_apply(v, ori_inv, traceable->vel);
-
-    {
-        float nowspeed = copysign( sqrt(v[0] * v[0] + v[2] * v[2]), v[2] );
-        float alpha = 0.17f;
-        misc->avgspeed += alpha * (nowspeed - misc->avgspeed);
-    }
-
-    float vel = misc->avgspeed * -0.16f;
-    if (vel > 2.8) vel = 2.8;
-    if (vel < -1.0) vel = -1.0;
-
-    // This is full of hand crafted magic numbers and magic code don't ask...
-    const float e = 0.017453;
-    float o = e * -60;
-    //float t = e * seconds * 180 * (1.2f + 0.02f * fabs(vel));
-    rigged->seconds += e * spf * 180.0f * (1.0f + 0.2 * fabs(vel));
-    float t = rigged->seconds;
-
-    float l1 = 25 * +sin(t) * vel;
-    float l2 = 15 * (+sin(copysign(t, vel) + o) + 1) * fabs(vel);
-    float l3 = 10 * +cos(t) * vel;
-
-    float r1 = 20 * -sin(t) * vel;
-    float r2 = 20 * (-sin(copysign(t, vel) + o) + 1) * fabs(vel);
-    float r3 = 15 * -cos(t) * vel;
-
-    bool bird = false;
-    if (rigged->model != NULL) {
-        if (MD5Format::findJoint(rigged->model, "BIRD") >= 0) {
-            bird = true;
-        }
-    }
-    float bf = bird ? -1.0f : +1.0f;
-
-    float l1scale = 0.65;
-    if (bf*l1 > 0) l1 *= l1scale;
-    if (bf*r1 > 0) r1 *= l1scale;
-
-    float l2scale = 0.45;
-    if (bf*l2 < 0) l2 *= l2scale;
-    if (bf*r2 < 0) r2 *= l2scale;
-
-    float l3scale = 0.25;
-    if (bf*l3 > 0) l3 *= l3scale;
-    if (bf*r3 > 0) r3 *= l3scale;
-
-    std::map<int, std::map<int, float> > &rotators = rigged->rotators;
-    rotators[rigged->LEFTLEG][0] = -l1;
-    rotators[rigged->LEFTCALF][0] = -l2;
-    rotators[rigged->LEFTFOOT][0] = -l3;
-    rotators[rigged->RIGHTLEG][0] = -r1;
-    rotators[rigged->RIGHTCALF][0] = -r2;
-    rotators[rigged->RIGHTFOOT][0] = -r3;
-}
-
-void cMech::poseJumping(float spf) {
-    // Hanging Legs
-    const float a = -30;
-    const float b = -60;
-    const float s = 30;
-    const float f = b / a;
-
-    std::map<int, std::map<int, float> > &rotators = rigged->rotators;
-    if (rotators[rigged->LEFTLEG][0] > -a) rotators[rigged->LEFTLEG][0] -= s * spf;
-    if (rotators[rigged->LEFTLEG][0] < -a + 1) rotators[rigged->LEFTLEG][0] += s * spf;
-
-    if (rotators[rigged->LEFTCALF][0] > +b) rotators[rigged->LEFTCALF][0] -= f * s * spf;
-    if (rotators[rigged->LEFTCALF][0] < +b + 1) rotators[rigged->LEFTCALF][0] += f * s * spf;
-
-    if (rotators[rigged->RIGHTLEG][0] > -a) rotators[rigged->RIGHTLEG][0] -= s * spf;
-    if (rotators[rigged->RIGHTLEG][0] < -a + 1) rotators[rigged->RIGHTLEG][0] += s * spf;
-
-    if (rotators[rigged->RIGHTCALF][0] > +b) rotators[rigged->RIGHTCALF][0] -= f * s * spf;
-    if (rotators[rigged->RIGHTCALF][0] < +b + 1) rotators[rigged->RIGHTCALF][0] += f * s * spf;
 }
 
 void cMech::animate(float spf) {
     if (!damageable->alife) {
         // Stop movement when dead
-        misc->throttle = 0;
-        misc->jetpower = 0;
+        mobile->throttle = 0;
+        mobile->jetpower = 0;
         // If already exploded then frag.
         // Animate Own Explosion (if fired)
-        misc->explosion.animate(spf);
-        if (misc->explosion.ready()) {
+        mobile->explosion.animate(spf);
+        if (mobile->explosion.ready()) {
             ChassisLR(0);
             TowerLR(0);
             TowerUD(0);
@@ -597,12 +968,11 @@ void cMech::animate(float spf) {
     }
 
     // Process computers and Pad-input when not dead.
-    if (damageable->alife) {
-        assert(controlled->pad != NULL);
+    if (damageable->alife && controlled->pad != NULL) {
         //cout << mPad->toString();
 
         // Let all computers do their work.
-        if (computerised) computerised->process(spf);
+        if (computerised) computerised->animate(spf);
 
         // Let AI-Controller set Pad-input.
         if (controlled->controller && controlled->controller->controllerEnabled) {
@@ -613,13 +983,13 @@ void cMech::animate(float spf) {
         float excess = this->TowerLR(0.25f * M_PI * spf * -controlled->pad->getAxis(cPad::MECH_TURRET_LR_AXIS));
         this->TowerUD(50 * spf * controlled->pad->getAxis(cPad::MECH_TURRET_UD_AXIS) * 0.017453f);
 
-        if (!misc->immobile) {
+        if (!mobile->immobile) {
             // Steer left right
             this->ChassisLR(excess + 0.25f * M_PI * spf * -controlled->pad->getAxis(cPad::MECH_CHASSIS_LR_AXIS));
             // Speed
             float tdelta = -controlled->pad->getAxis(cPad::MECH_THROTTLE_AXIS);
             //cout << "tdelta: " << tdelta << "  speed: " << mSpeed << "\n";
-            misc->throttle = fmax(-200.0f, tdelta * 400.0f);
+            mobile->throttle = fmax(-200.0f, tdelta * 400.0f);
         }
 
         if (controlled->pad->getButton(cPad::MECH_NEXT_BUTTON) && controlled->pad->getButtonEvent(cPad::MECH_NEXT_BUTTON)) {
@@ -629,51 +999,59 @@ void cMech::animate(float spf) {
         }
 
         if (controlled->pad->getButton(cPad::MECH_FIRE_BUTTON1) || controlled->pad->getButton(cPad::MECH_FIRE_BUTTON2)) {
-            if (true && misc->weapons.size() > 0) {
-                misc->currentWeapon %= misc->weapons.size();
-                fireWeapon(misc->currentWeapon);
-                misc->currentWeapon++;
-                misc->currentWeapon %= misc->weapons.size();
+            if (true && mobile->weapons.size() > 0) {
+                mobile->currentWeapon %= mobile->weapons.size();
+                fireWeapon(mobile->currentWeapon);
+                mobile->currentWeapon++;
+                mobile->currentWeapon %= mobile->weapons.size();
             } else {
                 fireAllWeapons();
             }
         }
 
         if (controlled->pad->getButton(cPad::MECH_JET_BUTTON1) || controlled->pad->getButton(cPad::MECH_JET_BUTTON2)) {
-            misc->jetpower += (100 - misc->jetpower) * 0.1;
+            mobile->jetpower += (100 - mobile->jetpower) * 0.1;
         } else {
-            misc->jetpower -= (misc->jetpower * 0.05);
+            mobile->jetpower -= (mobile->jetpower * 0.05);
         }
 
         if (controlled->pad->getButton(cPad::MECH_CAMERA_BUTTON)) {
             // Only if Camera State is not transitional
             // then switch to next perspective on button press.
-            if (misc->camerastate > 0) {
-                misc->camerastate = (1 + (misc->camerastate % MAX_CAMERAMODES));
-                misc->camerastate *= -1; // Set transitional.
+            if (mobile->camerastate > 0) {
+                mobile->camerastate = (1 + (mobile->camerastate % MAX_CAMERAMODES));
+                mobile->camerastate *= -1; // Set transitional.
             }
         } else {
             // Set Camera State as fixed.
-            misc->camerastate = abs(misc->camerastate);
+            mobile->camerastate = abs(mobile->camerastate);
         }
     }
 
     // Rigid Body, Collisions etc.
     animatePhysics(spf);
 
-    vector_scale(rigged->rotators[rigged->PITCH], misc->twr, 180.0f / M_PI);
+    vector_scale(rigged->rotators[rigged->PITCH], mobile->twr, 180.0f / M_PI);
 
     // Show fitting animation pose based on state and physics.
-    if (misc->grounded > 0.15) {
-        poseRunning(spf);
+    rigged->pos = traceable->pos;
+    rigged->ori = traceable->ori;
+    rigged->vel = traceable->vel;
+    if (mobile->grounded > 0.15f) {
+        rigged->poseRunning(spf);
     } else {
-        poseJumping(spf);
+        rigged->poseJumping(spf);
     }
+
+    // Face into the demanded direction.
+    rigged->rotators[rigged->YAW][1] = -mobile->twr[1];
+    rigged->rotators[rigged->PITCH][0] = mobile->twr[0];
+    rigged->rotators[rigged->HEADPITCH][0] = mobile->twr[0];
 
     // Animate Weapons
 
-    loopi(misc->weapons.size()) {
-        misc->weapons[i]->animate(spf);
+    loopi(mobile->weapons.size()) {
+        mobile->weapons[i]->animate(spf);
     }
 
     alSourcefv(traceable->sound, AL_POSITION, traceable->pos);
@@ -682,172 +1060,27 @@ void cMech::animate(float spf) {
 
 void cMech::transform() {    
     if (true) {
-        MD5Format::model* model = rigged->model;
-        MD5Format::joint* manipulators = new MD5Format::joint[model->numJoints];
-        assert(manipulators != NULL);
-
-        loopi(model->numJoints) {
-            quat_set(manipulators[i].q, 0, 0, 0, -1);
-            vector_set(manipulators[i].v, 0, 0, 0);
-        }
-
-        if (true) { // set joint manipulators
-            float xaxis[] = {-1, 0, 0};
-            float yaxis[] = {0, -1, 0};
-            //float zaxis[] = {0, 0, -1};
-
-            std::map<int, int>& jointpoints = rigged->jointpoints;
-
-            std::map<int, std::map<int, float> > &rotators = rigged->rotators;
-
-            int yaw_idx = jointpoints[rigged->YAW];
-            int pitch_idx = jointpoints[rigged->PITCH];
-            if (yaw_idx < 0) yaw_idx = pitch_idx;
-
-            if (0) {
-                quat qy;
-                quat_rotaxis(qy, +1 * M_PI, yaxis);
-                quat_cpy(manipulators[0].q, qy);
-            }
-
-            if (yaw_idx == pitch_idx && pitch_idx >= 0) {
-                quat qy;
-                quat_rotaxis(qy, -misc->twr[1], yaxis);
-                quat qx;
-                quat_rotaxis(qx, +misc->twr[0], xaxis);
-                quat q;
-                quat_mul(q, qy, qx);
-                quat_cpy(manipulators[pitch_idx].q, q);
-            } else {
-                if (yaw_idx >= 0) {
-                    quat qy;
-                    quat_rotaxis(qy, -misc->twr[1], yaxis);
-                    quat_cpy(manipulators[yaw_idx].q, qy);
-                }
-                if (pitch_idx >= 0) {
-                    quat qx;
-                    quat_rotaxis(qx, +misc->twr[0], xaxis);
-                    quat_cpy(manipulators[pitch_idx].q, qx);
-                }
-            }
-
-            if (true) {
-                quat qx;
-                quat_rotaxis(qx, +misc->twr[0], xaxis);
-                int jidx = jointpoints[rigged->HEADPITCH];
-                if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
-            }
-
-            bool left = true;
-            if (left) {
-                quat qx;
-                quat_rotaxis(qx, rotators[rigged->LEFTLEG][0]*0.017453, xaxis);
-                int jidx = jointpoints[rigged->LEFTLEG];
-                if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
-            }
-            if (left) {
-                quat qx;
-                quat_rotaxis(qx, rotators[rigged->LEFTCALF][0]*0.017453, xaxis);
-                int jidx = jointpoints[rigged->LEFTCALF];
-                if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
-            }
-            if (left) {
-                quat qx;
-                quat_rotaxis(qx, rotators[rigged->LEFTFOOT][0]*0.017453, xaxis);
-                int jidx = jointpoints[rigged->LEFTFOOT];
-                if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
-            }
-            bool right = true;
-            if (right) {
-                quat qx;
-                quat_rotaxis(qx, rotators[rigged->RIGHTLEG][0]*0.017453, xaxis);
-                int jidx = jointpoints[rigged->RIGHTLEG];
-                if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
-            }
-            if (right) {
-                quat qx;
-                quat_rotaxis(qx, rotators[rigged->RIGHTCALF][0]*0.017453, xaxis);
-                int jidx = jointpoints[rigged->RIGHTCALF];
-                if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
-            }
-            if (right) {
-                quat qx;
-                quat_rotaxis(qx, rotators[rigged->RIGHTFOOT][0]*0.017453, xaxis);
-                int jidx = jointpoints[rigged->RIGHTFOOT];
-                if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
-            }
-        } // set joint manipulators
-
-        // Transform local skeleton using manipulators to global skeleton.
-        MD5Format::joint* joints = MD5Format::getJoints(model);
-        MD5Format::joint* joints_ = rigged->joints;
-        MD5Format::toGlobalJoints(model->numJoints, joints, joints_, manipulators);
-        delete manipulators;
-
-        // Create mountpoint matrices. Later only quaternions and points.
-        float* matrices[] = {
-            rigged->HDMount,
-            rigged->CTMount, rigged->BKMount,
-            rigged->LSMount, rigged->RSMount,
-            rigged->LAMount, rigged->RAMount
-        };
-
-        int mounts[] = {
-            rigged->EYE,
-            rigged->CTMOUNT, rigged->BKMOUNT,
-            rigged->LSMOUNT, rigged->RSMOUNT,
-            rigged->LAMOUNT, rigged->RAMOUNT,
-        };
-
-        loopi(7) {
-            int jidx = rigged->jointpoints[mounts[i]];
-            if (jidx < 0) continue;
-
-            glPushMatrix();
-            {
-                glLoadIdentity();
-
-                const float f = rigged->scale;
-                glTranslatef(traceable->pos[0], traceable->pos[1], traceable->pos[2]);
-                SGL::glRotateq(traceable->ori);
-                glRotatef(180, 0, 1, 0);
-                // Swap axes (it's actually a rotation around x)
-                float m[] = {
-                    1, 0, 0, 0,
-                    0, 0, -1, 0,
-                    0, 1, 0, 0,
-                    0, 0, 0, 1
-                };
-                glMultMatrixf(m);
-                glScalef(f, f, f);
-
-                glTranslatef(joints_[jidx].v[0], joints_[jidx].v[1], joints_[jidx].v[2]);
-                SGL::glRotateq(joints_[jidx].q);
-                glScalef(1.0f / f, 1.0f / f, 1.0f / f);
-                glRotatef(180, 0, 1, 0); // Hack, need to invert weapons and camera.
-                if (matrices[i] != NULL) glGetFloatv(GL_MODELVIEW_MATRIX, matrices[i]);
-            }
-            glPopMatrix();
-        }
+        rigged->transform();
     }
 
-    loopi(misc->weapons.size()) {
-        misc->weapons[i]->transform();
+    loopi(mobile->weapons.size()) {
+        mobile->weapons[i]->transform();
     }
 
-    misc->explosion.transform();
+    mobile->explosion.transform();
 }
 
 void cMech::drawSolid() {
+    // Setup jumpjet light source - for player only so far.
     if (hasTag(HUMANPLAYER)) {
         int light = GL_LIGHT1;
-        if (misc->jetpower > 0.1) {
+        if (mobile->jetpower > 0.1) {
             float p[] = {traceable->pos[0], traceable->pos[1]+1.2, traceable->pos[2], 1};
             //float zero[] = {0, 0, 0, 1};
-            float s = (misc->jetpower > 100.0) ? 1.0f : misc->jetpower*0.01f;
+            float s = (mobile->jetpower > 100.0) ? 1.0f : mobile->jetpower*0.01f;
             float a[] = {0.0,0.0,0.0,1};
             float d[] = {0.9 * s, 0.9 * s, 0.4 * s, 1};
-            glPushMatrix();
+            //glPushMatrix();
             {
                 //glLoadIdentity();
                 //glTranslatef(traceable->pos[0], traceable->pos[1]+1, traceable->pos[2]);
@@ -860,161 +1093,34 @@ void cMech::drawSolid() {
                 glLightf(light, GL_QUADRATIC_ATTENUATION, 0.005);
                 glEnable(light);
             }
-            glPopMatrix();
+            //glPopMatrix();
         } else {
             glDisable(light);
         }
     }
 
     if (rigged->model != NULL) {
-        MD5Format::model* model = rigged->model;
-        MD5Format::joint* joints_ = rigged->joints;
-        glPushAttrib(GL_ALL_ATTRIB_BITS);
-        {
-            int texture = 0;
-            texture = hasTag(RED) ? 0 : texture;
-            texture = hasTag(BLUE) ? 1 : texture;
-            texture = hasTag(GREEN) ? 2 : texture;
-            texture = hasTag(YELLOW) ? 3 : texture;
-            glBindTexture(GL_TEXTURE_3D, sTextures[texture]);
-            glPushMatrix();
-            {
-                glTranslatef(traceable->pos[0], traceable->pos[1], traceable->pos[2]);
-                SGL::glRotateq(traceable->ori);
-                // The model was modelled facing to the camera.
-                glRotatef(180, 0, 1, 0);
-                // Swap axes (it's actually a rotation around x)
-                float m[] = {
-                    1, 0, 0, 0,
-                    0, 0, -1, 0,
-                    0, 1, 0, 0,
-                    0, 0, 0, 1
-                };
-                glMultMatrixf(m);
-                float rscale = rigged->scale;
-                glScalef(rscale, rscale, rscale);
-
-                if (DRAWJOINTS) { // draw skeleton
-                    SGL::glUseProgram_fgplaincolor();
-
-                    loopi(model->numJoints) {
-                        glPushMatrix();
-                        {
-                            glTranslatef(joints_[i].v[0], joints_[i].v[1], joints_[i].v[2]);
-                            SGL::glRotateq(joints_[i].q);
-                            cPrimitives::glAxis(0.7);
-                        }
-                        glPopMatrix();
-                        glColor3f(0.5, 0.5, 0.5);
-                        glBegin(GL_LINES);
-                        {
-                            int j = joints_[i].parent;
-                            if (j >= 0) {
-                                glVertex3fv(joints_[i].v);
-                                glVertex3fv(joints_[j].v);
-                            }
-                        }
-                        glEnd();
-                    }
-                } // draw skeleton
-
-                if (true) { // draw models meshes
-
-                    // Generate base vertices and normals for 3d-tex-coords.
-                    if (rigged->baseverts.empty()) {
-                        MD5Format::mesh* msh = MD5Format::getFirstMesh(model);
-                        MD5Format::joint* staticjoints = MD5Format::getJoints(rigged->model);
-
-                        loopi(model->numMeshes) {
-                            float* baseverts = new float[msh->numverts * 3];
-                            float* basenorms = new float[msh->numverts * 3];
-                            MD5Format::animatedMeshVertices(msh, staticjoints, baseverts, basenorms);
-                            rigged->baseverts[i] = baseverts;
-                            rigged->basenorms[i] = basenorms;
-                            // TODO: recalculate normals, invert and to weights.
-                            {
-                                MD5Format::tri* tris = MD5Format::getTris(msh);
-                                // TODO: Normals need to be averaged/smoothed.
-                                for (int j = 0; j < msh->numtris; j++) {
-                                    float* a = &baseverts[3*tris[j].a];
-                                    float* b = &baseverts[3*tris[j].b];
-                                    float* c = &baseverts[3*tris[j].c];
-                                    float ab[3];
-                                    float bc[3];
-                                    float n[3];
-                                    vector_sub(ab, b, a);
-                                    vector_sub(bc, c, b);
-                                    vector_cross(n, bc, ab);
-                                    vector_norm(n, n);
-                                    vector_cpy(&basenorms[3*tris[j].a], n);
-                                    vector_cpy(&basenorms[3*tris[j].b], n);
-                                    vector_cpy(&basenorms[3*tris[j].c], n);
-                                }
-                            }
-                            MD5Format::unanimatedMeshNormals(msh, staticjoints, basenorms);
-                            msh = MD5Format::getNextMesh(msh);
-                        }
-                    }
-
-                    SGL::glUseProgram_fglittexture3d();
-                    glColor4f(1, 1, 1, 1);
-                    glFrontFace(GL_CW);
-
-                    MD5Format::mesh* msh = MD5Format::getFirstMesh(model);
-
-                    loopi(model->numMeshes) {
-                        //cout << curr->numverts << " " << curr->numtris << " " << curr->numweights << endl;
-                        float* vtx = new float[msh->numverts * 3];
-                        float* nrm = new float[msh->numverts * 3];
-                        MD5Format::animatedMeshVertices(msh, joints_, vtx, nrm);
-                        MD5Format::tri* tris = MD5Format::getTris(msh);
-                        //MD5Format::vert* verts = MD5Format::getVerts(msh);
-                        // For 3d texturing.
-                        float* vox = rigged->baseverts[i];
-                        //
-                        glBegin(GL_TRIANGLES);
-                        const float s = 0.25f;
-                        for (int j = 0; j < msh->numtris; j++) {
-                            int k = tris[j].a;
-                            //glTexCoord2fv(verts[k].tmap);
-                            //glTexCoord3fv(&vox[3 * k]);
-                            glNormal3fv(&nrm[3 * k]);
-                            glTexCoord3f(vox[3 * k+0]*s, vox[3 * k+1]*s, vox[3 * k+2]*s);
-                            glVertex3fv(&vtx[3 * k]);
-                            k = tris[j].b;
-                            //glTexCoord2fv(verts[k].tmap);
-                            //glTexCoord3fv(&vox[3 * k]);
-                            glNormal3fv(&nrm[3 * k]);
-                            glTexCoord3f(vox[3 * k+0]*s, vox[3 * k+1]*s, vox[3 * k+2]*s);
-                            glVertex3fv(&vtx[3 * k]);
-                            k = tris[j].c;
-                            //glTexCoord2fv(verts[k].tmap);
-                            //glTexCoord3fv(&vox[3 * k]);
-                            glNormal3fv(&nrm[3 * k]);
-                            glTexCoord3f(vox[3 * k+0]*s, vox[3 * k+1]*s, vox[3 * k+2]*s);
-                            glVertex3fv(&vtx[3 * k]);
-                        }
-                        glEnd();
-                        delete vtx;
-                        delete nrm;
-                        msh = MD5Format::getNextMesh(msh);
-                    }
-                } // draw models meshes
-
-            }
-            glPopMatrix();
-        }
-        glPopAttrib();
+        int texture = 0;
+        texture = hasTag(RED) ? 0 : texture;
+        texture = hasTag(BLUE) ? 1 : texture;
+        texture = hasTag(GREEN) ? 2 : texture;
+        texture = hasTag(YELLOW) ? 3 : texture;
+        glBindTexture(GL_TEXTURE_3D, sTextures[texture]);
+        rigged->drawSolid();
     }
 
-    loopi(misc->weapons.size()) {
-        misc->weapons[i]->drawSolid();
+    loopi(mobile->weapons.size()) {
+        mobile->weapons[i]->drawSolid();
     }
 
-    misc->explosion.drawSolid();
+    mobile->explosion.drawSolid();
 }
 
 void cMech::drawEffect() {
+    if (rigged->model != NULL) {
+        rigged->drawEffect();
+    }
+    
     // Draw name above head.
     if (!hasTag(HUMANPLAYER)) {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -1061,8 +1167,8 @@ void cMech::drawEffect() {
         glPopAttrib();
     }
 
-    // Draw jumpjet exaust if jet is somewhat on.
-    if (this->misc->jetpower > 30.0f) {
+    // Draw jumpjet exaust if jet is somewhat on. move to rigged?
+    if (this->mobile->jetpower > 30.0f) {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
             SGL::glUseProgram_fgaddcolor();
@@ -1080,7 +1186,7 @@ void cMech::drawEffect() {
                     float* v = rigged->joints[jet[i]].v;
                     glPushMatrix();
                     {
-                        float f = misc->jetpower * 0.003 * 5;
+                        float f = mobile->jetpower * 0.003 * 5;
 
                         glTranslatef(traceable->pos[0], traceable->pos[1], traceable->pos[2]);
                         SGL::glRotateq(traceable->ori);
@@ -1117,100 +1223,38 @@ void cMech::drawEffect() {
 
     // Draw weapon's effects.
 
-    loopi(misc->weapons.size()) {
-        misc->weapons[i]->drawEffect();
+    loopi(mobile->weapons.size()) {
+        mobile->weapons[i]->drawEffect();
     }
     // Draw effect of own explosion (yes, it is only when exploding).
-    misc->explosion.drawEffect();
+    mobile->explosion.drawEffect();
 }
 
 void cMech::drawHUD() {
-    glPushAttrib(GL_ALL_ATTRIB_BITS /* more secure */);
-    {
-        SGL::glUseProgram_bkplaincolor();
-        glDisable(GL_CULL_FACE);
-        glLineWidth(2);
-
-        SGL::glPushOrthoProjection();
-        {
-            glPushMatrix();
-            {
-                glLoadIdentity();
-
-                float bk[] = {0.0, 0.2, 0.3, 0.2};
-                //float bk[] = {0, 0, 0, 0.0};
-                float w = 5;
-                float h = 4;
-                float sx = 1.0f / w;
-                float sy = 1.0f / h;
-
-                cComputer * displays[4][5] = {
-                    { computerised->navcom, NULL, NULL, NULL, computerised->comcom},
-                    { NULL, NULL, NULL, NULL, NULL},
-                    { NULL, NULL, NULL, NULL, NULL},
-                    { computerised->tarcom, NULL, computerised->wepcom, NULL, computerised->syscom}
-                };
-
-                loopj(4) {
-
-                    loopi(5) {
-                        if (displays[j][i] == NULL) continue;
-                        glPushMatrix();
-                        {
-                            glScalef(sx, sy, 1);
-                            glTranslatef(i, 3 - j, 0);
-                            glColor4fv(bk);
-                            displays[j][i]->drawHUD();
-                        }
-                        glPopMatrix();
-                    }
-                }
-
-                if (true) {
-                    glPushMatrix();
-                    {
-                        glTranslatef(0.25, 0.25, 0);
-                        glScalef(0.5, 0.5, 1);
-                        glTranslatef(0, 0, 0);
-                        glColor4fv(bk);
-                        computerised->forcom->drawHUD();
-                    }
-                    glPopMatrix();
-                }
-
-            }
-            glPopMatrix();
-        }
-        SGL::glPopProjection();
-    }
-    glPopAttrib();
+    computerised->drawHUD();
 }
 
 void cMech::damageByParticle(float* localpos, float damage, cObject* enactor) {
-    if (!damageable->alife) return;
+    if (!damageable->alife || damage == 0.0f) return;
 
     int hitzone = rDamageable::BODY;
     if (localpos[1] < 1.3 && damageable->hp[rDamageable::LEGS] > 0) hitzone = rDamageable::LEGS;
     else if (localpos[0] < -0.5 && damageable->hp[rDamageable::LEFT] > 0) hitzone = rDamageable::LEFT;
     else if (localpos[0] > +0.5 && damageable->hp[rDamageable::RIGHT] > 0) hitzone = rDamageable::RIGHT;
 
-    if (damage != 0.0f) {
-        if (enactor != NULL) controlled->disturber = enactor->oid;
-        damageable->hp[hitzone] -= damage;
-        if (damageable->hp[hitzone] < 0) damageable->hp[hitzone] = 0;
-        if (damageable->hp[rDamageable::BODY] <= 0) {
-            damageable->alife = false;
-            cout << "cMech::damageByParticle(): DEAD\n";
-            misc->explosion.fire(0);
-        }
-        int body = rDamageable::BODY;
-        if (damageable->hp[body] <= 75) addTag(WOUNDED);
-        if (damageable->hp[body] <= 50) addTag(SERIOUS);
-        if (damageable->hp[body] <= 25) addTag(CRITICAL);
-        if (damageable->hp[body] <= 0) addTag(DEAD);
+    if (enactor != NULL) controlled->disturber = enactor->oid;
+    if (!damageable->damage(hitzone, damage, enactor)) {
+        cout << "cMech::damageByParticle(): DEAD\n";
+        mobile->explosion.fire(0);
     }
+    int body = rDamageable::BODY;
+    if (damageable->hp[body] <= 75) addTag(WOUNDED);
+    if (damageable->hp[body] <= 50) addTag(SERIOUS);
+    if (damageable->hp[body] <= 25) addTag(CRITICAL);
+    if (damageable->hp[body] <= 0) addTag(DEAD);
 }
 
+// move to traceable? or rigged?
 float cMech::constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor) {
     float localpos_[3];
     { // Transform to local.
@@ -1244,6 +1288,7 @@ float cMech::constrainParticle(float* worldpos, float radius, float* localpos, c
     return depth;
 }
 
+// move to cWorld?
 float cMech::constrainParticleToWorld(float* worldpos, float radius) {
     float depth = 0;
     float maxrange = 25;
@@ -1417,10 +1462,10 @@ void cMech::do_aimAt() {
 
     // Determine nearest rotation direction
     quat tower_ori;
-    quat_set(tower_ori, 0, sin(0.5 * this->misc->twr[1]), 0, cos(0.5 * this->misc->twr[1]));
+    quat_set(tower_ori, 0, sin(0.5 * this->mobile->twr[1]), 0, cos(0.5 * this->mobile->twr[1]));
 
     quat tower_ori_v;
-    quat_set(tower_ori_v, sin(0.5 * this->misc->twr[0]), 0, 0, cos(0.5 * this->misc->twr[0]));
+    quat_set(tower_ori_v, sin(0.5 * this->mobile->twr[0]), 0, 0, cos(0.5 * this->mobile->twr[0]));
 
     quat_mul(tower_ori, tower_ori, tower_ori_v);
 
@@ -1444,7 +1489,7 @@ void cMech::do_fireAt() {
 
     // Determine nearest rotation direction
     quat tower_ori;
-    quat_set(tower_ori, 0, sin(0.5 * this->misc->twr[1]), 0, cos(0.5 * this->misc->twr[1]));
+    quat_set(tower_ori, 0, sin(0.5 * this->mobile->twr[1]), 0, cos(0.5 * this->mobile->twr[1]));
     vec2 rd;
     cParticle::rotationTo(rd, traceable->pos, target_pos, traceable->ori, tower_ori);
     // Fire at random and only if angle small enough.
@@ -1456,7 +1501,7 @@ void cMech::do_fireAt() {
 
 void cMech::do_idle() {
     if (controlled->pad == NULL) return;
-    misc->throttle = 0;
+    mobile->throttle = 0;
     controlled->pad->reset();
 }
 

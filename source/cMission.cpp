@@ -228,7 +228,11 @@ cObject* cOpenMission::init(cWorld* world) {
     }
 
     cout << "Initialising vehicles...\n";
-    cObject* player = initPlayerParty(world, planetmap);
+    cObject* player = NULL;
+    {
+        float position[] = SPACEPORT;
+        player = initPlayerParty(world, planetmap, position);
+    }
 
     cout << "Initialising mission triggers...\n";
     {
@@ -266,12 +270,14 @@ cObject* cOpenMission::init(cWorld* world) {
     return player;
 }
 
-cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap) {
+cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, float* position) {
     cObject* player = NULL;
+
+    float* p = position;
 
     // Player
     if (true) {
-        float pos[3] = {-20, 0.1, -50};
+        float pos[3] = {p[0]-20, 0.1, p[2]-50};
         float rot[3] = {0, -170, 0};
         float color[16];
         planetmap->getHeight(pos[0],pos[2], color);
@@ -322,7 +328,7 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap) {
 
     // Wing 1
     if (true) {
-        float pos[3] = {+13 * 1, 0.1, -50 * 1};
+        float pos[3] = {p[0]+13 * 1, 0.1, p[2]-50 * 1};
         float rot[3] = {0, -210, 0};
         float color[16];
         planetmap->getHeight(pos[0],pos[2], color);
@@ -348,7 +354,7 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap) {
 
     // Wing 2
     if (true) {
-        float pos[3] = {+7 * 1, 0.1, -50 * 1};
+        float pos[3] = {p[0]+7 * 1, 0.1, p[2]-50 * 1};
         float rot[3] = {0, -210, 0};
         float color[16];
         planetmap->getHeight(pos[0],pos[2], color);
@@ -734,10 +740,10 @@ void cOpenMission::initPentaSpaceport(cWorld* world, cPlanetmap* planetmap) {
 
     cBuilding* port = new cBuilding(-3 + loc[0], 3 + loc[1], 0 + loc[2], 9, 1, 3);
     world->spawnObject(port);
-    mDefeat.push_back(port);
+    //mDefeat.push_back(port);
     port = new cBuilding(-4 + loc[0], 0 + loc[1], -3 + loc[2], 12, 1, 5);
     world->spawnObject(port);
-    mDefeat.push_back(port);
+    //mDefeat.push_back(port);
 
     // Bay-Road
 

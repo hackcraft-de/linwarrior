@@ -268,7 +268,7 @@ static void postProcess(int width, int height) {
     if (fail) return;
 
     glFlush();
-    SGL::glPushOrthoProjection(-0.5,+0.5, -0.0,+1.0, -1,+1);
+
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
         glDisable(GL_LIGHTING);
@@ -296,17 +296,22 @@ static void postProcess(int width, int height) {
             glBindTexture(GL_TEXTURE_2D, screendepth);
             glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, width, height);
 
-            glPushMatrix();
+            glBegin(GL_QUADS);
             {
-                glLoadIdentity();
-                cPrimitives::glXCenteredTextureSquare();
+                glTexCoord2i(1, 0);
+                glVertex3f(+1.0f, -1.0f, 0);
+                glTexCoord2i(0, 0);
+                glVertex3f(-1.0f, -1.0f, 0);
+                glTexCoord2i(0, 1);
+                glVertex3f(-1.0f, +1.0f, 0);
+                glTexCoord2i(1, 1);
+                glVertex3f(+1.0f, +1.0f, 0);
             }
-            glPopMatrix();
+            glEnd();
         }
         glUseProgramObjectARB(0);
     }
     glPopAttrib();
-    SGL::glPopProjection();
 }
 
 

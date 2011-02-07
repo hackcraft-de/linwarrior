@@ -168,7 +168,7 @@ void cTarcom::drawHUD() {
                 if (o->oid == selected) glColor4f(1,0,1,1);
                 float dx = o->traceable->pos[0] - mDevice->traceable->pos[0];
                 float dz = o->traceable->pos[2] - mDevice->traceable->pos[2];
-                float r = sqrt(dx * dx + dz * dz);
+                float r = sqrtf(dx * dx + dz * dz);
                 dx /= r;
                 dz /= r;
                 float f = 0.01 * r;
@@ -268,7 +268,7 @@ void cWepcom::process(float spf) {
 
 void cWepcom::drawHUD() {
     cMech* mech = (cMech*) mDevice;
-    float h = 1.0f / 7.0f * (1 + (mech->misc->weapons.size() + 1) / 2);
+    float h = 1.0f / 7.0f * (1 + (mech->mobile->weapons.size() + 1) / 2);
     glBegin(GL_QUADS);
     glVertex3f(1, h, 0);
     glVertex3f(0, h, 0);
@@ -280,9 +280,9 @@ void cWepcom::drawHUD() {
         glScalef(1.0 / 2.0, 1.0 / 7.0, 1.0);
         glTranslatef(0, 0.5, 0);
 
-        loopi(mech->misc->weapons.size()) {
+        loopi(mech->mobile->weapons.size()) {
             glLineWidth(5);
-            if (mech->misc->weapons[i]->ready()) glColor4f(0.4f, 1.0f, 0.4f, 0.2f);
+            if (mech->mobile->weapons[i]->ready()) glColor4f(0.4f, 1.0f, 0.4f, 0.2f);
             else glColor4f(0.8f, 0.0f, 0.0f, 0.2f);
             cPrimitives::glLineSquare(0.1f);
             glLineWidth(1);
@@ -290,7 +290,7 @@ void cWepcom::drawHUD() {
             cPrimitives::glLineSquare(0.1f);
             glPushMatrix();
             {
-                mech->misc->weapons[i]->drawHUD();
+                mech->mobile->weapons[i]->drawHUD();
             }
             glPopMatrix();
             //glTranslatef(0, 1, 0);
@@ -316,7 +316,7 @@ void cForcom::process(float spf) {
 
 void cForcom::drawHUD() {
     // Reticle in screen center.
-    if (true && abs(mDevice->misc->camerastate) == 1) {
+    if (true && abs(mDevice->mobile->camerastate) == 1) {
         glPushMatrix();
         {
             glTranslatef(0.5, 0.5, 0);
@@ -462,16 +462,16 @@ void cForcom::drawHUD() {
         {
             glColor4f(0, 0.2, 0.7, 0.4);
             glVertex3f(0.5, 0.1, 0);
-            glVertex3f(0.5 + mDevice->misc->twr[1] * f, 0.1, 0);
+            glVertex3f(0.5 + mDevice->mobile->twr[1] * f, 0.1, 0);
 
-            glVertex3f(0.5 + mDevice->misc->twr[1] * f, 0.08, 0);
-            glVertex3f(0.5 + mDevice->misc->twr[1] * f, 0.12, 0);
+            glVertex3f(0.5 + mDevice->mobile->twr[1] * f, 0.08, 0);
+            glVertex3f(0.5 + mDevice->mobile->twr[1] * f, 0.12, 0);
 
             glVertex3f(0.5, 0.9, 0);
-            glVertex3f(0.5 + mDevice->misc->twr[1] * f, 0.9, 0);
+            glVertex3f(0.5 + mDevice->mobile->twr[1] * f, 0.9, 0);
 
-            glVertex3f(0.5 + mDevice->misc->twr[1] * f, 0.88, 0);
-            glVertex3f(0.5 + mDevice->misc->twr[1] * f, 0.92, 0);
+            glVertex3f(0.5 + mDevice->mobile->twr[1] * f, 0.88, 0);
+            glVertex3f(0.5 + mDevice->mobile->twr[1] * f, 0.92, 0);
         }
         glEnd();
 
@@ -480,16 +480,16 @@ void cForcom::drawHUD() {
         {
             glColor4f(0, 0.2, 0.7, 0.4);
             glVertex3f(0.1, 0.5, 0);
-            glVertex3f(0.1, 0.5 + mDevice->misc->twr[0] * f, 0);
+            glVertex3f(0.1, 0.5 + mDevice->mobile->twr[0] * f, 0);
 
-            glVertex3f(0.08, 0.5 + mDevice->misc->twr[0] * f, 0);
-            glVertex3f(0.12, 0.5 + mDevice->misc->twr[0] * f, 0);
+            glVertex3f(0.08, 0.5 + mDevice->mobile->twr[0] * f, 0);
+            glVertex3f(0.12, 0.5 + mDevice->mobile->twr[0] * f, 0);
 
             glVertex3f(0.9, 0.5, 0);
-            glVertex3f(0.9, 0.5 + mDevice->misc->twr[0] * f, 0);
+            glVertex3f(0.9, 0.5 + mDevice->mobile->twr[0] * f, 0);
 
-            glVertex3f(0.88, 0.5 + mDevice->misc->twr[0] * f, 0);
-            glVertex3f(0.92, 0.5 + mDevice->misc->twr[0] * f, 0);
+            glVertex3f(0.88, 0.5 + mDevice->mobile->twr[0] * f, 0);
+            glVertex3f(0.92, 0.5 + mDevice->mobile->twr[0] * f, 0);
         }
         glEnd();
 

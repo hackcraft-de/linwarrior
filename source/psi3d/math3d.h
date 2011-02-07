@@ -24,6 +24,13 @@
 #define finitef(x) (!(x != x))
 #endif
 
+// Note sqrtf may not be supported on some plattforms
+// and it is a undefined builtin function =>
+// ifdef doesn't work at all.
+// I'm not sure sqrtf is necessary at all?
+// Maybe the compiler already optimises this itself
+// if only floats are involved?
+//#define sqrtf(x) ((float)sqrt((float)(x)))
 
 
 //--[Machine Specific]-------------->
@@ -359,7 +366,7 @@ typedef vec4 quat;
 #define quat_expand(q_) \
 { \
     const float w2 = 1.0f - ( (q_[0]*q_[0]) + ((q_)[1]*(q_)[1]) + ((q_)[2]*(q_)[2]) ); \
-    q_[3] = (w2 < 0) ? 0.0f : -sqrt(w2); \
+    q_[3] = (w2 < 0) ? 0.0f : -sqrtf(w2); \
 }
 
 #define quat_cpy(result, q0) \
@@ -405,7 +412,7 @@ typedef vec4 quat;
 
 #define quat_mag(q0) \
 ( \
-    sqrt( (q0)[0] * (q0)[0] + (q0)[1] * (q0)[1] + (q0)[2] * (q0)[2] + (q0)[3] * (q0)[3] ) \
+    sqrtf( (q0)[0] * (q0)[0] + (q0)[1] * (q0)[1] + (q0)[2] * (q0)[2] + (q0)[3] * (q0)[3] ) \
 )
 
 #define quat_mag_inv(q0) \
@@ -481,7 +488,7 @@ typedef vec4 quat;
 
 #define vector_norm(result, A)          { typeof(A[0]) inv = ((typeof(A[0]))1)/vector_mag(A); vector_scale( (result), (A), inv); }
 
-#define vector_mag(A)                   ( sqrt( pow((A)[0],2) + pow((A)[1],2) + pow((A)[2],2) ) )
+#define vector_mag(A)                   ( sqrtf( (A)[0]*(A)[0] + (A)[1]*(A)[1] + (A)[2]*(A)[2] ) )
 
 #define vector_dot(A, B)                ((A)[0] * (B)[0] + (A)[1] * (B)[1] + (A)[2] * (B)[2] )
 
@@ -499,7 +506,7 @@ typedef vec4 quat;
 
 #define vector_sqrdist(A, B)            ( ((A)[0]-(B)[0]) * ((A)[0]-(B)[0]) + ((A)[1]-(B)[1]) * ((A)[1]-(B)[1]) + ((A)[2]-(B)[2]) * ((A)[2]-(B)[2]) )
 
-#define vector_distance(A, B)           ( sqrt( ((A)[0]-(B)[0]) * ((A)[0]-(B)[0]) + ((A)[1]-(B)[1]) * ((A)[1]-(B)[1]) + ((A)[2]-(B)[2]) * ((A)[2]-(B)[2]) ) )
+#define vector_distance(A, B)           ( sqrtf( ((A)[0]-(B)[0]) * ((A)[0]-(B)[0]) + ((A)[1]-(B)[1]) * ((A)[1]-(B)[1]) + ((A)[2]-(B)[2]) * ((A)[2]-(B)[2]) ) )
 
 #define vector_manhattan(A, B)          ( fabs((A)[0]-(B)[0])) + fabs((A)[1]-(B)[1])) + fabs((A)[2]-(B)[2]))  )
 

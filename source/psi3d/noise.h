@@ -517,8 +517,8 @@ struct cNoise {
         //const float e_inv = 1.0f / e;
         //const float u = pow(min_d, e_inv);
         //const float v = pow(min_d_,e_inv);
-        const float u = sqrt(min_d);
-        const float v = sqrt(min_d_);
+        const float u = sqrtf(min_d);
+        const float v = sqrtf(min_d_);
         // Result within [0,1[ because u less or equal v.
         //return 1.999999f * (u / (u + v));
         // Result within [-1,+1] because u less or equal v.

@@ -57,6 +57,7 @@ unsigned char* loadTGA(const char *fname, int *w, int* h, int* bpp);
  */
 int saveTGA(const char *fname, int w, int h, int bpp, unsigned char* image);
 
+class cObject;
 
 /**
  * Base-Class of all roles.
@@ -67,6 +68,7 @@ int saveTGA(const char *fname, int w, int h, int bpp, unsigned char* image);
  * to replace the parent role in an Object?
  */
 struct rRole {
+    cObject* object;
     std::string role;
 
     rRole(std::string role) {
@@ -77,26 +79,33 @@ struct rRole {
         return new rRole(role);
     }
 
+    virtual void animate(float spf) {};
+    virtual void transform() {};
+    virtual void drawSolid() {};
+    virtual void drawEffect() {};
+    virtual void drawHUD() {};
 };
 
 /**
- *  Encapsulates Textual descriptive texts about an object.
+ *  Encapsulates onscreen descriptive texts about an object.
  */
 struct rNameable : public rRole {
-    /// Name of object.
+    /// Name or title of object or the document.
     std::string name;
-    /// String describing the object.
+    /// String describing the object or the document.
     std::string description;
     /// { 0, .., 25 } for { a, ..., z }.
     unsigned int designation;
     /// Constructor.
 
-    rNameable() : rRole("NAMEABLE"), name("Unnamed"), description("Undescribed"), designation(0) {
+    rNameable(cObject* obj = NULL) : rRole("NAMEABLE"), name("Unnamed"), description("Undescribed"), designation(0) {
+        object = object;
     }
     /// Copy Constructor.
 
     rNameable(rNameable * original) : rRole("NAMEABLE"), name("Unnamed"), description("Undescribed"), designation(0) {
         if (original != NULL) {
+            object = original->object;
             name = original->name;
             description = original->description;
             designation = original->designation;
@@ -114,11 +123,13 @@ struct rNameable : public rRole {
 struct rTraceable : public cParticle, public rRole {
     /// Constructor.
 
-    rTraceable() : cParticle(), rRole("TRACEABLE") {
+    rTraceable(cObject* obj = NULL) : cParticle(), rRole("TRACEABLE") {
+        object = obj;
     }
     /// Copy Constructor.
 
-    rTraceable(cParticle * original) : cParticle(original), rRole("TRACEABLE") {
+    rTraceable(rTraceable * original) : cParticle(original), rRole("TRACEABLE") {
+            object = original->object;
     }
 
     virtual rRole* clone() {
@@ -152,7 +163,8 @@ struct rDamageable : public rRole {
     // float sinks[MAX_PARTS];
     /// Constructor.
 
-    rDamageable() : rRole("DAMAGEABLE") {
+    rDamageable(cObject* obj = NULL) : rRole("DAMAGEABLE") {
+        object = obj;
         alife = true;
         loopi(MAX_PARTS) hp[i] = 100.0f;
     }
@@ -162,6 +174,7 @@ struct rDamageable : public rRole {
         if (original == NULL) {
             rDamageable();
         } else {
+            object = original->object;
             alife = original->alife;
             loopi(MAX_PARTS) hp[i] = original->hp[i];
         }
@@ -169,6 +182,15 @@ struct rDamageable : public rRole {
 
     virtual rRole* clone() {
         return new rDamageable(this);
+    }
+
+    virtual bool damage(int hitzone, float damage, cObject* enactor) {
+        hp[hitzone] -= damage;
+        if (hp[hitzone] < 0.0f) hp[hitzone] = 0.0f;
+        if (hp[BODY] <= 0.0f) {
+            alife = false;
+        }
+        return alife;
     }
 };
 
@@ -188,7 +210,8 @@ struct rControlled : public rRole {
     cController* controller;
     /// Constructor.
 
-    rControlled() : rRole("CONTROLLED"), target(0), disturber(0), pad(NULL), controller(NULL) {
+    rControlled(cObject* obj = NULL) : rRole("CONTROLLED"), target(0), disturber(0), pad(NULL), controller(NULL) {
+        object = obj;
         vector_set(destination, float_NAN, float_NAN, float_NAN);
     }
     /// Copy Constructor.
@@ -197,6 +220,7 @@ struct rControlled : public rRole {
         if (original == NULL) {
             rControlled();
         } else {
+            object = original->object;
             target = original->target;
             disturber = original->disturber;
             vector_cpy(destination, original->destination);
@@ -224,12 +248,14 @@ struct rSocialised : public rRole {
     std::set<OID> exc_enemies;
     
     /// Constructor.
-    rSocialised() : rRole("SOCIALISED") {
+    rSocialised(cObject* obj = NULL) : rRole("SOCIALISED") {
+        object = obj;
     }
 
     /// Copy Constructor.
     rSocialised(rSocialised * original) : rRole("SOCIALISED") {
         if (original != NULL) {
+            object = original->object;
             inc_allies = original->inc_allies;
             inc_enemies = original->inc_enemies;
             exc_allies = original->exc_allies;
@@ -305,11 +331,13 @@ struct rGrouping : public rRole {
     /// Lists registered members of this group.
     std::set<OID> members;
 
-    rGrouping() : rRole("GROUPING"), name("Unnamed") {
+    rGrouping(cObject* obj = NULL) : rRole("GROUPING"), name("Unnamed") {
+        object = obj;
     }
 
     rGrouping(rGrouping * original) : rRole("GROUPING"), name("Unnamed") {
         if (original != NULL) {
+            object = original->object;
             name = original->name;
             members.clear();
             //mMembers.insert(mMembers.begin(), original->mMembers.begin(), original->mMembers.end());
@@ -404,9 +432,9 @@ public:
             registerRole(new rControlled, FIELDOFS(controlled), ROLEPTR(cObject::controlled));
             registerRole(new rGrouping, FIELDOFS(grouping), ROLEPTR(cObject::grouping));
         }
-        nameable = new rNameable;
+        nameable = new rNameable(this);
         socialised = NULL;
-        traceable = new rTraceable;
+        traceable = new rTraceable(this);
         damageable = NULL;
         controlled = NULL;
         grouping = NULL;

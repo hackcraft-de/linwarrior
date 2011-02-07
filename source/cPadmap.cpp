@@ -101,9 +101,9 @@ cPadmap::cPadmap(float x, float y, float z) {
         heights[i] = 0.5f * h[i];
     }
 
-    mapscale[0] = 2;
-    mapscale[1] = 4.2;
-    mapscale[2] = 2;
+    mapscale[0] = 2.3;
+    mapscale[1] = mapscale[0];
+    mapscale[2] = mapscale[0];
 }
 
 
@@ -267,16 +267,17 @@ void cPadmap::drawSolid() {
 
 
 float cPadmap::constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor) {
-    return 0.0f; // !!!!!!!!!!
+    //return 0.0f; // !!!!!!!!!!
 
     //if (enactor == NULL) return 0.0;
     float localpos_[3];
     vector_cpy(localpos_, worldpos);
     vector_sub(localpos_, localpos_, traceable->pos);
     
-    //localpos_[0] /= mapscale[0];
-    //localpos_[1] /= mapscale[1];
-    //localpos_[2] /= mapscale[2];
+    localpos_[0] /= mapscale[0];
+    localpos_[1] /= mapscale[1];
+    localpos_[2] /= mapscale[2];
+    float radius_ = radius / fmax(mapscale[0], mapscale[2]);
 
     //assert(finitef(localpos_[0]));
     //assert(finitef(localpos_[1]));
@@ -294,7 +295,7 @@ float cPadmap::constrainParticle(float* worldpos, float radius, float* localpos,
         relax = 0.01;
         //const float a = 2.0 * M_PI / (float) samples;
         //const float b = 0.5 * M_PI / (float) samples;
-        float nearest2 = radius*radius;
+        float nearest2 = radius_*radius_;
         float near[] = {0, 0, 0};
 
         loopi(samples) {
@@ -309,11 +310,11 @@ float cPadmap::constrainParticle(float* worldpos, float radius, float* localpos,
                 alpha = (rand()%62831)*0.0001f; // 2PI 0-360
                 beta =  (rand()%15707)*0.0001f; // 0.5PI 0-90
             }
-            x_ += sin(alpha) * sin(beta) * radius;
-            y_ += -cos(beta) * radius;
-            z_ += cos(alpha) * sin(beta) * radius;
+            x_ += sin(alpha) * sin(beta) * radius_;
+            y_ += -cos(beta) * radius_;
+            z_ += cos(alpha) * sin(beta) * radius_;
 
-            float h00 = getHeight(x_ / mapscale[0], z_ / mapscale[2]) * mapscale[1];
+            float h00 = getHeight(x_, z_);
             float delta = y_ - h00;
             if (delta > 0) continue;
             if (h00 > localpos_[1]) {
@@ -326,8 +327,8 @@ float cPadmap::constrainParticle(float* worldpos, float radius, float* localpos,
                 vector_cpy(near, v);
             }
         }
-        float nearest = sqrt(nearest2);
-        float delta = radius - nearest;
+        float nearest = sqrtf(nearest2);
+        float delta = radius_ - nearest;
         if (delta > 0.01) {
             //vector_print(near);
             //cout << radius << " " << nearest << " " << delta << endl;
@@ -343,9 +344,9 @@ float cPadmap::constrainParticle(float* worldpos, float radius, float* localpos,
     //cout << "it " << runs << endl;
 
     if (maxdelta > 0) {
-        //localpos_[0] *= mapscale[0];
-        //localpos_[1] *= mapscale[1];
-        //localpos_[2] *= mapscale[2];
+        localpos_[0] *= mapscale[0];
+        localpos_[1] *= mapscale[1];
+        localpos_[2] *= mapscale[2];
         vector_add(localpos_, localpos_, traceable->pos);
         vector_cpy(worldpos, localpos_);
         if (localpos != NULL) vector_cpy(localpos, localpos_);

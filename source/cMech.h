@@ -39,6 +39,12 @@ class cWeapon;
 struct rRigged : public rRole {
     /// Model scale.
     float scale;
+    /// Position hook.
+    float* pos;
+    /// Orientation hook.
+    float* ori;
+    /// Velocity hook.
+    float* vel;
     /// The "static" model just as it is loaded.
     MD5Format::model* model;
     /// Actual local-(model-)space joints for this instance.
@@ -55,9 +61,9 @@ struct rRigged : public rRole {
     float RAMount[16];
     float LSMount[16];
     float LAMount[16];
-    // Untransformed vertices.
+    // Untransformed vertices for mesh i.
     std::map<int, float*> baseverts;
-    // Untransformed normals.
+    // Untransformed normals for mesh i.
     std::map<int, float*> basenorms;
     /// Enumeration for indexing joints in animation.
     enum Jointpoints {
@@ -71,7 +77,8 @@ struct rRigged : public rRole {
 
     /// Constructor
 
-    rRigged() : rRole("RIGGED"), scale(1.0f), model(NULL), joints(NULL), seconds(0.0f) {
+    rRigged(cObject* obj = NULL) : rRole("RIGGED"), scale(1.0f), model(NULL), joints(NULL), seconds(0.0f) {
+        object = obj;
     }
 
     rRigged(rRigged* original) : rRole("RIGGED"), scale(1.0f), model(NULL), joints(NULL), seconds(0.0f) {
@@ -99,8 +106,81 @@ struct rRigged : public rRole {
         if (num >= MAX_JOINTPOINTS) return string("");
         return string(names[num]);
     }
+
+    void drawBones();
+    void drawMeshes();
+
+    void poseJumping(float spf);
+    void poseRunning(float spf);
+
+    void transformJoints();
+    void transformMounts();
+
+    void loadModel(std::string filename);
+
+    //virtual void animate(float spf) { }
+    virtual void transform();
+    virtual void drawSolid();
+    virtual void drawEffect();
+    //virtual void drawHUD() { }
 };
 
+
+struct rComputerised : public rRole {
+    cComcom* comcom;
+    cTarcom* tarcom;
+    cSyscom* syscom;
+    cWepcom* wepcom;
+    cForcom* forcom;
+    cNavcom* navcom;
+    /// Constructor
+    rComputerised(cObject * obj);
+    /// Destructor
+    ~rComputerised();
+    virtual rRole* clone() {
+        return new rComputerised(object);
+    }
+    /// Time step computers.
+    virtual void animate(float dt);
+    virtual void drawHUD();
+};
+
+struct rMobile : public rRole {
+    /// List of mounted weapons.
+    std::vector<cWeapon*> weapons;
+
+    /// Index of selected weapon.
+    int currentWeapon;
+
+    // Exploding end.
+    cWeaponExplosion explosion;
+
+    /// Base angles in radians.
+    vec3 bse;
+
+    /// Tower angles in radians.
+    vec3 twr;
+
+    /// Current jumpjet set-point.
+    float jetpower;
+
+    /// Current throttle set-point.
+    float throttle;
+
+    /// Current Camera mode, negative number is indicating transition.
+    int camerastate;
+
+    /// Average friction for groundedness and pose.
+    float grounded;
+
+    /// Behave like a immobile gunpod.
+    bool immobile;
+
+    /// Constructor
+    rMobile(cObject * obj) : rRole("MOBILE") { object = obj; };
+    /// Destructor
+    ~rMobile() { }
+};
 
 /**
  * Models Mechlike Objects.
@@ -136,58 +216,7 @@ protected:
 
 protected:
 
-    struct rMisc {
-        /// List of mounted weapons.
-        std::vector<cWeapon*> weapons;
-
-        /// Index of selected weapon.
-        int currentWeapon;
-
-        // Exploding end.
-        cWeaponExplosion explosion;
-
-        /// Base angles in radians.
-        float bse[3];
-
-        /// Tower angles in radians.
-        float twr[3];
-
-        /// Current jumpjet set-point.
-        float jetpower;
-
-        /// Current throttle set-point.
-        float throttle;
-
-        /// Current Camera mode, negative number is indicating transition.
-        int camerastate;
-
-        /// Current average(d) speed.
-        float avgspeed;
-
-        /// Average friction for groundedness and pose.
-        float grounded;
-
-        /// Behave like a immobile gunpod.
-        bool immobile;
-    };
-
-    rMisc* misc;
-
-
-    struct rComputerised {
-        cComcom* comcom;
-        cTarcom* tarcom;
-        cSyscom* syscom;
-        cWepcom* wepcom;
-        cForcom* forcom;
-        cNavcom* navcom;
-        /// Constructor
-        rComputerised(cObject * o);
-        /// Destructor
-        ~rComputerised();
-        /// Time step computers.
-        void process(float dt);
-    };
+    rMobile* mobile;
 
     rComputerised* computerised;
 
@@ -208,8 +237,6 @@ public:
 
     // Physics and posing accordingly
     void animatePhysics(float spf);
-    void poseRunning(float spf);
-    void poseJumping(float spf);
 
     // Steering
     void ChassisLR(float radians);

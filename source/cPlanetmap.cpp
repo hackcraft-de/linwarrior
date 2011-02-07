@@ -401,7 +401,7 @@ float cPlanetmap::constrainParticle(float* worldpos, float radius, float* localp
                 vector_cpy(near, v);
             }
         }
-        float nearest = sqrt(nearest2);
+        float nearest = sqrtf(nearest2);
         float delta = radius - nearest;
         if (delta > 0.01) {
             //vector_print(near);

@@ -322,7 +322,7 @@ cBuilding::cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
     buildingRooms[1] = 3 * rooms_y;
     buildingRooms[2] = 3 * rooms_z;
     vector_set(traceable->pos, x + buildingRooms[0]*0.5f, y, z + buildingRooms[2]*0.5f);
-    this->traceable->radius = sqrt(0.25f * buildingRooms[0] * buildingRooms[0] + 0.25f * buildingRooms[1] * buildingRooms[1] + 0.25f * buildingRooms[2] * buildingRooms[2]);
+    this->traceable->radius = sqrtf(0.25f * buildingRooms[0] * buildingRooms[0] + 0.25f * buildingRooms[1] * buildingRooms[1] + 0.25f * buildingRooms[2] * buildingRooms[2]);
     dirtyBase = true;
 }
 
@@ -445,8 +445,8 @@ void cBuilding::drawSolid() {
             if (r[1] < -0.00001f || r[1] > 0.00001f) glRotatef(r[1] * 0.017453f, 0, 1, 0);
             glTranslatef(p[0] - w[0]*0.5f, p[1], p[2] - w[2]*0.5f);
             //cPrimitives::glBlockFlat(w[0], w[1], w[2], wall, wall, wall, wall, roof, roof);
-            const float n2 = 0.707107f; // 1.0f / sqrt(2);
-            const float n3 = 0.577350f; // 1.0f / sqrt(3);
+            const float n2 = 0.707107f; // 1.0f / sqrtf(2);
+            const float n3 = 0.577350f; // 1.0f / sqrtf(3);
             glBindTexture(GL_TEXTURE_2D, roof);
             glBegin(GL_QUADS);
             {

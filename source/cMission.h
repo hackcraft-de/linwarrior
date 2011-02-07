@@ -84,7 +84,7 @@ private:
     virtual void onDefeat();
     virtual cObject* init(cWorld* world);
 private:
-    cObject* initPlayerParty(cWorld* world, cPlanetmap* planetmap);
+    cObject* initPlayerParty(cWorld* world, cPlanetmap* planetmap, float* position);
     void initSkytideCity(cWorld* world, cPlanetmap* planetmap);
     void initStarcircleTown(cWorld* world, cPlanetmap* planetmap);
     void initPentaSpaceport(cWorld* world, cPlanetmap* planetmap);

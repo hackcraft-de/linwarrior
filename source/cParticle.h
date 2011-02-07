@@ -24,6 +24,8 @@
 #include <iostream>
 #include <cstdio>
 
+//#undef sqrtf
+
 /**
  * A Particle can be anything from bullets over flares to smoke.
  * It has a position and a velocity. Besides it has a lifetime
@@ -140,7 +142,7 @@ struct cParticle {
         float vx2 = vel[0] * vel[0];
         float vy2 = vel[1] * vel[1];
         float vz2 = vel[2] * vel[2];
-        float velocity = sqrt(vx2 + vy2 + vz2);
+        float velocity = sqrtf(vx2 + vy2 + vz2);
         float velocity_inv = (velocity != 0) ? (1.0f / velocity) : (0.0f);
         float pstau = p * 0.5f * velocity * velocity;
         float F = cwm2 * pstau;
@@ -157,7 +159,7 @@ struct cParticle {
             (p[1] - c[1]),
             (p[2] - c[2])
         };
-        float actual_length = sqrt(cp[0] * cp[0] + cp[1] * cp[1] + cp[2] * cp[2]);
+        float actual_length = sqrtf(cp[0] * cp[0] + cp[1] * cp[1] + cp[2] * cp[2]);
 
         float force = strength * (rest_length - actual_length) * -0.5f;
 
@@ -228,8 +230,8 @@ struct cParticle {
      * @param dt2 square of the elapsed time.
      * @param damping pseudo damping factor within [0,1], typically very small.
      */
-    inline void stepVerlet(float dt_inv, float dt2, float damping = 0.01f) {
-        cParticle::stepVerlet(pos, old, vel, fce, mass_inv, dt_inv, dt2, damping);
+    inline void stepVerlet(float dt_inv, float dt2, float damping = 0.01f, float velalpha = 1.0f) {
+        cParticle::stepVerlet(pos, old, vel, fce, mass_inv, dt_inv, dt2, damping, velalpha);
     }
 
     /**
@@ -245,11 +247,11 @@ struct cParticle {
      * @param dt2 square of the elapsed time.
      * @param damping pseudo damping factor within [0,1], typically very small.
      */
-    static inline void stepVerlet(float* pos, float* old, float* vel, float* fce, float mass_inv, float dt_inv, float dt2, float damping = 0.01f) {
-        // Velocity is just a function of position with verlet.
-        vel[0] = (pos[0] - old[0]) * dt_inv;
-        vel[1] = (pos[1] - old[1]) * dt_inv;
-        vel[2] = (pos[2] - old[2]) * dt_inv;
+    static inline void stepVerlet(float* pos, float* old, float* vel, float* fce, float mass_inv, float dt_inv, float dt2, float damping = 0.01f, float velalpha = 1.0f) {
+        // Velocity is just a function of position with verlet (here with averaging, velalpha == 1 no averaging).
+        vel[0] += velalpha * ((pos[0] - old[0]) * dt_inv - vel[0]);
+        vel[1] += velalpha * ((pos[1] - old[1]) * dt_inv - vel[1]);
+        vel[2] += velalpha * ((pos[2] - old[2]) * dt_inv - vel[2]);
         // Temporarily we need the acceleration resulting from previous force.
         float acc[] = {
             fce[0] * mass_inv,
@@ -351,8 +353,8 @@ struct cParticle {
         //std::cout << "tp: " << tp[0] << " " << tp[1] << " " << tp[2] << std::endl;
 
         // Normalised Vector from tangent point to cone top tip.
-        //float inv_up = 1.0f / sqrt(radius*radius + height*height);
-        float inv_up = 1.0f / sqrt(tp[0]*tp[0] + tp[2]*tp[2] + height*height);
+        //float inv_up = 1.0f / sqrtf(radius*radius + height*height);
+        float inv_up = 1.0f / sqrtf(tp[0]*tp[0] + tp[2]*tp[2] + height*height);
         float up[] = { -tp[0] * inv_up, height * inv_up, -tp[2] * inv_up };
         //std::cout << "up: " << up[0] << " " << up[1] << " " << up[2] << std::endl;
 
@@ -483,7 +485,7 @@ private:
         } else {
             //b++;
             //cout << " " << a << " " << b << " " << endl;
-            return sqrt(value); //exp(0.5f * log(value));
+            return sqrtf(value); //exp(0.5f * log(value));
         }
     }
 };

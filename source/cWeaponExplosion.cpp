@@ -21,10 +21,11 @@ cWeaponExplosion::cWeaponExplosion() {
 void cWeaponExplosion::fire(OID target) {
     if (!ready()) return;
     timeReloading = 3.8;
-
+    timeFiring = 3.0f;
     // Shoot several shrapnels around.
 
-    loopi(11) {
+    //loopi(11)
+    if (0) {
 
         float* source = weaponPosef;
 
@@ -57,6 +58,36 @@ void cWeaponExplosion::fire(OID target) {
 }
 
 void cWeaponExplosion::animate(float spf) {
+    timeFiring -= spf;
+    if (timeFiring < 0) {
+        timeFiring = 0.0f;
+    } else {
+        float* source = weaponPosef;
+
+        cParticle* s = new cParticle();
+        assert(s != NULL);
+        s->target = 0;
+        s->fuel = 0.5 + 0.3 * 0.01 * (rand()%100);
+        s->spawn = 0.0f;
+        s->timer = 0.0f;
+
+        s->pos[0] = source[12] + (100.0f - (rand()%200)) * 0.003;
+        s->pos[1] = source[13] + (100.0f - (rand()%200)) * 0.003;
+        s->pos[2] = source[14] + (100.0f - (rand()%200)) * 0.003;
+
+        float nrm[3];
+        float pos2[] = {0, 0, -1};
+
+        pos2[0] = (100 - (rand() % 200)) * 0.01;
+        pos2[1] = 0.4 + (100 - (rand() % 200)) * 0.01;
+        pos2[2] = (100 - (rand() % 200)) * 0.01;
+
+        matrix_apply2(source, pos2);
+        vector_sub(nrm, pos2, s->pos);
+
+        vector_scale(s->vel, nrm, 1);
+        missileParticles.push_back(s);
+    }
 
     foreachNoInc(i, missileParticles) {
         cParticle* s = *i++;
@@ -204,9 +235,12 @@ void cWeaponExplosion::drawEffect() {
                 {
                     glTranslatef(smoke->pos[0], smoke->pos[1], smoke->pos[2]);
                     glMultMatrixf(n);
-                    float m = 2 * smoke->fuel;
-                    glColor4f(m, m * 0.8, m * 0.6, 0.07 + smoke->fuel);
-                    float size = 0.1 + 0.3 * pow(1.0 + smoke->timer, 3.5);
+                    float m = (0.0f + 0.7 * smoke->fuel);
+                    float a = 1.0f;//fmin(1.0f, smoke->fuel);
+                    glColor4f(a*m, a*m * 0.8, a*m * 0.6, 0.1);
+                    //float size = 0.1 + 0.3 * pow(1.0 + smoke->timer, 3.5);
+                    //float size = 5.0f / (1.0f + 1.0f * smoke->fuel);
+                    float size = 3.0f + 5.0f / (1.0f + 9.0f * smoke->fuel);
                     cPrimitives::glDisk(5 + WEAPONDETAIL, size);
                 }
                 glPopMatrix();

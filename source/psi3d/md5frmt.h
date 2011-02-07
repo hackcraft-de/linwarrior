@@ -413,7 +413,7 @@ protected: // PARSING UTILITIES
                     if (r == 8) {
                         j.v[3] = 0.0f;
                         float w2 = 1.0f - (j.q[0] * j.q[0] + j.q[1] * j.q[1] + j.q[2] * j.q[2]);
-                        j.q[3] = (w2 <= 0) ? 0.0f : -sqrt(w2);
+                        j.q[3] = (w2 <= 0) ? 0.0f : -sqrtf(w2);
                         if (jointcount >= numjoints) throw "too many joints";
                         memcpy(&joints[jointcount], &j, sizeof (joint));
                         //cout << j.name << " " << j.parent << " (" << j.v[0] << " " << j.v[1] << " " << j.v[2] << " ) ( " << j.q[0] << " " << j.q[1] << " " << j.q[2] << " )" << endl;

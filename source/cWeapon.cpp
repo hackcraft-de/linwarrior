@@ -28,7 +28,7 @@ cWeapon::cWeapon() {
 
                 float dx = (((float)j / (float)w) - 0.5f) * 2.0f;
                 float dy = (((float)i / (float)h) - 0.5f) * 2.0f;
-                float r = sqrt(dx*dx+dy*dy);
+                float r = sqrtf(dx*dx+dy*dy);
                 float r_ = fmin(1.0f, r);
                 float a = 1.0f-pow(r_, 1.7);
 
