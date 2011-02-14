@@ -185,6 +185,8 @@ void cWeaponMachinegun::drawSolid() {
 }
 
 void cWeaponMachinegun::drawEffect() {
+    if (shrapnelParticles.empty() && castoffParticles.empty() && damageParticles.empty()) return;
+
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
         SGL::glUseProgram_fgaddcolor();

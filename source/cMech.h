@@ -40,11 +40,15 @@ struct rRigged : public rRole {
     /// Model scale.
     float scale;
     /// Position hook.
-    float* pos;
+    vec3 pos;
     /// Orientation hook.
-    float* ori;
+    quat ori;
     /// Velocity hook.
-    float* vel;
+    vec3 vel;
+    /// Grounded hook.
+    float grounded;
+    /// Jetting hook.
+    float jetting;
     /// The "static" model just as it is loaded.
     MD5Format::model* model;
     /// Actual local-(model-)space joints for this instance.
@@ -77,11 +81,14 @@ struct rRigged : public rRole {
 
     /// Constructor
 
-    rRigged(cObject* obj = NULL) : rRole("RIGGED"), scale(1.0f), model(NULL), joints(NULL), seconds(0.0f) {
+    rRigged(cObject* obj = NULL) : rRole("RIGGED"), scale(1.0f), grounded(0.0f), jetting(0.0f), model(NULL), joints(NULL), seconds(0.0f) {
         object = obj;
+        vector_zero(pos);
+        vector_zero(vel);
+        quat_zero(ori);
     }
 
-    rRigged(rRigged* original) : rRole("RIGGED"), scale(1.0f), model(NULL), joints(NULL), seconds(0.0f) {
+    rRigged(rRigged* original) : rRole("RIGGED") {
         assert(0);
     }
     
@@ -107,6 +114,19 @@ struct rRigged : public rRole {
         return string(names[num]);
     }
 
+    float* getMountMatrix(char* point) {
+        if (strcmp(point, "LTorsor") == 0) return LSMount;
+        else if (strcmp(point, "LUpArm") == 0) return LSMount;
+        else if (strcmp(point, "LLoArm") == 0) return LAMount;
+        else if (strcmp(point, "RTorsor") == 0) return RSMount;
+        else if (strcmp(point, "RUpArm") == 0) return RSMount;
+        else if (strcmp(point, "RLoArm") == 0) return RAMount;
+        else if (point[0] == 'L') return LSMount;
+        else if (point[0] == 'R') return RSMount;
+        else if (point[0] == 'C') return CTMount;
+        else return BKMount;
+    }
+
     void drawBones();
     void drawMeshes();
 
@@ -118,7 +138,7 @@ struct rRigged : public rRole {
 
     void loadModel(std::string filename);
 
-    //virtual void animate(float spf) { }
+    virtual void animate(float spf);
     virtual void transform();
     virtual void drawSolid();
     virtual void drawEffect();
@@ -177,9 +197,24 @@ struct rMobile : public rRole {
     bool immobile;
 
     /// Constructor
-    rMobile(cObject * obj) : rRole("MOBILE") { object = obj; };
+    rMobile(cObject * obj) : rRole("MOBILE"), currentWeapon(0), jetpower(0), throttle(0), camerastate(1), grounded(0.5f), immobile(false) {
+        object = obj;
+        twr[0] = twr[1] = twr[2] = 0.0f;
+        bse[0] = bse[1] = bse[2] = 0.0f;
+    }
     /// Destructor
     ~rMobile() { }
+
+    // Steering
+    void ChassisLR(float radians);
+    void ChassisUD(float radians);
+    float TowerLR(float radians);
+    void TowerUD(float radians);
+
+    virtual void animate(float spf);
+    virtual void transform();
+    virtual void drawSolid();
+    virtual void drawEffect();
 };
 
 /**
@@ -237,12 +272,6 @@ public:
 
     // Physics and posing accordingly
     void animatePhysics(float spf);
-
-    // Steering
-    void ChassisLR(float radians);
-    void ChassisUD(float radians);
-    float TowerLR(float radians);
-    void TowerUD(float radians);
 
     // Weapons
     void fireAllWeapons();

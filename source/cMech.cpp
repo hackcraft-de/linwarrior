@@ -389,16 +389,31 @@ void rRigged::loadModel(std::string filename) {
     }
 }
 
+void rRigged::animate(float spf) {
+    if (!active) return;
+    if (model == NULL) return;
+    if (grounded > 0.15f) {
+        poseRunning(spf);
+    } else {
+        poseJumping(spf);
+    }
+}
+
 void rRigged::transform() {
+    if (!active) return;
+    if (model == NULL) return;
     transformJoints();
     transformMounts();
 }
 
 void rRigged::drawSolid() {
+    if (!active) return;
+    if (model == NULL) return;
     glPushMatrix();
     {
-        if (pos != NULL) glTranslatef(pos[0], pos[1], pos[2]);
-        if (ori != NULL) SGL::glRotateq(ori);
+        glTranslatef(pos[0], pos[1], pos[2]);
+        SGL::glRotateq(ori);
+        //cPrimitives::glAxis(3.0f);
         // The model was modelled facing to the camera.
         glRotatef(180, 0, 1, 0);
         // Swap axes (it's actually a rotation around x)
@@ -417,26 +432,83 @@ void rRigged::drawSolid() {
 }
 
 void rRigged::drawEffect() {
-    if (!DRAWJOINTS) return;
-    glPushMatrix();
-    {
-        if (pos != NULL) glTranslatef(pos[0], pos[1], pos[2]);
-        if (ori != NULL) SGL::glRotateq(ori);
-        // The model was modelled facing to the camera.
-        glRotatef(180, 0, 1, 0);
-        // Swap axes (it's actually a rotation around x)
-        float m[] = {
-            1, 0, 0, 0,
-            0, 0, -1, 0,
-            0, 1, 0, 0,
-            0, 0, 0, 1
-        };
-        glMultMatrixf(m);
-        float rscale = scale;
-        glScalef(rscale, rscale, rscale);
-        drawBones();
+    if (!active) return;
+    if (model == NULL) return;
+    if (DRAWJOINTS) {
+        glPushMatrix();
+        {
+            glTranslatef(pos[0], pos[1], pos[2]);
+            SGL::glRotateq(ori);
+            // The model was modelled facing to the camera.
+            glRotatef(180, 0, 1, 0);
+            // Swap axes (it's actually a rotation around x)
+            float m[] = {
+                1, 0, 0, 0,
+                0, 0, -1, 0,
+                0, 1, 0, 0,
+                0, 0, 0, 1
+            };
+            glMultMatrixf(m);
+            float rscale = scale;
+            glScalef(rscale, rscale, rscale);
+            drawBones();
+        }
+        glPopMatrix();
     }
-    glPopMatrix();
+    // Draw jumpjet exaust if jet is somewhat on.
+    if (jetting > 0.3f) {
+        glPushAttrib(GL_ALL_ATTRIB_BITS);
+        {
+            SGL::glUseProgram_fgaddcolor();
+
+            //std::map<int, int>& jointpoints = rigged->jointpoints;
+            int jet[5];
+            jet[0] = jointpoints[JET0];
+            jet[1] = jointpoints[JET1];
+            jet[2] = jointpoints[JET2];
+            jet[3] = jointpoints[JET3];
+            jet[4] = jointpoints[JET4];
+
+            loopi(5) {
+                if (jet[i] >= 0) {
+                    float* v = joints[jet[i]].v;
+                    glPushMatrix();
+                    {
+                        float f = jetting * 0.5f;
+
+                        glTranslatef(pos[0], pos[1], pos[2]);
+                        SGL::glRotateq(ori);
+                        // The model was modelled facing to the camera.
+                        glRotatef(180, 0, 1, 0);
+                        // Swap axes (it's actually a rotation around x)
+                        float m[] = {
+                            1, 0, 0, 0,
+                            0, 0, -1, 0,
+                            0, 1, 0, 0,
+                            0, 0, 0, 1
+                        };
+                        glMultMatrixf(m);
+                        float rscale = scale;
+                        glScalef(rscale, rscale, rscale);
+                        glTranslatef(v[0], v[1], v[2]);
+
+                        float n[16];
+                        SGL::glGetTransposeInverseRotationMatrix(n);
+                        glMultMatrixf(n);
+
+                        glColor4f(1, 1, 0.3, 0.6);
+                        cPrimitives::glDisk(7, f + 0.0003 * (rand() % 100));
+                        glColor4f(1, 0.5, 0.3, 0.7);
+                        cPrimitives::glDisk(7, f * 0.6 + 0.001 * (rand() % 100));
+                        glColor4f(1, 1, 1, 0.8);
+                        cPrimitives::glDisk(7, f * 0.3 + 0.001 * (rand() % 100));
+                    }
+                    glPopMatrix();
+                } // if
+            } // loopi
+        }
+        glPopAttrib();
+    }
 }
 
 
@@ -472,6 +544,7 @@ rComputerised::~rComputerised() {
 }
 
 void rComputerised::animate(float dt) {
+    if (!active) return;
     comcom->process(dt);
     tarcom->process(dt);
     syscom->process(dt);
@@ -481,6 +554,7 @@ void rComputerised::animate(float dt) {
 }
 
 void rComputerised::drawHUD() {
+    if (!active) return;
     glPushAttrib(GL_ALL_ATTRIB_BITS /* more secure */);
     {
         SGL::glUseProgram_bkplaincolor();
@@ -543,6 +617,94 @@ void rComputerised::drawHUD() {
 }
 
 
+void rMobile::ChassisLR(float radians) {
+    const float limit = 0.01 * M_PI;
+    float e = radians;
+    if (e > +limit) e = +limit;
+    if (e < -limit) e = -limit;
+    bse[1] += e;
+    const float fullcircle = 2 * M_PI;
+    bse[1] = fmod(bse[1], fullcircle);
+
+    float axis[] = {0, 1, 0};
+    quat_rotaxis(object->traceable->ori, bse[1], axis);
+}
+
+void rMobile::ChassisUD(float radians) {
+    float e = radians;
+    const float limit = 0.005 * M_PI;
+    if (e > +limit) e = +limit;
+    if (e < -limit) e = -limit;
+    bse[0] += e;
+    const float fullcircle = 2 * M_PI;
+    bse[0] = fmod(bse[0], fullcircle);
+
+    float axis[] = {1, 0, 0};
+    quat_rotaxis(object->traceable->ori, bse[0], axis);
+}
+
+float rMobile::TowerLR(float radians) {
+    float e = radians;
+    const float steplimit = 0.01 * M_PI;
+    if (e > +steplimit) e = +steplimit;
+    if (e < -steplimit) e = -steplimit;
+    twr[1] += e;
+    if (immobile) {
+        const float fullcircle = 2 * M_PI; // 360
+        twr[1] = fmod(twr[1], fullcircle);
+        return 0.0f;
+    } else {
+        const float limit = 0.4 * M_PI;
+        float excess = copysign( (fabs(twr[1]) > limit ? fabs(twr[1]) - limit : 0), twr[1]);
+        if (twr[1] > +limit) twr[1] = +limit;
+        if (twr[1] < -limit) twr[1] = -limit;
+        return excess;
+    }
+}
+
+void rMobile::TowerUD(float radians) {
+    float e = radians;
+    const float steplimit = 0.01 * M_PI;
+    if (e > +steplimit) e = +steplimit;
+    if (e < -steplimit) e = -steplimit;
+    twr[0] += e;
+    const float limit = 0.4 * M_PI;
+    if (twr[0] > +limit) twr[0] = +limit;
+    if (twr[0] < -limit) twr[0] = -limit;
+}
+
+void rMobile::animate(float spf) {
+    if (!active) return;
+    loopi(weapons.size()) {
+        weapons[i]->animate(spf);
+    }
+    explosion.animate(spf);
+}
+
+void rMobile::transform() {
+    if (!active) return;
+    loopi(weapons.size()) {
+        weapons[i]->transform();
+    }
+    explosion.transform();
+}
+
+void rMobile::drawSolid() {
+    if (!active) return;
+    loopi(weapons.size()) {
+        weapons[i]->drawSolid();
+    }
+    explosion.drawSolid();
+}
+
+void rMobile::drawEffect() {
+    if (!active) return;
+    loopi(weapons.size()) {
+        weapons[i]->drawEffect();
+    }
+    explosion.drawEffect();
+}
+
 int cMech::sInstances = 0;
 std::map<int, long> cMech::sTextures;
 
@@ -564,26 +726,17 @@ cMech::cMech(float* pos, float* rot) {
                 long t = 0;
                 loopijk(SIZE, SIZE, SIZE) {
                     float color[16];
-                    const float f = 0.25f*0.25f;
+                    const float f = 0.25f*0.25f * 64.0f / SIZE;
                     float x = f*i, y = f*j, z = f*k;
                     switch(l) {
-                        case TEXTURE_WOOD: cSolid::camo_wood(x, y, z, color); break;
+                        //case TEXTURE_WOOD: cSolid::camo_wood(x, y, z, color); break;
+                        case TEXTURE_WOOD: cSolid::camo_rust(x, y, z, color); break;
                         case TEXTURE_URBAN: cSolid::camo_urban(x, y, z, color); break;
                         case TEXTURE_DESERT: cSolid::camo_desert(x, y, z, color); break;
                         case TEXTURE_SNOW: cSolid::camo_snow(x, y, z, color); break;
                         default:
                             cSolid::camo_rust(x, y, z, color);
                     }
-                    //cSolid::camo_snow(x, y, z, color3f);
-                    //cSolid::camo_desert(x, y, z, color3f);
-                    //cSolid::camo_wood(x, y, z, color3f);
-                    //cSolid::camo_urban(x, y, z, color3f);
-                    //cSolid::animal_gecko(x, y, z, color3f);
-                    //cSolid::metal_rust(x, y, z, color3f);
-                    //cSolid::metal_damast(x, y, z, color3f);
-                    //cSolid::flesh_organix(x, y, z, color3f);
-                    //cSolid::camo_rust(x, y, z, color3f);
-                    //cSolid::metal_sheet(x, y, z, color3f);
                     texels[t++] = 255.0f * color[0];
                     texels[t++] = 255.0f * color[1];
                     texels[t++] = 255.0f * color[2];
@@ -602,20 +755,10 @@ cMech::cMech(float* pos, float* rot) {
     socialised = new rSocialised(this);
     mobile = new rMobile(this);
 
-    vector_set(mobile->twr, 0, 0, 0);
-    vector_set(mobile->bse, 0, 0, 0);
     if (rot != NULL) vector_scale(mobile->bse, rot, PI_OVER_180);
-
-    mobile->currentWeapon = 0;
-    mobile->jetpower = 0;
-    mobile->throttle = 0;
-    mobile->camerastate = 1;
-    mobile->grounded = 0.5;
-    mobile->immobile = false;
 
     if (pos != NULL) vector_cpy(traceable->pos, pos);
     vector_cpy(traceable->old, traceable->pos);
-    vector_set(traceable->vel, 0, 0, 0);
     float axis[] = {0, 1, 0};
     quat_rotaxis(traceable->ori, mobile->bse[1], axis);
 
@@ -647,9 +790,12 @@ cMech::cMech(float* pos, float* rot) {
     do_moveFor(NULL);
 
     try {
-        int mod = (6+rand())%7;
+        int mod = (9+rand())%8; // fr
+        //int mod = (13+rand())%8; // le
         const char* fns[] = {
+            //"/media/44EA-7693/workspaces/mm3d/soldier/soldier.md5mesh",
             "data/base/wanzers/frogger/frogger.md5mesh",
+            "data/flopsy/flopsy.md5mesh",
             "data/base/wanzers/gorilla/gorilla_ii.md5mesh",
             "data/skorpio/wanzers/scorpion/scorpion.md5mesh",
             "data/base/wanzers/lemur/lemur.md5mesh",
@@ -664,19 +810,9 @@ cMech::cMech(float* pos, float* rot) {
         rigged->loadModel(string("data/base/wanzers/frogger/frogger.md5mesh"));
     }
 
-    //rigged->scale = 1.0f;
-    //rigged->scale = 0.8f;
-    //rigged->scale = 0.15;
-    //rigged->scale = 0.05;
-    //rigged->scale = 0.3f;
-    //rigged->scale = 1.7f;
-    rigged->scale = 0.33f;
-
-    traceable->radius = 3.45f * rigged->scale;
-
-    traceable->cwm2 = 1.33 /*very bad cw*/ * traceable->radius * traceable->radius * M_PI * rigged->scale /*m2*/;
-
-    traceable->mass = 11000 * rigged->scale * 3.33f; // TODO mass is qubic to size.
+    traceable->radius = 1.75f * rigged->scale;
+    traceable->cwm2 = 0.4 /*very bad cw*/ * traceable->radius * traceable->radius * M_PI * rigged->scale /*m2*/;
+    traceable->mass = 11000 * rigged->scale * 1.00f; // TODO mass is qubic to size.
     traceable->mass_inv = 1.0f / traceable->mass;
 }
 
@@ -710,7 +846,7 @@ void cMech::multEyeMatrix() {
     float rot_inv[16];
     float pos_inv[16];
 
-    float intensity = 0.0 + pow(this->mobile->jetpower * 0.01f, 1.5f);
+    float intensity = 0.0 + pow(this->mobile->jetpower, 1.5f);
     float shake = 0.004f * intensity;
     float jerk = 0.95f * intensity;
 
@@ -779,91 +915,25 @@ void cMech::setAsAudioListener() {
     };
     alListenerfv(AL_ORIENTATION, at_and_up);
 }
-// move to rMobile?
-void cMech::ChassisLR(float radians) {
-    const float limit = 0.01 * M_PI;
-    float e = radians;
-    if (e > +limit) e = +limit;
-    if (e < -limit) e = -limit;
-    mobile->bse[1] += e;
-    const float fullcircle = 2 * M_PI;
-    mobile->bse[1] = fmod(mobile->bse[1], fullcircle);
 
-    float axis[] = {0, 1, 0};
-    quat_rotaxis(traceable->ori, mobile->bse[1], axis);
-}
 // move to rMobile?
-void cMech::ChassisUD(float radians) {
-    float e = radians;
-    const float limit = 0.005 * M_PI;
-    if (e > +limit) e = +limit;
-    if (e < -limit) e = -limit;
-    mobile->bse[0] += e;
-    const float fullcircle = 2 * M_PI;
-    mobile->bse[0] = fmod(mobile->bse[0], fullcircle);
-
-    float axis[] = {1, 0, 0};
-    quat_rotaxis(traceable->ori, mobile->bse[0], axis);
-}
-// move to rMobile?
-float cMech::TowerLR(float radians) {
-    float e = radians;
-    const float steplimit = 0.01 * M_PI;
-    if (e > +steplimit) e = +steplimit;
-    if (e < -steplimit) e = -steplimit;
-    mobile->twr[1] += e;
-    if (mobile->immobile) {
-        const float fullcircle = 2 * M_PI; // 360
-        mobile->twr[1] = fmod(mobile->twr[1], fullcircle);
-        return 0.0f;
-    } else {
-        const float limit = 0.4 * M_PI;
-        float excess = copysign( (fabs(mobile->twr[1]) > limit ? fabs(mobile->twr[1]) - limit : 0), mobile->twr[1]);
-        if (mobile->twr[1] > +limit) mobile->twr[1] = +limit;
-        if (mobile->twr[1] < -limit) mobile->twr[1] = -limit;
-        return excess;
-    }
-}
-// move to rMobile?
-void cMech::TowerUD(float radians) {
-    float e = radians;
-    const float steplimit = 0.01 * M_PI;
-    if (e > +steplimit) e = +steplimit;
-    if (e < -steplimit) e = -steplimit;
-    mobile->twr[0] += e;
-    const float limit = 0.4 * M_PI;
-    if (mobile->twr[0] > +limit) mobile->twr[0] = +limit;
-    if (mobile->twr[0] < -limit) mobile->twr[0] = -limit;
-}
-
 void cMech::fireAllWeapons() {
 
     loopi(mobile->weapons.size()) {
         mobile->weapons[i]->fire(controlled->target);
     }
 }
-
+// move to rMobile?
 void cMech::fireWeapon(unsigned n) {
     if (n >= mobile->weapons.size()) return;
     mobile->weapons[n]->fire(controlled->target);
 }
-
+// move to rMobile?
 void cMech::mountWeapon(char* point, cWeapon *weapon, bool add) {
     if (weapon == NULL) throw "Null weapon for mounting given.";
-
-    if (strcmp(point, "LTorsor") == 0) weapon->weaponBasefv = rigged->LSMount;
-    else if (strcmp(point, "LUpArm") == 0) weapon->weaponBasefv = rigged->LSMount;
-    else if (strcmp(point, "LLoArm") == 0) weapon->weaponBasefv = rigged->LAMount;
-    else if (strcmp(point, "RTorsor") == 0) weapon->weaponBasefv = rigged->RSMount;
-    else if (strcmp(point, "RUpArm") == 0) weapon->weaponBasefv = rigged->RSMount;
-    else if (strcmp(point, "RLoArm") == 0) weapon->weaponBasefv = rigged->RAMount;
-    else if (point[0] == 'L') weapon->weaponBasefv = rigged->LSMount;
-    else if (point[0] == 'R') weapon->weaponBasefv = rigged->RSMount;
-    else if (point[0] == 'C') weapon->weaponBasefv = rigged->CTMount;
-    else weapon->weaponBasefv = rigged->BKMount;
-
+    weapon->weaponBasefv = rigged->getMountMatrix(point);
     weapon->weaponOwner = this;
-    weapon->weaponScale = this->rigged->scale * 2.5f;
+    weapon->weaponScale = rigged->scale;
     if (add) mobile->weapons.push_back(weapon);
 }
 
@@ -874,8 +944,8 @@ void cMech::animatePhysics(float spf) {
     {
         // Jump Jet accelleration
         {
-            const float jetforce = 130000.0f * (0.01f * mobile->jetpower);
-            float driveforce = -20000.0f * (0.01f * mobile->throttle) * (0.01f * mobile->jetpower);
+            const float jetforce = 130000.0f * mobile->jetpower;
+            float driveforce = -20000.0f * mobile->throttle * mobile->jetpower;
             float turbo = 1;
             float fwd[] = {0, jetforce, turbo*driveforce};
             quat_apply(fwd, traceable->ori, fwd);
@@ -884,7 +954,7 @@ void cMech::animatePhysics(float spf) {
 
         // Engine acceleration
         {
-            float driveforce = -150000.0 * (0.01f * mobile->throttle);
+            float driveforce = -150000.0f * mobile->throttle;
             if (traceable->friction <= 0.01f) driveforce = 0.0f;
             float turbo = 1.0f;
             float fwd[] = {0, 0, turbo*driveforce};
@@ -907,7 +977,6 @@ void cMech::animatePhysics(float spf) {
         float center[3];
         vector_cpy(center, traceable->pos);
         float radius = traceable->radius;
-        radius *= 1.5f;
         center[1] += radius;
         float depth = 0;
         depth = constrainParticleToWorld(center, radius);
@@ -951,28 +1020,30 @@ void cMech::animatePhysics(float spf) {
 }
 
 void cMech::animate(float spf) {
+    {
+        computerised->active = damageable->alife;
+        computerised->animate(spf);
+    }
+
     if (!damageable->alife) {
         // Stop movement when dead
         mobile->throttle = 0;
         mobile->jetpower = 0;
+        /*
         // If already exploded then frag.
-        // Animate Own Explosion (if fired)
-        mobile->explosion.animate(spf);
         if (mobile->explosion.ready()) {
-            ChassisLR(0);
-            TowerLR(0);
-            TowerUD(0);
+            mobile->ChassisLR(0);
+            mobile->TowerLR(0);
+            mobile->TowerUD(0);
             //cWorld::instance->fragObject(this);
         }
         if (controlled->pad) controlled->pad->reset();
+        */
     }
 
     // Process computers and Pad-input when not dead.
     if (damageable->alife && controlled->pad != NULL) {
         //cout << mPad->toString();
-
-        // Let all computers do their work.
-        if (computerised) computerised->animate(spf);
 
         // Let AI-Controller set Pad-input.
         if (controlled->controller && controlled->controller->controllerEnabled) {
@@ -980,16 +1051,16 @@ void cMech::animate(float spf) {
             controlled->controller->process();
         }
 
-        float excess = this->TowerLR(0.25f * M_PI * spf * -controlled->pad->getAxis(cPad::MECH_TURRET_LR_AXIS));
-        this->TowerUD(50 * spf * controlled->pad->getAxis(cPad::MECH_TURRET_UD_AXIS) * 0.017453f);
+        float excess = mobile->TowerLR(0.25f * M_PI * spf * -controlled->pad->getAxis(cPad::MECH_TURRET_LR_AXIS));
+        mobile->TowerUD(50 * spf * controlled->pad->getAxis(cPad::MECH_TURRET_UD_AXIS) * 0.017453f);
 
         if (!mobile->immobile) {
             // Steer left right
-            this->ChassisLR(excess + 0.25f * M_PI * spf * -controlled->pad->getAxis(cPad::MECH_CHASSIS_LR_AXIS));
+            mobile->ChassisLR(excess + 0.25f * M_PI * spf * -controlled->pad->getAxis(cPad::MECH_CHASSIS_LR_AXIS));
             // Speed
             float tdelta = -controlled->pad->getAxis(cPad::MECH_THROTTLE_AXIS);
             //cout << "tdelta: " << tdelta << "  speed: " << mSpeed << "\n";
-            mobile->throttle = fmax(-200.0f, tdelta * 400.0f);
+            mobile->throttle = fmax(-2.0f, tdelta * 4.0f);
         }
 
         if (controlled->pad->getButton(cPad::MECH_NEXT_BUTTON) && controlled->pad->getButtonEvent(cPad::MECH_NEXT_BUTTON)) {
@@ -1009,11 +1080,9 @@ void cMech::animate(float spf) {
             }
         }
 
-        if (controlled->pad->getButton(cPad::MECH_JET_BUTTON1) || controlled->pad->getButton(cPad::MECH_JET_BUTTON2)) {
-            mobile->jetpower += (100 - mobile->jetpower) * 0.1;
-        } else {
-            mobile->jetpower -= (mobile->jetpower * 0.05);
-        }
+        // Set jumpjet throttle 0-1 smoothly.
+        bool jeten = (controlled->pad->getButton(cPad::MECH_JET_BUTTON1) || controlled->pad->getButton(cPad::MECH_JET_BUTTON2));
+        mobile->jetpower += 0.05f * ((jeten ? 1.0f : 0.0f) - mobile->jetpower);
 
         if (controlled->pad->getButton(cPad::MECH_CAMERA_BUTTON)) {
             // Only if Camera State is not transitional
@@ -1028,56 +1097,53 @@ void cMech::animate(float spf) {
         }
     }
 
-    // Rigid Body, Collisions etc.
-    animatePhysics(spf);
-
-    vector_scale(rigged->rotators[rigged->PITCH], mobile->twr, 180.0f / M_PI);
-
-    // Show fitting animation pose based on state and physics.
-    rigged->pos = traceable->pos;
-    rigged->ori = traceable->ori;
-    rigged->vel = traceable->vel;
-    if (mobile->grounded > 0.15f) {
-        rigged->poseRunning(spf);
-    } else {
-        rigged->poseJumping(spf);
+    {
+        mobile->animate(spf);
     }
 
-    // Face into the demanded direction.
-    rigged->rotators[rigged->YAW][1] = -mobile->twr[1];
-    rigged->rotators[rigged->PITCH][0] = mobile->twr[0];
-    rigged->rotators[rigged->HEADPITCH][0] = mobile->twr[0];
-
-    // Animate Weapons
-
-    loopi(mobile->weapons.size()) {
-        mobile->weapons[i]->animate(spf);
+    { // ----> traceable
+        // Rigid Body, Collisions etc.
+        animatePhysics(spf);
+        alSourcefv(traceable->sound, AL_POSITION, traceable->pos);
+        //alSourcefv(traceable->sound, AL_VELOCITY, traceable->vel);
     }
 
-    alSourcefv(traceable->sound, AL_POSITION, traceable->pos);
-    //alSourcefv(traceable->sound, AL_VELOCITY, traceable->vel);
+    {
+        // Steering state.
+        rigged->rotators[rigged->YAW][1] = -mobile->twr[1];
+        rigged->rotators[rigged->PITCH][0] = mobile->twr[0];
+        rigged->rotators[rigged->HEADPITCH][0] = mobile->twr[0];
+
+        // Drivetrain state.
+        rigged->grounded = mobile->grounded;
+        rigged->jetting = mobile->jetpower;
+
+        // Physical movement state.
+        vector_cpy(rigged->pos, traceable->pos);
+        quat_cpy(rigged->ori, traceable->ori);
+        vector_cpy(rigged->vel, traceable->vel);
+
+        rigged->animate(spf);
+    }
 }
 
-void cMech::transform() {    
-    if (true) {
+void cMech::transform() {
+    {
         rigged->transform();
     }
-
-    loopi(mobile->weapons.size()) {
-        mobile->weapons[i]->transform();
+    {
+        mobile->transform();
     }
-
-    mobile->explosion.transform();
 }
 
 void cMech::drawSolid() {
-    // Setup jumpjet light source - for player only so far.
+    // Setup jumpjet light source - for player only so far. move to rLightsource?
     if (hasTag(HUMANPLAYER)) {
         int light = GL_LIGHT1;
-        if (mobile->jetpower > 0.1) {
+        if (mobile->jetpower > 0.001f) {
             float p[] = {traceable->pos[0], traceable->pos[1]+1.2, traceable->pos[2], 1};
             //float zero[] = {0, 0, 0, 1};
-            float s = (mobile->jetpower > 100.0) ? 1.0f : mobile->jetpower*0.01f;
+            float s = mobile->jetpower;
             float a[] = {0.0,0.0,0.0,1};
             float d[] = {0.9 * s, 0.9 * s, 0.4 * s, 1};
             //glPushMatrix();
@@ -1099,29 +1165,33 @@ void cMech::drawSolid() {
         }
     }
 
-    if (rigged->model != NULL) {
+    {
+        // Group-to-texture.
         int texture = 0;
         texture = hasTag(RED) ? 0 : texture;
         texture = hasTag(BLUE) ? 1 : texture;
         texture = hasTag(GREEN) ? 2 : texture;
         texture = hasTag(YELLOW) ? 3 : texture;
         glBindTexture(GL_TEXTURE_3D, sTextures[texture]);
+
         rigged->drawSolid();
     }
 
-    loopi(mobile->weapons.size()) {
-        mobile->weapons[i]->drawSolid();
+    {
+        mobile->drawSolid();
     }
-
-    mobile->explosion.drawSolid();
 }
 
 void cMech::drawEffect() {
-    if (rigged->model != NULL) {
+    {
         rigged->drawEffect();
     }
+
+    {
+        mobile->drawEffect();
+    }
     
-    // Draw name above head.
+    // Draw name above head. move to nameable?
     if (!hasTag(HUMANPLAYER)) {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
@@ -1167,67 +1237,6 @@ void cMech::drawEffect() {
         glPopAttrib();
     }
 
-    // Draw jumpjet exaust if jet is somewhat on. move to rigged?
-    if (this->mobile->jetpower > 30.0f) {
-        glPushAttrib(GL_ALL_ATTRIB_BITS);
-        {
-            SGL::glUseProgram_fgaddcolor();
-
-            std::map<int, int>& jointpoints = rigged->jointpoints;
-            int jet[5];
-            jet[0] = jointpoints[rigged->JET0];
-            jet[1] = jointpoints[rigged->JET1];
-            jet[2] = jointpoints[rigged->JET2];
-            jet[3] = jointpoints[rigged->JET3];
-            jet[4] = jointpoints[rigged->JET4];
-
-            loopi(5) {
-                if (jet[i] >= 0) {
-                    float* v = rigged->joints[jet[i]].v;
-                    glPushMatrix();
-                    {
-                        float f = mobile->jetpower * 0.003 * 5;
-
-                        glTranslatef(traceable->pos[0], traceable->pos[1], traceable->pos[2]);
-                        SGL::glRotateq(traceable->ori);
-                        // The model was modelled facing to the camera.
-                        glRotatef(180, 0, 1, 0);
-                        // Swap axes (it's actually a rotation around x)
-                        float m[] = {
-                            1, 0, 0, 0,
-                            0, 0, -1, 0,
-                            0, 1, 0, 0,
-                            0, 0, 0, 1
-                        };
-                        glMultMatrixf(m);
-                        float rscale = rigged->scale;
-                        glScalef(rscale, rscale, rscale);
-
-                        glTranslatef(v[0], v[1], v[2]);
-                        float n[16];
-                        SGL::glGetTransposeInverseRotationMatrix(n);
-                        glMultMatrixf(n);
-                        glColor4f(1, 1, 0.3, 0.6);
-                        cPrimitives::glDisk(7, f + 0.0003 * (rand() % 100));
-                        glColor4f(1, 0.5, 0.3, 0.7);
-                        cPrimitives::glDisk(7, f * 0.6 + 0.001 * (rand() % 100));
-                        glColor4f(1, 1, 1, 0.8);
-                        cPrimitives::glDisk(7, f * 0.3 + 0.001 * (rand() % 100));
-                    }
-                    glPopMatrix();
-                } // if
-            } // loopi
-        }
-        glPopAttrib();
-    }
-
-    // Draw weapon's effects.
-
-    loopi(mobile->weapons.size()) {
-        mobile->weapons[i]->drawEffect();
-    }
-    // Draw effect of own explosion (yes, it is only when exploding).
-    mobile->explosion.drawEffect();
 }
 
 void cMech::drawHUD() {
@@ -1269,7 +1278,7 @@ float cMech::constrainParticle(float* worldpos, float radius, float* localpos, c
 
     float base[3] = {0, -0.0 - radius, 0};
     float radius_ = traceable->radius + radius;
-    float height = traceable->radius * 3 + 2 * radius;
+    float height = traceable->radius * 2.5 + 2 * radius;
     float localprj[3] = { 0, 0, 0 };
 
     float depth = 0;

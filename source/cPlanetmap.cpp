@@ -17,7 +17,7 @@ using namespace std;
 
 int cPlanetmap::sInstances = 0;
 std::vector<long> cPlanetmap::sTextures;
-
+std::vector<float> cPlanetmap::sSizes;
 
 cPlanetmap::cPlanetmap() {
     sInstances++;
@@ -61,13 +61,26 @@ cPlanetmap::cPlanetmap() {
         string basepath = string("data/base/decals/");
         string filenames[] = {
             string("desertblossom.tga"),
-            string("hybridplant.tga"),
+            string("grass.tga"),
+            string("grass.tga"),
             string("desertplant.tga"),
-            string("hybridus.tga"),
-            string("mountain.tga")
+            string("desertplant.tga"),
+            string("treeleafs.tga"),
+            string("pineleafs.tga"),
+            string("strangeleafs.tga")
+        };
+        float sizes[] = {
+            0.4,
+            1.1,
+            1.1,
+            1.0,
+            1.0,
+            1.4,
+            1.5,
+            1.1
         };
 
-        loopi (4) {
+        loopi (8) {
             string name = string(basepath).append(filenames[i]);
             cout << "Loading [" << name << "] ...\n";
             unsigned int texname;
@@ -76,6 +89,7 @@ cPlanetmap::cPlanetmap() {
             texname = SGL::glBindTexture2D(0, true, true, false, false, w, h, bpp, texels);
             delete texels;
             sTextures.push_back(texname);
+            sSizes.push_back(2.0f*sizes[i]);
         }
     }
     traceable->radius = 10;
@@ -883,7 +897,7 @@ void cPlanetmap::drawEffect() {
 
         const float step = 16;
         //const float near = (step*2)*(step*2);
-        const float s = 4 * step;
+        const float s = 6 * step;
         const float x = -((int) (p[0] / step)) * step;
         const float z = -((int) (p[2] / step)) * step;
         //cout << x << " " << z << endl;
@@ -907,7 +921,7 @@ void cPlanetmap::drawEffect() {
                 float dz = (-p[2]-z_-0.5f*step);
                 float dist2 = dx*dx + dz*dz;
 
-                const float maxz = 80;
+                const float maxz = s * 1.27f;
                 // opacity: near = 1, >far = 0
                 float opacity = fmax(0.0f, (2.0f / (1.0f + (1.0f/maxz*maxz) * dist2)) - 1.0f);
                 opacity = (2.0f / (1.0f + (1.0f/(maxz*maxz)) * dist2) - 1.0f);
@@ -919,7 +933,7 @@ void cPlanetmap::drawEffect() {
                 unsigned char b = (char) z_;
                 unsigned char key = cNoise::permutation2d(perms, a,b);
 
-                float plantdensity = (key*3) / 256.0f;
+                float plantdensity = 1.0f*(key*3) / 256.0f;
                 int visibleplants = plantdensity * opacity;
 
                 key = cNoise::LFSR16(key);
@@ -952,15 +966,16 @@ void cPlanetmap::drawEffect() {
 
                         //lfsr16 = LFSR16(lfsr16);
                         //unsigned char size = lfsr16;
-                        unsigned char size = rot;
 
-                        unsigned char tex = (rot >> 4) & 3;
+                        unsigned char tex = (rot >> 4) & 7;
+                        unsigned char size = rot;
                         glBindTexture(GL_TEXTURE_2D, sTextures[tex + 1]);
 
                         glTranslatef(x__, h-0.2, z__);
                         glMultMatrixf(n);
                         //glRotatef(rot*0.351563f, 0, 1, 0);
-                        float s = 0.6f + 1.1f * (size * 0.003906f) + 0.2f * plantdensity;
+                        float sizef = size * 0.003906f;
+                        float s = sSizes[tex] * (0.35f + 0.65f * sizef + 0.005f * plantdensity);
                         glScalef(1*s,0.65*s,1*s);
                         //glAxis(0.9);
                         cPrimitives::glXCenteredTextureSquare();

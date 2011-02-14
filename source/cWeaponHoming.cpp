@@ -262,6 +262,8 @@ void cWeaponHoming::drawSolid() {
 }
 
 void cWeaponHoming::drawEffect() {
+    if (missileParticles.empty()) return;
+    
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
         SGL::glUseProgram_fgaddcolor();

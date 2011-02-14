@@ -33,6 +33,8 @@ public:
     static int sInstances;
     /// Instance shared Textures.
     static std::vector<long> sTextures;
+    /// Instance shared foliage sizes.
+    static std::vector<float> sSizes;
 public:
     /// Surface Modifiction
     struct sMod {

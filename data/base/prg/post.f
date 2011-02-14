@@ -98,6 +98,17 @@ void main()
 	float d5 = mix(d4, d5_, dalpha); r += rd;
 	float depth0 = d0;
 	float depthn = d5;
+//
+	float d6_ = linear(texture2DLod(dep,pix+vec2(sn*ds[6]*r,cn*dc[6]*r), 0.0).x);
+	float d6 = mix(d5, d6_, dalpha); r += rd;
+	float d7_ = linear(texture2DLod(dep,pix+vec2(sn*ds[7]*r,cn*dc[7]*r), 0.0).x);
+	float d7 = mix(d6, d7_, dalpha); r += rd;
+	float d8_ = linear(texture2DLod(dep,pix+vec2(sn*ds[8]*r,cn*dc[8]*r), 0.0).x);
+	float d8 = mix(d7, d8_, dalpha); r += rd;
+	float d9_ = linear(texture2DLod(dep,pix+vec2(sn*ds[9]*r,cn*dc[9]*r), 0.0).x);
+	float d9 = mix(d8, d9_, dalpha); r += rd;
+	depthn = d9;
+//
 
 	// SeDepth blur
 	float depthu = 0.0;
@@ -105,6 +116,7 @@ void main()
 	float depthw = 0.0;
 	float depthx = 0.0;
 	float depthy = 0.0;
+	float depthz = 0.0;
 	{
 		float depths = 0.0;
 		float sum = 0.0;
@@ -137,6 +149,21 @@ void main()
 		sum += c;
 		depths += c * d5_;
 		depthy = depths / sum;
+//
+		c = contrib(depth0, d6_);
+		sum += c;
+		depths += c * d6_;
+		c = contrib(depth0, d7_);
+		sum += c;
+		depths += c * d7_;
+		c = contrib(depth0, d8_);
+		sum += c;
+		depths += c * d8_;
+		c = contrib(depth0, d9_);
+		sum += c;
+		depths += c * d9_;
+		depthz = depths / sum;
+//
 	}
 
 	// Derive Normal
@@ -173,6 +200,7 @@ void main()
 	ao = max(ao, getAO(depth0, depthw));
 	ao = max(ao, getAO(depth0, depthx));
 	ao = max(ao, getAO(depth0, depthy));
+	ao = max(ao, getAO(depth0, depthz));
 	float ao_ = min(1.0, 1.0 - ao);
 
 	float bluryness = min(1.0, 1.2*(depth0-0.1));
@@ -188,8 +216,16 @@ void main()
 #elif 0
 	vec4 result = vec4((100.0*abs(vec3(depthy - depth0))), 1.0);
 #elif 1
+	vec4 result;
+	if (gl_TexCoord[0].x < 0.5) {
+		result = vec4(color0.rgb * vec3(pow(1.5*ao_, 3.5)), 1.0);
+	} else {
+		result = vec4(color0.rgb, 1.0);
+	}
+#elif 1
+	float mixalpha = 0.5;
 	vec4 result = vec4(1.0 * color0.rgb - pow(ao, 3.5)*0.7, 1.0);
-	result = mix(result, vec4(vec3(pow(ao_, 3.5)), 3.0), 0.09);
+	result = mix(result, vec4(vec3(pow(ao_, 3.5)), 3.0), mixalpha);
 #elif 1
 	vec4 result = vec4(vec3(nois), 1.0);
 #else

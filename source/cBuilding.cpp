@@ -469,7 +469,8 @@ void cBuilding::drawSolid() {
             glBegin(GL_TRIANGLE_STRIP);
             {
                 float tx = 0;
-                float f = 1.0f / 9.0f * 2.0f;
+                //float f = 1.0f / 9.0f * 2.0f;
+                float f = 1.0f / 9.0f;
                 float ty = w[1] * f;
 
                 glNormal3f(-n2, 0, -n2);

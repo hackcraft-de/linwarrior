@@ -155,6 +155,8 @@ void cWeaponPlasmagun::drawSolid() {
 }
 
 void cWeaponPlasmagun::drawEffect() {
+    if (shrapnelParticles.empty()) return;
+    
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_ALL_ATTRIB_BITS);
     {
         SGL::glUseProgram_fgaddcolor();

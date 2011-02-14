@@ -70,8 +70,10 @@ class cObject;
 struct rRole {
     cObject* object;
     std::string role;
+    bool active;
 
     rRole(std::string role) {
+        active = true;
         this->role = role;
     }
 
