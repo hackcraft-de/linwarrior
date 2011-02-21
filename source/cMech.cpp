@@ -828,9 +828,9 @@ cMech::cMech(float* pos, float* rot) {
         const char* fns[] = {
             //"/media/44EA-7693/workspaces/mm3d/soldier/soldier.md5mesh",
             "data/base/wanzers/frogger/frogger.md5mesh",
-            "data/flopsy/flopsy.md5mesh",
+            "data/blenswap.com/flopsy/flopsy.md5mesh",
             "data/base/wanzers/gorilla/gorilla_ii.md5mesh",
-            "data/skorpio/wanzers/scorpion/scorpion.md5mesh",
+            "data/opengameart.org/scorpion/scorpion.md5mesh",
             "data/base/wanzers/lemur/lemur.md5mesh",
             "data/base/tanks/bug/bug.md5mesh",
             "data/base/tanks/ant/ant.md5mesh",

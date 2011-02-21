@@ -13,7 +13,7 @@ cWeaponHoming::cWeaponHoming() {
     remainingClips = depotSize;
 
     if (WEAPONSOUND) {
-        ALuint buffer = alutCreateBufferFromFile("data/freesound/homingmissile.wav");
+        ALuint buffer = alutCreateBufferFromFile("data/freesound.org/homingmissile.wav");
         alGenSources(1, &soundSource);
         alSourcei(soundSource, AL_BUFFER, buffer);
         alSourcef(soundSource, AL_PITCH, 1.0f);

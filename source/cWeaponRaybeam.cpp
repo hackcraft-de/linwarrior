@@ -9,7 +9,7 @@ cWeaponRaybeam::cWeaponRaybeam() {
     remainingClips = depotSize;
 
     if (WEAPONSOUND) {
-        ALuint buffer = alutCreateBufferFromFile("data/freesound/raybeam.wav");
+        ALuint buffer = alutCreateBufferFromFile("data/freesound.org/raybeam.wav");
         alGenSources(1, &soundSource);
         alSourcei(soundSource, AL_BUFFER, buffer);
         alSourcef(soundSource, AL_PITCH, 1.0f);
