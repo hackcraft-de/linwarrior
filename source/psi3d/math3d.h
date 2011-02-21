@@ -486,7 +486,7 @@ typedef vec4 quat;
 
 #define vector_set3i(result, fun_of_i)  { loop3i(result[i] = fun_of_i;) }
 
-#define vector_norm(result, A)          { typeof(A[0]) inv = ((typeof(A[0]))1)/vector_mag(A); vector_scale( (result), (A), inv); }
+#define vector_norm(result, A)          { typeof((A)[0]) inv = ((typeof((A)[0]))1)/vector_mag((A)); vector_scale( (result), (A), inv); }
 
 #define vector_mag(A)                   ( sqrtf( (A)[0]*(A)[0] + (A)[1]*(A)[1] + (A)[2]*(A)[2] ) )
 

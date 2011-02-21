@@ -11,37 +11,129 @@ using std::cout;
 #include <list>
 using std::list;
 
+#include <string>
+using std::string;
 
 #define ran(seed) (seed = ((seed * 1234567) % 65535))
 
 
-//std::list<cTree::rTree*> cTree::cache;
-std::map<OID,cTree::rTree*> cTree::cache;
+int cTree::sInstances = 0;
+std::map<OID,cTree::rTree*> cTree::sTrees;
+std::vector<long> cTree::sTextures;
 
 
 cTree::cTree(float* pos, float* rot, int seed, int type, int age) {
+    sInstances++;
+    if (sInstances == 1) {
+        string basepath = string("data/base/decals/");
+        string filenames[] = {
+            string("treeleafs.tga"),
+            string("strangeleafs.tga"),
+            string("pineleafs.tga"),
+        };
+        loopi (2) {
+            string name = string(basepath).append(filenames[i]);
+            cout << "Loading [" << name << "] ...\n";
+            unsigned int texname;
+            int w, h, bpp;
+            unsigned char* texels = loadTGA(name.c_str(), &w, &h, &bpp);
+            texname = SGL::glBindTexture2D(0, true, true, false, false, w, h, bpp, texels);
+            delete texels;
+            sTextures.push_back(texname);
+        }
+    }
+
     if (pos) vector_cpy(traceable->pos, pos);
-    tree.seed = seed;
-    tree.type = type;
-    tree.age = age;
-    tree.list = -1;
+    if (rot) vector_cpy(traceable->ori, rot);
+    if (age == 0) {
+        tree = NULL;
+    } else {
+        tree = getCompiledTree(seed, type, age);
+    }
+}
+
+void cTree::animate(float spf) {
 }
 
 void cTree::drawSolid() {
-    if ((int) tree.list == -1) tree.list = compileTreeDisplaylist(tree.seed, tree.type, tree.age);
     glPushAttrib(GL_ENABLE_BIT);
     {
         SGL::glUseProgram_fglitcolor();
         glDisable(GL_CULL_FACE);
+        glDisable(GL_LIGHTING);
 
         glPushMatrix();
         {
             glTranslatef(traceable->pos[0], traceable->pos[1], traceable->pos[2]);
-            glCallList(tree.list);
+            glRotatef(traceable->ori[1], 0,1,0);
+            glCallList(tree->list);
         }
         glPopMatrix();
     }
     glPopAttrib();
+}
+
+void cTree::drawEffect() {
+    glPushMatrix();
+    {
+        glTranslatef(traceable->pos[0], traceable->pos[1], traceable->pos[2]);
+        glRotatef(traceable->ori[1], 0,1,0);
+
+        // Construct Billboarding Matrix.
+        float n[16];
+        SGL::glGetTransposeInverseRotationMatrix(n);
+        //vector_set(&n[4], 0,1,0);
+        vector_cross(&n[0], &n[4], &n[8]);
+        vector_norm(&n[0], &n[0]);
+        vector_cross(&n[8], &n[0], &n[4]);
+        
+        glPushAttrib(GL_ENABLE_BIT);
+        {
+            SGL::glUseProgram_fglittexture();
+            glDisable(GL_CULL_FACE);
+            glEnable(GL_ALPHA_TEST);
+            glAlphaFunc(GL_GREATER, 0.58f);
+
+            glBindTexture(GL_TEXTURE_2D, sTextures[tree->type%sTextures.size()]);
+            int m = tree->leaves.size() / 3;
+            //std::cout << m << std::endl;
+            loopi(m) {
+                float x = tree->leaves[i*3+0];
+                float y = tree->leaves[i*3+1];
+                float z = tree->leaves[i*3+2];
+
+                float light = 0.5f + 0.5f * (1.0f-exp(-0.1f * y));
+                float shake = 0.3f * (1.0f-exp(-0.1f * y));
+                float swirl = 1.0f + 7.0f * (1.0f-exp(-0.2f * y));
+                float size = 0.5f + log(tree->age)*0.26f + 0.18f * tree->height + 0.03f * sin(seconds * 0.21f + i * 0.1f);
+
+                float dx = 1.0f * sin(seconds * 0.41f + i * 0.1f);
+                float dy = 0.3f * cos(seconds * 0.43f + i * 0.2f);
+                float dz = 1.0f * cos(seconds * 0.47f + i * 0.3f);
+                x += dx * shake;
+                y += dy * shake;
+                z += dz * shake;
+                glNormal3f(0,1,0);
+                glColor4f(light,light,light,1);
+                //float v[] = { x, y, z };
+                //vector_print(v);
+                glPushMatrix();
+                {
+                    glTranslatef(x, y, z);
+                    //glTranslatef(x, y, z);
+                    //glColor4f(1,0,0,1);
+                    glMultMatrixf(n);
+                    glRotatef(sin(seconds * 0.5f + i * 0.3f)*swirl, 0,0,1);
+                    cPrimitives::glXYCenteredTextureSquare(size);
+                    //cPrimitives::glDisk();
+                    //cPrimitives::glAxis(1.1f);
+                }
+                glPopMatrix();
+            }
+        }
+        glPopAttrib();
+    }
+    glPopMatrix();
 }
 
 float cTree::constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor) {
@@ -55,28 +147,16 @@ float cTree::constrainParticle(float* worldpos, float radius, float* localpos, c
     return depth;
 }
 
-GLuint cTree::compileTreeDisplaylist(int seed, int type, int age) {
-    // Try to find and return a cached displaylist version of the given tree.
+cTree::rTree* cTree::getCompiledTree(int seed, int type, int age) {
+    // Try to find and return a cached version of the given tree.
 
     OID key = (seed << 16) | ((type & 0xFF) << 8) | (age & 0xFF);
 
-    {
-        rTree* t = cache[key];
-        if (t != NULL) {
-            //cout << "found cached tree seed: " << seed << " type: " << type << " age: " << age << "\n";
-            return t->list;
-        }
+    rTree* tree = sTrees[key];
+    if (tree != NULL) {
+        //cout << "found cached tree seed: " << seed << " type: " << type << " age: " << age << "\n";
+        return tree;
     }
-
-    /*
-    foreach(i, cache) {
-        rTree* t = *i;
-        if (t->seed == seed && t->type == type && t->age == age) {
-            //cout << "found cached tree seed: " << seed << " type: " << type << "\n";
-            return t->list;
-        }
-    }
-    */
 
     // There was no such tree cached - so lets compile a displaylist.
 
@@ -112,39 +192,68 @@ GLuint cTree::compileTreeDisplaylist(int seed, int type, int age) {
     t->type = type;
     t->age = age;
     t->list = glGenLists(1);
-    glNewList(t->list, GL_COMPILE);
-    float s = 2.5f + age * 0.3;
-    glScalef(s, s, s);
-    drawTreePart(0, age, 0.3f + age * 0.1, t->seed, trunk_displaylist, leaf_displaylists[type]);
-    glEndList();
+    t->height = log(age);
+    glPushAttrib(GL_ENABLE_BIT);
+    {
+        SGL::glUseProgram_fglitcolor();
+        glColor4f(0.5f, 0.5f, 0.3f, 1.0f);
+        glPushMatrix();
+        {
+            glLoadIdentity();
+            glNewList(t->list, GL_COMPILE_AND_EXECUTE);
+            float s = 2.5f + age * 0.3;
+            glScalef(s, s, s);
+            drawTreePart(0, age, 0.3f + age * 0.1, t->seed, trunk_displaylist, leaf_displaylists[type], &t->leaves, &t->height);
+            glEndList();
+        }
+        glPopMatrix();
+    }
+    glPopAttrib();
 
     //cache.push_front(t);
-    cache[key] = t;
+    sTrees[key] = t;
     
-    std::cout << "Cached Tree " << cache.size() << std::endl;
-    return t->list;
+    std::cout << "Cached Tree " << sTrees.size() << std::endl;
+    return t;
 }
 
 
-int cTree::drawTreePart(int depth, int maxdepth, float length, int seed, GLuint trunk_displaylist, GLuint leaf_displaylist) {
+int cTree::drawTreePart(int depth, int maxdepth, float length, int seed, GLuint trunk_displaylist, GLuint leaf_displaylist, std::vector<float>* leaves, float* totalheight) {
     // Recursion end?
     if (depth >= maxdepth) return seed;
     //
     const float height = length * (maxdepth - depth);
     const float width = 0.035 * length + (maxdepth - depth)*(maxdepth - depth) * length * 0.0125f;
-    bool leaves = true;
+    bool draw_poly_leaves = !true;
     // Draw Trunk and leaf if at max depth.
     glPushMatrix();
     {
         glScalef(width * 0.5f, height * 0.5f, width * 0.5f);
         glTranslatef(0, 1, 0);
         glCallList(trunk_displaylist);
-        if ((depth == maxdepth - 1) && leaves) {
-            const float s = 3.6;
-            //glTranslatef(0, 0.5f, 0);
-            glScalef(s * height / width, s * 0.5, s * height / width);
-            glTranslatef(0, 0.5, 0);
-            glCallList(leaf_displaylist);
+        if (depth == maxdepth - 1) {
+            const float s = 3.6f;
+            if (draw_poly_leaves) {
+                glScalef(s * height / width, s * 0.5f, s * height / width);
+                glTranslatef(0, 0.5f, 0);
+                glCallList(leaf_displaylist);
+            } else if (leaves) {
+                glScalef(s * height / width, s * 0.5f, s * height / width);
+                glTranslatef(0, 0.5f, 0);
+                mat4 M;
+                glGetFloatv(GL_MODELVIEW_MATRIX, M);
+                float v[] = { 0, 0.0f, 0 };
+                matrix_apply2(M, v);
+                //std::cout << "Leaf at: " << std::endl;
+                //matrix_print(M);
+                //vector_print(v);
+                leaves->push_back(v[0]);
+                leaves->push_back(v[1]);
+                leaves->push_back(v[2]);
+                if (totalheight != NULL) {
+                    *totalheight = fmax(*totalheight, v[1]);
+                }
+            }
         }
     }
     glPopMatrix();
@@ -173,7 +282,7 @@ int cTree::drawTreePart(int depth, int maxdepth, float length, int seed, GLuint 
             glTranslatef(0, (i + 2) * height / float(n + 1) - width * 0.5f, 0);
             glRotatef(angley, 0, 1, 0);
             glRotatef(anglex, 1, 0, 0);
-            r = drawTreePart(depth + 1, maxdepth, length, r, trunk_displaylist, leaf_displaylist);
+            r = drawTreePart(depth + 1, maxdepth, length, r, trunk_displaylist, leaf_displaylist, leaves, totalheight);
         }
         glPopMatrix();
     };

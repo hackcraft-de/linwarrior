@@ -15,6 +15,8 @@ class cPlanetmap;
 
 #include "cLandscape.h"
 
+#include "cTree.h"
+
 // Amount of cached patches.
 #define PLANETMAP_CACHESIZE 512
 
@@ -57,6 +59,7 @@ public:
     };
     /// LRU Surface Cache.
     std::map<unsigned long, sPatch*> patches;
+    cTree* tree;
 public:
     cPlanetmap();
     /// Remove cached data - enforce recalculation (enforce cache miss).

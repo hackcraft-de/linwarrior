@@ -11,6 +11,7 @@
         <itemPath>source/cObject.h</itemPath>
         <itemPath>source/cPadmap.h</itemPath>
         <itemPath>source/cPlanetmap.h</itemPath>
+        <itemPath>source/cTree.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f4" displayName="utils" projectFiles="true">
         <itemPath>source/psi3d/ctrl.h</itemPath>
@@ -43,7 +44,6 @@
       <itemPath>source/cSolid.h</itemPath>
       <itemPath>source/cSurface.h</itemPath>
       <itemPath>source/cTiming.h</itemPath>
-      <itemPath>source/cTree.h</itemPath>
       <itemPath>source/cWorld.h</itemPath>
       <itemPath>source/main.h</itemPath>
       <itemPath>source/userkeys.h</itemPath>

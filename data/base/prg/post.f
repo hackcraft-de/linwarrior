@@ -69,7 +69,7 @@ void main()
 	//pix = vec2(ofs*0.0 + 0.5 - 0.5 * cos(pix.x*3.14), 0.5 - 0.5 * cos(pix.y*3.14));
 
 	//float str = 60.0 * linear(texture2DLod(dep,gl_TexCoord[0].xy, 0.0).x);
-	float str = 10.0;
+	float str = 20.0;
 	//pix = vec2(pix.x + str * ofs*(0.5 - 0.5 * cos(pix.x*31.4)), pix.y + str * ofs*(0.5 - 0.5 * cos(pix.y*31.4)));
 
 	float rd = ofs * 0.35;
@@ -194,8 +194,8 @@ void main()
 	float bluryness = min(1.0, 1.1*(depth0-0.1));
 	float lum0 = (color0.r + color0.g + color0.b);
 	float lumn = (colorn.r + colorn.g + colorn.b);
-	float bloom = 1.0*(sig((max(0,lumn - lum0) - 0.0005) * 9) - 0.1);
-	vec4 composite = color0 * (0.80 + 0.60 * bloom) + 0.1 * (blur * bluryness);
+	float bloom = 1.0*(sig((max(0,lumn - lum0) - 0.00045) * 9) - 0.1);
+	vec4 composite = color0 * (0.80 + 0.80 * bloom) + 0.1 * (blur * bluryness);
 
 #if 1
 	vec4 result = (1.0+0.0*nois) * composite;// + d0 * pow(max(0.0,-voxel.y)*10.0,2.0) * vec4(0.0,1.0,0.0,1.0) + pow(1.0*d0, 0.9) * max(0.0,voxel.y) * vec4(1.0,0.9,0.5,1.0);
@@ -203,7 +203,7 @@ void main()
 	vec4 result = vec4(100.0*abs(vec3(depthn - depth0)), 1.0);
 #elif 0
 	vec4 result = vec4((100.0*abs(vec3(depthy - depth0))), 1.0);
-#elif 0
+#elif 1
 	vec4 result;
 	if (gl_TexCoord[0].x < 1.5) {
 		result = vec4(vec3(pow(1.4*ao_, 3.5)), 1.0);

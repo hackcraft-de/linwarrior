@@ -95,6 +95,8 @@ cPlanetmap::cPlanetmap() {
     traceable->radius = 10;
     vector_set(traceable->pos, float_NAN, float_NAN, float_NAN);
     name = "PLANETMAP";
+
+    tree = new cTree();
 }
 
 void cPlanetmap::invalidateCache() {
@@ -873,6 +875,7 @@ void cPlanetmap::drawEffect() {
     SGL::glGetTransposeInverseRotationMatrix(n);
     vector_set(&n[4], 0,1,0);
     vector_cross(&n[0], &n[4], &n[8]);
+    vector_norm(&n[0], &n[0]);
     vector_cross(&n[8], &n[0], &n[4]);
 
     float* look = &n[8];
@@ -934,11 +937,11 @@ void cPlanetmap::drawEffect() {
                 unsigned char key = cNoise::permutation2d(perms, a,b);
 
                 float plantscale = 1.0f;
-                float plantdensity = (4.00f * key) / 256.0f;
+                float plantdensity = (2.00f * key) / 256.0f;
                 int visibleplants = plantdensity * opacity;
 
                 key = cNoise::LFSR16(key);
-                float treedensity = (1.05f * key) / 256.0f;
+                float treedensity = (3.05f * key) / 256.0f;
                 float visibletrees = treedensity;
                 
                 //cout << "opacity " << opacity << "  density " << density << endl;
@@ -999,7 +1002,7 @@ void cPlanetmap::drawEffect() {
                         getCachedHeight(x__, z__, color);
                         float h = color[cLandscape::BUMP];
 
-                        lfsr16 = cNoise::LFSR16(lfsr16);
+                        //lfsr16 = cNoise::LFSR16(lfsr16);
                         //unsigned char kind = lfsr16;
                         //unsigned char rot = lfsr16 >> 8;
 
@@ -1007,17 +1010,13 @@ void cPlanetmap::drawEffect() {
                         //unsigned char size = lfsr16;
                         //unsigned char size = rot;
 
-                        int age = fmax(0, fmin(3, i));
+                        int age = fmax(0, fmin(6, i + ((a+b)&1)));
 
-                        glTranslatef(x__, h-0.2, z__);
-                        glDisable(GL_TEXTURE_2D);
-                        //GLuint dlist = cTree::compileTreeDisplaylist(1230+(b&2), c, 2+(a&1));
-                        //GLuint dlist = cTree::compileTreeDisplaylist(1230+(b&2), 2, 2+(a&1));
-                        GLuint dlist = cTree::compileTreeDisplaylist(1230+(b&2), (b*b)&3, 2+age);
-                        glCallList(dlist);
-                        glEnable(GL_TEXTURE_2D);
-                        glColor4f(1, 1, 1, 1);
-                        glNormal3f(0,1,0);
+                        tree->tree = cTree::getCompiledTree(1230+(b&6), (b*b)&3, 1+age);
+                        vector_set(tree->traceable->pos, x__, h-0.2, z__);
+                        tree->traceable->ori[1] = a + b;
+                        tree->drawSolid();
+                        tree->drawEffect();
                     }
                     glPopMatrix();
                 } // loopi visibletrees
