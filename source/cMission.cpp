@@ -338,7 +338,7 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
 
         mech->controlled->pad = new cPad();
         mech->name = "Player's Wing 1";
-        mech->nameable->name = "Biggs";
+        mech->nameable->name = "Joe";
 
         mech->addTag(cObject::BLUE);
         mech->socialised->addEnemy(cObject::RED);
@@ -364,7 +364,7 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
 
         mech->controlled->pad = new cPad();
         mech->name = "Player's Wing 2";
-        mech->nameable->name = "Wedge";
+        mech->nameable->name = "Jack";
 
         mech->addTag(cObject::BLUE);
         mech->socialised->addEnemy(cObject::RED);

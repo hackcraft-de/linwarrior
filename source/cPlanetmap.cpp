@@ -933,11 +933,12 @@ void cPlanetmap::drawEffect() {
                 unsigned char b = (char) z_;
                 unsigned char key = cNoise::permutation2d(perms, a,b);
 
-                float plantdensity = 1.0f*(key*3) / 256.0f;
+                float plantscale = 1.0f;
+                float plantdensity = (4.00f * key) / 256.0f;
                 int visibleplants = plantdensity * opacity;
 
                 key = cNoise::LFSR16(key);
-                float treedensity = (key*1.05) / 256.0f;
+                float treedensity = (1.05f * key) / 256.0f;
                 float visibletrees = treedensity;
                 
                 //cout << "opacity " << opacity << "  density " << density << endl;
@@ -975,7 +976,7 @@ void cPlanetmap::drawEffect() {
                         glMultMatrixf(n);
                         //glRotatef(rot*0.351563f, 0, 1, 0);
                         float sizef = size * 0.003906f;
-                        float s = sSizes[tex] * (0.35f + 0.65f * sizef + 0.005f * plantdensity);
+                        float s = plantscale * sSizes[tex] * (0.35f + 0.65f * sizef + 0.005f * plantdensity);
                         glScalef(1*s,0.65*s,1*s);
                         //glAxis(0.9);
                         cPrimitives::glXCenteredTextureSquare();

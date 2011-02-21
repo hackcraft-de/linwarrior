@@ -216,6 +216,15 @@ public: // World-Filtering, World-Scanning, World-Sense for objects.
      * The returned list is fresh allocated - caller delete responsibility.
      */
     std::list<cObject*>* filterByBeam(cObject* ex, float* pointa, float* pointb, float radius, int maxamount, std::list<cObject*>* objects = NULL);
+
+
+    /**
+     *
+     * @param worldpos
+     * @param radius
+     * @return
+     */
+    float constrainParticle(cObject* ex, float* worldpos, float radius);
 };
 
 #endif

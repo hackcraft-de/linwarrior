@@ -172,6 +172,9 @@ struct rMobile : public rRole {
     /// Index of selected weapon.
     int currentWeapon;
 
+    /// Weapon target.
+    OID target;
+
     // Exploding end.
     cWeaponExplosion explosion;
 
@@ -182,7 +185,7 @@ struct rMobile : public rRole {
     vec3 twr;
 
     /// Current jumpjet set-point.
-    float jetpower;
+    float jetthrottle;
 
     /// Current throttle set-point.
     float throttle;
@@ -197,7 +200,7 @@ struct rMobile : public rRole {
     bool immobile;
 
     /// Constructor
-    rMobile(cObject * obj) : rRole("MOBILE"), currentWeapon(0), jetpower(0), throttle(0), camerastate(1), grounded(0.5f), immobile(false) {
+    rMobile(cObject * obj) : rRole("MOBILE"), currentWeapon(0), target(0), jetthrottle(0), throttle(0), camerastate(1), grounded(0.5f), immobile(false) {
         object = obj;
         twr[0] = twr[1] = twr[2] = 0.0f;
         bse[0] = bse[1] = bse[2] = 0.0f;
@@ -210,6 +213,11 @@ struct rMobile : public rRole {
     void ChassisUD(float radians);
     float TowerLR(float radians);
     void TowerUD(float radians);
+
+    // Weaponry
+    void fireCycleWeapons();
+    void fireAllWeapons();
+    void fireWeapon(unsigned n);
 
     virtual void animate(float spf);
     virtual void transform();
@@ -270,12 +278,7 @@ public:
     void multEyeMatrix();
     void setAsAudioListener();
 
-    // Physics and posing accordingly
-    void animatePhysics(float spf);
-
     // Weapons
-    void fireAllWeapons();
-    void fireWeapon(unsigned n);
     void mountWeapon(char* point, cWeapon *weapon, bool add = true);
 
     // World Step
@@ -288,7 +291,6 @@ public:
     // Particle constraining
     virtual void damageByParticle(float* localpos, float damage, cObject* enactor = NULL);
     virtual float constrainParticle(float* worldpos, float radius = 0.0f, float* localpos = NULL, cObject* enactor = NULL);
-    float constrainParticleToWorld(float* worldpos, float radius = 0.0f);
 public:
     // Queries
     virtual OID enemyNearby();

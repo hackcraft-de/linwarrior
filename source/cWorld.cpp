@@ -491,4 +491,24 @@ std::list<cObject*>* cWorld::filterByBeam(cObject* ex, float* pointa, float* poi
     return result;
 }
 
+float cWorld::constrainParticle(cObject* ex, float* worldpos, float radius) {
+    float depth = 0;
+    float maxrange = 25;
+    bool groundplane = !true;
+    if (groundplane)
+    if (worldpos[1] - radius < 0.0f) {
+        worldpos[1] = 0.0f + radius;
+        depth += -(worldpos[1] - radius) + 0.000001f;
+    }
+    std::list<cObject*>* range = filterByRange(ex, worldpos, 0.0f, maxrange, -1, NULL);
+    if (!range->empty()) {
+
+        foreach(i, *range) {
+            cObject* object = *i;
+            depth += object->constrainParticle(worldpos, radius, NULL, ex);
+        }
+    }
+    delete range;
+    return depth;
+}
 

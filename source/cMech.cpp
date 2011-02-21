@@ -24,8 +24,11 @@ using std::endl;
 
 DEFINE_glprintf
 
-#define DRAWJOINTS !true
 
+// -------------------------------------------------------------------
+
+
+#define DRAWJOINTS !true
 
 void rRigged::drawBones() {
     glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -512,6 +515,9 @@ void rRigged::drawEffect() {
 }
 
 
+// -------------------------------------------------------------------
+
+
 rComputerised::rComputerised(cObject* obj) : rRole("COMPUTERISED") {
     object = obj;
     
@@ -617,6 +623,9 @@ void rComputerised::drawHUD() {
 }
 
 
+// -------------------------------------------------------------------
+
+
 void rMobile::ChassisLR(float radians) {
     const float limit = 0.01 * M_PI;
     float e = radians;
@@ -673,6 +682,26 @@ void rMobile::TowerUD(float radians) {
     if (twr[0] < -limit) twr[0] = -limit;
 }
 
+void rMobile::fireCycleWeapons() {
+    if (weapons.size() == 0) return;
+    currentWeapon %= weapons.size();
+    fireWeapon(currentWeapon);
+    currentWeapon++;
+    currentWeapon %= weapons.size();
+}
+
+void rMobile::fireAllWeapons() {
+
+    loopi(weapons.size()) {
+        weapons[i]->fire(target);
+    }
+}
+
+void rMobile::fireWeapon(unsigned n) {
+    if (n >= weapons.size()) return;
+    weapons[n]->fire(target);
+}
+
 void rMobile::animate(float spf) {
     if (!active) return;
     loopi(weapons.size()) {
@@ -704,6 +733,10 @@ void rMobile::drawEffect() {
     }
     explosion.drawEffect();
 }
+
+
+// -------------------------------------------------------------------
+
 
 int cMech::sInstances = 0;
 std::map<int, long> cMech::sTextures;
@@ -846,7 +879,7 @@ void cMech::multEyeMatrix() {
     float rot_inv[16];
     float pos_inv[16];
 
-    float intensity = 0.0 + pow(this->mobile->jetpower, 1.5f);
+    float intensity = 0.0 + pow(this->mobile->jetthrottle, 1.5f);
     float shake = 0.004f * intensity;
     float jerk = 0.95f * intensity;
 
@@ -917,106 +950,12 @@ void cMech::setAsAudioListener() {
 }
 
 // move to rMobile?
-void cMech::fireAllWeapons() {
-
-    loopi(mobile->weapons.size()) {
-        mobile->weapons[i]->fire(controlled->target);
-    }
-}
-// move to rMobile?
-void cMech::fireWeapon(unsigned n) {
-    if (n >= mobile->weapons.size()) return;
-    mobile->weapons[n]->fire(controlled->target);
-}
-// move to rMobile?
 void cMech::mountWeapon(char* point, cWeapon *weapon, bool add) {
     if (weapon == NULL) throw "Null weapon for mounting given.";
     weapon->weaponBasefv = rigged->getMountMatrix(point);
     weapon->weaponOwner = this;
     weapon->weaponScale = rigged->scale;
     if (add) mobile->weapons.push_back(weapon);
-}
-
-// move to traceable?
-void cMech::animatePhysics(float spf) {
-
-    // Accumulate steering forces
-    {
-        // Jump Jet accelleration
-        {
-            const float jetforce = 130000.0f * mobile->jetpower;
-            float driveforce = -20000.0f * mobile->throttle * mobile->jetpower;
-            float turbo = 1;
-            float fwd[] = {0, jetforce, turbo*driveforce};
-            quat_apply(fwd, traceable->ori, fwd);
-            vector_add(traceable->fce, traceable->fce, fwd);
-        }
-
-        // Engine acceleration
-        {
-            float driveforce = -150000.0f * mobile->throttle;
-            if (traceable->friction <= 0.01f) driveforce = 0.0f;
-            float turbo = 1.0f;
-            float fwd[] = {0, 0, turbo*driveforce};
-            quat_apply(fwd, traceable->ori, fwd);
-            vector_add(traceable->fce, traceable->fce, fwd);
-        }
-    }
-
-    // Accumulate environmental forces
-    traceable->applyGravityForce(cWorld::instance->getGravity());
-    traceable->applyFrictionForce(spf);
-    traceable->applyAirdragForce(cWorld::instance->getAirdensity());
-
-    // Integrate position and estimate current velocity...
-    traceable->stepVerlet(1.0f / spf, spf*spf, 0.001f, 0.99f);
-
-
-    // Constraint position...
-    {
-        float center[3];
-        vector_cpy(center, traceable->pos);
-        float radius = traceable->radius;
-        center[1] += radius;
-        float depth = 0;
-        depth = constrainParticleToWorld(center, radius);
-        if (depth > 0.0f) {
-            // There was a collision.
-            // Set current position to corrected position.
-            vector_cpy(traceable->pos, center);
-            traceable->pos[1] -= radius;
-
-            float delta[3];
-            vector_set3i(delta, traceable->pos[i] - traceable->old[i]);
-            float dist = vector_mag(delta);
-            bool infinite = !finitef(traceable->pos[0]) || !finitef(traceable->pos[1]) || !finitef(traceable->pos[2]);
-            if (infinite) {
-                // The new position is not feasible.
-                // (Re-)Set position to a position higher than the old position.
-                traceable->old[1] += 0.3f;
-                vector_cpy(traceable->pos, traceable->old);
-                vector_set(traceable->vel, 0,0,0);
-            } else if (dist > 1.3f) {
-                // Way too fast.
-                // Reset position.
-                vector_cpy(traceable->old, traceable->pos);
-            } else if (dist > 1.0f) {
-                // Just too fast.
-                // Rescale (normalize) movement.
-                vector_scale(delta, delta, 1.0f / dist);
-                vector_add(traceable->pos, traceable->old, delta);
-                vector_cpy(traceable->vel, delta);
-            }
-
-        }
-
-        // Assume ground contact if there was a collision.
-        float onground = (depth > 0.0f) ? 1.0f : 0.0f;
-        // Average groundedness for animation.
-        mobile->grounded += 0.1 * (onground - mobile->grounded);
-        // Set friction for next frame.
-        traceable->friction = ((mobile->grounded > 0.1)?1.0f:0.0f) * cWorld::instance->getGndfriction();
-    }
 }
 
 void cMech::animate(float spf) {
@@ -1028,7 +967,7 @@ void cMech::animate(float spf) {
     if (!damageable->alife) {
         // Stop movement when dead
         mobile->throttle = 0;
-        mobile->jetpower = 0;
+        mobile->jetthrottle = 0;
         /*
         // If already exploded then frag.
         if (mobile->explosion.ready()) {
@@ -1060,29 +999,27 @@ void cMech::animate(float spf) {
             // Speed
             float tdelta = -controlled->pad->getAxis(cPad::MECH_THROTTLE_AXIS);
             //cout << "tdelta: " << tdelta << "  speed: " << mSpeed << "\n";
-            mobile->throttle = fmax(-2.0f, tdelta * 4.0f);
+            mobile->throttle = fmax(-0.5f, tdelta * 1.0f);
         }
 
         if (controlled->pad->getButton(cPad::MECH_NEXT_BUTTON) && controlled->pad->getButtonEvent(cPad::MECH_NEXT_BUTTON)) {
-            this->computerised->tarcom->nextTarget();
+            computerised->tarcom->nextTarget();
         } else if (controlled->pad->getButton(cPad::MECH_PREV_BUTTON) && controlled->pad->getButtonEvent(cPad::MECH_PREV_BUTTON)) {
-            this->computerised->tarcom->prevTarget();
+            computerised->tarcom->prevTarget();
         }
 
         if (controlled->pad->getButton(cPad::MECH_FIRE_BUTTON1) || controlled->pad->getButton(cPad::MECH_FIRE_BUTTON2)) {
-            if (true && mobile->weapons.size() > 0) {
-                mobile->currentWeapon %= mobile->weapons.size();
-                fireWeapon(mobile->currentWeapon);
-                mobile->currentWeapon++;
-                mobile->currentWeapon %= mobile->weapons.size();
+            mobile->target = controlled->target;
+            if (true) {
+                mobile->fireCycleWeapons();
             } else {
-                fireAllWeapons();
+                mobile->fireAllWeapons();
             }
         }
 
         // Set jumpjet throttle 0-1 smoothly.
         bool jeten = (controlled->pad->getButton(cPad::MECH_JET_BUTTON1) || controlled->pad->getButton(cPad::MECH_JET_BUTTON2));
-        mobile->jetpower += 0.05f * ((jeten ? 1.0f : 0.0f) - mobile->jetpower);
+        mobile->jetthrottle += 0.05f * ((jeten ? 1.0f : 0.0f) - mobile->jetthrottle);
 
         if (controlled->pad->getButton(cPad::MECH_CAMERA_BUTTON)) {
             // Only if Camera State is not transitional
@@ -1097,17 +1034,25 @@ void cMech::animate(float spf) {
         }
     }
 
+    // MOBILE
     {
+        mobile->grounded = traceable->grounded;
         mobile->animate(spf);
     }
 
-    { // ----> traceable
+    // TRACEABLE
+    {
+        traceable->jetthrottle = mobile->jetthrottle;
+        traceable->throttle = mobile->throttle;
         // Rigid Body, Collisions etc.
-        animatePhysics(spf);
-        alSourcefv(traceable->sound, AL_POSITION, traceable->pos);
-        //alSourcefv(traceable->sound, AL_VELOCITY, traceable->vel);
+        traceable->animate(spf);
+        if (traceable->sound != 0) {
+            alSourcefv(traceable->sound, AL_POSITION, traceable->pos);
+            //alSourcefv(traceable->sound, AL_VELOCITY, traceable->vel);
+        }
     }
 
+    // RIGGED
     {
         // Steering state.
         rigged->rotators[rigged->YAW][1] = -mobile->twr[1];
@@ -1116,7 +1061,7 @@ void cMech::animate(float spf) {
 
         // Drivetrain state.
         rigged->grounded = mobile->grounded;
-        rigged->jetting = mobile->jetpower;
+        rigged->jetting = mobile->jetthrottle;
 
         // Physical movement state.
         vector_cpy(rigged->pos, traceable->pos);
@@ -1140,10 +1085,10 @@ void cMech::drawSolid() {
     // Setup jumpjet light source - for player only so far. move to rLightsource?
     if (hasTag(HUMANPLAYER)) {
         int light = GL_LIGHT1;
-        if (mobile->jetpower > 0.001f) {
+        if (mobile->jetthrottle > 0.001f) {
             float p[] = {traceable->pos[0], traceable->pos[1]+1.2, traceable->pos[2], 1};
             //float zero[] = {0, 0, 0, 1};
-            float s = mobile->jetpower;
+            float s = mobile->jetthrottle;
             float a[] = {0.0,0.0,0.0,1};
             float d[] = {0.9 * s, 0.9 * s, 0.4 * s, 1};
             //glPushMatrix();
@@ -1294,28 +1239,6 @@ float cMech::constrainParticle(float* worldpos, float radius, float* localpos, c
         vector_add(worldpos, worldpos, traceable->pos);
     }
 
-    return depth;
-}
-
-// move to cWorld?
-float cMech::constrainParticleToWorld(float* worldpos, float radius) {
-    float depth = 0;
-    float maxrange = 25;
-    bool groundplane = !true;
-    if (groundplane)
-    if (worldpos[1] - radius < 0.0f) {
-        worldpos[1] = 0.0f + radius;
-        depth += -(worldpos[1] - radius) + 0.000001f;
-    }
-    std::list<cObject*>* range = cWorld::instance->filterByRange(this, worldpos, 0.0f, maxrange, -1, NULL);
-    if (!range->empty()) {
-
-        foreach(i, *range) {
-            cObject* object = *i;
-            depth += object->constrainParticle(worldpos, radius, NULL, this);
-        }
-    }
-    delete range;
     return depth;
 }
 

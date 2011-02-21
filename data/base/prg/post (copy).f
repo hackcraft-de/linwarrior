@@ -47,19 +47,8 @@ float noiz3(float x, float y, float z)
 	return 0.5 + 0.5 * 0.3333 * ( sin(w + u*sin(u + v*sin(v))) + sin(v + w*sin(w + u*sin(u))) +  sin(u + v*sin(v + w*sin(w))) );
 }
 
-float mixd(float a, float b, float alpha)
-{
-	return b;//((1.0-alpha)*a + alpha*b);
-}
-
 float ds[17] = float[](0.000, 0.707, -1.000, 0.707, 0.000, -0.707, 1.000, -0.707, 0.000, 0.707, -1.000, 0.707, 0.000, -0.707, 1.000, -0.707, 0.000);
 float dc[17] = float[](1.000, -0.707, 0.000, 0.707, -1.000, 0.707, 0.000, -0.707, 1.000, -0.707, 0.000, 0.707, -1.000, 0.707, 0.000, -0.707, 1.000);
-
-vec2 ofse(int i, float r, vec2 p)
-{
-	return vec2(ds[i]*r, dc[i]*r);
-	//return vec2(0.5*r-noiz3(p.x,p.y, i*0.23)*r, 0.5*r-noiz3(p.x,p.y, i*0.17)*r);
-}
 
 void main()
 {
@@ -93,46 +82,33 @@ void main()
 
 	// Depth blur
 	float dalpha = 0.3;
-	float d0nonlin = texture2DLod(dep,pix, 0.0).x;
+	float d0nonlin = texture2DLod(dep,gl_TexCoord[0].xy, 0.0).x;
 	float d0 = linear(d0nonlin);
-	rd = ofs * 0.35;
+	rd = ofs * 0.51;
 	r = rd;
-	float d1_ = linear(texture2DLod(dep,pix+ofse(1,r, pix), 0.0).x);
+	float d1_ = linear(texture2DLod(dep,pix+vec2(sn*ds[1]*r,cn*dc[1]*r), 0.0).x);
 	float d1 = mix(d0, d1_, dalpha); r += rd;
-	float d2_ = linear(texture2DLod(dep,pix+ofse(2,r, pix), 0.0).x);
+	float d2_ = linear(texture2DLod(dep,pix+vec2(sn*ds[2]*r,cn*dc[2]*r), 0.0).x);
 	float d2 = mix(d1, d2_, dalpha); r += rd;
-	float d3_ = linear(texture2DLod(dep,pix+ofse(3,r, pix), 0.0).x);
+	float d3_ = linear(texture2DLod(dep,pix+vec2(sn*ds[3]*r,cn*dc[3]*r), 0.0).x);
 	float d3 = mix(d2, d3_, dalpha); r += rd;
-	float d4_ = linear(texture2DLod(dep,pix+ofse(4,r, pix), 0.0).x);
+	float d4_ = linear(texture2DLod(dep,pix+vec2(sn*ds[4]*r,cn*dc[4]*r), 0.0).x);
 	float d4 = mix(d3, d4_, dalpha); r += rd;
-	float d5_ = linear(texture2DLod(dep,pix+ofse(5,r, pix), 0.0).x);
+	float d5_ = linear(texture2DLod(dep,pix+vec2(sn*ds[5]*r,cn*dc[5]*r), 0.0).x);
 	float d5 = mix(d4, d5_, dalpha); r += rd;
 	float depth0 = d0;
 	float depthn = d5;
-
-	// Derive Normal
-	float e = ofs * 0.9;
-	float d0x = linear(texture2DLod(dep,pix+vec2(e, 0.0), 0.0).x);
-	float d0y = linear(texture2DLod(dep,pix+vec2(0.0, e), 0.0).x);
-        float xd = (d0x - d0);
-        float yd = (d0y - d0);
-	vec3 nrm_ = normalize(vec3( -e * xd, -yd * e, e * e));
-//	nrm_ = nrm_ * transpose(gl_NormalMatrix);
-        vec3 nrm1 = vec3(0.5, 0.5, 0.5) + 0.5 * nrm_;
-//	nrm1 = transpose(gl_NormalMatrix) * nrm1;
-	vec4 nrm = vec4(nrm1, 1.0);
-
-	float d6_ = linear(texture2DLod(dep,pix+1.2*ofs*(vec2(nrm.x, nrm.y)-vec2(0.5)), 0.0).x);
-	float d6 = mix(d5, d6_, dalpha);
-
-	// Unproject Pos
-	mat4 MVPinv = gl_ModelViewProjectionMatrixInverse;
-	vec4 voxel = MVPinv * (vec4(pix.x, pix.y, d0nonlin, 1.0 ) * 2.0 - 1.0);
-	voxel.xyz /= voxel.w;
-	voxel.xyz *= 0.01;
-	voxel.w = 1.0;
-
-	vec4 poscode = vec4(0.5*sin(voxel.xyz*100.0) + 0.5, 1.0);
+//
+	float d6_ = linear(texture2DLod(dep,pix+vec2(sn*ds[6]*r,cn*dc[6]*r), 0.0).x);
+	float d6 = mix(d5, d6_, dalpha); r += rd;
+	float d7_ = linear(texture2DLod(dep,pix+vec2(sn*ds[7]*r,cn*dc[7]*r), 0.0).x);
+	float d7 = mix(d6, d7_, dalpha); r += rd;
+	float d8_ = linear(texture2DLod(dep,pix+vec2(sn*ds[8]*r,cn*dc[8]*r), 0.0).x);
+	float d8 = mix(d7, d8_, dalpha); r += rd;
+	float d9_ = linear(texture2DLod(dep,pix+vec2(sn*ds[9]*r,cn*dc[9]*r), 0.0).x);
+	float d9 = mix(d8, d9_, dalpha); r += rd;
+	depthn = d9;
+//
 
 	// SeDepth blur
 	float depthu = 0.0;
@@ -173,7 +149,43 @@ void main()
 		sum += c;
 		depths += c * d5_;
 		depthy = depths / sum;
+//
+		c = contrib(depth0, d6_);
+		sum += c;
+		depths += c * d6_;
+		c = contrib(depth0, d7_);
+		sum += c;
+		depths += c * d7_;
+		c = contrib(depth0, d8_);
+		sum += c;
+		depths += c * d8_;
+		c = contrib(depth0, d9_);
+		sum += c;
+		depths += c * d9_;
+		depthz = depths / sum;
+//
 	}
+
+	// Derive Normal
+	float e = ofs * 0.9;
+	float d0x = linear(texture2DLod(dep,pix+vec2(e, 0.0), 0.0).x);
+	float d0y = linear(texture2DLod(dep,pix+vec2(0.0, e), 0.0).x);
+        float xd = (d0x - d0);
+        float yd = (d0y - d0);
+	vec3 nrm_ = normalize(vec3( -e * xd, -yd * e, e * e));
+//	nrm_ = nrm_ * transpose(gl_NormalMatrix);
+        vec3 nrm1 = vec3(0.5, 0.5, 0.5) + 0.5 * nrm_;
+//	nrm1 = transpose(gl_NormalMatrix) * nrm1;
+	vec4 nrm = vec4(nrm1, 1.0);
+
+	// Unproject Pos
+	mat4 MVPinv = gl_ModelViewProjectionMatrixInverse;
+	vec4 voxel = MVPinv * (vec4(pix.x, pix.y, d0nonlin, 1.0 ) * 2.0 - 1.0);
+	voxel.xyz /= voxel.w;
+	voxel.xyz *= 0.01;
+	voxel.w = 1.0;
+
+	vec4 poscode = vec4(0.5*sin(voxel.xyz*100.0) + 0.5, 1.0);
 
 	// Openness
 	float outside = min(1.0, 5.0 * max(0.0, -(depthn-depth0)));
@@ -188,33 +200,33 @@ void main()
 	ao = max(ao, getAO(depth0, depthw));
 	ao = max(ao, getAO(depth0, depthx));
 	ao = max(ao, getAO(depth0, depthy));
-	ao = max(ao, getAO(depth0, mix(depth0,d6_, contrib(depth0,d6_))));
+	ao = max(ao, getAO(depth0, depthz));
 	float ao_ = min(1.0, 1.0 - ao);
 
-	float bluryness = min(1.0, 1.1*(depth0-0.1));
+	float bluryness = min(1.0, 1.2*(depth0-0.1));
 	float lum0 = (color0.r + color0.g + color0.b);
 	float lumn = (colorn.r + colorn.g + colorn.b);
 	float bloom = 1.0*(sig((max(0,lumn - lum0) - 0.0005) * 9) - 0.1);
-	vec4 composite = color0 * (0.80 + 0.60 * bloom) + 0.1 * (blur * bluryness);
+	vec4 composite = color0 + blur * bluryness + (0.80 * bloom) * color0;
 
-#if 1
-	vec4 result = (1.0+0.0*nois) * composite;// + d0 * pow(max(0.0,-voxel.y)*10.0,2.0) * vec4(0.0,1.0,0.0,1.0) + pow(1.0*d0, 0.9) * max(0.0,voxel.y) * vec4(1.0,0.9,0.5,1.0);
+#if 0
+	vec4 result = (1.0+0.0*nois) * composite;// + 10.0*d0 * max(0.0,-voxel.y) * vec4(1.0,1.0,0.0,1.0) + 3.0*d0 * max(0.0,voxel.y) * vec4(1.0,1.0,1.0,1.0);
 #elif 0
 	vec4 result = vec4(100.0*abs(vec3(depthn - depth0)), 1.0);
 #elif 0
 	vec4 result = vec4((100.0*abs(vec3(depthy - depth0))), 1.0);
-#elif 0
+#elif 1
 	vec4 result;
-	if (gl_TexCoord[0].x < 1.5) {
-		result = vec4(vec3(pow(1.4*ao_, 3.5)), 1.0);
+	if (gl_TexCoord[0].x < 0.5) {
+		result = vec4(color0.rgb * vec3(pow(1.5*ao_, 3.5)), 1.0);
 	} else {
 		result = vec4(color0.rgb, 1.0);
 	}
-#elif 0
+#elif 1
 	float mixalpha = 0.5;
 	vec4 result = vec4(1.0 * color0.rgb - pow(ao, 3.5)*0.7, 1.0);
 	result = mix(result, vec4(vec3(pow(ao_, 3.5)), 3.0), mixalpha);
-#elif 0
+#elif 1
 	vec4 result = vec4(vec3(nois), 1.0);
 #else
 	vec4 result = vec4(0,0,0,0);

@@ -123,19 +123,41 @@ struct rNameable : public rRole {
  * Encapsulates physical state as far as movement and position is concerned.
  */
 struct rTraceable : public cParticle, public rRole {
+    /// Averaged amount of groundedness [0,1] result from collision checks.
+    float grounded;
+    /// Jetdrive throttle setting hook usually [0,1].
+    float jetthrottle;
+    /// Grounddrive throttle setting hook usually [0,1].
+    float throttle;
     /// Constructor.
 
     rTraceable(cObject* obj = NULL) : cParticle(), rRole("TRACEABLE") {
         object = obj;
+        grounded = true;
+        jetthrottle = 0.0f;
+        throttle = 0.0f;
     }
     /// Copy Constructor.
 
     rTraceable(rTraceable * original) : cParticle(original), rRole("TRACEABLE") {
-            object = original->object;
+        object = original->object;
+        grounded = original->grounded;
+        jetthrottle = original->jetthrottle;
+        throttle = original->throttle;
     }
 
     virtual rRole* clone() {
         return new rTraceable(this);
+    }
+
+    void accumulate(float spf);
+    void integrate(float spf);
+    void collide(float spf);
+
+    virtual void animate(float spf) {
+        accumulate(spf);
+        integrate(spf);
+        collide(spf);
     }
 };
 
