@@ -29,9 +29,10 @@ cTree::cTree(float* pos, float* rot, int seed, int type, int age) {
         string filenames[] = {
             string("treeleafs.tga"),
             string("strangeleafs.tga"),
+            string("widowleafs.tga"),
             string("pineleafs.tga"),
         };
-        loopi (2) {
+        loopi (4) {
             string name = string(basepath).append(filenames[i]);
             cout << "Loading [" << name << "] ...\n";
             unsigned int texname;
@@ -102,9 +103,9 @@ void cTree::drawEffect() {
                 float y = tree->leaves[i*3+1];
                 float z = tree->leaves[i*3+2];
 
-                float light = 0.5f + 0.5f * (1.0f-exp(-0.1f * y));
-                float shake = 0.3f * (1.0f-exp(-0.1f * y));
-                float swirl = 1.0f + 7.0f * (1.0f-exp(-0.2f * y));
+                float light = 0.5f + 0.4f * (1.0f-exp(-0.1f * y));
+                float shake = 0.4f * (1.0f-exp(-0.1f * y));
+                float swirl = 1.0f + 10.0f * (1.0f-exp(-0.2f * y));
                 float size = 0.5f + log(tree->age)*0.26f + 0.18f * tree->height + 0.03f * sin(seconds * 0.21f + i * 0.1f);
 
                 float dx = 1.0f * sin(seconds * 0.41f + i * 0.1f);
@@ -161,20 +162,22 @@ cTree::rTree* cTree::getCompiledTree(int seed, int type, int age) {
     // There was no such tree cached - so lets compile a displaylist.
 
     static GLint leaf_displaylists[] = {-1, -1, -1, -1, -1};
-    if (leaf_displaylists[type] == -1) {
-        leaf_displaylists[type] = glGenLists(1);
-        glNewList(leaf_displaylists[type], GL_COMPILE);
-        switch (type) {
-            case 0: drawRubberTreeLeaf();
-                break;
-            case 1: drawCaribeanTreeLeaf();
-                break;
-            case 2: drawHalmTreeLeaf();
-                break;
-            case 3: drawButterflyTreeLeaf();
-                break;
-        };
-        glEndList();
+    if (type < 5) {
+        if (leaf_displaylists[type] == -1) {
+            leaf_displaylists[type] = glGenLists(1);
+            glNewList(leaf_displaylists[type], GL_COMPILE);
+            switch (type) {
+                case 0: drawRubberTreeLeaf();
+                    break;
+                case 1: drawCaribeanTreeLeaf();
+                    break;
+                case 2: drawHalmTreeLeaf();
+                    break;
+                case 3: drawButterflyTreeLeaf();
+                    break;
+            };
+            glEndList();
+        }
     }
 
     static GLuint trunk_displaylist = -1;

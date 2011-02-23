@@ -440,6 +440,10 @@ float cPlanetmap::constrainParticle(float* worldpos, float radius, float* localp
     return maxdelta;
 }
 
+void cPlanetmap::animate(float spf) {
+    if (tree) tree->seconds += spf;
+}
+
 
 int T = 0;
 int detail = 0;
@@ -900,7 +904,7 @@ void cPlanetmap::drawEffect() {
 
         const float step = 16;
         //const float near = (step*2)*(step*2);
-        const float s = 6 * step;
+        const float s = 5 * step;
         const float x = -((int) (p[0] / step)) * step;
         const float z = -((int) (p[2] / step)) * step;
         //cout << x << " " << z << endl;
@@ -941,7 +945,7 @@ void cPlanetmap::drawEffect() {
                 int visibleplants = plantdensity * opacity;
 
                 key = cNoise::LFSR16(key);
-                float treedensity = (3.05f * key) / 256.0f;
+                float treedensity = (1.05f * key) / 256.0f;
                 float visibletrees = treedensity;
                 
                 //cout << "opacity " << opacity << "  density " << density << endl;
@@ -1010,9 +1014,10 @@ void cPlanetmap::drawEffect() {
                         //unsigned char size = lfsr16;
                         //unsigned char size = rot;
 
-                        int age = fmax(0, fmin(6, i + ((a+b)&1)));
+                        int age = fmax(0, fmin(6, i*0.5f + ((a+b)&1)));
+                        int type = (b*b+(a >> 1))&7;
 
-                        tree->tree = cTree::getCompiledTree(1230+(b&6), (b*b)&3, 1+age);
+                        tree->tree = cTree::getCompiledTree(1230+(b&6), type, 2+age);
                         vector_set(tree->traceable->pos, x__, h-0.2, z__);
                         tree->traceable->ori[1] = a + b;
                         tree->drawSolid();

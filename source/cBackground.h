@@ -21,6 +21,7 @@ class cBackground;
 /**
  * A background in form of a SkySphere just like
  * those virtual horizons found in aviation instruments.
+ * Sets lightsource 0 as skylight according to time.
  */
 class cBackground {
 public:
@@ -32,7 +33,7 @@ public:
     float heightshift;
 public:
     cBackground();
-    void drawBackground(float hour = 12.00f); // Calls other draw*()
+    void drawBackground(float h = 12.00f); // Calls other draw*()
     void drawGalaxy();
     void drawUpperDome();
     void drawLowerDome();

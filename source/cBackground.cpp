@@ -458,7 +458,7 @@ cBackground::cBackground() {
     rainstrength = 0;
 }
 
-void cBackground::drawBackground(float hour) {
+void cBackground::drawBackground(float h) {
     // Reference: dawn sunrise daylight sunset dusk darkness
     
     // Push random seed because the current seed is going to be
@@ -473,16 +473,17 @@ void cBackground::drawBackground(float hour) {
     // every quarter hour
     speed *= 2;
     // every 5 minutes
-    speed *= 3;
+    //speed *= 3;
     // every minute
     //speed *= 5;
-    this->hour = fmod(speed*hour, 24.00f);
+    hour = fmod(speed*h, 24.00f);
     //hour = rand()%24;
-    //this->hour = 0;
-    //this->hour = 12;
+    //hour = 0;
+    //hour = 12;
 
-    // Sample and set ambient haze color.
+    // Sample and set unlit base ambient haze color.
     rgba haze = { 0,0,0,0 };
+    glFogfv(GL_FOG_COLOR, haze);
     if (1) {
         unsigned char s = 131;
         int samples = 23;
@@ -490,9 +491,9 @@ void cBackground::drawBackground(float hour) {
             s = cNoise::LFSR8(s);
             float alpha = s / 256.0f * 2 * M_PI;
             s = cNoise::LFSR8(s);
-            float beta = s / 256.0f * 1 * M_PI;
+            float beta = s / 256.0f * 1.0f * M_PI;
             float color[16];
-            vec3 n = { sin(alpha)*sin(beta),cos(beta),sin(beta)*cos(alpha) };
+            vec3 n = { sin(alpha)*sin(beta),0.99f*cos(beta),sin(beta)*cos(alpha) };
             //vector_print(n);
             ambient_sky(n[0],n[1],n[2], color, hour);
             //quat_print(color);
@@ -503,19 +504,17 @@ void cBackground::drawBackground(float hour) {
         loopj(4) {
             haze[j] /= float(samples);
         }
+        //printf("Unlit Haze: "); quat_print(haze);
     }
-    glFogfv(GL_FOG_COLOR, haze);
-
-    //printf("Haze: "); quat_print(haze);
 
     // Directional sun and moonlight.
     if (1) {
         float p[] = {0.7, 0.9, -0.3, 0};
         //float p[] = {70, 90, -30, 0};
-        float a[] = {0.2 * haze[0], 0.2 * haze[1], 0.2 * haze[2], 1};
         float t = ((hour / 24.0f * 2 * M_PI) - 0.5f * M_PI); // = [-0.5pi,+1.5pi]
         float s = sin(t) * 0.5f + 0.5f;
-        float d[] = {0.9 * s + (1-s)*0.15, 0.9 * s + (1-s)*0.15, 0.4 * s + (1-s)*0.2, 1};
+        float a[] = {0.25*s*haze[0], 0.25*s*haze[1], 0.25*s*s*haze[2], 1};
+        float d[] = {0.9 * s + (1-s)*0.0, 0.9 * s + (1-s)*0.0, 0.4 * s + (1-s)*0.2, 1};
         glLightfv(GL_LIGHT0, GL_POSITION, p);
         glLightfv(GL_LIGHT0, GL_AMBIENT, a);
         glLightfv(GL_LIGHT0, GL_DIFFUSE, d);
@@ -523,6 +522,21 @@ void cBackground::drawBackground(float hour) {
         //glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.0001);
         //glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.000001);
         glEnable(GL_LIGHT0);
+    }
+
+    // Horizon fog.
+    if (1) {
+        glFogfv(GL_FOG_COLOR, haze);
+        if (1) {
+            float density = 0.008;
+            glFogi(GL_FOG_MODE, GL_EXP2);
+            glFogf(GL_FOG_DENSITY, density);
+        } else {
+            glFogi(GL_FOG_MODE, GL_LINEAR);
+            glFogf(GL_FOG_START, 95.0f);
+            glFogf(GL_FOG_START, 0.0f);
+            glFogf(GL_FOG_END, 100.0f);
+        }
     }
 
     GLint mode;

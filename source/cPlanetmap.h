@@ -70,6 +70,8 @@ public:
     void getCachedHeight(float x, float z, float* const color);
     /// Re-adjust particle position by making multiple downward-hemispherical checks.
     virtual float constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor);
+    /// Animate foliage.
+    virtual void animate(float spf);
     /// Draw Landscape surrounding the current camera position.
     virtual void drawSolid();
     /// Draw Decals surrounding the current camera position.
