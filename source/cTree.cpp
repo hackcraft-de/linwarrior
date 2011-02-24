@@ -226,7 +226,7 @@ int cTree::drawTreePart(int depth, int maxdepth, float length, int seed, GLuint 
     if (depth >= maxdepth) return seed;
     //
     const float height = length * (maxdepth - depth);
-    const float width = 0.035 * length + (maxdepth - depth)*(maxdepth - depth) * length * 0.0125f;
+    const float width = 0.06 * length + (maxdepth - depth)*(maxdepth - depth) * length * 0.02f;
     bool draw_poly_leaves = !true;
     // Draw Trunk and leaf if at max depth.
     glPushMatrix();

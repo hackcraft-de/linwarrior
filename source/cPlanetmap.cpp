@@ -19,6 +19,25 @@ int cPlanetmap::sInstances = 0;
 std::vector<long> cPlanetmap::sTextures;
 std::vector<float> cPlanetmap::sSizes;
 
+inline float cPlanetmap::sMod::getModifiedHeight(float x, float z, float h) {
+    // Square leveling
+    {
+        float x_ = x - pos[0];
+        float z_ = z - pos[2];
+        const float inv_range = 1.0f / range;
+        if (-range < x_ && x_ < +range && -range < z_ && z_ < +range) {
+            float dx = fabs(x_);
+            float dz = fabs(z_);
+            float dy = 1.0f - fmax(dx,dz) * inv_range;
+            dy = (dy < 0.25f) ? (dy * 4.0f) : 1.0f;
+            h *= (1.0f - dy);
+            h += height * dy;
+        }
+        return h;
+    }
+}
+
+
 cPlanetmap::cPlanetmap() {
     sInstances++;
     if (sInstances == 1) {
@@ -218,6 +237,8 @@ void cPlanetmap::getHeight(float x, float z, float* const color) {
     }
 
     loopiv(mods) {
+        h = mods[i]->getModifiedHeight(x, z, h);
+        /*
         sMod* mod = mods[i];
 
         // Square leveling
@@ -236,6 +257,7 @@ void cPlanetmap::getHeight(float x, float z, float* const color) {
                 h += height * dy;
             }
         }
+        */
     }
 
     color[cLandscape::BUMP] = h;
@@ -945,7 +967,7 @@ void cPlanetmap::drawEffect() {
                 int visibleplants = plantdensity * opacity;
 
                 key = cNoise::LFSR16(key);
-                float treedensity = (1.05f * key) / 256.0f;
+                float treedensity = (2.05f * key) / 256.0f;
                 float visibletrees = treedensity;
                 
                 //cout << "opacity " << opacity << "  density " << density << endl;

@@ -43,6 +43,7 @@ public:
         float pos[3];
         float range;
         float height;
+        float getModifiedHeight(float x, float y, float h);
     };
     /// All effective surface modifictions.
     std::vector<sMod*> mods;
