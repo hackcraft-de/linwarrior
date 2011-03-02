@@ -132,56 +132,58 @@ void cWeaponMachinegun::animate(float spf) {
 }
 
 void cWeaponMachinegun::drawSolid() {
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
-    {
-        SGL::glUseProgram_fglitcolor();
-        
-        glPushMatrix();
+    if (drawWeapon) {
+        glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
-            glMultMatrixf(weaponPosef);
-            glRotatef(-90, 1, 0, 0);
+            SGL::glUseProgram_fglitcolor();
 
-            // Scale
-            float scale = weaponScale;
-            glScalef(scale, scale, scale);
-
-            glColor4f(0.2, 0.3, 0.2, 1.0);
             glPushMatrix();
             {
-                glScalef(0.1, 0.14, 0.12);
-                cPrimitives::glCenterUnitBlock();
-            }
-            glPopMatrix();
+                transformTo();
+                glRotatef(-90, 1, 0, 0);
 
-            if (this->ready() == 0 && remainingAmmo != 0) glRotatef(this->weaponOwner->seconds * 8 * 90, 0, 1, 0);
+                // Scale
+                float scale = weaponScale;
+                glScalef(scale, scale, scale);
 
-            glColor4f(0.3, 0.3, 0.3, 1.0);
-            glPushMatrix();
-            {
-                glTranslatef(0, 0.75, 0);
-                glScalef(0.065, 0.75, 0.065);
-                cPrimitives::glCenterUnitCylinder(7);
-
-            }
-            glPopMatrix();
-
-            glColor4f(0.1, 0.1, 0.1, 1.0);
-            int n = 3;
-
-            loopi(n) {
+                glColor4f(0.2, 0.3, 0.2, 1.0);
                 glPushMatrix();
                 {
-                    glRotatef(i * 360 / n, 0, 1, 0);
-                    glTranslatef(0.075, 0.8, 0);
-                    glScalef(0.03, 0.8, 0.03);
-                    cPrimitives::glCenterUnitCylinder(7);
+                    glScalef(0.1, 0.14, 0.12);
+                    cPrimitives::glCenterUnitBlock();
                 }
                 glPopMatrix();
+
+                if (this->ready() == 0 && remainingAmmo != 0) glRotatef(this->weaponOwner->seconds * 8 * 90, 0, 1, 0);
+
+                glColor4f(0.3, 0.3, 0.3, 1.0);
+                glPushMatrix();
+                {
+                    glTranslatef(0, 0.75, 0);
+                    glScalef(0.065, 0.75, 0.065);
+                    cPrimitives::glCenterUnitCylinder(7);
+
+                }
+                glPopMatrix();
+
+                glColor4f(0.1, 0.1, 0.1, 1.0);
+                int n = 3;
+
+                loopi(n) {
+                    glPushMatrix();
+                    {
+                        glRotatef(i * 360 / n, 0, 1, 0);
+                        glTranslatef(0.075, 0.8, 0);
+                        glScalef(0.03, 0.8, 0.03);
+                        cPrimitives::glCenterUnitCylinder(7);
+                    }
+                    glPopMatrix();
+                }
             }
+            glPopMatrix();
         }
-        glPopMatrix();
+        glPopAttrib();
     }
-    glPopAttrib();
 }
 
 void cWeaponMachinegun::drawEffect() {

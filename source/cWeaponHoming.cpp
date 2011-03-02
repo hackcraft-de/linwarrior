@@ -152,56 +152,57 @@ void cWeaponHoming::animate(float spf) {
 
 void cWeaponHoming::drawSolid() {
     // Missile barrels
-
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
-    {
-        SGL::glUseProgram_fglitcolor();
-
-        glPushMatrix();
+    if (drawWeapon) {
+        glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
-            glMultMatrixf(weaponPosef);
-            glRotatef(-90, 1, 0, 0);
+            SGL::glUseProgram_fglitcolor();
 
-            // Scale
-            float scale = weaponScale;
-            glScalef(scale, scale, scale);
-
-            glColor4f(0.3, 0.3, 0.3, 1.0);
             glPushMatrix();
             {
-                glTranslatef(0, 0.75, 0);
-                glScalef(0.065, 0.75, 0.065);
-                cPrimitives::glCenterUnitCylinder(7);
+                transformTo();
+                glRotatef(-90, 1, 0, 0);
 
-            }
-            glPopMatrix();
+                // Scale
+                float scale = weaponScale;
+                glScalef(scale, scale, scale);
 
-            glColor4f(0.3, 0.3, 0.2, 1.0);
-            glPushMatrix();
-            {
-                glScalef(0.1, 0.14, 0.12);
-                cPrimitives::glCenterUnitBlock();
-            }
-            glPopMatrix();
-
-            glColor4f(0.1, 0.1, 0.1, 1.0);
-            if (this->ready() == 0 && remainingAmmo != 0) glRotatef(this->weaponOwner->seconds * 1 * 90, 0, 1, 0);
-            int n = 4;
-
-            loopi(n) {
+                glColor4f(0.3, 0.3, 0.3, 1.0);
                 glPushMatrix();
                 {
-                    glRotatef(i * 360 / n, 0, 1, 0);
-                    glTranslatef(0.075, 0.8, 0);
-                    glScalef(0.06, 0.8, 0.06);
+                    glTranslatef(0, 0.75, 0);
+                    glScalef(0.065, 0.75, 0.065);
                     cPrimitives::glCenterUnitCylinder(7);
+
                 }
                 glPopMatrix();
+
+                glColor4f(0.3, 0.3, 0.2, 1.0);
+                glPushMatrix();
+                {
+                    glScalef(0.1, 0.14, 0.12);
+                    cPrimitives::glCenterUnitBlock();
+                }
+                glPopMatrix();
+
+                glColor4f(0.1, 0.1, 0.1, 1.0);
+                if (this->ready() == 0 && remainingAmmo != 0) glRotatef(this->weaponOwner->seconds * 1 * 90, 0, 1, 0);
+                int n = 4;
+
+                loopi(n) {
+                    glPushMatrix();
+                    {
+                        glRotatef(i * 360 / n, 0, 1, 0);
+                        glTranslatef(0.075, 0.8, 0);
+                        glScalef(0.06, 0.8, 0.06);
+                        cPrimitives::glCenterUnitCylinder(7);
+                    }
+                    glPopMatrix();
+                }
             }
+            glPopMatrix();
         }
-        glPopMatrix();
+        glPopAttrib();
     }
-    glPopAttrib();
 
     // Missiles themselves:
     glPushAttrib(GL_ALL_ATTRIB_BITS);

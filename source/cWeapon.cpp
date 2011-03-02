@@ -50,7 +50,13 @@ cWeapon::cWeapon() {
         }
     }
 
-    weaponMountfv = weaponBasefv = NULL;
+    quat_zero(weaponOri1);
+    vector_zero(weaponPos1);
+    quat_zero(weaponOri0);
+    vector_zero(weaponPos0);
+    weaponMount = 0;
+
+    weaponBasefv = NULL;
     weaponOwner = NULL;
     weaponScale = 1.0f;
     timeReloading = 0.0f;
@@ -62,6 +68,7 @@ cWeapon::cWeapon() {
     remainingClips = depotSize;
 
     soundSource = -1;
+    drawWeapon = false;
 }
 
 void cWeapon::playSource() {
@@ -84,9 +91,16 @@ void cWeapon::transform() {
         glPushMatrix();
         {
             glLoadIdentity();
-            if (weaponBasefv != NULL) glMultMatrixf(weaponBasefv);
-            else if (weaponOwner) glTranslatef(weaponOwner->traceable->pos[0], weaponOwner->traceable->pos[1], weaponOwner->traceable->pos[2]);
-            if (weaponMountfv) glMultMatrixf(weaponMountfv);
+            if (weaponBasefv != NULL) {
+                glMultMatrixf(weaponBasefv);
+            } else {
+                glTranslatef(weaponPos0[0], weaponPos0[1], weaponPos0[2]);
+                SGL::glRotateq(weaponOri0);
+                glTranslatef(weaponPos1[0], weaponPos1[1], weaponPos1[2]);
+                SGL::glRotateq(weaponOri1);
+                // FIXME: All weapon's forward are inverted, therefore rotate.
+                glRotatef(180, 0,1,0);
+            }
             glGetFloatv(GL_MODELVIEW_MATRIX, weaponPosef);
         }
         glPopMatrix();
@@ -94,6 +108,10 @@ void cWeapon::transform() {
             alSourcefv(soundSource, AL_POSITION, &weaponPosef[12]);
         }
     }
+}
+
+void cWeapon::transformTo() {
+    glMultMatrixf(weaponPosef);
 }
 
 int cWeapon::damageByParticle(float* worldpos, float radius, int roles, float damage) {

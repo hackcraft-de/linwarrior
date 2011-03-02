@@ -21,19 +21,64 @@ std::vector<float> cPlanetmap::sSizes;
 
 inline float cPlanetmap::sMod::getModifiedHeight(float x, float z, float h) {
     // Square leveling
-    {
-        float x_ = x - pos[0];
-        float z_ = z - pos[2];
-        const float inv_range = 1.0f / range;
-        if (-range < x_ && x_ < +range && -range < z_ && z_ < +range) {
-            float dx = fabs(x_);
-            float dz = fabs(z_);
-            float dy = 1.0f - fmax(dx,dz) * inv_range;
-            dy = (dy < 0.25f) ? (dy * 4.0f) : 1.0f;
-            h *= (1.0f - dy);
-            h += height * dy;
-        }
-        return h;
+    int type = 3;
+
+    switch(type) {
+        // Flat Square Level
+        case 0: {
+            float x_ = x - pos[0];
+            float z_ = z - pos[2];
+            const float inv_range = 1.0f / range;
+            if (-range < x_ && x_ < +range && -range < z_ && z_ < +range) {
+                float dx = fabs(x_);
+                float dz = fabs(z_);
+                float dy = 1.0f - fmax(dx,dz) * inv_range;
+                dy = (dy < 0.25f) ? (dy * 4.0f) : 1.0f;
+                h *= (1.0f - dy);
+                h += height * dy;
+            }
+            return h;
+        } break;
+        // Smooth Square Level
+        case 1: {
+            float x_ = x - pos[0];
+            float z_ = z - pos[2];
+            if (-range < x_ && x_ < +range && -range < z_ && z_ < +range) {
+                float dx = fabs(x_);
+                float dz = fabs(z_);
+                float d = fmax(dx,dz) / range;
+                //float alpha = 1.0f - pow(d, 8);
+                float alpha = 1.0f - fmin(cDistortion::sig((d - 0.8f) * 20.0f) * 1.05f, 1.0f);
+                h += alpha * (height - h);
+            }
+            return h;
+        } break;
+        // Smooth Round Level
+        case 2: {
+            float x_ = x - pos[0];
+            float z_ = z - pos[2];
+            float d2 = x_*x_ + z_*z_;
+            if (d2 < range * range) {
+                float d = sqrt(d2) / range;
+                float alpha = 1.0f - fmin(cDistortion::sig((d - 0.8f) * 20.0f) * 1.05f, 1.0f);
+                h += alpha * (height - h);
+            }
+            return h;
+        } break;
+        // Crater
+        case 3: {
+            float x_ = x - pos[0];
+            float z_ = z - pos[2];
+            float d2 = x_*x_ + z_*z_;
+            if (d2 < range * range) {
+                float d = sqrt(d2) / range;
+                float dy = height + 0.2f * range * sin(pow(d, 8.0) * M_PI);
+                float alpha = 1.0f - fmin(cDistortion::sig((d - 0.85f) * 30.0f) * 1.05f, 1.0f);
+                h += alpha * (dy - h);
+            }
+            return h;
+        } break;
+        default: return h;
     }
 }
 
@@ -967,7 +1012,7 @@ void cPlanetmap::drawEffect() {
                 int visibleplants = plantdensity * opacity;
 
                 key = cNoise::LFSR16(key);
-                float treedensity = (2.05f * key) / 256.0f;
+                float treedensity = (1.51f * key) / 256.0f;
                 float visibletrees = treedensity;
                 
                 //cout << "opacity " << opacity << "  density " << density << endl;

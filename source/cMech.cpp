@@ -24,6 +24,7 @@ using std::endl;
 
 DEFINE_glprintf
 
+#define EXPERIMENT true
 
 // -------------------------------------------------------------------
 
@@ -341,7 +342,7 @@ void rRigged::transformMounts() {
     };
 
     MD5Format::joint* joints_ = joints;
-    loopi(7) {
+    loopi(3) {
         int jidx = jointpoints[mounts[i]];
         if (jidx < 0) continue;
 
@@ -349,23 +350,13 @@ void rRigged::transformMounts() {
         {
             glLoadIdentity();
 
-            const float f = scale;
             if (pos != NULL) glTranslatef(pos[0], pos[1], pos[2]);
             if (ori != NULL) SGL::glRotateq(ori);
-            glRotatef(180, 0, 1, 0);
-            // Swap axes (it's actually a rotation around x)
-            float m[] = {
-                1, 0, 0, 0,
-                0, 0, -1, 0,
-                0, 1, 0, 0,
-                0, 0, 0, 1
-            };
-            glMultMatrixf(m);
-            glScalef(f, f, f);
+            glScalef(scale, scale, scale);
 
             glTranslatef(joints_[jidx].v[0], joints_[jidx].v[1], joints_[jidx].v[2]);
             SGL::glRotateq(joints_[jidx].q);
-            glScalef(1.0f / f, 1.0f / f, 1.0f / f);
+            glScalef(1.0f / scale, 1.0f / scale, 1.0f / scale);
             glRotatef(180, 0, 1, 0); // Hack, need to invert weapons and camera.
             if (matrices[i] != NULL) glGetFloatv(GL_MODELVIEW_MATRIX, matrices[i]);
         }
@@ -381,6 +372,18 @@ void rRigged::loadModel(std::string filename) {
     // Make joints local for later animation and transformation to global.
     MD5Format::joint* joints_ = MD5Format::getJoints(model);
     MD5Format::toLocalJoints(model->numJoints, joints_, joints_);
+
+    // Rotate around X to swap Y/Z.
+    quat convaxes;
+    vec3 xaxis = {1,0,0};
+    quat_rotaxis(convaxes, (-0.5f * M_PI), xaxis);
+    quat_mul(joints_[0].q, joints_[0].q, convaxes);
+
+    // Rotate yaw 180 to make frontfacing.
+    quat convfacing;
+    vec3 yaxis = {0,1,0};
+    quat_rotaxis(convfacing, M_PI, yaxis);
+    quat_mul(joints_[0].q, joints_[0].q, convfacing);
 
     // Allocate space for animated global joints.
     joints = new MD5Format::joint[model->numJoints];
@@ -417,16 +420,6 @@ void rRigged::drawSolid() {
         glTranslatef(pos[0], pos[1], pos[2]);
         SGL::glRotateq(ori);
         //cPrimitives::glAxis(3.0f);
-        // The model was modelled facing to the camera.
-        glRotatef(180, 0, 1, 0);
-        // Swap axes (it's actually a rotation around x)
-        float m[] = {
-            1, 0, 0, 0,
-            0, 0, -1, 0,
-            0, 1, 0, 0,
-            0, 0, 0, 1
-        };
-        glMultMatrixf(m);
         float rscale = scale;
         glScalef(rscale, rscale, rscale);
         drawMeshes();
@@ -442,16 +435,6 @@ void rRigged::drawEffect() {
         {
             glTranslatef(pos[0], pos[1], pos[2]);
             SGL::glRotateq(ori);
-            // The model was modelled facing to the camera.
-            glRotatef(180, 0, 1, 0);
-            // Swap axes (it's actually a rotation around x)
-            float m[] = {
-                1, 0, 0, 0,
-                0, 0, -1, 0,
-                0, 1, 0, 0,
-                0, 0, 0, 1
-            };
-            glMultMatrixf(m);
             float rscale = scale;
             glScalef(rscale, rscale, rscale);
             drawBones();
@@ -481,16 +464,6 @@ void rRigged::drawEffect() {
 
                         glTranslatef(pos[0], pos[1], pos[2]);
                         SGL::glRotateq(ori);
-                        // The model was modelled facing to the camera.
-                        glRotatef(180, 0, 1, 0);
-                        // Swap axes (it's actually a rotation around x)
-                        float m[] = {
-                            1, 0, 0, 0,
-                            0, 0, -1, 0,
-                            0, 1, 0, 0,
-                            0, 0, 0, 1
-                        };
-                        glMultMatrixf(m);
                         float rscale = scale;
                         glScalef(rscale, rscale, rscale);
                         glTranslatef(v[0], v[1], v[2]);
@@ -828,14 +801,14 @@ cMech::cMech(float* pos, float* rot) {
         const char* fns[] = {
             //"/media/44EA-7693/workspaces/mm3d/soldier/soldier.md5mesh",
             "data/base/wanzers/frogger/frogger.md5mesh",
-            "data/blenswap.com/flopsy/flopsy.md5mesh",
+            "data/blendswap.com/flopsy/flopsy.md5mesh",
             "data/base/wanzers/gorilla/gorilla_ii.md5mesh",
             "data/opengameart.org/scorpion/scorpion.md5mesh",
             "data/base/wanzers/lemur/lemur.md5mesh",
             "data/base/tanks/bug/bug.md5mesh",
             "data/base/tanks/ant/ant.md5mesh",
             "data/base/wanzers/kibitz/kibitz.md5mesh",
-            "data/base/tanks/pod/pod.md5mesh"
+            //"data/base/tanks/pod/pod.md5mesh"
         };
         rigged->loadModel(string(fns[mod]));
     } catch (const char* s) {
@@ -952,6 +925,7 @@ void cMech::setAsAudioListener() {
 // move to rMobile?
 void cMech::mountWeapon(char* point, cWeapon *weapon, bool add) {
     if (weapon == NULL) throw "Null weapon for mounting given.";
+    weapon->weaponMount = rigged->getMountpoint(point);
     weapon->weaponBasefv = rigged->getMountMatrix(point);
     weapon->weaponOwner = this;
     weapon->weaponScale = rigged->scale;
@@ -1077,6 +1051,16 @@ void cMech::transform() {
         rigged->transform();
     }
     {
+        loopi(mobile->weapons.size()) {
+            cWeapon* weapon = mobile->weapons[i];
+            MD5Format::joint* joint = &rigged->joints[weapon->weaponMount];
+            quat_cpy(weapon->weaponOri0, traceable->ori);
+            vector_cpy(weapon->weaponPos0, traceable->pos);
+            quat_cpy(weapon->weaponOri1, joint->q);
+            vector_cpy(weapon->weaponPos1, joint->v);
+            weapon->weaponBasefv = NULL;
+        }
+
         mobile->transform();
     }
 }

@@ -114,17 +114,34 @@ struct rRigged : public rRole {
         return string(names[num]);
     }
 
+    int getMountpoint(char* point) {
+        int jp = 0;
+        if (strcmp(point, "LTorsor") == 0) jp = LSMOUNT;
+        else if (strcmp(point, "LUpArm") == 0) jp = LSMOUNT;
+        else if (strcmp(point, "LLoArm") == 0) jp = LAMOUNT;
+        else if (strcmp(point, "RTorsor") == 0) jp = RSMOUNT;
+        else if (strcmp(point, "RUpArm") == 0) jp = RSMOUNT;
+        else if (strcmp(point, "RLoArm") == 0) jp = RAMOUNT;
+        else if (point[0] == 'L') jp = LSMOUNT;
+        else if (point[0] == 'R') jp = RSMOUNT;
+        else if (point[0] == 'C') jp = CTMOUNT;
+        else jp = BKMOUNT;
+        return jointpoints[jp];
+    }
+
     float* getMountMatrix(char* point) {
-        if (strcmp(point, "LTorsor") == 0) return LSMount;
-        else if (strcmp(point, "LUpArm") == 0) return LSMount;
-        else if (strcmp(point, "LLoArm") == 0) return LAMount;
-        else if (strcmp(point, "RTorsor") == 0) return RSMount;
-        else if (strcmp(point, "RUpArm") == 0) return RSMount;
-        else if (strcmp(point, "RLoArm") == 0) return RAMount;
-        else if (point[0] == 'L') return LSMount;
-        else if (point[0] == 'R') return RSMount;
-        else if (point[0] == 'C') return CTMount;
-        else return BKMount;
+        float* jp = NULL;
+        if (strcmp(point, "LTorsor") == 0) jp = LSMount;
+        else if (strcmp(point, "LUpArm") == 0) jp = LSMount;
+        else if (strcmp(point, "LLoArm") == 0) jp = LAMount;
+        else if (strcmp(point, "RTorsor") == 0) jp = RSMount;
+        else if (strcmp(point, "RUpArm") == 0) jp = RSMount;
+        else if (strcmp(point, "RLoArm") == 0) jp = RAMount;
+        else if (point[0] == 'L') jp = LSMount;
+        else if (point[0] == 'R') jp = RSMount;
+        else if (point[0] == 'C') jp = CTMount;
+        else jp = BKMount;
+        return jp;
     }
 
     void drawBones();

@@ -82,46 +82,48 @@ void cWeaponRaybeam::animate(float spf) {
 }
 
 void cWeaponRaybeam::drawSolid() {
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
-    {
-        SGL::glUseProgram_fglitcolor();
-        
-        glPushMatrix();
+    if (drawWeapon) {
+        glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
-            glMultMatrixf(weaponPosef);
-            glRotatef(-90, 1, 0, 0);
+            SGL::glUseProgram_fglitcolor();
 
-            // Scale
-            float scale = weaponScale;
-            glScalef(scale, scale, scale);
-
-            if (this->ready() == 0 && remainingAmmo != 0) {
-            }
-
-            glColor4f(0.3, 0.2, 0.3, 1.0);
             glPushMatrix();
             {
-                glScalef(0.1, 0.14, 0.12);
-                cPrimitives::glCenterUnitBlock();
-            }
-            glPopMatrix();
+                transformTo();
+                glRotatef(-90, 1, 0, 0);
 
-            glColor4f(0.1, 0.1, 0.1, 1.0);
-            glPushMatrix();
-            {
-                glTranslatef(0.0, 0.7, 0);
-                glScalef(0.03, 0.7, 0.03);
-                cPrimitives::glCenterUnitCylinder(7);
-                glTranslatef(0.0, 1.0, 0);
-                glScalef(2.0, 0.1, 2.0);
-                glColor4f(0.4, 0.4, 0.4, 1.0);
-                cPrimitives::glCenterUnitCylinder(7);
+                // Scale
+                float scale = weaponScale;
+                glScalef(scale, scale, scale);
+
+                if (this->ready() == 0 && remainingAmmo != 0) {
+                }
+
+                glColor4f(0.3, 0.2, 0.3, 1.0);
+                glPushMatrix();
+                {
+                    glScalef(0.1, 0.14, 0.12);
+                    cPrimitives::glCenterUnitBlock();
+                }
+                glPopMatrix();
+
+                glColor4f(0.1, 0.1, 0.1, 1.0);
+                glPushMatrix();
+                {
+                    glTranslatef(0.0, 0.7, 0);
+                    glScalef(0.03, 0.7, 0.03);
+                    cPrimitives::glCenterUnitCylinder(7);
+                    glTranslatef(0.0, 1.0, 0);
+                    glScalef(2.0, 0.1, 2.0);
+                    glColor4f(0.4, 0.4, 0.4, 1.0);
+                    cPrimitives::glCenterUnitCylinder(7);
+                }
+                glPopMatrix();
             }
             glPopMatrix();
         }
-        glPopMatrix();
+        glPopAttrib();
     }
-    glPopAttrib();
 }
 
 void cWeaponRaybeam::drawEffect() {
@@ -181,7 +183,7 @@ void cWeaponRaybeam::drawEffect() {
 
         glPushMatrix();
         {
-            glMultMatrixf(weaponPosef);
+            transformTo();
 
             float m[16];
             glGetFloatv(GL_MODELVIEW_MATRIX, m);

@@ -14,6 +14,12 @@
 using std::cout;
 using std::endl;
 
+void adjustHeight(cPlanetmap* planetmap, float* pos) {
+    float color[16];
+    planetmap->getHeight(pos[0], pos[2], color);
+    pos[1] = color[3] + 0.001f;
+}
+
 void cMission::checkConditions() {
     // Destroyed all necessary enemies?
     unsigned int n = 0;
@@ -121,6 +127,7 @@ cObject* cMission::init(cWorld* world) {
 #define JURATA      { 400, 0, +100 }
 #define SPADENIX    { 300, 0, +150 }
 
+#define PLAYERPOS SKYTIDE
 
 void cOpenMission::onVictory() {
     //cMission::onVictory();
@@ -230,7 +237,7 @@ cObject* cOpenMission::init(cWorld* world) {
     cout << "Initialising vehicles...\n";
     cObject* player = NULL;
     {
-        float position[] = SPACEPORT;
+        float position[] = PLAYERPOS;
         player = initPlayerParty(world, planetmap, position);
     }
 
@@ -279,9 +286,7 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
     if (true) {
         float pos[3] = {p[0]-20, 0.1, p[2]-50};
         float rot[3] = {0, -170, 0};
-        float color[16];
-        planetmap->getHeight(pos[0],pos[2], color);
-        pos[1] += color[3];
+        adjustHeight(planetmap, pos);
         cMech* mech = new cMech(pos, rot);
         if (mech == NULL) throw "No memory for player mech!";
         player = mech;
@@ -330,9 +335,7 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
     if (true) {
         float pos[3] = {p[0]+13 * 1, 0.1, p[2]-50 * 1};
         float rot[3] = {0, -210, 0};
-        float color[16];
-        planetmap->getHeight(pos[0],pos[2], color);
-        pos[1] += color[3];
+        adjustHeight(planetmap, pos);
         cMech* mech = new cMech(pos, rot);
         assert(mech != NULL);
 
@@ -356,9 +359,7 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
     if (true) {
         float pos[3] = {p[0]+7 * 1, 0.1, p[2]-50 * 1};
         float rot[3] = {0, -210, 0};
-        float color[16];
-        planetmap->getHeight(pos[0],pos[2], color);
-        pos[1] += color[3];
+        adjustHeight(planetmap, pos);
         cMech* mech = new cMech(pos, rot);
         assert(mech != NULL);
 
@@ -399,7 +400,7 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
     mod->pos[1] = loc[1] + 0;
     mod->pos[2] = loc[2] + 50;
     mod->height = loc[1] - 0.009f;
-    mod->range = 135;
+    mod->range = 155;
     planetmap->mods.push_back(mod);
 
     //planetmap->getHeight(loc[0],loc[2], color);
@@ -420,8 +421,9 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
 
     // Allied Patrol
     if (true) {
-        float pos[3] = { loc[0]+10, loc[1]+0, loc[2]-50 };
+        float pos[3] = { loc[0]+10, loc[1], loc[2]-50 };
         float rot[3] = { 0, -210, 0 };
+        adjustHeight(planetmap, pos);
         cMech* mech = new cMech(pos, rot);
         assert(mech != NULL);
 
@@ -444,12 +446,16 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
         }
 
         float d[] = { loc[0]+100, loc[1]+0, loc[1]-50 };
+        adjustHeight(planetmap, d);
         mech->controlled->controller->pushGotoDestination(d);
         float c[] = { loc[0]+100, loc[1]+0, loc[2]+120 };
+        adjustHeight(planetmap, c);
         mech->controlled->controller->pushGotoDestination(c);
         float b[] = { loc[0]-20, loc[1]+0, loc[2]+120 };
+        adjustHeight(planetmap, b);
         mech->controlled->controller->pushGotoDestination(b, false);
         float a[] = { loc[0]-15, loc[1]+0, loc[2]-50 };
+        adjustHeight(planetmap, a);
         mech->controlled->controller->pushGotoDestination(a);
         mech->controlled->controller->pushRepeatInstructions(4);
         mech->controlled->controller->pushWaitEvent(1000 * 2);
@@ -458,7 +464,8 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
 
     // Primary Target
     if (true) {
-        float pos[3] = {loc[0]+50, loc[1]+0, loc[2]+50};
+        float pos[3] = {loc[0]+50, loc[1], loc[2]+50};
+        adjustHeight(planetmap, pos);
         cMech* mech = new cMech(pos);
         assert(mech != NULL);
 
@@ -489,7 +496,8 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
 
     // Secondary Target
     if (true) {
-        float pos[3] = {loc[0]-50, loc[1]+0, loc[2]+50};
+        float pos[3] = {loc[0]-50, loc[1], loc[2]+50};
+        adjustHeight(planetmap, pos);
         cMech* mech = new cMech(pos);
         assert(mech != NULL);
 
@@ -550,9 +558,9 @@ void cOpenMission::initStarcircleTown(cWorld* world, cPlanetmap* planetmap) {
     roundForrest(loc[0],loc[1], loc[2], world, 7*2, 22*2, 3);
     
     if (true) {
-        smallArmy(loc[0], loc[1], loc[2], world, "Bandit Leader", 1, false, 1);
-        smallArmy(loc[0]-48, loc[1], loc[2]+17, world, "Bandits A", 3, false, 3);
-        smallArmy(loc[0]-50, loc[1], loc[2]-50, world, "Bandits B", 2, false, 2);
+        smallArmy(loc[0], loc[1]+5, loc[2], world, "Bandit Leader", 1, false, 1);
+        smallArmy(loc[0]-48, loc[1]+5, loc[2]+17, world, "Bandits A", 3, false, 3);
+        smallArmy(loc[0]-50, loc[1]+5, loc[2]-50, world, "Bandits B", 2, false, 2);
     }
     
     {

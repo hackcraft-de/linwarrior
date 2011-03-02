@@ -36,10 +36,16 @@ public:
 public:
     /// Object whielding the weapon (normaly not damaged by weapon).
     cObject* weaponOwner;
-    /// Points To Current Vehicle Base Matrix of owner.
+    /// Points To Current Vehicle Base Matrix of owner (optional).
     float* weaponBasefv;
-    /// Mounting Base Matrix relative to Vehicle Base Matrix or owner.
-    float* weaponMountfv;
+    /// Base position and orientation.
+    quat weaponOri0;
+    vec3 weaponPos0;
+    /// Position and orientation relative to base position and orientation.
+    quat weaponOri1;
+    vec3 weaponPos1;
+    /// Mountpoint-index of the weapon.
+    int weaponMount;
     /// Current Matrix indicating world pos & orientation (pose) of this weapon.
     float weaponPosef[16];
     /// Relative size and power of the weapon, 1.0 default mechscale weapon.
@@ -60,6 +66,8 @@ public:
     short depotSize;
     /// OpenAL sound source for this weapon's sounds.
     unsigned soundSource;
+    /// Enable drawing of the weapon itself.
+    bool drawWeapon;
     /// Particle container with variable meaning.
     std::list<cParticle*> shrapnelParticles;
     /// Particle container with variable meaning.
@@ -152,6 +160,8 @@ public:
      * Returns amount of damaged objects (currently just one at most).
      */
     int damageByParticle(float* worldpos, float radius, int roles, float damage);
+
+    void transformTo();
 };
 
 #include "cWeaponMachinegun.h"
