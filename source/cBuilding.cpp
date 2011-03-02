@@ -336,7 +336,7 @@ void cBuilding::damageByParticle(float* localpos, float damage, cObject* enactor
         if (damageable->hp[body] <= 0) {
             damageable->alife = false;
             cout << "cBuilding::damageByParticle(): DEAD\n";
-            explosionObject.fire(0);
+            explosionObject.trigger = true;
         }
         if (damageable->hp[body] <= 75) addTag(WOUNDED);
         if (damageable->hp[body] <= 50) addTag(SERIOUS);

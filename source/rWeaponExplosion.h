@@ -18,7 +18,7 @@ class rWeaponExplosion : public rWeapon {
 public:
     rWeaponExplosion(cObject* obj = NULL);
 
-    virtual void fire(OID target);
+    virtual void fire();
     virtual void animate(float spf);
     virtual void drawSolid();
     virtual void drawEffect();

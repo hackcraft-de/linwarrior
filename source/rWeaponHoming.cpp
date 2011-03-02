@@ -25,8 +25,9 @@ rWeaponHoming::rWeaponHoming(cObject* obj) {
     }
 }
 
-void rWeaponHoming::fire(OID target) {
+void rWeaponHoming::fire() {
     if (!ready()) return;
+    triggered = true;
 
     if (remainingAmmo > 0) {
         remainingAmmo--;
@@ -71,6 +72,8 @@ void rWeaponHoming::fire(OID target) {
 }
 
 void rWeaponHoming::animate(float spf) {
+    if (trigger) fire();
+    trigger = false;
 
     foreachNoInc(i, missileParticles) {
         cParticle* s = *i++;

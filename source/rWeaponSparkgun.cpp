@@ -23,8 +23,9 @@ rWeaponSparkgun::rWeaponSparkgun(cObject* obj) {
     }
 }
 
-void rWeaponSparkgun::fire(OID target) {
+void rWeaponSparkgun::fire() {
     if (!ready()) return;
+    triggered = true;
 
     if (remainingAmmo > 0) {
         remainingAmmo--;
@@ -56,6 +57,8 @@ void rWeaponSparkgun::fire(OID target) {
 }
 
 void rWeaponSparkgun::animate(float spf) {
+    if (trigger) fire();
+    trigger = false;
 
     foreachNoInc(i, shrapnelParticles) {
         cParticle* s = *i++;

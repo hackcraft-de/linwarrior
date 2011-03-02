@@ -29,8 +29,9 @@ rWeaponMachinegun::rWeaponMachinegun(cObject* obj) {
     }
 }
 
-void rWeaponMachinegun::fire(OID target) {
+void rWeaponMachinegun::fire() {
     if (!ready()) return;
+    triggered = true;
 
     if (remainingAmmo > 0) {
         remainingAmmo--;
@@ -85,6 +86,9 @@ void rWeaponMachinegun::fire(OID target) {
 }
 
 void rWeaponMachinegun::animate(float spf) {
+    if (trigger) fire();
+    trigger = false;
+    
     for (std::list<cParticle*>::iterator i = shrapnelParticles.begin(); i != shrapnelParticles.end();) {
         float damage = 10;
         cParticle* s = *i++;

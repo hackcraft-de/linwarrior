@@ -25,8 +25,9 @@ rWeaponPlasmagun::rWeaponPlasmagun(cObject* obj) {
     }
 }
 
-void rWeaponPlasmagun::fire(OID target) {
+void rWeaponPlasmagun::fire() {
     if (!ready()) return;
+    triggered = true;
 
     if (remainingAmmo > 0) {
         remainingAmmo--;
@@ -58,6 +59,8 @@ void rWeaponPlasmagun::fire(OID target) {
 }
 
 void rWeaponPlasmagun::animate(float spf) {
+    if (trigger) fire();
+    trigger = false;
 
     foreachNoInc(i, shrapnelParticles) {
         cParticle* s = *i++;

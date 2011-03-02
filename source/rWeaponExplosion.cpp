@@ -21,8 +21,10 @@ rWeaponExplosion::rWeaponExplosion(cObject* obj) {
     }
 }
 
-void rWeaponExplosion::fire(OID target) {
+void rWeaponExplosion::fire() {
     if (!ready()) return;
+    triggered = true;
+    
     timeReloading = 3.8;
     timeFiring = 3.0f;
     // Shoot several shrapnels around.
@@ -61,6 +63,9 @@ void rWeaponExplosion::fire(OID target) {
 }
 
 void rWeaponExplosion::animate(float spf) {
+    if (trigger) fire();
+    trigger = false;
+
     timeFiring -= spf;
     if (timeFiring < 0) {
         timeFiring = 0.0f;

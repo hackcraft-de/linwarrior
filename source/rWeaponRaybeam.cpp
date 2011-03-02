@@ -21,8 +21,9 @@ rWeaponRaybeam::rWeaponRaybeam(cObject* obj) {
     }
 };
 
-void rWeaponRaybeam::fire(OID target) {
+void rWeaponRaybeam::fire() {
     if (!ready()) return;
+    triggered = true;
 
     if (remainingAmmo > 0) {
         remainingAmmo--;
@@ -38,6 +39,9 @@ void rWeaponRaybeam::fire(OID target) {
 }
 
 void rWeaponRaybeam::animate(float spf) {
+    if (trigger) fire();
+    trigger = false;
+    
     timeReloading -= spf;
     if (timeReloading < 0) {
         timeReloading = 0.0f;

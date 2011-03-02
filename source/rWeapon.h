@@ -34,15 +34,23 @@ public:
     static std::map<int,long> sTextures;
 
 public:
-    /// Object whielding the weapon (normaly not damaged by weapon).
-    cObject* weaponOwner;
+    /// Target object id for weapons that need targeting. (hook)
+    OID target;
+    /// Set to true to enable triggering (default true). (hook)
+    bool triggeren;
+    /// Triggering firing of weapon (once). (hook)
+    bool trigger;
+    /// True when firing was just really triggered last animation cycle. (hook)
+    bool triggered;
     /// Points To Current Vehicle Base Matrix of owner (optional).
     float* weaponBasefv;
-    /// Base position and orientation.
+    /// Base position (hook).
     quat weaponOri0;
+    /// Base orientation (hook).
     vec3 weaponPos0;
-    /// Position and orientation relative to base position and orientation.
+    /// Position relative to base position and orientation (hook).
     quat weaponOri1;
+    /// Orientation relative to base position and orientation (hook).
     vec3 weaponPos1;
     /// Mountpoint-index of the weapon.
     int weaponMount;
@@ -112,17 +120,12 @@ public:
      * at hand, ready-loaded and unlocked.
      */
     virtual bool ready() {
-        return !((timeReloading > +0.0f)
+        return triggeren && !((timeReloading > +0.0f)
                 || (timeReadying > +0.0f)
                 || (timeFiring > +0.0f)
                 || (remainingAmmo == 0)
                 );
     };
-
-    /**
-     * Fire Weapon at target, target may be 0.
-     */
-    virtual void fire(OID target) = 0;
 
     /**
      * Update weapon animation cycles, particle trajectories and timers.

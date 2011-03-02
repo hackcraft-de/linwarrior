@@ -667,13 +667,15 @@ void rMobile::fireCycleWeapons() {
 void rMobile::fireAllWeapons() {
 
     loopi(weapons.size()) {
-        weapons[i]->fire(target);
+        weapons[i]->target = target;
+        weapons[i]->trigger = true;
     }
 }
 
 void rMobile::fireWeapon(unsigned n) {
     if (n >= weapons.size()) return;
-    weapons[n]->fire(target);
+    weapons[n]->target = target;
+    weapons[n]->trigger = true;
 }
 
 void rMobile::animate(float spf) {
@@ -1184,7 +1186,7 @@ void cMech::damageByParticle(float* localpos, float damage, cObject* enactor) {
     if (enactor != NULL) controlled->disturber = enactor->oid;
     if (!damageable->damage(hitzone, damage, enactor)) {
         cout << "cMech::damageByParticle(): DEAD\n";
-        mobile->explosion.fire(0);
+        mobile->explosion.fire();
     }
     int body = rDamageable::BODY;
     if (damageable->hp[body] <= 75) addTag(WOUNDED);

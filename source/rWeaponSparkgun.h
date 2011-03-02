@@ -18,7 +18,7 @@ class rWeaponSparkgun : public rWeapon {
 public:
     rWeaponSparkgun(cObject* obj = NULL);
 
-    virtual void fire(OID target);
+    virtual void fire();
     virtual void animate(float spf);
     virtual void drawSolid();
     virtual void drawEffect();
