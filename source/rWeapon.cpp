@@ -1,4 +1,4 @@
-#include "cWeapon.h"
+#include "rWeapon.h"
 
 #include "cWorld.h"
 #include "psi3d/macros.h"
@@ -10,10 +10,13 @@ using std::cout;
 using std::endl;
 
 
-int cWeapon::sInstances = 0;
-std::map<int,long> cWeapon::sTextures;
+int rWeapon::sInstances = 0;
+std::map<int,long> rWeapon::sTextures;
 
-cWeapon::cWeapon() {
+rWeapon::rWeapon(cObject* obj) {
+    role = "WEAPON";
+    object = obj;
+
     sInstances++;
     if (sInstances == 1) {
         // Haze Texture
@@ -57,7 +60,6 @@ cWeapon::cWeapon() {
     weaponMount = 0;
 
     weaponBasefv = NULL;
-    weaponOwner = NULL;
     weaponScale = 1.0f;
     timeReloading = 0.0f;
     timeReadying = 0.0f;
@@ -71,13 +73,13 @@ cWeapon::cWeapon() {
     drawWeapon = false;
 }
 
-void cWeapon::playSource() {
+void rWeapon::playSource() {
     if (alIsSource(soundSource)) {
         alSourcePlay(soundSource);
     }
 }
 
-void cWeapon::playSourceIfNotPlaying() {
+void rWeapon::playSourceIfNotPlaying() {
     if (alIsSource(soundSource)) {
         ALint playing;
         alGetSourcei(soundSource, AL_SOURCE_STATE, &playing);
@@ -86,7 +88,7 @@ void cWeapon::playSourceIfNotPlaying() {
     }
 }
 
-void cWeapon::transform() {
+void rWeapon::transform() {
     { // Current Pose-Matrix and Sound-Source-Position update.
         glPushMatrix();
         {
@@ -110,18 +112,18 @@ void cWeapon::transform() {
     }
 }
 
-void cWeapon::transformTo() {
+void rWeapon::transformTo() {
     glMultMatrixf(weaponPosef);
 }
 
-int cWeapon::damageByParticle(float* worldpos, float radius, int roles, float damage) {
+int rWeapon::damageByParticle(float* worldpos, float radius, int roles, float damage) {
     roles = 0;//(1UL << cObject::DAMAGEABLE) | (1UL << cObject::COLLIDEABLE);
     float scaled_damage = damage * weaponScale;
     int damaged = 0;
     float maxrange = 25;
     float worldpos_[3];
     vector_cpy(worldpos_, worldpos);
-    std::list<cObject*>* range = cWorld::instance->filterByRange(weaponOwner, worldpos, 0.0f, maxrange, -1, NULL);
+    std::list<cObject*>* range = cWorld::instance->filterByRange(object, worldpos, 0.0f, maxrange, -1, NULL);
     //cout << "damageByParticle: "  << cWorld::instance->getNames(range) << endl;
     if (!range->empty()) {
 
@@ -132,7 +134,7 @@ int cWeapon::damageByParticle(float* worldpos, float radius, int roles, float da
             //cout << object->nameable->name << " depth: " << depth << endl;
             if (depth == 0) continue;
             damaged++;
-            object->damageByParticle(localpos_, scaled_damage, weaponOwner);
+            object->damageByParticle(localpos_, scaled_damage, object);
             break;
         }
     }

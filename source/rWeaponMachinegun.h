@@ -1,22 +1,22 @@
 /* 
- * File:     cWeaponMachinegun.h
+ * File:     rWeaponMachinegun.h
  * Project:  LinWarrior 3D
  * Home:     hackcraft.de
  *
  * Created on 27. November 2010, 17:10
  */
 
-#ifndef CMACHINEGUN_H
-#define	CMACHINEGUN_H
+#ifndef RMACHINEGUN_H
+#define	RMACHINEGUN_H
 
-#include "cWeapon.h"
+#include "rWeapon.h"
 
 /**
  * Your usual Machine or Mini-Gun.
  */
-class cWeaponMachinegun : public cWeapon {
+class rWeaponMachinegun : public rWeapon {
 public:
-    cWeaponMachinegun();
+    rWeaponMachinegun(cObject* obj = NULL);
 
     virtual void fire(OID target);
     virtual void animate(float spf);

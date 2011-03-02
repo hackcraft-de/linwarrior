@@ -1,4 +1,4 @@
-#include "cWeaponHoming.h"
+#include "rWeaponHoming.h"
 
 #include "cWorld.h"
 
@@ -6,7 +6,10 @@
 
 #include <cassert>
 
-cWeaponHoming::cWeaponHoming() {
+rWeaponHoming::rWeaponHoming(cObject* obj) {
+    role = "HOMING";
+    object = obj;
+    
     clipSize = 4;
     depotSize = 7;
     remainingAmmo = clipSize;
@@ -22,7 +25,7 @@ cWeaponHoming::cWeaponHoming() {
     }
 }
 
-void cWeaponHoming::fire(OID target) {
+void rWeaponHoming::fire(OID target) {
     if (!ready()) return;
 
     if (remainingAmmo > 0) {
@@ -34,8 +37,8 @@ void cWeaponHoming::fire(OID target) {
         }
     }
 
-    if (target == 0) {
-        target = this->weaponOwner->enemyNearby();
+    if (target == 0 && object != NULL) {
+        target = object->enemyNearby();
     }
 
     float* source = weaponPosef;
@@ -67,7 +70,7 @@ void cWeaponHoming::fire(OID target) {
     playSource();
 }
 
-void cWeaponHoming::animate(float spf) {
+void rWeaponHoming::animate(float spf) {
 
     foreachNoInc(i, missileParticles) {
         cParticle* s = *i++;
@@ -150,7 +153,7 @@ void cWeaponHoming::animate(float spf) {
     }
 };
 
-void cWeaponHoming::drawSolid() {
+void rWeaponHoming::drawSolid() {
     // Missile barrels
     if (drawWeapon) {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -185,7 +188,9 @@ void cWeaponHoming::drawSolid() {
                 glPopMatrix();
 
                 glColor4f(0.1, 0.1, 0.1, 1.0);
-                if (this->ready() == 0 && remainingAmmo != 0) glRotatef(this->weaponOwner->seconds * 1 * 90, 0, 1, 0);
+                if (this->ready() == 0 && remainingAmmo != 0 && object != NULL) {
+                    glRotatef(object->seconds * 1 * 90, 0, 1, 0);
+                }
                 int n = 4;
 
                 loopi(n) {
@@ -262,7 +267,7 @@ void cWeaponHoming::drawSolid() {
     glPopAttrib();
 }
 
-void cWeaponHoming::drawEffect() {
+void rWeaponHoming::drawEffect() {
     if (missileParticles.empty()) return;
     
     glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -318,7 +323,7 @@ void cWeaponHoming::drawEffect() {
     glPopAttrib();
 }
 
-void cWeaponHoming::drawHUD() {
+void rWeaponHoming::drawHUD() {
     float a = 0.9;
     float b = 0.6;
 

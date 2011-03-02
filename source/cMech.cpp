@@ -491,7 +491,8 @@ void rRigged::drawEffect() {
 // -------------------------------------------------------------------
 
 
-rComputerised::rComputerised(cObject* obj) : rRole("COMPUTERISED") {
+rComputerised::rComputerised(cObject* obj) {
+    role = "COMPUTERISED";
     object = obj;
     
     comcom = new cComcom(object);
@@ -923,11 +924,11 @@ void cMech::setAsAudioListener() {
 }
 
 // move to rMobile?
-void cMech::mountWeapon(char* point, cWeapon *weapon, bool add) {
+void cMech::mountWeapon(char* point, rWeapon *weapon, bool add) {
     if (weapon == NULL) throw "Null weapon for mounting given.";
     weapon->weaponMount = rigged->getMountpoint(point);
     weapon->weaponBasefv = rigged->getMountMatrix(point);
-    weapon->weaponOwner = this;
+    weapon->object = this;
     weapon->weaponScale = rigged->scale;
     if (add) mobile->weapons.push_back(weapon);
 }
@@ -1052,7 +1053,7 @@ void cMech::transform() {
     }
     {
         loopi(mobile->weapons.size()) {
-            cWeapon* weapon = mobile->weapons[i];
+            rWeapon* weapon = mobile->weapons[i];
             MD5Format::joint* joint = &rigged->joints[weapon->weaponMount];
             quat_cpy(weapon->weaponOri0, traceable->ori);
             vector_cpy(weapon->weaponPos0, traceable->pos);

@@ -1,22 +1,22 @@
 /* 
- * File:     cWeaponHoming.h
+ * File:     rWeaponHoming.h
  * Project:  LinWarrior 3D
  * Home:     hackcraft.de
  *
  * Created on 27. November 2010, 17:15
  */
 
-#ifndef CHOMING_H
-#define	CHOMING_H
+#ifndef RHOMING_H
+#define	RHOMING_H
 
-#include "cWeapon.h"
+#include "rWeapon.h"
 
 /**
  * Small swarming homing missile.
  */
-class cWeaponHoming : public cWeapon {
+class rWeaponHoming : public rWeapon {
 public:
-    cWeaponHoming();
+    rWeaponHoming(cObject* obj = NULL);
 
     virtual void fire(OID target);
     virtual void animate(float spf);

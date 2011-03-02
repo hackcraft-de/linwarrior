@@ -1,22 +1,22 @@
 /* 
- * File:     cWeaponExplosion.h
+ * File:     rWeaponExplosion.h
  * Project:  LinWarrior 3D
  * Home:     hackcraft.de
  *
  * Created on 27. November 2010, 17:16
  */
 
-#ifndef CEXPLOSION_H
-#define	CEXPLOSION_H
+#ifndef REXPLOSION_H
+#define	REXPLOSION_H
 
-#include "cWeapon.h"
+#include "rWeapon.h"
 
 /**
  * Explosion with dust, smoke, dirt and shrapnels.
  */
-class cWeaponExplosion : public cWeapon {
+class rWeaponExplosion : public rWeapon {
 public:
-    cWeaponExplosion();
+    rWeaponExplosion(cObject* obj = NULL);
 
     virtual void fire(OID target);
     virtual void animate(float spf);

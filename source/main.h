@@ -18,7 +18,7 @@
 #include "cMission.h"
 #include "cWorld.h"
 #include "cObject.h"
-#include "cWeapon.h"
+#include "rWeapon.h"
 #include "cMech.h"
 #include "cBuilding.h"
 #include "cPadmap.h"

@@ -1,4 +1,4 @@
-#include "cWeaponMachinegun.h"
+#include "rWeaponMachinegun.h"
 
 #include "cWorld.h"
 
@@ -8,7 +8,10 @@
 #include <cassert>
 
 
-cWeaponMachinegun::cWeaponMachinegun() {
+rWeaponMachinegun::rWeaponMachinegun(cObject* obj) {
+    role = "MACHINEGUN";
+    object = obj;
+
     //cout << "cMachineGun()\n";
     clipSize = 75;
     depotSize = 2;
@@ -26,7 +29,7 @@ cWeaponMachinegun::cWeaponMachinegun() {
     }
 }
 
-void cWeaponMachinegun::fire(OID target) {
+void rWeaponMachinegun::fire(OID target) {
     if (!ready()) return;
 
     if (remainingAmmo > 0) {
@@ -81,7 +84,7 @@ void cWeaponMachinegun::fire(OID target) {
     playSourceIfNotPlaying();
 }
 
-void cWeaponMachinegun::animate(float spf) {
+void rWeaponMachinegun::animate(float spf) {
     for (std::list<cParticle*>::iterator i = shrapnelParticles.begin(); i != shrapnelParticles.end();) {
         float damage = 10;
         cParticle* s = *i++;
@@ -131,7 +134,7 @@ void cWeaponMachinegun::animate(float spf) {
     }
 }
 
-void cWeaponMachinegun::drawSolid() {
+void rWeaponMachinegun::drawSolid() {
     if (drawWeapon) {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
@@ -154,7 +157,9 @@ void cWeaponMachinegun::drawSolid() {
                 }
                 glPopMatrix();
 
-                if (this->ready() == 0 && remainingAmmo != 0) glRotatef(this->weaponOwner->seconds * 8 * 90, 0, 1, 0);
+                if (ready() == 0 && remainingAmmo != 0 && object != NULL) {
+                    glRotatef(object->seconds * 8 * 90, 0, 1, 0);
+                }
 
                 glColor4f(0.3, 0.3, 0.3, 1.0);
                 glPushMatrix();
@@ -186,7 +191,7 @@ void cWeaponMachinegun::drawSolid() {
     }
 }
 
-void cWeaponMachinegun::drawEffect() {
+void rWeaponMachinegun::drawEffect() {
     if (shrapnelParticles.empty() && castoffParticles.empty() && damageParticles.empty()) return;
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -242,7 +247,7 @@ void cWeaponMachinegun::drawEffect() {
     glPopAttrib();
 }
 
-void cWeaponMachinegun::drawHUD() {
+void rWeaponMachinegun::drawHUD() {
     float a = 0.9;
     float b = 0.6;
 

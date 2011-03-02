@@ -94,14 +94,14 @@ cObject* cMission::init(cWorld* world) {
         if (true) {
 
             //mech->mountWeapon((char*)"LTorsor", new cExplosion);
-            mech->mountWeapon((char*) "LTorsor", new cWeaponPlasmagun);
+            mech->mountWeapon((char*) "LTorsor", new rWeaponPlasmagun);
             if (true) {
-                mech->mountWeapon((char*) "LLoArm", new cWeaponMachinegun);
+                mech->mountWeapon((char*) "LLoArm", new rWeaponMachinegun);
                 //mech->mountWeapon((char*)"LTorsor",  new cMachineGun);
                 //mech->mountWeapon((char*)"RTorsor",  new cMachineGun);
-                mech->mountWeapon((char*) "RLoArm", new cWeaponMachinegun);
+                mech->mountWeapon((char*) "RLoArm", new rWeaponMachinegun);
             }
-            mech->mountWeapon((char*) "RTorsor", new cWeaponPlasmagun);
+            mech->mountWeapon((char*) "RTorsor", new rWeaponPlasmagun);
             //mech->mountWeapon((char*)"RLoArm",  new cHomingMissile);
             //mech->mountWeapon((char*)"RLoArm",  new cRaybeam);
         }
@@ -308,24 +308,24 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
 
         if (true) {
             if (!true) {
-                mech->mountWeapon((char*) "LTorsor", new cWeaponExplosion);
+                mech->mountWeapon((char*) "LTorsor", new rWeaponExplosion);
                 //mech->mountWeapon((char*) "RTorsor", new cExplosion);
             }
             if (true) {
-                mech->mountWeapon((char*) "LTorsor", new cWeaponPlasmagun);
+                mech->mountWeapon((char*) "LTorsor", new rWeaponPlasmagun);
                 //mech->mountWeapon((char*) "RTorsor", new cPlasmaGun);
             }
             if (true) {
-                mech->mountWeapon((char*) "LLoArm", new cWeaponMachinegun);
-                mech->mountWeapon((char*) "RLoArm", new cWeaponMachinegun);
+                mech->mountWeapon((char*) "LLoArm", new rWeaponMachinegun);
+                mech->mountWeapon((char*) "RLoArm", new rWeaponMachinegun);
             }
             if (!true) {
-                mech->mountWeapon((char*) "RLoArm", new cWeaponHoming);
-                mech->mountWeapon((char*) "RLoArm", new cWeaponRaybeam);
+                mech->mountWeapon((char*) "RLoArm", new rWeaponHoming);
+                mech->mountWeapon((char*) "RLoArm", new rWeaponRaybeam);
             }
             if (true) {
                 //mech->mountWeapon((char*) "Center", new cRaybeam);
-                mech->mountWeapon((char*) "RTorsor", new cWeaponRaybeam);
+                mech->mountWeapon((char*) "RTorsor", new rWeaponRaybeam);
             }
         }
         cout << "after first weapons\n";
@@ -352,7 +352,7 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
         group_alliance_all.grouping->members.insert(mech->oid);
         bool patrol = true;
         mech->controlled->controller->pushFollowLeader(player->oid, patrol);
-        mech->mountWeapon((char*) "LLoArm", new cWeaponMachinegun);
+        mech->mountWeapon((char*) "LLoArm", new rWeaponMachinegun);
     }
 
     // Wing 2
@@ -376,7 +376,7 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
         group_alliance_all.grouping->members.insert(mech->oid);
         bool patrol = true;
         mech->controlled->controller->pushFollowLeader(player->oid, patrol);
-        mech->mountWeapon((char*) "RLoArm", new cWeaponMachinegun);
+        mech->mountWeapon((char*) "RLoArm", new rWeaponMachinegun);
     }
 
     world->sendMessage(0, player->oid, group_alliance_all.oid, "RADIO", string("Stay alert there have been intruders!"));
@@ -441,8 +441,8 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
         if (true) {
             //mech->mountWeapon((char*)"LLoArm",  new cMachineGun);
             //mech->mountWeapon((char*)"RLoArm",  new cMachineGun);
-            mech->mountWeapon((char*) "RTorsor", new cWeaponHoming);
-            mech->mountWeapon((char*) "LTorsor", new cWeaponHoming);
+            mech->mountWeapon((char*) "RTorsor", new rWeaponHoming);
+            mech->mountWeapon((char*) "LTorsor", new rWeaponHoming);
         }
 
         float d[] = { loc[0]+100, loc[1]+0, loc[1]-50 };
@@ -488,8 +488,8 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
 
         if (true) {
             //mech->mountWeapon((char*)"LTorsor", new cExplosion);
-            mech->mountWeapon((char*) "LLoArm", new cWeaponSparkgun);
-            mech->mountWeapon((char*) "RLoArm", new cWeaponSparkgun);
+            mech->mountWeapon((char*) "LLoArm", new rWeaponSparkgun);
+            mech->mountWeapon((char*) "RLoArm", new rWeaponSparkgun);
             //mech->mountWeapon((char*)"RTorsor",  new cHomingMissile);
         }
     }
@@ -517,7 +517,7 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
         group_enemies_all.grouping->members.insert(mech->oid);
 
         if (true) {
-            mech->mountWeapon((char*) "LLoArm", new cWeaponSparkgun);
+            mech->mountWeapon((char*) "LLoArm", new rWeaponSparkgun);
             //mech->mountWeapon((char*)"LLoArm",  new cRaybeam);
             //mech->mountWeapon((char*)"RLoArm",  new cRaybeam);
             //mech->mountWeapon((char*)"RLoArm",  new cMachineGun);
@@ -786,7 +786,7 @@ void cOpenMission::initPentaSpaceport(cWorld* world, cPlanetmap* planetmap) {
         mech->socialised->addEnemy(cObject::BLUE);
         mech->socialised->addEnemy(cObject::DEAD, false);
         world->spawnObject(mech);
-        mech->mountWeapon((char*) "Center", new cWeaponMachinegun);
+        mech->mountWeapon((char*) "Center", new rWeaponMachinegun);
     }
 }
 
@@ -808,10 +808,10 @@ void cOpenMission::battleField(cWorld* world) {
         world->spawnObject(mech);
 
         if (true) {
-            mech->mountWeapon((char*) "LLoArm", new cWeaponMachinegun);
-            mech->mountWeapon((char*) "RLoArm", new cWeaponMachinegun);
-            mech->mountWeapon((char*) "RTorsor", new cWeaponMachinegun);
-            mech->mountWeapon((char*) "LTorsor", new cWeaponMachinegun);
+            mech->mountWeapon((char*) "LLoArm", new rWeaponMachinegun);
+            mech->mountWeapon((char*) "RLoArm", new rWeaponMachinegun);
+            mech->mountWeapon((char*) "RTorsor", new rWeaponMachinegun);
+            mech->mountWeapon((char*) "LTorsor", new rWeaponMachinegun);
         }
     }
 
@@ -830,10 +830,10 @@ void cOpenMission::battleField(cWorld* world) {
         world->spawnObject(mech);
 
         if (true) {
-            mech->mountWeapon((char*) "LLoArm", new cWeaponSparkgun);
-            mech->mountWeapon((char*) "RLoArm", new cWeaponSparkgun);
-            mech->mountWeapon((char*) "RTorsor", new cWeaponSparkgun);
-            mech->mountWeapon((char*) "LTorsor", new cWeaponRaybeam);
+            mech->mountWeapon((char*) "LLoArm", new rWeaponSparkgun);
+            mech->mountWeapon((char*) "RLoArm", new rWeaponSparkgun);
+            mech->mountWeapon((char*) "RTorsor", new rWeaponSparkgun);
+            mech->mountWeapon((char*) "LTorsor", new rWeaponRaybeam);
         }
     }
 }
@@ -866,13 +866,13 @@ void cOpenMission::smallArmy(int wx, int wy, int wz, cWorld* world, const char* 
         }
         world->spawnObject(mech);
         if (wpn == 0) {
-            mech->mountWeapon((char*) "Left", new cWeaponSparkgun);
+            mech->mountWeapon((char*) "Left", new rWeaponSparkgun);
         } else if (wpn == 1) {
-            mech->mountWeapon((char*) "Right", new cWeaponPlasmagun);
+            mech->mountWeapon((char*) "Right", new rWeaponPlasmagun);
         } else if (wpn == 2) {
-            mech->mountWeapon((char*) "Left", new cWeaponHoming);
+            mech->mountWeapon((char*) "Left", new rWeaponHoming);
         } else if (wpn == 3) {
-            mech->mountWeapon((char*) "LLoArm", new cWeaponMachinegun);
+            mech->mountWeapon((char*) "LLoArm", new rWeaponMachinegun);
         }
 
         a += M_PI * 0.2f;

@@ -12,7 +12,7 @@
 class cBuilding;
 
 #include "cObject.h"
-#include "cWeapon.h"
+#include "rWeapon.h"
 
 /**
  * Models a building of varring size.
@@ -27,7 +27,7 @@ protected:
     /// Base matrix for explosion ie. at center.
     float baseMatrix[16];
     /// Explosion to be triggered on destruction of the building.
-    cWeaponExplosion explosionObject;
+    rWeaponExplosion explosionObject;
     /// Dimensions of the building.
     float buildingRooms[3];
 public:

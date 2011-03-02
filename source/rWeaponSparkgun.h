@@ -1,22 +1,22 @@
 /* 
- * File:     cWeaponSparkgun.h
+ * File:     rWeaponSparkgun.h
  * Project:  LinWarrior 3D
  * Home:     hackcraft.de
  *
  * Created on 27. November 2010, 17:13
  */
 
-#ifndef CSPARKGUN_H
-#define	CSPARKGUN_H
+#ifndef RSPARKGUN_H
+#define	RSPARKGUN_H
 
-#include "cWeapon.h"
+#include "rWeapon.h"
 
 /**
  * Big Flaming slow moving bullet type gun.
  */
-class cWeaponSparkgun : public cWeapon {
+class rWeaponSparkgun : public rWeapon {
 public:
-    cWeaponSparkgun();
+    rWeaponSparkgun(cObject* obj = NULL);
 
     virtual void fire(OID target);
     virtual void animate(float spf);

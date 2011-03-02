@@ -72,13 +72,20 @@ struct rRole {
     std::string role;
     bool active;
 
-    rRole(std::string role) {
-        active = true;
-        this->role = role;
+    rRole(rRole* original = NULL) {
+        if (original != NULL) {
+            object = original->object;
+            active = original->active;
+            role = original->role;
+        } else {
+            object = NULL;
+            active = true;
+            role = "";
+        }
     }
 
     virtual rRole* clone() {
-        return new rRole(role);
+        return new rRole(this);
     }
 
     virtual void animate(float spf) {};
@@ -100,12 +107,14 @@ struct rNameable : public rRole {
     unsigned int designation;
     /// Constructor.
 
-    rNameable(cObject* obj = NULL) : rRole("NAMEABLE"), name("Unnamed"), description("Undescribed"), designation(0) {
-        object = object;
+    rNameable(cObject* obj = NULL) : name("Unnamed"), description("Undescribed"), designation(0) {
+        role = "NAMEABLE";
+        object = obj;
     }
     /// Copy Constructor.
 
-    rNameable(rNameable * original) : rRole("NAMEABLE"), name("Unnamed"), description("Undescribed"), designation(0) {
+    rNameable(rNameable * original) : name("Unnamed"), description("Undescribed"), designation(0) {
+        role = "NAMEABLE";
         if (original != NULL) {
             object = original->object;
             name = original->name;
@@ -131,7 +140,8 @@ struct rTraceable : public cParticle, public rRole {
     float throttle;
     /// Constructor.
 
-    rTraceable(cObject* obj = NULL) : cParticle(), rRole("TRACEABLE") {
+    rTraceable(cObject* obj = NULL) : cParticle() {
+        role = "TRACEABLE";
         object = obj;
         grounded = true;
         jetthrottle = 0.0f;
@@ -139,7 +149,8 @@ struct rTraceable : public cParticle, public rRole {
     }
     /// Copy Constructor.
 
-    rTraceable(rTraceable * original) : cParticle(original), rRole("TRACEABLE") {
+    rTraceable(rTraceable * original) : cParticle(original) {
+        role = "TRACEABLE";
         object = original->object;
         grounded = original->grounded;
         jetthrottle = original->jetthrottle;
@@ -187,14 +198,16 @@ struct rDamageable : public rRole {
     // float sinks[MAX_PARTS];
     /// Constructor.
 
-    rDamageable(cObject* obj = NULL) : rRole("DAMAGEABLE") {
+    rDamageable(cObject* obj = NULL) {
+        role = "DAMAGEABLE";
         object = obj;
         alife = true;
         loopi(MAX_PARTS) hp[i] = 100.0f;
     }
     /// Copy Constructor.
 
-    rDamageable(rDamageable * original) : rRole("DAMAGEABLE") {
+    rDamageable(rDamageable * original) {
+        role = "DAMAGEABLE";
         if (original == NULL) {
             rDamageable();
         } else {
@@ -234,13 +247,15 @@ struct rControlled : public rRole {
     cController* controller;
     /// Constructor.
 
-    rControlled(cObject* obj = NULL) : rRole("CONTROLLED"), target(0), disturber(0), pad(NULL), controller(NULL) {
+    rControlled(cObject* obj = NULL) : target(0), disturber(0), pad(NULL), controller(NULL) {
+        role = "CONTROLLED";
         object = obj;
         vector_set(destination, float_NAN, float_NAN, float_NAN);
     }
     /// Copy Constructor.
 
-    rControlled(rControlled * original) : rRole("CONTROLLED") {
+    rControlled(rControlled * original) {
+        role = "CONTROLLED";
         if (original == NULL) {
             rControlled();
         } else {
@@ -272,12 +287,14 @@ struct rSocialised : public rRole {
     std::set<OID> exc_enemies;
     
     /// Constructor.
-    rSocialised(cObject* obj = NULL) : rRole("SOCIALISED") {
+    rSocialised(cObject* obj = NULL) {
+        role = "SOCIALISED";
         object = obj;
     }
 
     /// Copy Constructor.
-    rSocialised(rSocialised * original) : rRole("SOCIALISED") {
+    rSocialised(rSocialised * original) {
+        role = "SOCIALISED";
         if (original != NULL) {
             object = original->object;
             inc_allies = original->inc_allies;
@@ -355,11 +372,13 @@ struct rGrouping : public rRole {
     /// Lists registered members of this group.
     std::set<OID> members;
 
-    rGrouping(cObject* obj = NULL) : rRole("GROUPING"), name("Unnamed") {
+    rGrouping(cObject* obj = NULL) : name("Unnamed") {
+        role = "GROUPING";
         object = obj;
     }
 
-    rGrouping(rGrouping * original) : rRole("GROUPING"), name("Unnamed") {
+    rGrouping(rGrouping * original) : name("Unnamed") {
+        role = "GROUPING";
         if (original != NULL) {
             object = original->object;
             name = original->name;

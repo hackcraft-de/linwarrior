@@ -1,8 +1,11 @@
-#include "cWeaponRaybeam.h"
+#include "rWeaponRaybeam.h"
 
 #include "psi3d/snippetsgl.h"
 
-cWeaponRaybeam::cWeaponRaybeam() {
+rWeaponRaybeam::rWeaponRaybeam(cObject* obj) {
+    role = "RAYBEAM";
+    object = obj;
+    
     clipSize = 12;
     depotSize = 1;
     remainingAmmo = clipSize;
@@ -18,7 +21,7 @@ cWeaponRaybeam::cWeaponRaybeam() {
     }
 };
 
-void cWeaponRaybeam::fire(OID target) {
+void rWeaponRaybeam::fire(OID target) {
     if (!ready()) return;
 
     if (remainingAmmo > 0) {
@@ -34,7 +37,7 @@ void cWeaponRaybeam::fire(OID target) {
     playSourceIfNotPlaying();
 }
 
-void cWeaponRaybeam::animate(float spf) {
+void rWeaponRaybeam::animate(float spf) {
     timeReloading -= spf;
     if (timeReloading < 0) {
         timeReloading = 0.0f;
@@ -81,7 +84,7 @@ void cWeaponRaybeam::animate(float spf) {
     }
 }
 
-void cWeaponRaybeam::drawSolid() {
+void rWeaponRaybeam::drawSolid() {
     if (drawWeapon) {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
@@ -126,7 +129,7 @@ void cWeaponRaybeam::drawSolid() {
     }
 }
 
-void cWeaponRaybeam::drawEffect() {
+void rWeaponRaybeam::drawEffect() {
     if (timeFiring == 0) return;
 
     const float len = 10;
@@ -222,7 +225,7 @@ void cWeaponRaybeam::drawEffect() {
     glPopAttrib();
 }
 
-void cWeaponRaybeam::drawHUD() {
+void rWeaponRaybeam::drawHUD() {
     float a = 0.9;
     float b = 0.6;
 

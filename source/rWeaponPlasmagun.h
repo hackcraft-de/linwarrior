@@ -1,22 +1,22 @@
 /* 
- * File:     cWeaponPlasmagun.h
+ * File:     rWeaponPlasmagun.h
  * Project:  LinWarrior 3D
  * Home:     hackcraft.de
  *
  * Created on 27. November 2010, 17:11
  */
 
-#ifndef CPLASMAGUN_H
-#define	CPLASMAGUN_H
+#ifndef RPLASMAGUN_H
+#define	RPLASMAGUN_H
 
-#include "cWeapon.h"
+#include "rWeapon.h"
 
 /**
  * Energetic Particle Rail-Gun.
  */
-class cWeaponPlasmagun : public cWeapon {
+class rWeaponPlasmagun : public rWeapon {
 public:
-    cWeaponPlasmagun();
+    rWeaponPlasmagun(cObject* obj = NULL);
 
     virtual void fire(OID target);
     virtual void animate(float spf);

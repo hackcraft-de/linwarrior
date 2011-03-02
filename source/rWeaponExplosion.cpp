@@ -1,10 +1,13 @@
-#include "cWeaponExplosion.h"
+#include "rWeaponExplosion.h"
 
 #include "psi3d/snippetsgl.h"
 
 #include <cassert>
 
-cWeaponExplosion::cWeaponExplosion() {
+rWeaponExplosion::rWeaponExplosion(cObject* obj) {
+    role = "EXPLOSION";
+    object = obj;
+
     if (EXPLOSIONSOUND) {
         unsigned buffer;
         //buffer = alutCreateBufferHelloWorld();
@@ -18,7 +21,7 @@ cWeaponExplosion::cWeaponExplosion() {
     }
 }
 
-void cWeaponExplosion::fire(OID target) {
+void rWeaponExplosion::fire(OID target) {
     if (!ready()) return;
     timeReloading = 3.8;
     timeFiring = 3.0f;
@@ -57,7 +60,7 @@ void cWeaponExplosion::fire(OID target) {
     playSourceIfNotPlaying();
 }
 
-void cWeaponExplosion::animate(float spf) {
+void rWeaponExplosion::animate(float spf) {
     timeFiring -= spf;
     if (timeFiring < 0) {
         timeFiring = 0.0f;
@@ -153,7 +156,7 @@ void cWeaponExplosion::animate(float spf) {
     if (timeReloading < 0) timeReloading = 0.0f;
 };
 
-void cWeaponExplosion::drawSolid() {
+void rWeaponExplosion::drawSolid() {
     return; // !!
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -214,7 +217,7 @@ void cWeaponExplosion::drawSolid() {
     glPopAttrib();
 }
 
-void cWeaponExplosion::drawEffect() {
+void rWeaponExplosion::drawEffect() {
     if (missileParticles.empty()) return;
 
     if (0) {

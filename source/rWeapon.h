@@ -1,15 +1,15 @@
 /**
- * File:     cWeapon.h
+ * File:     rWeapon.h
  * Project:  LinWarrior 3D
  * Home:     hackcraft.de
  *
  * Created on March 5, 2008, 4:09 PM
  */
 
-#ifndef _CWEAPON_H
-#define	_CWEAPON_H
+#ifndef _RWEAPON_H
+#define	_RWEAPON_H
 
-class cWeapon;
+class rWeapon;
 #include "cObject.h"
 #include <list>
 #include <vector>
@@ -26,7 +26,7 @@ class cWeapon;
  * their visual effects. Note that weapons are themselves responsible for
  * drawing themselves, their bullets, missiles, dust, smoke and other particles.
  */
-class cWeapon {
+class rWeapon : public rRole {
 public:
     /// Instance counter.
     static int sInstances;
@@ -78,7 +78,7 @@ public:
     std::list<cParticle*> damageParticles;
 
 public:
-    cWeapon();
+    rWeapon(cObject* obj = NULL);
 
     /**
      * Start playback of audio source.
@@ -164,12 +164,12 @@ public:
     void transformTo();
 };
 
-#include "cWeaponMachinegun.h"
-#include "cWeaponPlasmagun.h"
-#include "cWeaponSparkgun.h"
-#include "cWeaponRaybeam.h"
-#include "cWeaponHoming.h"
-#include "cWeaponExplosion.h"
+#include "rWeaponMachinegun.h"
+#include "rWeaponPlasmagun.h"
+#include "rWeaponSparkgun.h"
+#include "rWeaponRaybeam.h"
+#include "rWeaponHoming.h"
+#include "rWeaponExplosion.h"
 
 #endif	/* _CWEAPON_H */
 

@@ -1,22 +1,22 @@
 /* 
- * File:     cWeaponRaybeam.h
+ * File:     rWeaponRaybeam.h
  * Project:  LinWarrior 3D
  * Home:     hackcraft.de
  *
  * Created on 27. November 2010, 17:14
  */
 
-#ifndef CRAYBEAM_H
-#define	CRAYBEAM_H
+#ifndef RRAYBEAM_H
+#define	RRAYBEAM_H
 
-#include "cWeapon.h"
+#include "rWeapon.h"
 
 /**
  * Laser Beam kind of Weapon.
  */
-class cWeaponRaybeam : public cWeapon {
+class rWeaponRaybeam : public rWeapon {
 public:
-    cWeaponRaybeam();
+    rWeaponRaybeam(cObject* obj = NULL);
 
     virtual void fire(OID target);
     virtual void animate(float spf);

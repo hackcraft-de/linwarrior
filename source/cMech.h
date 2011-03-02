@@ -14,13 +14,13 @@ class cMech;
 #include "psi3d/md5frmt.h"
 
 #include "cObject.h"
-#include "cWeapon.h"
+#include "rWeapon.h"
 #include "cComcom.h"
 
 #include <vector>
 #include <map>
 
-class cWeapon;
+class rWeapon;
 
 // Gamepad Mapping
 #define MECH_CHASSIS_LR_AXIS  AX_LR1
@@ -81,14 +81,15 @@ struct rRigged : public rRole {
 
     /// Constructor
 
-    rRigged(cObject* obj = NULL) : rRole("RIGGED"), scale(1.0f), grounded(0.0f), jetting(0.0f), model(NULL), joints(NULL), seconds(0.0f) {
+    rRigged(cObject* obj = NULL) : scale(1.0f), grounded(0.0f), jetting(0.0f), model(NULL), joints(NULL), seconds(0.0f) {
+        role = "RIGGED";
         object = obj;
         vector_zero(pos);
         vector_zero(vel);
         quat_zero(ori);
     }
 
-    rRigged(rRigged* original) : rRole("RIGGED") {
+    rRigged(rRigged* original) {
         assert(0);
     }
     
@@ -184,7 +185,7 @@ struct rComputerised : public rRole {
 
 struct rMobile : public rRole {
     /// List of mounted weapons.
-    std::vector<cWeapon*> weapons;
+    std::vector<rWeapon*> weapons;
 
     /// Index of selected weapon.
     int currentWeapon;
@@ -193,7 +194,7 @@ struct rMobile : public rRole {
     OID target;
 
     // Exploding end.
-    cWeaponExplosion explosion;
+    rWeaponExplosion explosion;
 
     /// Base angles in radians.
     vec3 bse;
@@ -217,7 +218,8 @@ struct rMobile : public rRole {
     bool immobile;
 
     /// Constructor
-    rMobile(cObject * obj) : rRole("MOBILE"), currentWeapon(0), target(0), jetthrottle(0), throttle(0), camerastate(1), grounded(0.5f), immobile(false) {
+    rMobile(cObject * obj) : currentWeapon(0), target(0), jetthrottle(0), throttle(0), camerastate(1), grounded(0.5f), immobile(false) {
+        role = "MOBILE";
         object = obj;
         twr[0] = twr[1] = twr[2] = 0.0f;
         bse[0] = bse[1] = bse[2] = 0.0f;
@@ -296,7 +298,7 @@ public:
     void setAsAudioListener();
 
     // Weapons
-    void mountWeapon(char* point, cWeapon *weapon, bool add = true);
+    void mountWeapon(char* point, rWeapon *weapon, bool add = true);
 
     // World Step
     virtual void animate(float spf);

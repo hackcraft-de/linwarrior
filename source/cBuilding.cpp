@@ -386,7 +386,7 @@ float cBuilding::constrainParticle(float* worldpos, float radius, float* localpo
 }
 
 void cBuilding::onSpawn() {
-    explosionObject.weaponOwner = this;
+    explosionObject.object = this;
 }
 
 void cBuilding::animate(float spf) {

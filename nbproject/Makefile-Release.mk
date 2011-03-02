@@ -34,28 +34,28 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/source/main.o \
-	${OBJECTDIR}/source/cWeaponSparkgun.o \
-	${OBJECTDIR}/source/cWeaponMachinegun.o \
 	${OBJECTDIR}/source/cAlert.o \
 	${OBJECTDIR}/source/cComcom.o \
 	${OBJECTDIR}/source/cLandscape.o \
-	${OBJECTDIR}/source/cWeaponHoming.o \
-	${OBJECTDIR}/source/cWeaponPlasmagun.o \
+	${OBJECTDIR}/source/rWeaponPlasmagun.o \
+	${OBJECTDIR}/source/rWeaponHoming.o \
 	${OBJECTDIR}/source/cBuilding.o \
 	${OBJECTDIR}/source/cWorld.o \
 	${OBJECTDIR}/source/cBackground.o \
 	${OBJECTDIR}/source/cTiming.o \
-	${OBJECTDIR}/source/cWeapon.o \
 	${OBJECTDIR}/source/cObject.o \
+	${OBJECTDIR}/source/rWeapon.o \
 	${OBJECTDIR}/source/cSolid.o \
+	${OBJECTDIR}/source/rWeaponSparkgun.o \
 	${OBJECTDIR}/_ext/880981645/cMessage.o \
 	${OBJECTDIR}/source/cTree.o \
 	${OBJECTDIR}/source/cPlanetmap.o \
 	${OBJECTDIR}/source/cPadmap.o \
-	${OBJECTDIR}/source/cWeaponExplosion.o \
+	${OBJECTDIR}/source/rWeaponExplosion.o \
+	${OBJECTDIR}/source/rWeaponRaybeam.o \
 	${OBJECTDIR}/source/cMission.o \
-	${OBJECTDIR}/source/cWeaponRaybeam.o \
 	${OBJECTDIR}/source/cMech.o \
+	${OBJECTDIR}/source/rWeaponMachinegun.o \
 	${OBJECTDIR}/source/cController.o \
 	${OBJECTDIR}/source/cSurface.o
 
@@ -89,16 +89,6 @@ ${OBJECTDIR}/source/main.o: source/main.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/main.o source/main.cpp
 
-${OBJECTDIR}/source/cWeaponSparkgun.o: source/cWeaponSparkgun.cpp 
-	${MKDIR} -p ${OBJECTDIR}/source
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/cWeaponSparkgun.o source/cWeaponSparkgun.cpp
-
-${OBJECTDIR}/source/cWeaponMachinegun.o: source/cWeaponMachinegun.cpp 
-	${MKDIR} -p ${OBJECTDIR}/source
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/cWeaponMachinegun.o source/cWeaponMachinegun.cpp
-
 ${OBJECTDIR}/source/cAlert.o: source/cAlert.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source
 	${RM} $@.d
@@ -114,15 +104,15 @@ ${OBJECTDIR}/source/cLandscape.o: source/cLandscape.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/cLandscape.o source/cLandscape.cpp
 
-${OBJECTDIR}/source/cWeaponHoming.o: source/cWeaponHoming.cpp 
+${OBJECTDIR}/source/rWeaponPlasmagun.o: source/rWeaponPlasmagun.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/cWeaponHoming.o source/cWeaponHoming.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/rWeaponPlasmagun.o source/rWeaponPlasmagun.cpp
 
-${OBJECTDIR}/source/cWeaponPlasmagun.o: source/cWeaponPlasmagun.cpp 
+${OBJECTDIR}/source/rWeaponHoming.o: source/rWeaponHoming.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/cWeaponPlasmagun.o source/cWeaponPlasmagun.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/rWeaponHoming.o source/rWeaponHoming.cpp
 
 ${OBJECTDIR}/source/cBuilding.o: source/cBuilding.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source
@@ -144,20 +134,25 @@ ${OBJECTDIR}/source/cTiming.o: source/cTiming.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/cTiming.o source/cTiming.cpp
 
-${OBJECTDIR}/source/cWeapon.o: source/cWeapon.cpp 
-	${MKDIR} -p ${OBJECTDIR}/source
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/cWeapon.o source/cWeapon.cpp
-
 ${OBJECTDIR}/source/cObject.o: source/cObject.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/cObject.o source/cObject.cpp
 
+${OBJECTDIR}/source/rWeapon.o: source/rWeapon.cpp 
+	${MKDIR} -p ${OBJECTDIR}/source
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/rWeapon.o source/rWeapon.cpp
+
 ${OBJECTDIR}/source/cSolid.o: source/cSolid.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/cSolid.o source/cSolid.cpp
+
+${OBJECTDIR}/source/rWeaponSparkgun.o: source/rWeaponSparkgun.cpp 
+	${MKDIR} -p ${OBJECTDIR}/source
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/rWeaponSparkgun.o source/rWeaponSparkgun.cpp
 
 ${OBJECTDIR}/_ext/880981645/cMessage.o: /media/44EA-7693/linux_workspaces/netbeans_workspace/linwarrior/source/cMessage.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/880981645
@@ -179,25 +174,30 @@ ${OBJECTDIR}/source/cPadmap.o: source/cPadmap.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/cPadmap.o source/cPadmap.cpp
 
-${OBJECTDIR}/source/cWeaponExplosion.o: source/cWeaponExplosion.cpp 
+${OBJECTDIR}/source/rWeaponExplosion.o: source/rWeaponExplosion.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/cWeaponExplosion.o source/cWeaponExplosion.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/rWeaponExplosion.o source/rWeaponExplosion.cpp
+
+${OBJECTDIR}/source/rWeaponRaybeam.o: source/rWeaponRaybeam.cpp 
+	${MKDIR} -p ${OBJECTDIR}/source
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/rWeaponRaybeam.o source/rWeaponRaybeam.cpp
 
 ${OBJECTDIR}/source/cMission.o: source/cMission.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/cMission.o source/cMission.cpp
 
-${OBJECTDIR}/source/cWeaponRaybeam.o: source/cWeaponRaybeam.cpp 
-	${MKDIR} -p ${OBJECTDIR}/source
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/cWeaponRaybeam.o source/cWeaponRaybeam.cpp
-
 ${OBJECTDIR}/source/cMech.o: source/cMech.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/cMech.o source/cMech.cpp
+
+${OBJECTDIR}/source/rWeaponMachinegun.o: source/rWeaponMachinegun.cpp 
+	${MKDIR} -p ${OBJECTDIR}/source
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/rWeaponMachinegun.o source/rWeaponMachinegun.cpp
 
 ${OBJECTDIR}/source/cController.o: source/cController.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source

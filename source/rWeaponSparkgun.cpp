@@ -1,19 +1,20 @@
-#include "cWeaponPlasmagun.h"
+#include "rWeaponSparkgun.h"
 
 #include "psi3d/snippetsgl.h"
 
 #include <cassert>
 
+rWeaponSparkgun::rWeaponSparkgun(cObject* obj) {
+    role = "SPARKGUN";
+    object = obj;
 
-cWeaponPlasmagun::cWeaponPlasmagun() {
-    clipSize = 19;
-    depotSize = 9;
+    clipSize = 24;
+    depotSize = 3;
     remainingAmmo = clipSize;
     remainingClips = depotSize;
 
     if (WEAPONSOUND) {
-        //ALuint buffer = alutCreateBufferHelloWorld();
-        ALuint buffer = alutCreateBufferFromFile("data/freesound.org/plasmagun.wav");
+        ALuint buffer = alutCreateBufferFromFile("data/freesound.org/sparkgun.wav");
         alGenSources(1, &soundSource);
         alSourcei(soundSource, AL_BUFFER, buffer);
         alSourcef(soundSource, AL_PITCH, 1.0f);
@@ -22,15 +23,15 @@ cWeaponPlasmagun::cWeaponPlasmagun() {
     }
 }
 
-void cWeaponPlasmagun::fire(OID target) {
+void rWeaponSparkgun::fire(OID target) {
     if (!ready()) return;
 
     if (remainingAmmo > 0) {
         remainingAmmo--;
         if (remainingAmmo == 0 && remainingClips != 0) {
-            timeReloading = 2.5;
+            timeReloading = 7.1;
         } else {
-            timeReloading = 0.3;
+            timeReloading = 1.9;
         }
     }
 
@@ -38,23 +39,23 @@ void cWeaponPlasmagun::fire(OID target) {
 
     cParticle* s = new cParticle();
     assert(s != NULL);
-    s->fuel = 1.0f;
+    s->fuel = 1;
 
-    float* pos = &source[12];
-    vector_cpy(s->pos, pos)
+    float* source_12 = &source[12];
+    vector_cpy(s->pos, source_12)
 
-    float nrm[3];
+            float nrm[3];
     float pos2[] = {0, 0, -1};
     matrix_apply2(source, pos2);
     vector_sub(nrm, pos2, s->pos);
 
-    vector_scale(s->vel, nrm, 50);
+    vector_scale(s->vel, nrm, 30);
     shrapnelParticles.push_back(s);
 
     playSourceIfNotPlaying();
 }
 
-void cWeaponPlasmagun::animate(float spf) {
+void rWeaponSparkgun::animate(float spf) {
 
     foreachNoInc(i, shrapnelParticles) {
         cParticle* s = *i++;
@@ -64,10 +65,10 @@ void cWeaponPlasmagun::animate(float spf) {
             shrapnelParticles.remove(s);
             delete s;
         } else {
-            float radius = 0.2;
+            float radius = 0.4;
             int roles = 0;
-            float damage = 13;
-            int damaged = damageByParticle(s->pos, radius, roles, damage);
+            float damage = 11;
+            int damaged = this->damageByParticle(s->pos, radius, roles, damage);
             if (damaged) {
                 shrapnelParticles.remove(s);
                 delete s;
@@ -85,7 +86,7 @@ void cWeaponPlasmagun::animate(float spf) {
     }
 }
 
-void cWeaponPlasmagun::drawSolid() {
+void rWeaponSparkgun::drawSolid() {
     if (drawWeapon) {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
@@ -101,36 +102,9 @@ void cWeaponPlasmagun::drawSolid() {
                 glScalef(scale, scale, scale);
 
                 if (this->ready() == 0 && remainingAmmo != 0) {
-                    glColor4f(0.2, 0.2, 0.3, 1);
-                    glPushMatrix();
-                    {
-                        glScalef(0.02, 0.02, 0.02);
-                        glTranslatef(0, (0.5 + 0.5 * sin(this->weaponOwner->seconds * 2 * M_PI))* 1.7 / 0.02, 0);
-                        glRotatef(this->weaponOwner->seconds * 2 * 360, 1, 3, 7);
-                        cPrimitives::glUnitBlock();
-                    }
-                    glPopMatrix();
-                    glColor4f(0.2, 0.3, 0.2, 1);
-                    glPushMatrix();
-                    {
-                        glScalef(0.02, 0.02, 0.02);
-                        glTranslatef(0, (0.5 + 0.5 * cos(this->weaponOwner->seconds * 2 * M_PI))* 1.7 / 0.02, 0);
-                        glRotatef(this->weaponOwner->seconds * 2 * 360, 1, 3, 7);
-                        cPrimitives::glUnitBlock();
-                    }
-                    glPopMatrix();
-                    glColor4f(0.3, 0.2, 0.2, 1);
-                    glPushMatrix();
-                    {
-                        glScalef(0.02, 0.02, 0.02);
-                        glTranslatef(0, (0.5 - 0.5 * sin(this->weaponOwner->seconds * 2 * M_PI))* 1.7 / 0.02, 0);
-                        glRotatef(this->weaponOwner->seconds * 2 * 360, 1, 3, 7);
-                        cPrimitives::glUnitBlock();
-                    }
-                    glPopMatrix();
                 }
 
-                glColor4f(0.2, 0.2, 0.3, 1.0);
+                glColor4f(0.3, 0.2, 0.2, 1.0);
                 glPushMatrix();
                 {
                     glScalef(0.1, 0.14, 0.12);
@@ -141,11 +115,8 @@ void cWeaponPlasmagun::drawSolid() {
                 glColor4f(0.1, 0.1, 0.1, 1.0);
                 glPushMatrix();
                 {
-                    glTranslatef(0.0, 0.8, 0);
-                    glScalef(0.03, 0.8, 0.03);
-                    glTranslatef(2.0, 0, 0);
-                    cPrimitives::glCenterUnitCylinder(7);
-                    glTranslatef(-4.0, 0, 0);
+                    glTranslatef(0.0, 0.7, 0);
+                    glScalef(0.1, 0.7, 0.1);
                     cPrimitives::glCenterUnitCylinder(7);
                 }
                 glPopMatrix();
@@ -156,10 +127,10 @@ void cWeaponPlasmagun::drawSolid() {
     }
 }
 
-void cWeaponPlasmagun::drawEffect() {
+void rWeaponSparkgun::drawEffect() {
     if (shrapnelParticles.empty()) return;
     
-    glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_ALL_ATTRIB_BITS);
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
         SGL::glUseProgram_fgaddcolor();
 
@@ -172,10 +143,10 @@ void cWeaponPlasmagun::drawEffect() {
             {
                 glTranslatef(s->pos[0], s->pos[1], s->pos[2]);
                 glMultMatrixf(n);
-                glColor4f(0.1, 0.1, 0.6, 0.99f);
-                cPrimitives::glDisk(9, 1.9 * 0.1f);
-                glColor4f(0.8, 0.8, 0.1, 0.6f);
-                cPrimitives::glDisk(7, 1.9 * 0.07f);
+                glColor4f(0.6, 0.1, 0.1, 0.99f);
+                cPrimitives::glDisk(9 + WEAPONDETAIL, 5 * 0.1f + 0.006 * (rand() % 100));
+                glColor4f(0.9, 0.9, 0.4, 0.99f);
+                cPrimitives::glDisk(7 + WEAPONDETAIL, 5 * 0.07f + 0.006 * (rand() % 100));
             }
             glPopMatrix();
         }
@@ -184,7 +155,7 @@ void cWeaponPlasmagun::drawEffect() {
     glPopAttrib();
 }
 
-void cWeaponPlasmagun::drawHUD() {
+void rWeaponSparkgun::drawHUD() {
     float a = 0.9;
     float b = 0.6;
 
@@ -215,10 +186,7 @@ void cWeaponPlasmagun::drawHUD() {
     glEnd();
 
     glBegin(GL_LINES);
-    glColor4f(0, 0, 1, b);
-    glVertex3f(0.25, 0.5, 0.0);
-    glColor4f(1, 1, 1, a);
-    glVertex3f(0.75, 0.5, 0.0);
+    glColor4f(1, 1, 0, b);
     glEnd();
 }
 
