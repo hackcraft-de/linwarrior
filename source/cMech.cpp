@@ -325,45 +325,6 @@ void rRigged::transformJoints() {
     delete manipulators;
 }
 
-void rRigged::transformMounts() {
-    // Create mountpoint matrices. Later only quaternions and points.
-    float* matrices[] = {
-        HDMount,
-        CTMount, BKMount,
-        LSMount, RSMount,
-        LAMount, RAMount
-    };
-
-    int mounts[] = {
-        EYE,
-        CTMOUNT, BKMOUNT,
-        LSMOUNT, RSMOUNT,
-        LAMOUNT, RAMOUNT,
-    };
-
-    MD5Format::joint* joints_ = joints;
-    loopi(3) {
-        int jidx = jointpoints[mounts[i]];
-        if (jidx < 0) continue;
-
-        glPushMatrix();
-        {
-            glLoadIdentity();
-
-            if (pos != NULL) glTranslatef(pos[0], pos[1], pos[2]);
-            if (ori != NULL) SGL::glRotateq(ori);
-            glScalef(scale, scale, scale);
-
-            glTranslatef(joints_[jidx].v[0], joints_[jidx].v[1], joints_[jidx].v[2]);
-            SGL::glRotateq(joints_[jidx].q);
-            glScalef(1.0f / scale, 1.0f / scale, 1.0f / scale);
-            glRotatef(180, 0, 1, 0); // Hack, need to invert weapons and camera.
-            if (matrices[i] != NULL) glGetFloatv(GL_MODELVIEW_MATRIX, matrices[i]);
-        }
-        glPopMatrix();
-    }
-}
-
 void rRigged::loadModel(std::string filename) {
     model = MD5Format::mapMD5Mesh(filename.c_str());
 
@@ -409,7 +370,7 @@ void rRigged::transform() {
     if (!active) return;
     if (model == NULL) return;
     transformJoints();
-    transformMounts();
+    //transformMounts();
 }
 
 void rRigged::drawSolid() {
@@ -420,8 +381,6 @@ void rRigged::drawSolid() {
         glTranslatef(pos[0], pos[1], pos[2]);
         SGL::glRotateq(ori);
         //cPrimitives::glAxis(3.0f);
-        float rscale = scale;
-        glScalef(rscale, rscale, rscale);
         drawMeshes();
     }
     glPopMatrix();
@@ -435,8 +394,6 @@ void rRigged::drawEffect() {
         {
             glTranslatef(pos[0], pos[1], pos[2]);
             SGL::glRotateq(ori);
-            float rscale = scale;
-            glScalef(rscale, rscale, rscale);
             drawBones();
         }
         glPopMatrix();
@@ -464,8 +421,6 @@ void rRigged::drawEffect() {
 
                         glTranslatef(pos[0], pos[1], pos[2]);
                         SGL::glRotateq(ori);
-                        float rscale = scale;
-                        glScalef(rscale, rscale, rscale);
                         glTranslatef(v[0], v[1], v[2]);
 
                         float n[16];
@@ -804,9 +759,9 @@ cMech::cMech(float* pos, float* rot) {
         rigged->loadModel(string("data/base/wanzers/frogger/frogger.md5mesh"));
     }
 
-    traceable->radius = 1.75f * rigged->scale;
-    traceable->cwm2 = 0.4 /*very bad cw*/ * traceable->radius * traceable->radius * M_PI * rigged->scale /*m2*/;
-    traceable->mass = 11000 * rigged->scale * 1.00f; // TODO mass is qubic to size.
+    traceable->radius = 1.75f;
+    traceable->cwm2 = 0.4f /*very bad cw*/ * traceable->radius * traceable->radius * M_PI /*m2*/;
+    traceable->mass = 11000.0f; // TODO mass is qubic to size.
     traceable->mass_inv = 1.0f / traceable->mass;
 
     explosion = new rWeaponExplosion(this);
@@ -849,7 +804,16 @@ void cMech::multEyeMatrix() {
     glPushMatrix();
     {
         // Get Inverse Components of Head Matrix
-        glLoadMatrixf(rigged->HDMount);
+        //glLoadMatrixf(rigged->HDMount);
+        int eye = rigged->jointpoints[rRigged::EYE];
+        glLoadIdentity();
+        glTranslatef(rigged->pos[0], rigged->pos[1], rigged->pos[2]);
+        SGL::glRotateq(rigged->ori);
+        glTranslatef(rigged->joints[eye].v[0], rigged->joints[eye].v[1], rigged->joints[eye].v[2]);
+        SGL::glRotateq(rigged->joints[eye].q);
+        // FIXME: Camera forward is inverted, therefore rotate.
+        glRotatef(180, 0,1,0);
+
         SGL::glGetTransposeInverseRotationMatrix(rot_inv);
         SGL::glGetInverseTranslationMatrix(pos_inv);
         // Compose Camera Matrix from inverse components
@@ -904,7 +868,8 @@ void cMech::setAsAudioListener() {
     };
     alListenerfv(AL_POSITION, pos);
     alListenerfv(AL_VELOCITY, vel);
-    float* head = rigged->HDMount;
+    //float* head = rigged->HDMount;
+    float* head = rigged->pos;
     float at_and_up[] = {
         head[8], head[9], head[10],
         0, -1, 0
@@ -917,7 +882,6 @@ void cMech::mountWeapon(char* point, rWeapon *weapon, bool add) {
     weapon->weaponMount = rigged->getMountpoint(point);
     //weapon->weaponBasefv = rigged->getMountMatrix(point);
     weapon->object = this;
-    weapon->weaponScale = rigged->scale;
     if (add) {
         weapons.push_back(weapon);
 #if 0
@@ -1202,7 +1166,14 @@ void cMech::drawEffect() {
             SGL::glUseProgram_fgplaintexture();
             glPushMatrix();
             {
-                glMultMatrixf(rigged->HDMount);
+                int eye = rigged->jointpoints[rRigged::EYE];
+                glTranslatef(rigged->pos[0], rigged->pos[1], rigged->pos[2]);
+                SGL::glRotateq(rigged->ori);
+                glTranslatef(rigged->joints[eye].v[0], rigged->joints[eye].v[1], rigged->joints[eye].v[2]);
+                SGL::glRotateq(rigged->joints[eye].q);
+                // FIXME: Camera forward is inverted, therefore rotate.
+                glRotatef(180, 0,1,0);
+
                 glTranslatef(0, +0.9, 0);
                 float s = 0.65;
                 glScalef(s, s, s);

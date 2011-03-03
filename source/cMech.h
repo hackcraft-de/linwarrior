@@ -37,8 +37,10 @@ class rWeapon;
 
 
 struct rRigged : public rRole {
-    /// Model scale.
+    /// Model scale. (1.0f, unused/removed now)
     float scale;
+    /// Animation time counter in seconds.
+    float seconds;
     /// Position hook.
     vec3 pos;
     /// Orientation hook.
@@ -57,14 +59,6 @@ struct rRigged : public rRole {
     std::map<int, int> jointpoints;
     /// Joint angles for animation.
     std::map<int, std::map<int, float> > rotators;
-    // Mech Joint and Mountpoint Matrices.
-    float HDMount[16];
-    float CTMount[16];
-    float BKMount[16];
-    float RSMount[16];
-    float RAMount[16];
-    float LSMount[16];
-    float LAMount[16];
     // Untransformed vertices for mesh i.
     std::map<int, float*> baseverts;
     // Untransformed normals for mesh i.
@@ -76,12 +70,10 @@ struct rRigged : public rRole {
         JET0, JET1, JET2, JET3, JET4,
         YAW, PITCH, LEFTLEG, RIGHTLEG, LEFTCALF, RIGHTCALF, LEFTFOOT, RIGHTFOOT, MAX_JOINTPOINTS
     };
-    /// Animation time counter in seconds.
-    float seconds;
 
     /// Constructor
 
-    rRigged(cObject* obj = NULL) : scale(1.0f), grounded(0.0f), jetting(0.0f), model(NULL), joints(NULL), seconds(0.0f) {
+    rRigged(cObject* obj = NULL) : scale(1.0f), seconds(0.0f), grounded(0.0f), jetting(0.0f), model(NULL), joints(NULL) {
         role = "RIGGED";
         object = obj;
         vector_zero(pos);
@@ -130,21 +122,6 @@ struct rRigged : public rRole {
         return jointpoints[jp];
     }
 
-    float* getMountMatrix(char* point) {
-        float* jp = NULL;
-        if (strcmp(point, "LTorsor") == 0) jp = LSMount;
-        else if (strcmp(point, "LUpArm") == 0) jp = LSMount;
-        else if (strcmp(point, "LLoArm") == 0) jp = LAMount;
-        else if (strcmp(point, "RTorsor") == 0) jp = RSMount;
-        else if (strcmp(point, "RUpArm") == 0) jp = RSMount;
-        else if (strcmp(point, "RLoArm") == 0) jp = RAMount;
-        else if (point[0] == 'L') jp = LSMount;
-        else if (point[0] == 'R') jp = RSMount;
-        else if (point[0] == 'C') jp = CTMount;
-        else jp = BKMount;
-        return jp;
-    }
-
     void drawBones();
     void drawMeshes();
 
@@ -152,7 +129,6 @@ struct rRigged : public rRole {
     void poseRunning(float spf);
 
     void transformJoints();
-    void transformMounts();
 
     void loadModel(std::string filename);
 
