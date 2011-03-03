@@ -72,6 +72,7 @@ void rWeaponHoming::fire() {
 }
 
 void rWeaponHoming::animate(float spf) {
+    triggereded = triggered;
     if (trigger) fire();
     trigger = false;
 

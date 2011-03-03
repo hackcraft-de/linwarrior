@@ -57,6 +57,7 @@ void rWeaponSparkgun::fire() {
 }
 
 void rWeaponSparkgun::animate(float spf) {
+    triggereded = triggered;
     if (trigger) fire();
     trigger = false;
 

@@ -76,7 +76,6 @@ cObject* cMission::init(cWorld* world) {
 
         mech->nameable->name = "Alpha";
 
-        mech->controlled->pad = new cPad;
         mech->controlled->controller->controllerEnabled = false; // Disable Autopilot.
         mech->addTag(cObject::BLUE);
         mech->addTag(cObject::HUMANPLAYER);
@@ -291,8 +290,6 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
         if (mech == NULL) throw "No memory for player mech!";
         player = mech;
         mech->name = "Playermech";
-        mech->controlled->pad = new cPad;
-        if (mech->controlled->pad == NULL) throw "No memory for player pad!";
         mech->nameable->name = "Alpha";
         mech->controlled->controller->controllerEnabled = false; // Disable Autopilot.
         mech->addTag(cObject::BLUE);
@@ -339,7 +336,6 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
         cMech* mech = new cMech(pos, rot);
         assert(mech != NULL);
 
-        mech->controlled->pad = new cPad();
         mech->name = "Player's Wing 1";
         mech->nameable->name = "Joe";
 
@@ -363,7 +359,6 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
         cMech* mech = new cMech(pos, rot);
         assert(mech != NULL);
 
-        mech->controlled->pad = new cPad();
         mech->name = "Player's Wing 2";
         mech->nameable->name = "Jack";
 
@@ -427,7 +422,6 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
         cMech* mech = new cMech(pos, rot);
         assert(mech != NULL);
 
-        mech->controlled->pad = new cPad();
         mech->name = "Mech/Stortebeker";
         mech->nameable->name = "Stortebeker";
 
@@ -469,7 +463,6 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
         cMech* mech = new cMech(pos);
         assert(mech != NULL);
 
-        mech->controlled->pad = new cPad();
         mech->name = "Mech/OffendingVillain";
         mech->nameable->name = "Offending Villain";
 
@@ -501,7 +494,6 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
         cMech* mech = new cMech(pos);
         assert(mech != NULL);
 
-        mech->controlled->pad = new cPad();
         mech->name = "Mech/LurkingBandit";
         mech->nameable->name = "Lurking Bandit";
 
@@ -778,8 +770,6 @@ void cOpenMission::initPentaSpaceport(cWorld* world, cPlanetmap* planetmap) {
         pos[0] += 20;
         cMech* mech = new cMech(pos, rot);
         if (mech == NULL) throw "No memory for cMech in spacePortMechs.";
-        mech->controlled->pad = new cPad;
-        if (mech->controlled->pad == NULL) throw "No memory for cPad in spacePortMechs.";
         mech->name = "Mech/SpacePortGuard_i";
         mech->nameable->name = "Space-Bandit";
         mech->addTag(cObject::RED);
@@ -798,8 +788,6 @@ void cOpenMission::battleField(cWorld* world) {
         cMech* mech = new cMech(pos);
         if (mech == NULL) throw "No memory for cMech in battleField.";
 
-        mech->controlled->pad = new cPad();
-        if (mech->controlled->pad == NULL) throw "No memory for cPad in battleField.";
         mech->name = "Mech/Battlemech_i";
         mech->addTag(cObject::RED);
         mech->socialised->addEnemy(cObject::BLUE);
@@ -820,8 +808,6 @@ void cOpenMission::battleField(cWorld* world) {
         cMech* mech = new cMech(pos);
         if (mech == NULL) throw "No memory for cMech in battleField.";
 
-        mech->controlled->pad = new cPad();
-        if (mech->controlled->pad == NULL) throw "No memory for cPad in battleField.";
         mech->name = "Mech/Fieldmech_i";
         mech->addTag(cObject::BLUE);
         mech->socialised->addEnemy(cObject::RED);
@@ -851,8 +837,6 @@ void cOpenMission::smallArmy(int wx, int wy, int wz, cWorld* world, const char* 
         float rot[3] = {0, rand() % 360, 0};
         cMech* mech = new cMech(pos, rot);
         if (mech == NULL) throw "No memory for cMech in smallArmy.";
-        mech->controlled->pad = new cPad;
-        if (mech->controlled->pad == NULL) throw "No memory for cPad in smallArmy.";
         mech->name = name;
         mech->nameable->name = name;
         if (blue) {

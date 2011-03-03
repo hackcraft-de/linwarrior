@@ -184,18 +184,6 @@ struct rComputerised : public rRole {
 };
 
 struct rMobile : public rRole {
-    /// List of mounted weapons.
-    std::vector<rWeapon*> weapons;
-
-    /// Index of selected weapon.
-    int currentWeapon;
-
-    /// Weapon target.
-    OID target;
-
-    // Exploding end.
-    rWeaponExplosion explosion;
-
     /// Base angles in radians.
     vec3 bse;
 
@@ -218,7 +206,7 @@ struct rMobile : public rRole {
     bool immobile;
 
     /// Constructor
-    rMobile(cObject * obj) : currentWeapon(0), target(0), jetthrottle(0), throttle(0), camerastate(1), grounded(0.5f), immobile(false) {
+    rMobile(cObject * obj) : jetthrottle(0), throttle(0), camerastate(1), grounded(0.5f), immobile(false) {
         role = "MOBILE";
         object = obj;
         twr[0] = twr[1] = twr[2] = 0.0f;
@@ -232,11 +220,6 @@ struct rMobile : public rRole {
     void ChassisUD(float radians);
     float TowerLR(float radians);
     void TowerUD(float radians);
-
-    // Weaponry
-    void fireCycleWeapons();
-    void fireAllWeapons();
-    void fireWeapon(unsigned n);
 
     virtual void animate(float spf);
     virtual void transform();
@@ -284,6 +267,14 @@ protected:
 
     rRigged* rigged;
 
+    // Exploding end.
+    rWeaponExplosion* explosion;
+
+    /// List of mounted weapons.
+    std::vector<rWeapon*> weapons;
+
+    /// Index of selected weapon.
+    int currentWeapon;
 
 public:
     cMech(float* pos = NULL, float* rot = NULL);
@@ -299,6 +290,9 @@ public:
 
     // Weapons
     void mountWeapon(char* point, rWeapon *weapon, bool add = true);
+    void fireCycleWeapons();
+    void fireAllWeapons();
+    void fireWeapon(unsigned n);
 
     // World Step
     virtual void animate(float spf);

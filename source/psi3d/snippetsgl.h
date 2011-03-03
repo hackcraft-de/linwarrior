@@ -599,6 +599,7 @@ struct SGL {
         glEnable(GL_LIGHTING);
         glEnable(GL_NORMALIZE);
         glDisable(GL_TEXTURE_2D);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     /// Foreground plain textured
@@ -608,6 +609,7 @@ struct SGL {
         glEnable(GL_TEXTURE_2D);
         glDisable(GL_FOG);
         glDisable(GL_LIGHTING);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     /// Foreground lit textured
@@ -619,6 +621,7 @@ struct SGL {
         glEnable(GL_LIGHTING);
         glDisable(GL_ALPHA_TEST);
         glAlphaFunc(GL_GREATER, 0.4f);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     /// Foreground lit textured 3d
@@ -630,6 +633,7 @@ struct SGL {
         glEnable(GL_LIGHTING);
         glDisable(GL_ALPHA_TEST);
         glAlphaFunc(GL_GREATER, 0.4f);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     /// Foreground additive textured

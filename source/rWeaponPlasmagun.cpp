@@ -59,6 +59,7 @@ void rWeaponPlasmagun::fire() {
 }
 
 void rWeaponPlasmagun::animate(float spf) {
+    triggereded = triggered;
     if (trigger) fire();
     trigger = false;
 

@@ -57,6 +57,7 @@ rWeapon::rWeapon(cObject* obj) {
     triggeren = true;
     trigger = false;
     triggered = false;
+    triggereded = false;
 
     quat_zero(weaponOri1);
     vector_zero(weaponPos1);

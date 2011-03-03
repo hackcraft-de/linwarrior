@@ -268,7 +268,7 @@ void cWepcom::process(float spf) {
 
 void cWepcom::drawHUD() {
     cMech* mech = (cMech*) mDevice;
-    float h = 1.0f / 7.0f * (1 + (mech->mobile->weapons.size() + 1) / 2);
+    float h = 1.0f / 7.0f * (1 + (mech->weapons.size() + 1) / 2);
     glBegin(GL_QUADS);
     glVertex3f(1, h, 0);
     glVertex3f(0, h, 0);
@@ -280,9 +280,9 @@ void cWepcom::drawHUD() {
         glScalef(1.0 / 2.0, 1.0 / 7.0, 1.0);
         glTranslatef(0, 0.5, 0);
 
-        loopi(mech->mobile->weapons.size()) {
+        loopi(mech->weapons.size()) {
             glLineWidth(5);
-            if (mech->mobile->weapons[i]->ready()) glColor4f(0.4f, 1.0f, 0.4f, 0.2f);
+            if (mech->weapons[i]->ready()) glColor4f(0.4f, 1.0f, 0.4f, 0.2f);
             else glColor4f(0.8f, 0.0f, 0.0f, 0.2f);
             cPrimitives::glLineSquare(0.1f);
             glLineWidth(1);
@@ -290,7 +290,7 @@ void cWepcom::drawHUD() {
             cPrimitives::glLineSquare(0.1f);
             glPushMatrix();
             {
-                mech->mobile->weapons[i]->drawHUD();
+                mech->weapons[i]->drawHUD();
             }
             glPopMatrix();
             //glTranslatef(0, 1, 0);

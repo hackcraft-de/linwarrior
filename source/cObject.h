@@ -231,6 +231,8 @@ struct rDamageable : public rRole {
     }
 };
 
+#include "cPad.h"
+
 /**
  * Encapsulates thoughtful steering behavior attributes and code.
  */
@@ -247,7 +249,7 @@ struct rControlled : public rRole {
     cController* controller;
     /// Constructor.
 
-    rControlled(cObject* obj = NULL) : target(0), disturber(0), pad(NULL), controller(NULL) {
+    rControlled(cObject* obj = NULL) : target(0), disturber(0), pad(new cPad()), controller(NULL) {
         role = "CONTROLLED";
         object = obj;
         vector_set(destination, float_NAN, float_NAN, float_NAN);

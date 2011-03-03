@@ -656,58 +656,43 @@ void rMobile::TowerUD(float radians) {
     if (twr[0] < -limit) twr[0] = -limit;
 }
 
-void rMobile::fireCycleWeapons() {
-    if (weapons.size() == 0) return;
-    currentWeapon %= weapons.size();
-    fireWeapon(currentWeapon);
-    currentWeapon++;
-    currentWeapon %= weapons.size();
-}
-
-void rMobile::fireAllWeapons() {
-
-    loopi(weapons.size()) {
-        weapons[i]->target = target;
-        weapons[i]->trigger = true;
-    }
-}
-
-void rMobile::fireWeapon(unsigned n) {
-    if (n >= weapons.size()) return;
-    weapons[n]->target = target;
-    weapons[n]->trigger = true;
-}
-
 void rMobile::animate(float spf) {
     if (!active) return;
-    loopi(weapons.size()) {
-        weapons[i]->animate(spf);
-    }
-    explosion.animate(spf);
 }
 
 void rMobile::transform() {
-    if (!active) return;
-    loopi(weapons.size()) {
-        weapons[i]->transform();
-    }
-    explosion.transform();
+    return;
 }
 
 void rMobile::drawSolid() {
-    if (!active) return;
-    loopi(weapons.size()) {
-        weapons[i]->drawSolid();
-    }
-    explosion.drawSolid();
+    return;
 }
 
 void rMobile::drawEffect() {
-    if (!active) return;
-    loopi(weapons.size()) {
-        weapons[i]->drawEffect();
+    /*
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    {
+        SGL::glUseProgram_fgaddcolor();
+
+        // Draw colored base.
+        glPushMatrix();
+        {
+            glTranslatef(traceable->pos[0], traceable->pos[1], traceable->pos[2]);
+            SGL::glRotateq(traceable->ori);
+            glTranslatef(0, +0.1, 0);
+            glRotatef(90, 1, 0, 0);
+            //glColor4f(0.1,0.1,0.1,0.9);
+            //cPrimitives::glDisk(4, 1.3f);
+            if (hasTag(RED)) glColor4f(1, 0, 0, 0.9);
+            else if (hasTag(GREEN)) glColor4f(0, 1, 0, 0.9);
+            else if (hasTag(BLUE)) glColor4f(0, 0, 1, 0.9);
+            else glColor4f(1, 1, 0, 0.9);
+            cPrimitives::glDisk(1, -1.3f);
+        }
+        glPopMatrix();
     }
-    explosion.drawEffect();
+    glPopAttrib();
+    */
 }
 
 
@@ -823,6 +808,9 @@ cMech::cMech(float* pos, float* rot) {
     traceable->cwm2 = 0.4 /*very bad cw*/ * traceable->radius * traceable->radius * M_PI * rigged->scale /*m2*/;
     traceable->mass = 11000 * rigged->scale * 1.00f; // TODO mass is qubic to size.
     traceable->mass_inv = 1.0f / traceable->mass;
+
+    explosion = new rWeaponExplosion(this);
+    mountWeapon((char*) "CTorsor", explosion, false);
 }
 
 cMech::~cMech() {
@@ -842,7 +830,6 @@ void cMech::onMessage(cMessage* message) {
 
 void cMech::onSpawn() {
     //cout << "cMech::onSpawn()\n";
-    this->mountWeapon((char*) "CTorsor", &mobile->explosion, false);
     ALuint soundsource = traceable->sound;
     if (hasTag(HUMANPLAYER) && alIsSource(soundsource)) alSourcePlay(soundsource);
     //cout << "Mech spawned " << oid << "\n";
@@ -925,15 +912,69 @@ void cMech::setAsAudioListener() {
     alListenerfv(AL_ORIENTATION, at_and_up);
 }
 
-// move to rMobile?
 void cMech::mountWeapon(char* point, rWeapon *weapon, bool add) {
     if (weapon == NULL) throw "Null weapon for mounting given.";
     weapon->weaponMount = rigged->getMountpoint(point);
-    weapon->weaponBasefv = rigged->getMountMatrix(point);
+    //weapon->weaponBasefv = rigged->getMountMatrix(point);
     weapon->object = this;
     weapon->weaponScale = rigged->scale;
-    if (add) mobile->weapons.push_back(weapon);
+    if (add) {
+        weapons.push_back(weapon);
+#if 0
+        int n = weapons.size();
+        loopi(n) {
+            weapons[i]->triggeren = false;
+            weapons[i]->triggered = false;
+            weapons[i]->triggereded = false;
+        }
+        weapon->triggeren = true;
+        weapon->triggered = true;
+        weapon->triggereded = true;
+#endif
+    }
 }
+
+#if 0
+void cMech::fireCycleWeapons() {
+    cout << "fireCycleWeapons()\n";
+    int n = weapons.size();
+    loopi(n) {
+        cout << "W " << i << ", triggeren = " << weapons[i]->triggeren << ", triggered = " << weapons[i]->triggered << ", triggereded = " << weapons[i]->triggereded << endl;
+        bool selfdone = weapons[i]->triggered && weapons[i]->triggereded;
+        bool otherdone = weapons[(i+1)%n]->triggered;
+        weapons[i]->triggeren ^= selfdone;
+        weapons[i]->triggeren |= otherdone;
+        weapons[i]->triggered ^= selfdone;
+        weapons[i]->triggereded ^= selfdone;
+        weapons[i]->target = target;
+        weapons[i]->trigger = true;
+    }
+    loopi(n) {
+        cout << "W'" << i << ", triggeren = " << weapons[i]->triggeren << ", triggered = " << weapons[i]->triggered << ", triggereded = " << weapons[i]->triggereded << endl;
+    }
+}
+#else
+void cMech::fireCycleWeapons() {
+    if (weapons.size() == 0) return;
+    currentWeapon %= weapons.size();
+    fireWeapon(currentWeapon);
+    currentWeapon++;
+    currentWeapon %= weapons.size();
+}
+#endif
+
+void cMech::fireAllWeapons() {
+
+    loopi(weapons.size()) {
+        weapons[i]->trigger = true;
+    }
+}
+
+void cMech::fireWeapon(unsigned n) {
+    if (n >= weapons.size()) return;
+    weapons[n]->trigger = true;
+}
+
 
 void cMech::animate(float spf) {
     {
@@ -958,7 +999,7 @@ void cMech::animate(float spf) {
     }
 
     // Process computers and Pad-input when not dead.
-    if (damageable->alife && controlled->pad != NULL) {
+    if (damageable->alife) {
         //cout << mPad->toString();
 
         // Let AI-Controller set Pad-input.
@@ -986,11 +1027,10 @@ void cMech::animate(float spf) {
         }
 
         if (controlled->pad->getButton(cPad::MECH_FIRE_BUTTON1) || controlled->pad->getButton(cPad::MECH_FIRE_BUTTON2)) {
-            mobile->target = controlled->target;
             if (true) {
-                mobile->fireCycleWeapons();
+                fireCycleWeapons();
             } else {
-                mobile->fireAllWeapons();
+                fireAllWeapons();
             }
         }
 
@@ -1047,6 +1087,16 @@ void cMech::animate(float spf) {
 
         rigged->animate(spf);
     }
+
+    loopi(weapons.size()) {
+        weapons[i]->target = controlled->target;
+        
+        weapons[i]->animate(spf);
+    }
+
+    {
+        explosion->animate(spf);
+    }
 }
 
 void cMech::transform() {
@@ -1054,17 +1104,27 @@ void cMech::transform() {
         rigged->transform();
     }
     {
-        loopi(mobile->weapons.size()) {
-            rWeapon* weapon = mobile->weapons[i];
-            MD5Format::joint* joint = &rigged->joints[weapon->weaponMount];
-            quat_cpy(weapon->weaponOri0, traceable->ori);
-            vector_cpy(weapon->weaponPos0, traceable->pos);
-            quat_cpy(weapon->weaponOri1, joint->q);
-            vector_cpy(weapon->weaponPos1, joint->v);
-            weapon->weaponBasefv = NULL;
-        }
-
         mobile->transform();
+    }
+    loopi(weapons.size()) {
+        rWeapon* weapon = weapons[i];
+        MD5Format::joint* joint = &rigged->joints[weapon->weaponMount];
+        quat_cpy(weapon->weaponOri0, traceable->ori);
+        vector_cpy(weapon->weaponPos0, traceable->pos);
+        quat_cpy(weapon->weaponOri1, joint->q);
+        vector_cpy(weapon->weaponPos1, joint->v);
+
+        weapon->transform();
+    }
+    {
+        rWeapon* weapon = explosion;
+        MD5Format::joint* joint = &rigged->joints[weapon->weaponMount];
+        quat_cpy(weapon->weaponOri0, traceable->ori);
+        vector_cpy(weapon->weaponPos0, traceable->pos);
+        quat_cpy(weapon->weaponOri1, joint->q);
+        vector_cpy(weapon->weaponPos1, joint->v);
+
+        explosion->transform();
     }
 }
 
@@ -1112,6 +1172,12 @@ void cMech::drawSolid() {
     {
         mobile->drawSolid();
     }
+    loopi(weapons.size()) {
+        weapons[i]->drawSolid();
+    }
+    {
+        explosion->drawSolid();
+    }
 }
 
 void cMech::drawEffect() {
@@ -1122,49 +1188,36 @@ void cMech::drawEffect() {
     {
         mobile->drawEffect();
     }
+    loopi(weapons.size()) {
+        weapons[i]->drawEffect();
+    }
+    {
+        explosion->drawEffect();
+    }
     
     // Draw name above head. move to nameable?
-    if (!hasTag(HUMANPLAYER)) {
+    if (!hasTag(HUMANPLAYER) && nameable != NULL) {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
-            SGL::glUseProgram_fgaddcolor();
-            
-            // Draw colored base.
+            SGL::glUseProgram_fgplaintexture();
             glPushMatrix();
             {
-                glTranslatef(traceable->pos[0], traceable->pos[1], traceable->pos[2]);
-                SGL::glRotateq(traceable->ori);
-                glTranslatef(0, +0.1, 0);
-                glRotatef(90, 1, 0, 0);
-                //glColor4f(0.1,0.1,0.1,0.9);
-                //cPrimitives::glDisk(4, 1.3f);
-                if (hasTag(RED)) glColor4f(1, 0, 0, 0.9);
-                else if (hasTag(GREEN)) glColor4f(0, 1, 0, 0.9);
-                else if (hasTag(BLUE)) glColor4f(0, 0, 1, 0.9);
-                else glColor4f(1, 1, 0, 0.9);
-                cPrimitives::glDisk(1, -1.3f);
+                glMultMatrixf(rigged->HDMount);
+                glTranslatef(0, +0.9, 0);
+                float s = 0.65;
+                glScalef(s, s, s);
+                float n[16];
+                SGL::glGetTransposeInverseRotationMatrix(n);
+                glMultMatrixf(n);
+                int l = nameable->name.length();
+                glTranslatef(-l * 0.5f, 0, 0);
+                if (hasTag(RED)) glColor4f(1, 0, 0, 0.99);
+                else if (hasTag(GREEN)) glColor4f(0, 1, 0, 0.99);
+                else if (hasTag(BLUE)) glColor4f(0, 0, 1, 0.99);
+                else glColor4f(1, 1, 0, 0.99);
+                glprintf(nameable->name.c_str());
             }
             glPopMatrix();
-
-            // Print name above head.
-            if (nameable) {
-                SGL::glUseProgram_fgplaintexture();
-                glColor4f(0.95, 0.95, 1, 1);
-                glPushMatrix();
-                {
-                    glMultMatrixf(rigged->HDMount);
-                    glTranslatef(0, +0.9, 0);
-                    float s = 0.65;
-                    glScalef(s, s, s);
-                    float n[16];
-                    SGL::glGetTransposeInverseRotationMatrix(n);
-                    glMultMatrixf(n);
-                    int l = nameable->name.length();
-                    glTranslatef(-l * 0.5f, 0, 0);
-                    glprintf(nameable->name.c_str());
-                }
-                glPopMatrix();
-            }
         }
         glPopAttrib();
     }
@@ -1186,7 +1239,9 @@ void cMech::damageByParticle(float* localpos, float damage, cObject* enactor) {
     if (enactor != NULL) controlled->disturber = enactor->oid;
     if (!damageable->damage(hitzone, damage, enactor)) {
         cout << "cMech::damageByParticle(): DEAD\n";
-        mobile->explosion.fire();
+        //explosion->fire();
+        explosion->triggeren = true;
+        explosion->trigger = true;
     }
     int body = rDamageable::BODY;
     if (damageable->hp[body] <= 75) addTag(WOUNDED);

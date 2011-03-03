@@ -86,6 +86,7 @@ void rWeaponMachinegun::fire() {
 }
 
 void rWeaponMachinegun::animate(float spf) {
+    triggereded = triggered;
     if (trigger) fire();
     trigger = false;
     

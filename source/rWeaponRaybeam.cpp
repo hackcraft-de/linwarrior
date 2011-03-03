@@ -39,6 +39,7 @@ void rWeaponRaybeam::fire() {
 }
 
 void rWeaponRaybeam::animate(float spf) {
+    triggereded = triggered;
     if (trigger) fire();
     trigger = false;
     

@@ -42,6 +42,8 @@ public:
     bool trigger;
     /// True when firing was just really triggered last animation cycle. (hook)
     bool triggered;
+    /// True when firing was just really triggered second last animation cycle. (hook)
+    bool triggereded;
     /// Points To Current Vehicle Base Matrix of owner (optional).
     float* weaponBasefv;
     /// Base position (hook).
@@ -128,14 +130,14 @@ public:
     };
 
     /**
-     * Update weapon animation cycles, particle trajectories and timers.
+     * Update weapon animation cycles, trigger, particle trajectories and timers.
      */
     virtual void animate(float spf) {
     };
 
     /**
      * Calculate transformations for painting called between animate and draw*.
-     * Calculates current pose according to owners Base and Mount matrices
+     * Calculates current pose according to owners Base and Mount
      * and sets position of sound-source.
      */
     virtual void transform();
@@ -164,6 +166,9 @@ public:
      */
     int damageByParticle(float* worldpos, float radius, int roles, float damage);
 
+    /**
+     * Helper function for transform, call to transform to world coord system.
+     */
     void transformTo();
 };
 
@@ -174,5 +179,5 @@ public:
 #include "rWeaponHoming.h"
 #include "rWeaponExplosion.h"
 
-#endif	/* _CWEAPON_H */
+#endif	/* _RWEAPON_H */
 
