@@ -31,7 +31,7 @@
 #define DEFAULT_XRES 800
 #define DEFAULT_YRES 600
 #define DEFAULT_BPP 16
-#define DEFAULT_FOV 60
+#define DEFAULT_FOV 65
 
 /**
  * Structurizes/glues what's necessary to run a game-mission including

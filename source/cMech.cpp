@@ -340,11 +340,13 @@ void rRigged::loadModel(std::string filename) {
     quat_rotaxis(convaxes, (-0.5f * M_PI), xaxis);
     quat_mul(joints_[0].q, joints_[0].q, convaxes);
 
-    // Rotate yaw 180 to make frontfacing.
-    quat convfacing;
-    vec3 yaxis = {0,1,0};
-    quat_rotaxis(convfacing, M_PI, yaxis);
-    quat_mul(joints_[0].q, joints_[0].q, convfacing);
+    // FIXME: Rotate yaw 180 to make frontfacing.
+    if (true) {
+        quat convfacing;
+        vec3 yaxis = {0,1,0};
+        quat_rotaxis(convfacing, M_PI, yaxis);
+        quat_mul(joints_[0].q, joints_[0].q, convfacing);
+    }
 
     // Allocate space for animated global joints.
     joints = new MD5Format::joint[model->numJoints];
@@ -1170,18 +1172,14 @@ void cMech::drawEffect() {
                 glTranslatef(rigged->pos[0], rigged->pos[1], rigged->pos[2]);
                 SGL::glRotateq(rigged->ori);
                 glTranslatef(rigged->joints[eye].v[0], rigged->joints[eye].v[1], rigged->joints[eye].v[2]);
-                SGL::glRotateq(rigged->joints[eye].q);
-                // FIXME: Camera forward is inverted, therefore rotate.
-                glRotatef(180, 0,1,0);
-
-                glTranslatef(0, +0.9, 0);
+                glTranslatef(0, +2.5, 0);
                 float s = 0.65;
                 glScalef(s, s, s);
                 float n[16];
                 SGL::glGetTransposeInverseRotationMatrix(n);
                 glMultMatrixf(n);
                 int l = nameable->name.length();
-                glTranslatef(-l * 0.5f, 0, 0);
+                glTranslatef(-l * 0.5f, 0.0, 0);
                 if (hasTag(RED)) glColor4f(1, 0, 0, 0.99);
                 else if (hasTag(GREEN)) glColor4f(0, 1, 0, 0.99);
                 else if (hasTag(BLUE)) glColor4f(0, 0, 1, 0.99);

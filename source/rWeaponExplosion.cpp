@@ -80,9 +80,9 @@ void rWeaponExplosion::animate(float spf) {
         s->spawn = 0.0f;
         s->timer = 0.0f;
 
-        s->pos[0] = source[12] + (100.0f - (rand()%200)) * 0.003;
-        s->pos[1] = source[13] + (100.0f - (rand()%200)) * 0.003;
-        s->pos[2] = source[14] + (100.0f - (rand()%200)) * 0.003;
+        s->pos[0] = source[12] + (100.0f - (rand()%200)) * 0.01;
+        s->pos[1] = source[13] + (100.0f - (rand()%200)) * 0.01;
+        s->pos[2] = source[14] + (100.0f - (rand()%200)) * 0.01;
 
         float nrm[3];
         float pos2[] = {0, 0, -1};
