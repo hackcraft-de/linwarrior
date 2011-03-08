@@ -1,5 +1,32 @@
 RELEASE NOTES
 
+????_??_?? r19
+Enhanced Sky Model
+- Night is darker
+- Fog adjustments
+Enhanced Models
+- Added Scorpion mech model
+- Added Flopsy mech model
+- Added tank models
+- Disabled weapon rendering in favor of model rendering
+- Selection of models randomized so far
+- Made walkcycle more natural
+- Added bird walkcycle
+Enhanced Landscape Rendering
+- Added crater-modification
+- Added Sprite based particle Trees
+Enhanced Immersion
+- Adjusted field of view
+Enhanced Internals
+- Lessened object-role interdependencies, more component like, next logical step
+- Role'ified Weapons, they are components now
+- Replaced weapon mount matrix with quaternion+position for effective binding
+- Glued role/attributes through bindings in objects
+- Refactoring is still going on
+- Cleaned up model scaling
+Enhanced Usability
+- Camera mode can still be changed when wrecked
+
 
 2010_12_31 r18
 

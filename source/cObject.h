@@ -105,27 +105,13 @@ struct rNameable : public rRole {
     std::string description;
     /// { 0, .., 25 } for { a, ..., z }.
     unsigned int designation;
+
     /// Constructor.
-
-    rNameable(cObject* obj = NULL) : name("Unnamed"), description("Undescribed"), designation(0) {
-        role = "NAMEABLE";
-        object = obj;
-    }
+    rNameable(cObject* obj = NULL);
     /// Copy Constructor.
-
-    rNameable(rNameable * original) : name("Unnamed"), description("Undescribed"), designation(0) {
-        role = "NAMEABLE";
-        if (original != NULL) {
-            object = original->object;
-            name = original->name;
-            description = original->description;
-            designation = original->designation;
-        }
-    }
-
-    virtual rRole* clone() {
-        return new rNameable(this);
-    }
+    rNameable(rNameable * original);
+    /// Clone this.
+    virtual rRole* clone();
 };
 
 /**
@@ -138,38 +124,21 @@ struct rTraceable : public cParticle, public rRole {
     float jetthrottle;
     /// Grounddrive throttle setting hook usually [0,1].
     float throttle;
+
     /// Constructor.
-
-    rTraceable(cObject* obj = NULL) : cParticle() {
-        role = "TRACEABLE";
-        object = obj;
-        grounded = true;
-        jetthrottle = 0.0f;
-        throttle = 0.0f;
-    }
+    rTraceable(cObject* obj = NULL);
     /// Copy Constructor.
-
-    rTraceable(rTraceable * original) : cParticle(original) {
-        role = "TRACEABLE";
-        object = original->object;
-        grounded = original->grounded;
-        jetthrottle = original->jetthrottle;
-        throttle = original->throttle;
-    }
-
-    virtual rRole* clone() {
-        return new rTraceable(this);
-    }
-
+    rTraceable(rTraceable * original);
+    /// Clone this.
+    virtual rRole* clone();
+    /// Accumulate steering and environmental forces.
     void accumulate(float spf);
+    /// Integrate position and derive velocity given forces and old state.
     void integrate(float spf);
+    /// Adjust position to nullify collisions.
     void collide(float spf);
-
-    virtual void animate(float spf) {
-        accumulate(spf);
-        integrate(spf);
-        collide(spf);
-    }
+    /// Accumulate, integrate and collide.
+    virtual void animate(float spf);
 };
 
 
@@ -177,9 +146,8 @@ struct rTraceable : public cParticle, public rRole {
  * Encapsulates attributes related to body damage and armor state.
  */
 struct rDamageable : public rRole {
-    /// Marks object as still alife for internal state reference.
+    /// Marks object as still alife.
     bool alife;
-
     /// Enumeration of entity body part units: Body, Legs, Left, Right.
     enum Parts {
         BODY = 0, // Some Objects only have this
@@ -196,48 +164,23 @@ struct rDamageable : public rRole {
     // float splash[MAX_PARTS];
     // float heat[MAX_PARTS];
     // float sinks[MAX_PARTS];
+
     /// Constructor.
-
-    rDamageable(cObject* obj = NULL) {
-        role = "DAMAGEABLE";
-        object = obj;
-        alife = true;
-        loopi(MAX_PARTS) hp[i] = 100.0f;
-    }
+    rDamageable(cObject* obj = NULL);
     /// Copy Constructor.
-
-    rDamageable(rDamageable * original) {
-        role = "DAMAGEABLE";
-        if (original == NULL) {
-            rDamageable();
-        } else {
-            object = original->object;
-            alife = original->alife;
-            loopi(MAX_PARTS) hp[i] = original->hp[i];
-        }
-    }
-
-    virtual rRole* clone() {
-        return new rDamageable(this);
-    }
-
-    virtual bool damage(int hitzone, float damage, cObject* enactor) {
-        hp[hitzone] -= damage;
-        if (hp[hitzone] < 0.0f) hp[hitzone] = 0.0f;
-        if (hp[BODY] <= 0.0f) {
-            alife = false;
-        }
-        return alife;
-    }
+    rDamageable(rDamageable * original);
+    /// Clone this.
+    virtual rRole* clone();
+    /// Apply damage to a hitzone, and return alife.
+    virtual bool damage(int hitzone, float damage, cObject* enactor);
 };
 
-#include "cPad.h"
 
 /**
  * Encapsulates thoughtful steering behavior attributes and code.
  */
 struct rControlled : public rRole {
-    /// Aim target
+    /// Aim target.
     OID target;
     /// Who disturbed me? Replace with a map of (OID, intensity)-pairs?
     OID disturber;
@@ -247,32 +190,15 @@ struct rControlled : public rRole {
     cPad* pad;
     /// Command Stack controlls the pad when enabled.
     cController* controller;
+    
     /// Constructor.
-
-    rControlled(cObject* obj = NULL) : target(0), disturber(0), pad(new cPad()), controller(NULL) {
-        role = "CONTROLLED";
-        object = obj;
-        vector_set(destination, float_NAN, float_NAN, float_NAN);
-    }
+    rControlled(cObject* obj = NULL);
     /// Copy Constructor.
-
-    rControlled(rControlled * original) {
-        role = "CONTROLLED";
-        if (original == NULL) {
-            rControlled();
-        } else {
-            object = original->object;
-            target = original->target;
-            disturber = original->disturber;
-            vector_cpy(destination, original->destination);
-            pad = original->pad;
-            controller = original->controller;
-        }
-    }
-
-    virtual rRole* clone() {
-        return new rControlled(this);
-    }
+    rControlled(rControlled * original);
+    /// Clone this.
+    virtual rRole* clone();
+    /// Process autopilot-controller.
+    virtual void animate(float spf);
 };
 
 /**
@@ -289,80 +215,22 @@ struct rSocialised : public rRole {
     std::set<OID> exc_enemies;
     
     /// Constructor.
-    rSocialised(cObject* obj = NULL) {
-        role = "SOCIALISED";
-        object = obj;
-    }
-
+    rSocialised(cObject* obj = NULL);
     /// Copy Constructor.
-    rSocialised(rSocialised * original) {
-        role = "SOCIALISED";
-        if (original != NULL) {
-            object = original->object;
-            inc_allies = original->inc_allies;
-            inc_enemies = original->inc_enemies;
-            exc_allies = original->exc_allies;
-            exc_enemies = original->exc_enemies;
-        }
-    }
-
-    virtual rRole* clone() {
-        return new rSocialised(this);
-    }
-
+    rSocialised(rSocialised * original);
+    virtual rRole* clone();
     /// Check wether an tag-set is identified as an ally.
-    bool isAllied(std::set<OID>* tags) {
-        std::set<OID> inclusion;
-        std::set_intersection(tags->begin(), tags->end(), inc_allies.begin(), inc_allies.end(), std::inserter(inclusion, inclusion.begin()));
-        std::set<OID> exclusion;
-        std::set_intersection(tags->begin(), tags->end(), exc_allies.begin(), exc_allies.end(), std::inserter(exclusion, exclusion.begin()));
-        return (!inclusion.empty() && exclusion.empty());
-    }
-
+    bool isAllied(std::set<OID>* tags);
     /// Add tags which allies of this object have (not).
-    void addAllied(OID tag, bool include = false) {
-        if (include) {
-            inc_allies.insert(tag);
-        } else {
-            exc_allies.insert(tag);
-        }
-    }
-
+    void addAllied(OID tag, bool include = false);
     /// Remove tags which alies of this object have (not).
-    void remAllied(OID tag, bool include = false) {
-        if (include) {
-            inc_allies.erase(tag);
-        } else {
-            exc_allies.erase(tag);
-        }
-    }
-
+    void remAllied(OID tag, bool include = false);
     /// Check wether an tag-set is identified as an enemy.
-    bool isEnemy(std::set<OID>* tags) {
-        std::set<OID> inclusion;
-        std::set_intersection(tags->begin(), tags->end(), inc_enemies.begin(), inc_enemies.end(), std::inserter(inclusion, inclusion.begin()));
-        std::set<OID> exclusion;
-        std::set_intersection(tags->begin(), tags->end(), exc_enemies.begin(), exc_enemies.end(), std::inserter(exclusion, exclusion.begin()));
-        return (!inclusion.empty() && exclusion.empty());
-    }
-
+    bool isEnemy(std::set<OID>* tags);
     /// Add roles which enemies of this object play.
-    void addEnemy(OID tag, bool include = true) {
-        if (include) {
-            inc_enemies.insert(tag);
-        } else {
-            exc_enemies.insert(tag);
-        }
-    }
-
+    void addEnemy(OID tag, bool include = true);
     /// Remove objects playing a certain role from enemy list.
-    void remEnemy(OID tag, bool include = false) {
-        if (include) {
-            inc_enemies.erase(tag);
-        } else {
-            exc_enemies.erase(tag);
-        }
-    }
+    void remEnemy(OID tag, bool include = false);
 };
 
 /**
@@ -374,24 +242,12 @@ struct rGrouping : public rRole {
     /// Lists registered members of this group.
     std::set<OID> members;
 
-    rGrouping(cObject* obj = NULL) : name("Unnamed") {
-        role = "GROUPING";
-        object = obj;
-    }
-
-    rGrouping(rGrouping * original) : name("Unnamed") {
-        role = "GROUPING";
-        if (original != NULL) {
-            object = original->object;
-            name = original->name;
-            members.clear();
-            //mMembers.insert(mMembers.begin(), original->mMembers.begin(), original->mMembers.end());
-        }
-    }
-
-    virtual rRole* clone() {
-        return new rGrouping(this);
-    }
+    /// Constructor
+    rGrouping(cObject* obj = NULL);
+    /// Copy Constructor
+    rGrouping(rGrouping * original);
+    /// Clone this.
+    virtual rRole* clone();
 };
 
 #define FIELDOFS(attribute)     (((OID)&attribute) - ((OID)this))

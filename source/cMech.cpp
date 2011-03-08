@@ -565,9 +565,6 @@ void rMobile::ChassisLR(float radians) {
     bse[1] += e;
     const float fullcircle = 2 * M_PI;
     bse[1] = fmod(bse[1], fullcircle);
-
-    float axis[] = {0, 1, 0};
-    quat_rotaxis(object->traceable->ori, bse[1], axis);
 }
 
 void rMobile::ChassisUD(float radians) {
@@ -578,9 +575,6 @@ void rMobile::ChassisUD(float radians) {
     bse[0] += e;
     const float fullcircle = 2 * M_PI;
     bse[0] = fmod(bse[0], fullcircle);
-
-    float axis[] = {1, 0, 0};
-    quat_rotaxis(object->traceable->ori, bse[0], axis);
 }
 
 float rMobile::TowerLR(float radians) {
@@ -614,7 +608,32 @@ void rMobile::TowerUD(float radians) {
 }
 
 void rMobile::animate(float spf) {
-    if (!active) return;
+    if (!active) {
+        throttle = 0;
+        jetthrottle = 0;
+        return;
+    }
+
+    float excess_lr = TowerLR((-0.25f * M_PI) * tower_lr * spf);
+    float excess_ud = 0; TowerUD((+0.25f * M_PI) * tower_ud * spf);
+    if (!immobile) {
+        ChassisLR(excess_lr + (-0.25f * M_PI) * chassis_lr * spf);
+        ChassisUD(excess_ud + (+0.25f * M_PI) * chassis_ud * spf);
+    } else {
+        throttle = 0;
+        jetthrottle = 0;
+    }
+
+    // build yaw ori
+    float yaw[] = {0, 1, 0};
+    quat yaw_ori;
+    quat_rotaxis(yaw_ori, bse[1], yaw);
+    // build pitch ori
+    float pitch[] = {1, 0, 0};
+    quat pitch_ori;
+    quat_rotaxis(pitch_ori, bse[0], pitch);
+    // combine pitch, yaw
+    quat_mul(bse_ori, yaw_ori, pitch_ori);
 }
 
 void rMobile::transform() {
@@ -734,9 +753,6 @@ cMech::cMech(float* pos, float* rot) {
             cout << "Sorry, no mech sound possible.";
         }
     }
-
-    controlled->controller = new cController(this, true);
-    assert(controlled->controller != NULL);
 
     do_moveFor(NULL);
 
@@ -943,55 +959,36 @@ void cMech::fireWeapon(unsigned n) {
 
 
 void cMech::animate(float spf) {
+    // COMPUTERISED
     {
-        computerised->active = damageable->alife;
+        // from Damageable
+        {
+            computerised->active = damageable->alife;
+        }
         computerised->animate(spf);
     }
 
-    if (!damageable->alife) {
-        // Stop movement when dead
-        mobile->throttle = 0;
-        mobile->jetthrottle = 0;
-        /*
-        // If already exploded then frag.
-        if (mobile->explosion.ready()) {
-            mobile->ChassisLR(0);
-            mobile->TowerLR(0);
-            mobile->TowerUD(0);
-            //cWorld::instance->fragObject(this);
+    // CONTROLLED
+    {
+        // from Damageable
+        {
+            controlled->active = damageable->alife;
         }
-        if (controlled->pad) controlled->pad->reset();
-        */
+
+        controlled->animate(spf);
     }
 
-    // Process computers and Pad-input when not dead.
+    // FIXME: This block needs to be factored out to fit the used component pattern.
     if (damageable->alife) {
-        //cout << mPad->toString();
 
-        // Let AI-Controller set Pad-input.
-        if (controlled->controller && controlled->controller->controllerEnabled) {
-            if (controlled->pad) controlled->pad->reset();
-            controlled->controller->process();
-        }
-
-        float excess = mobile->TowerLR(0.25f * M_PI * spf * -controlled->pad->getAxis(cPad::MECH_TURRET_LR_AXIS));
-        mobile->TowerUD(50 * spf * controlled->pad->getAxis(cPad::MECH_TURRET_UD_AXIS) * 0.017453f);
-
-        if (!mobile->immobile) {
-            // Steer left right
-            mobile->ChassisLR(excess + 0.25f * M_PI * spf * -controlled->pad->getAxis(cPad::MECH_CHASSIS_LR_AXIS));
-            // Speed
-            float tdelta = -controlled->pad->getAxis(cPad::MECH_THROTTLE_AXIS);
-            //cout << "tdelta: " << tdelta << "  speed: " << mSpeed << "\n";
-            mobile->throttle = fmax(-0.5f, tdelta * 1.0f);
-        }
-
+        // FIXME: Temporarily remove, or make impulse based.
         if (controlled->pad->getButton(cPad::MECH_NEXT_BUTTON) && controlled->pad->getButtonEvent(cPad::MECH_NEXT_BUTTON)) {
             computerised->tarcom->nextTarget();
         } else if (controlled->pad->getButton(cPad::MECH_PREV_BUTTON) && controlled->pad->getButtonEvent(cPad::MECH_PREV_BUTTON)) {
             computerised->tarcom->prevTarget();
         }
 
+        // FIXME: Weapons need to be chained in an independent style.
         if (controlled->pad->getButton(cPad::MECH_FIRE_BUTTON1) || controlled->pad->getButton(cPad::MECH_FIRE_BUTTON2)) {
             if (true) {
                 fireCycleWeapons();
@@ -999,11 +996,25 @@ void cMech::animate(float spf) {
                 fireAllWeapons();
             }
         }
+    }
 
-        // Set jumpjet throttle 0-1 smoothly.
-        bool jeten = (controlled->pad->getButton(cPad::MECH_JET_BUTTON1) || controlled->pad->getButton(cPad::MECH_JET_BUTTON2));
-        mobile->jetthrottle += 0.05f * ((jeten ? 1.0f : 0.0f) - mobile->jetthrottle);
-
+    // MOBILE
+    {
+        // FIXME: Move factors and calculation to mobile component.
+        // from CONTROLLED
+        {
+            mobile->tower_lr = controlled->pad->getAxis(cPad::MECH_TURRET_LR_AXIS);
+            mobile->tower_ud = controlled->pad->getAxis(cPad::MECH_TURRET_UD_AXIS);
+            mobile->chassis_lr = controlled->pad->getAxis(cPad::MECH_CHASSIS_LR_AXIS);
+            // Set [-0.5,+1.0] limited forward and backward throttle.
+            float tdelta = controlled->pad->getAxis(cPad::MECH_THROTTLE_AXIS);
+            mobile->throttle = fmax(-0.5f, tdelta * -1.0f);
+            // Set jumpjet throttle 0-1 smoothly.
+            bool jeten = (controlled->pad->getButton(cPad::MECH_JET_BUTTON1) || controlled->pad->getButton(cPad::MECH_JET_BUTTON2));
+            mobile->jetthrottle += 0.05f * ((jeten ? 1.0f : 0.0f) - mobile->jetthrottle);
+        }
+        // FIXME: Should be impulse based, temporarily inside mobile component.
+        // FIXME: Camera should eventually become an individual component.
         if (controlled->pad->getButton(cPad::MECH_CAMERA_BUTTON)) {
             // Only if Camera State is not transitional
             // then switch to next perspective on button press.
@@ -1015,19 +1026,22 @@ void cMech::animate(float spf) {
             // Set Camera State as fixed.
             mobile->camerastate = abs(mobile->camerastate);
         }
-    }
-
-    // MOBILE
-    {
-        mobile->grounded = traceable->grounded;
+        // from DAMAGEABLE
+        {
+            mobile->active = damageable->alife;
+        }
         mobile->animate(spf);
     }
 
-    // TRACEABLE
+    // TRACEABLE: Rigid Body, Collisions etc.
     {
-        traceable->jetthrottle = mobile->jetthrottle;
-        traceable->throttle = mobile->throttle;
-        // Rigid Body, Collisions etc.
+        // from MOBILE:
+        {
+            quat_cpy(traceable->ori, mobile->bse_ori);
+            traceable->jetthrottle = mobile->jetthrottle;
+            traceable->throttle = mobile->throttle;
+        }
+
         traceable->animate(spf);
         if (traceable->sound != 0) {
             alSourcefv(traceable->sound, AL_POSITION, traceable->pos);
@@ -1037,29 +1051,36 @@ void cMech::animate(float spf) {
 
     // RIGGED
     {
-        // Steering state.
-        rigged->rotators[rigged->YAW][1] = -mobile->twr[1];
-        rigged->rotators[rigged->PITCH][0] = mobile->twr[0];
-        rigged->rotators[rigged->HEADPITCH][0] = mobile->twr[0];
+        // from MOBILE: Steering state.
+        {
+            rigged->rotators[rigged->YAW][1] = -mobile->twr[1];
+            rigged->rotators[rigged->PITCH][0] = mobile->twr[0];
+            rigged->rotators[rigged->HEADPITCH][0] = mobile->twr[0];
+            rigged->jetting = mobile->jetthrottle;
+        }
 
-        // Drivetrain state.
-        rigged->grounded = mobile->grounded;
-        rigged->jetting = mobile->jetthrottle;
-
-        // Physical movement state.
-        vector_cpy(rigged->pos, traceable->pos);
-        quat_cpy(rigged->ori, traceable->ori);
-        vector_cpy(rigged->vel, traceable->vel);
+        // from TRACEABLE: Physical movement state.
+        {
+            vector_cpy(rigged->pos, traceable->pos);
+            quat_cpy(rigged->ori, traceable->ori);
+            vector_cpy(rigged->vel, traceable->vel);
+            rigged->grounded = traceable->grounded;
+        }
 
         rigged->animate(spf);
     }
 
+    // WEAPON
     loopi(weapons.size()) {
-        weapons[i]->target = controlled->target;
+        // from CONTROLLED:
+        {
+            weapons[i]->target = controlled->target;
+        }
         
         weapons[i]->animate(spf);
     }
 
+    // EXPLOSION (WEAPON)
     {
         explosion->animate(spf);
     }

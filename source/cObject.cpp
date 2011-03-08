@@ -12,11 +12,16 @@ using std::cout;
 using std::endl;
 
 
+// OBJECT
+
 std::map<std::string, rRole*> cObject::roleprotos;
 std::map<std::string, OID> cObject::roleoffsets;
 //std::map<std::string, OID> cObject::roleids;
 //std::map<OID, rRole*> cObject::roletypes;
 
+
+
+// MISC FUNCTIONAL CODE
 
 unsigned char* warningTexture(const char *fname, int *w, int* h, int* bpp) {
     *w = 8;
@@ -177,10 +182,197 @@ int saveTGA(const char *fname, int w, int h, int bpp, unsigned char* image) {
 }
 
 
+// NAMEABLE
 
+rNameable::rNameable(cObject* obj) : name("Unnamed"), description("Undescribed"), designation(0) {
+    role = "NAMEABLE";
+    object = obj;
+}
+
+rNameable::rNameable(rNameable * original) : name("Unnamed"), description("Undescribed"), designation(0) {
+    role = "NAMEABLE";
+    if (original != NULL) {
+        object = original->object;
+        name = original->name;
+        description = original->description;
+        designation = original->designation;
+    }
+}
+
+rRole* rNameable::clone() {
+    return new rNameable(this);
+}
+
+
+// DAMAGEABLE
+
+rDamageable::rDamageable(cObject* obj) {
+    role = "DAMAGEABLE";
+    object = obj;
+    alife = true;
+    loopi(MAX_PARTS) hp[i] = 100.0f;
+}
+
+rDamageable::rDamageable(rDamageable * original) {
+    role = "DAMAGEABLE";
+    if (original == NULL) {
+        rDamageable();
+    } else {
+        object = original->object;
+        alife = original->alife;
+        loopi(MAX_PARTS) hp[i] = original->hp[i];
+    }
+}
+
+rRole* rDamageable::clone() {
+    return new rDamageable(this);
+}
+
+bool rDamageable::damage(int hitzone, float damage, cObject* enactor) {
+    hp[hitzone] -= damage;
+    if (hp[hitzone] < 0.0f) hp[hitzone] = 0.0f;
+    if (hp[BODY] <= 0.0f) {
+        alife = false;
+    }
+    return alife;
+}
+
+
+// CONTROLLED
+
+#include "cPad.h"
+#include "cController.h"
+
+rControlled::rControlled(cObject* obj) : target(0), disturber(0), pad(new cPad()), controller(new cController(obj, true)) {
+    role = "CONTROLLED";
+    object = obj;
+    vector_set(destination, float_NAN, float_NAN, float_NAN);
+}
+
+rControlled::rControlled(rControlled * original) {
+    role = "CONTROLLED";
+    if (original == NULL) {
+        rControlled();
+    } else {
+        object = original->object;
+        target = original->target;
+        disturber = original->disturber;
+        vector_cpy(destination, original->destination);
+        pad = original->pad;
+        controller = original->controller;
+    }
+}
+
+rRole* rControlled::clone() {
+    return new rControlled(this);
+}
+
+void rControlled::animate(float spf) {
+    if (!active) return;
+    //cout << mPad->toString();
+
+    if (controller->controllerEnabled) {
+        pad->reset();
+        controller->controlledDevice = object;
+        controller->process();
+    }
+}
+
+
+// SOCIALISED
+
+rSocialised::rSocialised(cObject* obj) {
+    role = "SOCIALISED";
+    object = obj;
+}
+
+rSocialised::rSocialised(rSocialised * original) {
+    role = "SOCIALISED";
+    if (original != NULL) {
+        object = original->object;
+        inc_allies = original->inc_allies;
+        inc_enemies = original->inc_enemies;
+        exc_allies = original->exc_allies;
+        exc_enemies = original->exc_enemies;
+    }
+}
+
+rRole* rSocialised::clone() {
+    return new rSocialised(this);
+}
+
+bool rSocialised::isAllied(std::set<OID>* tags) {
+    std::set<OID> inclusion;
+    std::set_intersection(tags->begin(), tags->end(), inc_allies.begin(), inc_allies.end(), std::inserter(inclusion, inclusion.begin()));
+    std::set<OID> exclusion;
+    std::set_intersection(tags->begin(), tags->end(), exc_allies.begin(), exc_allies.end(), std::inserter(exclusion, exclusion.begin()));
+    return (!inclusion.empty() && exclusion.empty());
+}
+
+void rSocialised::addAllied(OID tag, bool include) {
+    if (include) {
+        inc_allies.insert(tag);
+    } else {
+        exc_allies.insert(tag);
+    }
+}
+
+void rSocialised::remAllied(OID tag, bool include) {
+    if (include) {
+        inc_allies.erase(tag);
+    } else {
+        exc_allies.erase(tag);
+    }
+}
+
+bool rSocialised::isEnemy(std::set<OID>* tags) {
+    std::set<OID> inclusion;
+    std::set_intersection(tags->begin(), tags->end(), inc_enemies.begin(), inc_enemies.end(), std::inserter(inclusion, inclusion.begin()));
+    std::set<OID> exclusion;
+    std::set_intersection(tags->begin(), tags->end(), exc_enemies.begin(), exc_enemies.end(), std::inserter(exclusion, exclusion.begin()));
+    return (!inclusion.empty() && exclusion.empty());
+}
+
+void rSocialised::addEnemy(OID tag, bool include) {
+    if (include) {
+        inc_enemies.insert(tag);
+    } else {
+        exc_enemies.insert(tag);
+    }
+}
+
+void rSocialised::remEnemy(OID tag, bool include) {
+    if (include) {
+        inc_enemies.erase(tag);
+    } else {
+        exc_enemies.erase(tag);
+    }
+}
+
+
+// TRACEABLE
 
 #include "cWorld.h"
 
+rTraceable::rTraceable(cObject* obj) : cParticle() {
+    role = "TRACEABLE";
+    object = obj;
+    grounded = true;
+    jetthrottle = 0.0f;
+    throttle = 0.0f;
+}
+
+rTraceable::rTraceable(rTraceable * original) : cParticle(original) {
+    role = "TRACEABLE";
+    object = original->object;
+    grounded = original->grounded;
+    jetthrottle = original->jetthrottle;
+    throttle = original->throttle;
+}
+
+rRole* rTraceable::clone() {
+    return new rTraceable(this);
+}
 
 void rTraceable::accumulate(float spf) {
     // Accumulate steering forces
@@ -248,4 +440,33 @@ void rTraceable::collide(float spf) {
     grounded += 0.1 * (onground - grounded);
     // Set friction for next frame.
     friction = ((grounded > 0.1)?1.0f:0.0f) * cWorld::instance->getGndfriction();
+}
+
+void rTraceable::animate(float spf) {
+    accumulate(spf);
+    integrate(spf);
+    collide(spf);
+}
+
+
+
+// GROUPING
+
+rGrouping::rGrouping(cObject* obj) : name("Unnamed") {
+    role = "GROUPING";
+    object = obj;
+}
+
+rGrouping::rGrouping(rGrouping * original) : name("Unnamed") {
+    role = "GROUPING";
+    if (original != NULL) {
+        object = original->object;
+        name = original->name;
+        members.clear();
+        //mMembers.insert(mMembers.begin(), original->mMembers.begin(), original->mMembers.end());
+    }
+}
+
+rRole* rGrouping::clone() {
+    return new rGrouping(this);
 }

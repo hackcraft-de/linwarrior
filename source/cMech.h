@@ -162,31 +162,37 @@ struct rComputerised : public rRole {
 struct rMobile : public rRole {
     /// Base angles in radians.
     vec3 bse;
-
+    /// Base orientation.
+    quat bse_ori;
     /// Tower angles in radians.
     vec3 twr;
-
+    /// Tower orientation.
+    //quat twr_ori;
     /// Current jumpjet set-point.
     float jetthrottle;
-
     /// Current throttle set-point.
     float throttle;
-
     /// Current Camera mode, negative number is indicating transition.
     int camerastate;
-
-    /// Average friction for groundedness and pose.
-    float grounded;
-
     /// Behave like a immobile gunpod.
     bool immobile;
+    /// Steering angle for base, left/right radians-per-second wish. (hook)
+    float chassis_lr;
+    /// Steering angle for base, left/right radians-per-second wish. (hook)
+    float chassis_ud;
+    /// Steering angle for turret, left/right radians-per-second wish. (hook)
+    float tower_lr;
+    /// Steering angle for turret, left/right radians-per-second wish. (hook)
+    float tower_ud;
 
     /// Constructor
-    rMobile(cObject * obj) : jetthrottle(0), throttle(0), camerastate(1), grounded(0.5f), immobile(false) {
+    rMobile(cObject * obj) : jetthrottle(0), throttle(0), camerastate(1), immobile(false), chassis_lr(0), chassis_ud(0), tower_lr(0), tower_ud(0) {
         role = "MOBILE";
         object = obj;
         twr[0] = twr[1] = twr[2] = 0.0f;
         bse[0] = bse[1] = bse[2] = 0.0f;
+        quat_zero(bse_ori);
+        //quat_zero(twr_ori);
     }
     /// Destructor
     ~rMobile() { }
