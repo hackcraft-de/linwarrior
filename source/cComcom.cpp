@@ -80,7 +80,9 @@ rTarcom::rTarcom(cObject* obj) {
     quat_zero(ori);
     vector_zero(pos);
 
+    far = NULL;
     near = NULL;
+    enemies = NULL;
     selected = 0;
 
     switching = false;
@@ -145,8 +147,15 @@ void rTarcom::animate(float spf) {
         switching = (switchnext || switchprev);
     }
 
+    // Find all objects in far range.
+    //delete far;
+    //far = cWorld::instance->filterByRange(object, pos, 0, 100, -1, NULL);
+    // Find all objects in near range.
     delete near;
-    near = cWorld::instance->filterByRange(object, pos, 0, 150, -1, NULL);
+    near = cWorld::instance->filterByRange(object, pos, 0, 60, -1, NULL);
+    // Find all objects belonging to any enemy party/role.
+    delete enemies;
+    enemies = cWorld::instance->filterByTags(object, &inc_enemies, false, -1, near);
 }
 
 void rTarcom::drawHUD() {

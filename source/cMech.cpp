@@ -1362,24 +1362,14 @@ float cMech::constrainParticle(float* worldpos, float radius, float* localpos, c
 }
 
 OID cMech::enemyNearby() {
-    OID result = 0;
-    // Filter objects by distance
-    std::list<cObject*>* scan = cWorld::instance->filterByRange(this, traceable->pos, 0.0f, 50.0f, -1, NULL);
-    if (!scan->empty()) {
-        // Find all objects belonging to any enemy party/role.
-        std::list<cObject*>* roles = cWorld::instance->filterByTags(this, &tarcom->inc_enemies, false, -1, scan);
-        if (!roles->empty()) {
-            for (std::list<cObject*>::iterator i=roles->begin(); i != roles->end(); i++) {
-                cObject* o = *i;
-                if (!o->anyTags(&tarcom->exc_enemies)) {
-                    result = o->oid;
-                }
-            }
+    if (tarcom->enemies == NULL) return 0;
+    for (std::list<cObject*>::iterator i=tarcom->enemies->begin(); i != tarcom->enemies->end(); i++) {
+        cObject* o = *i;
+        if (!o->anyTags(&tarcom->exc_enemies)) {
+            return o->oid;
         }
-        delete roles;
     }
-    delete scan;
-    return result;
+    return 0;
 }
 
 OID cMech::disturbedBy() {

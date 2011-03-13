@@ -55,8 +55,12 @@ public:
     quat ori;
     /// Sensor position. (hook i)
     vec3 pos;
+    /// List of objects in far range.
+    std::list<cObject*>* far;
     /// List of objects in range.
     std::list<cObject*>* near;
+    /// List of (possible) enemy objects in range (only inc_enemies).
+    std::list<cObject*>* enemies;
     /// ID of selected object (hook o)
     OID selected;
     /// Switch to next target. (hook i)

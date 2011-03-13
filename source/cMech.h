@@ -41,15 +41,15 @@ struct rRigged : public rRole {
     float scale;
     /// Animation time counter in seconds.
     float seconds;
-    /// Position. (hook)
+    /// Position. (hook i)
     vec3 pos;
-    /// Orientation. (hook)
+    /// Orientation. (hook i)
     quat ori;
-    /// Velocity. (hook)
+    /// Velocity. (hook i)
     vec3 vel;
-    /// Grounded. (hook)
+    /// Grounded. (hook i)
     float grounded;
-    /// Jetting. (hook)
+    /// Jetting. (hook i)
     float jetting;
     /// The "static" model just as it is loaded.
     MD5Format::model* model;
@@ -154,13 +154,13 @@ struct rCamera : public rRole {
     float camerashake;
     /// True when camerastate is in first perspective mode. (hook o)
     bool firstperson;
-    /// Base position (hook).
+    /// Base position (hook i).
     quat ori0;
-    /// Base orientation (hook).
+    /// Base orientation (hook i).
     vec3 pos0;
-    /// Position relative to base position and orientation (hook).
+    /// Position relative to base position and orientation (hook o).
     quat ori1;
-    /// Orientation relative to base position and orientation (hook).
+    /// Orientation relative to base position and orientation (hook o).
     vec3 pos1;
 
     /// Constructor
