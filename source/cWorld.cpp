@@ -179,7 +179,7 @@ void cWorld::dispatchMessages() {
                 // Unable to deliver message to non-existent object?
                 if (object == NULL) continue;
                 // Deliver.
-                object->onMessage(message);
+                object->message(message);
                 // Later this shall be handled by the object/role itself in onMessage(message).
                 if (object->grouping) {
                     // Message to group receivers.

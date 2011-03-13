@@ -61,11 +61,8 @@ class cObject;
 
 /**
  * Base-Class of all roles.
- * An instance of it may be used to flag a role as being "set" (future).
  * A role can be understood as a set of object attributes reflecting
- * a certain part or aspect of the object.
- * Did you know that a Role of an Object can be sub-classed individually
- * to replace the parent role in an Object?
+ * a certain part, component or aspect of the object.
  */
 struct rRole {
     cObject* object;
@@ -88,6 +85,7 @@ struct rRole {
         return new rRole(this);
     }
 
+    virtual void message(cMessage* message) {};
     virtual void animate(float spf) {};
     virtual void transform() {};
     virtual void drawSolid() {};
@@ -173,6 +171,8 @@ struct rDamageable : public rRole {
     virtual rRole* clone();
     /// Apply damage to a hitzone, and return alife.
     virtual bool damage(int hitzone, float damage, cObject* enactor);
+    /// Display damaging.
+    virtual void drawHUD();
 };
 
 
@@ -277,7 +277,7 @@ public: // Basic Object attributes for managing.
     /// Internal qualified name of the object.
     std::string name;
 
-public: // Predefined Roles
+public: // FIXME: Predefined Roles, to be removed from cObject
 
     rNameable* nameable;
     rSocialised* socialised;
@@ -436,11 +436,6 @@ public:
     virtual void onSpawn() {
     }
 
-    /// Called when a message was sent to (a group) this object (is a member of).
-
-    virtual void onMessage(cMessage* message) {
-    }
-
     /// Called right after object has been removed from object list and index.
 
     virtual void onFrag() {
@@ -454,6 +449,11 @@ public:
     /// Sets this Object's location, orientation and vel. as Audio listener.
 
     virtual void setAsAudioListener() {
+    }
+
+    /// Called for each message sent to this object.
+
+    virtual void message(cMessage* message) {
     }
 
     /// Advance internal timers,animation state and pose, check gamepad.

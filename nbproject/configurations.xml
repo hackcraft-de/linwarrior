@@ -4,6 +4,20 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <logicalFolder name="f1"
+                     displayName="components: computers"
+                     projectFiles="true">
+        <itemPath>source/cComcom.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f2" displayName="components: weapons" projectFiles="true">
+        <itemPath>source/rWeapon.h</itemPath>
+        <itemPath>source/rWeaponExplosion.h</itemPath>
+        <itemPath>source/rWeaponHoming.h</itemPath>
+        <itemPath>source/rWeaponMachinegun.h</itemPath>
+        <itemPath>source/rWeaponPlasmagun.h</itemPath>
+        <itemPath>source/rWeaponRaybeam.h</itemPath>
+        <itemPath>source/rWeaponSparkgun.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="f3" displayName="objects" projectFiles="true">
         <itemPath>source/cAlert.h</itemPath>
         <itemPath>source/cBuilding.h</itemPath>
@@ -23,18 +37,8 @@
         <itemPath>source/psi3d/noise.h</itemPath>
         <itemPath>source/psi3d/snippetsgl.h</itemPath>
       </logicalFolder>
-      <logicalFolder name="f2" displayName="weapons" projectFiles="true">
-        <itemPath>source/rWeapon.h</itemPath>
-        <itemPath>source/rWeaponExplosion.h</itemPath>
-        <itemPath>source/rWeaponHoming.h</itemPath>
-        <itemPath>source/rWeaponMachinegun.h</itemPath>
-        <itemPath>source/rWeaponPlasmagun.h</itemPath>
-        <itemPath>source/rWeaponRaybeam.h</itemPath>
-        <itemPath>source/rWeaponSparkgun.h</itemPath>
-      </logicalFolder>
       <itemPath>source/OID.h</itemPath>
       <itemPath>source/cBackground.h</itemPath>
-      <itemPath>source/cComcom.h</itemPath>
       <itemPath>source/cController.h</itemPath>
       <itemPath>source/cLandscape.h</itemPath>
       <itemPath>/media/44EA-7693/linux_workspaces/netbeans_workspace/linwarrior/source/cMessage.h</itemPath>

@@ -22,6 +22,7 @@ using std::endl;
 
 #define MECHDETAIL -1
 
+#include "psi3d/instfont.h"
 DEFINE_glprintf
 
 #define EXPERIMENT true
@@ -383,6 +384,9 @@ void rRigged::drawSolid() {
         glTranslatef(pos[0], pos[1], pos[2]);
         SGL::glRotateq(ori);
         //cPrimitives::glAxis(3.0f);
+        if (basetexture3d > 0) {
+            glBindTexture(GL_TEXTURE_3D, basetexture3d);
+        }
         drawMeshes();
     }
     glPopMatrix();
@@ -447,115 +451,106 @@ void rRigged::drawEffect() {
 
 // -------------------------------------------------------------------
 
+#define grand() ((rand()%100 + rand()%100 + rand()%100 + rand()%100 + rand()%100) * 0.01f * 0.2f - 0.5f)
 
-rComputerised::rComputerised(cObject* obj) {
-    role = "COMPUTERISED";
+rCamera::rCamera(cObject * obj) : camerastate(1), cameraswitch(0), camerashake(0), firstperson(true) {
     object = obj;
-    
-    comcom = new cComcom(object);
-    assert(comcom != NULL);
+    role = "CAMERA";
 
-    tarcom = new cTarcom(object);
-    assert(tarcom != NULL);
-
-    syscom = new cSyscom(object);
-    assert(syscom != NULL);
-
-    wepcom = new cWepcom(object);
-    assert(wepcom != NULL);
-
-    forcom = new cForcom((cMech*) object);
-    assert(forcom != NULL);
-
-    navcom = new cNavcom(object);
-    assert(navcom != NULL);
-};
-
-rComputerised::~rComputerised() {
-    delete comcom;
-    delete tarcom;
-    delete syscom;
-    delete wepcom;
-    delete forcom;
-    delete navcom;
+    quat_zero(ori1);
+    vector_zero(pos1);
+    quat_zero(ori0);
+    vector_zero(pos0);
 }
 
-void rComputerised::animate(float dt) {
-    if (!active) return;
-    comcom->process(dt);
-    tarcom->process(dt);
-    syscom->process(dt);
-    wepcom->process(dt);
-    forcom->process(dt);
-    navcom->process(dt);
-}
+void rCamera::camera() {
+    float cam[16];
+    float rot_inv[16];
+    float pos_inv[16];
 
-void rComputerised::drawHUD() {
-    if (!active) return;
-    glPushAttrib(GL_ALL_ATTRIB_BITS /* more secure */);
+    float intensity = 0.0 + pow(camerashake, 1.5f);
+    float shake = 0.004f * intensity;
+    float jerk = 0.95f * intensity;
+
+    glPushMatrix();
     {
-        SGL::glUseProgram_bkplaincolor();
-        glDisable(GL_CULL_FACE);
-        glLineWidth(2);
+        // Get inverse components of head pos and ori.
+        glLoadIdentity();
+        glTranslatef(pos0[0], pos0[1], pos0[2]);
+        SGL::glRotateq(ori0);
+        glTranslatef(pos1[0], pos1[1], pos1[2]);
+        SGL::glRotateq(ori1);
+        // FIXME: Camera forward is inverted, therefore rotate.
+        glRotatef(180, 0,1,0);
 
-        SGL::glPushOrthoProjection();
-        {
-            glPushMatrix();
-            {
-                glLoadIdentity();
-
-                float bk[] = {0.0, 0.2, 0.3, 0.2};
-                //float bk[] = {0, 0, 0, 0.0};
-                float w = 5;
-                float h = 4;
-                float sx = 1.0f / w;
-                float sy = 1.0f / h;
-
-                cComputer * displays[4][5] = {
-                    { navcom, NULL, NULL, NULL, comcom},
-                    { NULL, NULL, NULL, NULL, NULL},
-                    { NULL, NULL, NULL, NULL, NULL},
-                    { tarcom, NULL, wepcom, NULL, syscom}
-                };
-
-                loopj(4) {
-
-                    loopi(5) {
-                        if (displays[j][i] == NULL) continue;
-                        glPushMatrix();
-                        {
-                            glScalef(sx, sy, 1);
-                            glTranslatef(i, 3 - j, 0);
-                            glColor4fv(bk);
-                            displays[j][i]->drawHUD();
-                        }
-                        glPopMatrix();
-                    }
-                }
-
-                if (true) {
-                    glPushMatrix();
-                    {
-                        glTranslatef(0.25, 0.25, 0);
-                        glScalef(0.5, 0.5, 1);
-                        glTranslatef(0, 0, 0);
-                        glColor4fv(bk);
-                        forcom->drawHUD();
-                    }
-                    glPopMatrix();
-                }
-
-            }
-            glPopMatrix();
-        }
-        SGL::glPopProjection();
+        SGL::glGetTransposeInverseRotationMatrix(rot_inv);
+        SGL::glGetInverseTranslationMatrix(pos_inv);
+        // Compose Camera Matrix from inverse components
+        glLoadIdentity();
+        glMultMatrixf(rot_inv);
+        glRotatef(grand()*jerk, 1,0,0);
+        glRotatef(grand()*jerk, 0,1,0);
+        glRotatef(grand()*jerk, 0,0,1);
+        glMultMatrixf(pos_inv);
+        glTranslatef(grand()*shake, grand()*shake, grand()*shake);
+        glGetFloatv(GL_MODELVIEW_MATRIX, cam);
+        //matrix_print(cam);
     }
-    glPopAttrib();
+    glPopMatrix();
+
+    int cs = abs(camerastate);
+    if (cs == 1) { // 1st
+        glMultMatrixf(cam);
+    } else if (cs == 2) { // 3rd
+        glTranslatef(0, 0, -5);
+        glRotatef(15, 1, 0, 0);
+        glMultMatrixf(cam);
+    } else if (cs == 3) { // 3rd Far
+        glTranslatef(0, 0, -15);
+        glRotatef(15, 1, 0, 0);
+        glMultMatrixf(cam);
+    } else if (cs == 4) { // Reverse 3rd Far
+        glTranslatef(0, 0, -15);
+        glRotatef(15, 1, 0, 0);
+        glRotatef(180, 0, 1, 0);
+        glMultMatrixf(cam);
+    } else if (cs == 5) { // Map Near
+        glTranslatef(0, 0, -50);
+        glRotatef(90, 1, 0, 0);
+        glMultMatrixf(pos_inv);
+    } else if (cs == 6) { // Map Far
+        glTranslatef(0, 0, -100);
+        glRotatef(90, 1, 0, 0);
+        glMultMatrixf(pos_inv);
+    } // if camerastate
+}
+
+void rCamera::animate(float spf) {
+    if (cameraswitch) {
+        // Only if Camera State is not transitional
+        // then switch to next perspective on button press.
+        if (camerastate > 0) {
+            camerastate = (1 + (camerastate % MAX_CAMERAMODES));
+            camerastate *= -1; // Set transitional.
+        }
+    } else {
+        // Set Camera State as fixed.
+        camerastate = abs(camerastate);
+    }
+    firstperson = (abs(camerastate) == 1);
 }
 
 
 // -------------------------------------------------------------------
 
+rMobile::rMobile(cObject * obj) : jeten(0), jetthrottle(0), driveen(0), drivethrottle(0), immobile(false), chassis_lr(0), chassis_lr_(0), chassis_ud(0), chassis_ud_(0), tower_lr(0), tower_ud(0) {
+    role = "MOBILE";
+    object = obj;
+    twr[0] = twr[1] = twr[2] = 0.0f;
+    bse[0] = bse[1] = bse[2] = 0.0f;
+    quat_zero(bse_ori);
+    //quat_zero(twr_ori);
+}
 
 void rMobile::ChassisLR(float radians) {
     const float limit = 0.01 * M_PI;
@@ -609,18 +604,25 @@ void rMobile::TowerUD(float radians) {
 
 void rMobile::animate(float spf) {
     if (!active) {
-        throttle = 0;
+        drivethrottle = 0;
         jetthrottle = 0;
         return;
     }
 
+    // Apply turret steering values and get exceeding over limit values.
     float excess_lr = TowerLR((-0.25f * M_PI) * tower_lr * spf);
     float excess_ud = 0; TowerUD((+0.25f * M_PI) * tower_ud * spf);
     if (!immobile) {
-        ChassisLR(excess_lr + (-0.25f * M_PI) * chassis_lr * spf);
-        ChassisUD(excess_ud + (+0.25f * M_PI) * chassis_ud * spf);
+        // Smoothen steering and throttle values, adds heaviness.
+        chassis_lr_ += 0.75f * (excess_lr / spf + (-0.25f * M_PI) * chassis_lr) - chassis_lr_;
+        chassis_ud_ += 0.75f * (excess_ud / spf + (+0.25f * M_PI) * chassis_ud) - chassis_ud_;
+        drivethrottle += 0.25f * (+fmax(-0.25f, fmin(-driveen, 1.0f)) - drivethrottle);
+        jetthrottle   += 0.05f * (+fmax(-0.00f, fmin(   jeten, 1.0f)) - jetthrottle);
+        // Apply steering values.
+        ChassisLR(chassis_lr_ * spf);
+        ChassisUD(chassis_ud_ * spf);
     } else {
-        throttle = 0;
+        drivethrottle = 0;
         jetthrottle = 0;
     }
 
@@ -685,7 +687,7 @@ cMech::cMech(float* pos, float* rot) {
         if (1) {
             registerRole(new rMobile((cObject*)NULL), FIELDOFS(mobile), ROLEPTR(cMech::mobile));
             registerRole(new rRigged((cObject*)NULL), FIELDOFS(rigged), ROLEPTR(cMech::rigged));
-            registerRole(new rComputerised((cObject*)NULL), FIELDOFS(computerised), ROLEPTR(cMech::computerised));
+            //registerRole(new rComputerised((cObject*)NULL), FIELDOFS(computerised), ROLEPTR(cMech::computerised));
 
             cout << "Generating Camoflage..." << endl;
 
@@ -720,10 +722,17 @@ cMech::cMech(float* pos, float* rot) {
 
     rigged = new rRigged(this);
     damageable = new rDamageable(this);
-    computerised = new rComputerised(this);
+    //computerised = new rComputerised(this);
     controlled = new rControlled(this);
     socialised = new rSocialised(this);
+    camera = new rCamera(this);
     mobile = new rMobile(this);
+
+    comcom = new rComcom(this);
+    tarcom = new rTarcom(this);
+    wepcom = new rWepcom(this);
+    forcom = new rForcom(this);
+    navcom = new rNavcom(this);
 
     if (rot != NULL) vector_scale(mobile->bse, rot, PI_OVER_180);
 
@@ -738,7 +747,7 @@ cMech::cMech(float* pos, float* rot) {
             ALuint buffer;
             //buffer = alutCreateBufferHelloWorld();
             buffer = alutCreateBufferFromFile("data/base/device/pow.wav");
-            if (buffer == AL_NONE) throw "could not load pow.wav";
+            //if (buffer == AL_NONE) throw "could not load pow.wav";
             ALuint* soundsource = &traceable->sound;
             alGenSources(1, soundsource);
             if (alGetError() == AL_NO_ERROR && alIsSource(*soundsource)) {
@@ -787,8 +796,7 @@ cMech::cMech(float* pos, float* rot) {
 }
 
 cMech::~cMech() {
-    delete computerised;
-    delete rigged;
+    // FIXME: delete all components.
     if (sInstances == 1) {
         // Last one cleans up
 
@@ -796,9 +804,9 @@ cMech::~cMech() {
     sInstances--;
 }
 
-void cMech::onMessage(cMessage* message) {
+void cMech::message(cMessage* message) {
     cout << "I (" << this->oid << ":" << this->name << ") just received: \"" << message->getText() << "\" from sender " << message->getSender() << endl;
-    this->computerised->forcom->addMessage(message->getText());
+    forcom->message(message);
 }
 
 void cMech::onSpawn() {
@@ -808,69 +816,8 @@ void cMech::onSpawn() {
     //cout << "Mech spawned " << oid << "\n";
 }
 
-#define grand() ((rand()%100 + rand()%100 + rand()%100 + rand()%100 + rand()%100) * 0.01f * 0.2f - 0.5f)
-
 void cMech::multEyeMatrix() {
-    float camera[16];
-    float rot_inv[16];
-    float pos_inv[16];
-
-    float intensity = 0.0 + pow(this->mobile->jetthrottle, 1.5f);
-    float shake = 0.004f * intensity;
-    float jerk = 0.95f * intensity;
-
-    glPushMatrix();
-    {
-        // Get Inverse Components of Head Matrix
-        //glLoadMatrixf(rigged->HDMount);
-        int eye = rigged->jointpoints[rRigged::EYE];
-        glLoadIdentity();
-        glTranslatef(rigged->pos[0], rigged->pos[1], rigged->pos[2]);
-        SGL::glRotateq(rigged->ori);
-        glTranslatef(rigged->joints[eye].v[0], rigged->joints[eye].v[1], rigged->joints[eye].v[2]);
-        SGL::glRotateq(rigged->joints[eye].q);
-        // FIXME: Camera forward is inverted, therefore rotate.
-        glRotatef(180, 0,1,0);
-
-        SGL::glGetTransposeInverseRotationMatrix(rot_inv);
-        SGL::glGetInverseTranslationMatrix(pos_inv);
-        // Compose Camera Matrix from inverse components
-        glLoadIdentity();
-        glMultMatrixf(rot_inv);
-        glRotatef(grand()*jerk, 1,0,0);
-        glRotatef(grand()*jerk, 0,1,0);
-        glRotatef(grand()*jerk, 0,0,1);
-        glMultMatrixf(pos_inv);
-        glTranslatef(grand()*shake, grand()*shake, grand()*shake);
-        glGetFloatv(GL_MODELVIEW_MATRIX, camera);
-        //matrix_print(camera);
-    }
-    glPopMatrix();
-
-    if (abs(mobile->camerastate) == 1) { // 1st
-        glMultMatrixf(camera);
-    } else if (abs(mobile->camerastate) == 2) { // 3rd
-        glTranslatef(0, 0, -5);
-        glRotatef(15, 1, 0, 0);
-        glMultMatrixf(camera);
-    } else if (abs(mobile->camerastate) == 3) { // 3rd Far
-        glTranslatef(0, 0, -15);
-        glRotatef(15, 1, 0, 0);
-        glMultMatrixf(camera);
-    } else if (abs(mobile->camerastate) == 4) { // Reverse 3rd Far
-        glTranslatef(0, 0, -15);
-        glRotatef(15, 1, 0, 0);
-        glRotatef(180, 0, 1, 0);
-        glMultMatrixf(camera);
-    } else if (abs(mobile->camerastate) == 5) { // Map Near
-        glTranslatef(0, 0, -50);
-        glRotatef(90, 1, 0, 0);
-        glMultMatrixf(pos_inv);
-    } else if (abs(mobile->camerastate) == 6) { // Map Far
-        glTranslatef(0, 0, -100);
-        glRotatef(90, 1, 0, 0);
-        glMultMatrixf(pos_inv);
-    } // if camerastate
+    camera->camera();
 }
 
 void cMech::setAsAudioListener() {
@@ -886,11 +833,13 @@ void cMech::setAsAudioListener() {
     };
     alListenerfv(AL_POSITION, pos);
     alListenerfv(AL_VELOCITY, vel);
-    //float* head = rigged->HDMount;
-    float* head = rigged->pos;
+    vec3 fwd = { 0, 0, +1 };
+    quat_apply(fwd, rigged->ori, fwd);
+    vec3 uwd = { 0, -1, 0 };
+    quat_apply(uwd, rigged->ori, uwd);
     float at_and_up[] = {
-        head[8], head[9], head[10],
-        0, -1, 0
+        fwd[0], fwd[1], fwd[2],
+        uwd[0], uwd[1], uwd[2]
     };
     alListenerfv(AL_ORIENTATION, at_and_up);
 }
@@ -959,13 +908,82 @@ void cMech::fireWeapon(unsigned n) {
 
 
 void cMech::animate(float spf) {
-    // COMPUTERISED
+    // COMPUTERs
+    
     {
-        // from Damageable
+        // from DAMAGEABLE
         {
-            computerised->active = damageable->alife;
+            comcom->active = damageable->alife;
         }
-        computerised->animate(spf);
+        comcom->animate(spf);
+    }
+
+    {
+        // from CONTROLLED
+        {
+            tarcom->switchnext = controlled->pad->getButton(cPad::MECH_NEXT_BUTTON);
+            tarcom->switchprev = controlled->pad->getButton(cPad::MECH_PREV_BUTTON);
+        }
+        // from DAMAGEABLE
+        {
+            tarcom->active = damageable->alife;
+        }
+        // from TRACEABLE
+        {
+            vector_cpy(tarcom->pos, traceable->pos);
+            quat_cpy(tarcom->ori, traceable->ori);
+        }
+        tarcom->animate(spf);
+    }
+
+    // DAMAGEABLE
+    {
+        // from DAMAGEABLE
+        {
+            damageable->active = damageable->alife;
+        }
+        damageable->animate(spf);
+    }
+
+    {
+        // from DAMAGEABLE
+        {
+            wepcom->active = damageable->alife;
+        }
+        wepcom->animate(spf);
+    }
+
+    {
+        // from DAMAGEABLE
+        {
+            forcom->active = damageable->alife;
+        }
+        // from traceable
+        {
+            quat_cpy(forcom->ori, traceable->ori);
+        }
+        // from MOBILE
+        {
+            vector_cpy(forcom->twr, mobile->twr);
+        }
+        // from CAMERA
+        {
+            forcom->reticle = camera->firstperson;
+        }
+        forcom->animate(spf);
+    }
+
+    {
+        // from DAMAGEABLE
+        {
+            navcom->active = damageable->alife;
+        }
+        // from TRACEABLE
+        {
+            vector_cpy(navcom->pos, traceable->pos);
+            quat_cpy(navcom->ori, traceable->ori);
+        }
+        navcom->animate(spf);
     }
 
     // CONTROLLED
@@ -978,53 +996,15 @@ void cMech::animate(float spf) {
         controlled->animate(spf);
     }
 
-    // FIXME: This block needs to be factored out to fit the used component pattern.
-    if (damageable->alife) {
-
-        // FIXME: Temporarily remove, or make impulse based.
-        if (controlled->pad->getButton(cPad::MECH_NEXT_BUTTON) && controlled->pad->getButtonEvent(cPad::MECH_NEXT_BUTTON)) {
-            computerised->tarcom->nextTarget();
-        } else if (controlled->pad->getButton(cPad::MECH_PREV_BUTTON) && controlled->pad->getButtonEvent(cPad::MECH_PREV_BUTTON)) {
-            computerised->tarcom->prevTarget();
-        }
-
-        // FIXME: Weapons need to be chained in an independent style.
-        if (controlled->pad->getButton(cPad::MECH_FIRE_BUTTON1) || controlled->pad->getButton(cPad::MECH_FIRE_BUTTON2)) {
-            if (true) {
-                fireCycleWeapons();
-            } else {
-                fireAllWeapons();
-            }
-        }
-    }
-
     // MOBILE
     {
-        // FIXME: Move factors and calculation to mobile component.
         // from CONTROLLED
         {
             mobile->tower_lr = controlled->pad->getAxis(cPad::MECH_TURRET_LR_AXIS);
             mobile->tower_ud = controlled->pad->getAxis(cPad::MECH_TURRET_UD_AXIS);
             mobile->chassis_lr = controlled->pad->getAxis(cPad::MECH_CHASSIS_LR_AXIS);
-            // Set [-0.5,+1.0] limited forward and backward throttle.
-            float tdelta = controlled->pad->getAxis(cPad::MECH_THROTTLE_AXIS);
-            mobile->throttle = fmax(-0.5f, tdelta * -1.0f);
-            // Set jumpjet throttle 0-1 smoothly.
-            bool jeten = (controlled->pad->getButton(cPad::MECH_JET_BUTTON1) || controlled->pad->getButton(cPad::MECH_JET_BUTTON2));
-            mobile->jetthrottle += 0.05f * ((jeten ? 1.0f : 0.0f) - mobile->jetthrottle);
-        }
-        // FIXME: Should be impulse based, temporarily inside mobile component.
-        // FIXME: Camera should eventually become an individual component.
-        if (controlled->pad->getButton(cPad::MECH_CAMERA_BUTTON)) {
-            // Only if Camera State is not transitional
-            // then switch to next perspective on button press.
-            if (mobile->camerastate > 0) {
-                mobile->camerastate = (1 + (mobile->camerastate % MAX_CAMERAMODES));
-                mobile->camerastate *= -1; // Set transitional.
-            }
-        } else {
-            // Set Camera State as fixed.
-            mobile->camerastate = abs(mobile->camerastate);
+            mobile->driveen = controlled->pad->getAxis(cPad::MECH_THROTTLE_AXIS);
+            mobile->jeten = (controlled->pad->getButton(cPad::MECH_JET_BUTTON1) + controlled->pad->getButton(cPad::MECH_JET_BUTTON2));
         }
         // from DAMAGEABLE
         {
@@ -1039,10 +1019,13 @@ void cMech::animate(float spf) {
         {
             quat_cpy(traceable->ori, mobile->bse_ori);
             traceable->jetthrottle = mobile->jetthrottle;
-            traceable->throttle = mobile->throttle;
+            traceable->throttle = mobile->drivethrottle;
         }
 
         traceable->animate(spf);
+
+        // FIXME: move to rSoundsource to be able to add loading/streaming
+        // and to mount it somewhere.
         if (traceable->sound != 0) {
             alSourcefv(traceable->sound, AL_POSITION, traceable->pos);
             //alSourcefv(traceable->sound, AL_VELOCITY, traceable->vel);
@@ -1066,8 +1049,55 @@ void cMech::animate(float spf) {
             vector_cpy(rigged->vel, traceable->vel);
             rigged->grounded = traceable->grounded;
         }
+        // FIXME: from object tags
+        {
+            // Group-to-texture.
+            int texture = 0;
+            texture = hasTag(RED) ? 0 : texture;
+            texture = hasTag(BLUE) ? 1 : texture;
+            texture = hasTag(GREEN) ? 2 : texture;
+            texture = hasTag(YELLOW) ? 3 : texture;
+            rigged->basetexture3d = sTextures[texture];
+        }
 
         rigged->animate(spf);
+        rigged->transform();
+    }
+
+    // CAMERA
+    {
+        // from RIGGED
+        {
+            int eye = rigged->jointpoints[rRigged::EYE];
+            vector_cpy(camera->pos0, rigged->pos);
+            quat_cpy(camera->ori0, rigged->ori);
+            vector_cpy(camera->pos1, rigged->joints[eye].v);
+            quat_cpy(camera->ori1, rigged->joints[eye].q);
+        }
+        
+        // from MOBILE
+        {
+            camera->camerashake = mobile->jetthrottle;
+        }
+        
+        // from CONTROLLED
+        {
+            camera->cameraswitch = controlled->pad->getButton(cPad::MECH_CAMERA_BUTTON);
+        }
+        
+        camera->animate(spf);
+    }
+
+    // FIXME: This block needs to be factored out to fit the used component pattern.
+    // FIXME: Weapons need to be chained in an independent style.
+    if (damageable->alife) {
+        if (controlled->pad->getButton(cPad::MECH_FIRE_BUTTON1) || controlled->pad->getButton(cPad::MECH_FIRE_BUTTON2)) {
+            if (true) {
+                fireCycleWeapons();
+            } else {
+                fireAllWeapons();
+            }
+        }
     }
 
     // WEAPON
@@ -1076,17 +1106,38 @@ void cMech::animate(float spf) {
         {
             weapons[i]->target = controlled->target;
         }
+        // from RIGGED:
+        {
+            rWeapon* weapon = weapons[i];
+            MD5Format::joint* joint = &rigged->joints[weapon->weaponMount];
+            quat_cpy(weapon->weaponOri0, traceable->ori);
+            vector_cpy(weapon->weaponPos0, traceable->pos);
+            quat_cpy(weapon->weaponOri1, joint->q);
+            vector_cpy(weapon->weaponPos1, joint->v);
+        }
         
         weapons[i]->animate(spf);
+        weapons[i]->transform();
     }
 
     // EXPLOSION (WEAPON)
     {
+        // from RIGGED:
+        {
+            rWeapon* weapon = explosion;
+            MD5Format::joint* joint = &rigged->joints[weapon->weaponMount];
+            quat_cpy(weapon->weaponOri0, traceable->ori);
+            vector_cpy(weapon->weaponPos0, traceable->pos);
+            quat_cpy(weapon->weaponOri1, joint->q);
+            vector_cpy(weapon->weaponPos1, joint->v);
+        }
         explosion->animate(spf);
+        explosion->transform();
     }
 }
 
 void cMech::transform() {
+    /*
     {
         rigged->transform();
     }
@@ -1094,25 +1145,12 @@ void cMech::transform() {
         mobile->transform();
     }
     loopi(weapons.size()) {
-        rWeapon* weapon = weapons[i];
-        MD5Format::joint* joint = &rigged->joints[weapon->weaponMount];
-        quat_cpy(weapon->weaponOri0, traceable->ori);
-        vector_cpy(weapon->weaponPos0, traceable->pos);
-        quat_cpy(weapon->weaponOri1, joint->q);
-        vector_cpy(weapon->weaponPos1, joint->v);
-
-        weapon->transform();
+        weapons[i]->transform();
     }
     {
-        rWeapon* weapon = explosion;
-        MD5Format::joint* joint = &rigged->joints[weapon->weaponMount];
-        quat_cpy(weapon->weaponOri0, traceable->ori);
-        vector_cpy(weapon->weaponPos0, traceable->pos);
-        quat_cpy(weapon->weaponOri1, joint->q);
-        vector_cpy(weapon->weaponPos1, joint->v);
-
         explosion->transform();
     }
+    */
 }
 
 void cMech::drawSolid() {
@@ -1145,14 +1183,6 @@ void cMech::drawSolid() {
     }
 
     {
-        // Group-to-texture.
-        int texture = 0;
-        texture = hasTag(RED) ? 0 : texture;
-        texture = hasTag(BLUE) ? 1 : texture;
-        texture = hasTag(GREEN) ? 2 : texture;
-        texture = hasTag(YELLOW) ? 3 : texture;
-        glBindTexture(GL_TEXTURE_3D, sTextures[texture]);
-
         rigged->drawSolid();
     }
 
@@ -1215,7 +1245,66 @@ void cMech::drawEffect() {
 }
 
 void cMech::drawHUD() {
-    computerised->drawHUD();
+    //computerised->drawHUD();
+    glPushAttrib(GL_ALL_ATTRIB_BITS /* more secure */);
+    {
+        SGL::glUseProgram_bkplaincolor();
+        glDisable(GL_CULL_FACE);
+        glLineWidth(2);
+
+        SGL::glPushOrthoProjection();
+        {
+            glPushMatrix();
+            {
+                glLoadIdentity();
+
+                float bk[] = {0.0, 0.2, 0.3, 0.2};
+                //float bk[] = {0, 0, 0, 0.0};
+                float w = 5;
+                float h = 4;
+                float sx = 1.0f / w;
+                float sy = 1.0f / h;
+
+                rRole* displays[4][5] = {
+                    { navcom, NULL, NULL, NULL, comcom},
+                    { NULL, NULL, NULL, NULL, NULL},
+                    { NULL, NULL, NULL, NULL, NULL},
+                    { tarcom, NULL, wepcom, NULL, damageable}
+                };
+
+                loopj(4) {
+
+                    loopi(5) {
+                        if (displays[j][i] == NULL) continue;
+                        glPushMatrix();
+                        {
+                            glScalef(sx, sy, 1);
+                            glTranslatef(i, 3 - j, 0);
+                            glColor4fv(bk);
+                            displays[j][i]->drawHUD();
+                        }
+                        glPopMatrix();
+                    }
+                }
+
+                if (true) {
+                    glPushMatrix();
+                    {
+                        glTranslatef(0.25, 0.25, 0);
+                        glScalef(0.5, 0.5, 1);
+                        glTranslatef(0, 0, 0);
+                        glColor4fv(bk);
+                        forcom->drawHUD();
+                    }
+                    glPopMatrix();
+                }
+
+            }
+            glPopMatrix();
+        }
+        SGL::glPopProjection();
+    }
+    glPopAttrib();
 }
 
 void cMech::damageByParticle(float* localpos, float damage, cObject* enactor) {
@@ -1240,7 +1329,7 @@ void cMech::damageByParticle(float* localpos, float damage, cObject* enactor) {
     if (damageable->hp[body] <= 0) addTag(DEAD);
 }
 
-// move to traceable? or rigged?
+// move to rCollision or rDamageable?
 float cMech::constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor) {
     float localpos_[3];
     { // Transform to local.
@@ -1465,7 +1554,7 @@ void cMech::do_fireAt() {
 
 void cMech::do_idle() {
     if (controlled->pad == NULL) return;
-    mobile->throttle = 0;
+    mobile->drivethrottle = 0;
     controlled->pad->reset();
 }
 

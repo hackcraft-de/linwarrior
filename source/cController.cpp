@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <cassert>
 #include <iostream>
+#include <sstream>
 
 using std::cout;
 using std::endl;

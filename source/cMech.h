@@ -41,15 +41,15 @@ struct rRigged : public rRole {
     float scale;
     /// Animation time counter in seconds.
     float seconds;
-    /// Position hook.
+    /// Position. (hook)
     vec3 pos;
-    /// Orientation hook.
+    /// Orientation. (hook)
     quat ori;
-    /// Velocity hook.
+    /// Velocity. (hook)
     vec3 vel;
-    /// Grounded hook.
+    /// Grounded. (hook)
     float grounded;
-    /// Jetting hook.
+    /// Jetting. (hook)
     float jetting;
     /// The "static" model just as it is loaded.
     MD5Format::model* model;
@@ -61,8 +61,11 @@ struct rRigged : public rRole {
     std::map<int, std::map<int, float> > rotators;
     // Untransformed vertices for mesh i.
     std::map<int, float*> baseverts;
-    // Untransformed normals for mesh i.
+    /// Untransformed normals for mesh i.
     std::map<int, float*> basenorms;
+    /// Basic 3d texture bind when greater 0.
+    int basetexture3d;
+
     /// Enumeration for indexing joints in animation.
     enum Jointpoints {
         EYE, HEADPITCH, HEADYAW,
@@ -140,60 +143,69 @@ struct rRigged : public rRole {
 };
 
 
-struct rComputerised : public rRole {
-    cComcom* comcom;
-    cTarcom* tarcom;
-    cSyscom* syscom;
-    cWepcom* wepcom;
-    cForcom* forcom;
-    cNavcom* navcom;
+struct rCamera : public rRole {
+    /// # of camera modes: ISO C++ forbids const int with initialization >:(
+    enum { MAX_CAMERAMODES = 6 };
+    /// Current Camera mode, negative number is indicating transition.
+    int camerastate;
+    /// Switch camera state one step when greater zero. (hook i)
+    float cameraswitch;
+    /// Strenght of camera shaking [0,1], scaled internally. (hook i)
+    float camerashake;
+    /// True when camerastate is in first perspective mode. (hook o)
+    bool firstperson;
+    /// Base position (hook).
+    quat ori0;
+    /// Base orientation (hook).
+    vec3 pos0;
+    /// Position relative to base position and orientation (hook).
+    quat ori1;
+    /// Orientation relative to base position and orientation (hook).
+    vec3 pos1;
+
     /// Constructor
-    rComputerised(cObject * obj);
-    /// Destructor
-    ~rComputerised();
-    virtual rRole* clone() {
-        return new rComputerised(object);
-    }
-    /// Time step computers.
-    virtual void animate(float dt);
-    virtual void drawHUD();
+    rCamera(cObject * obj);
+    /// Mult in camera matrix.
+    virtual void camera();
+    
+    virtual void animate(float spf);
 };
 
+
 struct rMobile : public rRole {
-    /// Base angles in radians.
+    /// Base angles in radians. (hook o)
     vec3 bse;
-    /// Base orientation.
+    /// Base orientation. (hook o)
     quat bse_ori;
-    /// Tower angles in radians.
+    /// Tower angles in radians. (hook o)
     vec3 twr;
     /// Tower orientation.
     //quat twr_ori;
-    /// Current jumpjet set-point.
+    /// Current jumpjet set-point [-1,1]. (hook i)
+    float jeten;
+    /// Current internal smooth jumpjet set-point. (hook o)
     float jetthrottle;
-    /// Current throttle set-point.
-    float throttle;
-    /// Current Camera mode, negative number is indicating transition.
-    int camerastate;
-    /// Behave like a immobile gunpod.
+    /// Current drive throttle set-point [-1,1]. (hook i)
+    float driveen;
+    /// Current internal smooth drive throttle set-point. (hook o)
+    float drivethrottle;
+    /// Behave like a immobile gunpod with fixed base. (hook i)
     bool immobile;
-    /// Steering angle for base, left/right radians-per-second wish. (hook)
+    /// Steering angle for base, left/right radians-per-second wish. (hook i)
     float chassis_lr;
-    /// Steering angle for base, left/right radians-per-second wish. (hook)
+    /// Smoothed steering angle for base, left/right. (hook o)
+    float chassis_lr_;
+    /// Steering angle for base, left/right radians-per-second wish. (hook i)
     float chassis_ud;
-    /// Steering angle for turret, left/right radians-per-second wish. (hook)
+    /// Smoothed steering angle for base, left/right. (hook o)
+    float chassis_ud_;
+    /// Steering angle for turret, left/right radians-per-second wish. (hook i)
     float tower_lr;
-    /// Steering angle for turret, left/right radians-per-second wish. (hook)
+    /// Steering angle for turret, left/right radians-per-second wish. (hook i)
     float tower_ud;
 
     /// Constructor
-    rMobile(cObject * obj) : jetthrottle(0), throttle(0), camerastate(1), immobile(false), chassis_lr(0), chassis_ud(0), tower_lr(0), tower_ud(0) {
-        role = "MOBILE";
-        object = obj;
-        twr[0] = twr[1] = twr[2] = 0.0f;
-        bse[0] = bse[1] = bse[2] = 0.0f;
-        quat_zero(bse_ori);
-        //quat_zero(twr_ori);
-    }
+    rMobile(cObject * obj);
     /// Destructor
     ~rMobile() { }
 
@@ -209,23 +221,14 @@ struct rMobile : public rRole {
     virtual void drawEffect();
 };
 
+
 /**
  * Models Mechlike Objects.
  * 
  */
 class cMech : public cObject {
-    friend class cWepcom;
-    friend class cForcom;
-protected:
-
-
-    /// # of camera modes: ISO C++ forbids const int with initialization >:(
-
-    enum {
-        MAX_CAMERAMODES = 6
-    };
-
-
+    friend class rWepcom;
+    friend class rForcom;
 protected:
 
     /// Instance counter.
@@ -243,16 +246,21 @@ protected:
 
 protected:
 
+    // COMPUTERs
+    rComcom* comcom;
+    rTarcom* tarcom;
+    rWepcom* wepcom;
+    rForcom* forcom;
+    rNavcom* navcom;
+
+    rCamera* camera;
     rMobile* mobile;
-
-    rComputerised* computerised;
-
     rRigged* rigged;
 
-    // Exploding end.
+    // WEAPON: EXPLOSION
     rWeaponExplosion* explosion;
 
-    /// List of mounted weapons.
+    /// List of WEAPONs.
     std::vector<rWeapon*> weapons;
 
     /// Index of selected weapon.
@@ -263,7 +271,6 @@ public:
     ~cMech();
 
     // Events
-    virtual void onMessage(cMessage* message);
     virtual void onSpawn();
 
     // Camera and Headphone
@@ -277,6 +284,7 @@ public:
     void fireWeapon(unsigned n);
 
     // World Step
+    virtual void message(cMessage* message); // Conditionally/repeatedly called.
     virtual void animate(float spf);
     virtual void transform();
     virtual void drawSolid();

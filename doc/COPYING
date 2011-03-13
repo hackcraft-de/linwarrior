@@ -1,7 +1,7 @@
 COPYING
 
 The Project contains parts that may be re-distributed in part or whole under
-As-it-is, CC-BY(-SA), CC-Sampling+, and others.
+As-it-is, CC-BY(-SA), CC-Sampling+, among others as specified independently.
 For Licensing details see below.
 
 
@@ -25,7 +25,7 @@ Source-Code License
     for your own project just rip it and use it - one can talk about how big
     fractional can get - a notification or reference would be appreciated.
 
-    If you would like submit a patch a copyright-transfer would be neccessary.
+    If you would like submit a patch a copyright-transfer would be necessary.
 
     This source is under benevolent dictatorship.
     If there are any questions, problems, suggestions
@@ -38,7 +38,7 @@ Source-Code License
 Data-File License
 
     The Multimedia-Files (text, scripts, textures, models, sounds, etc) in the
-    data-Directory have their own copyrights and licenses.
+    data-Directory have their own copyrights and licenses listed there.
     CC-BY is encouraged for new contributions.
     Multi-licensing and allowance to re-license is recommended.
 

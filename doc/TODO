@@ -6,6 +6,8 @@
 
 - Reload/Refill/Repair Zones.
 
+- OGG or FLAC loader?
+
 - Footstep sound
 
 - Turrets
@@ -13,6 +15,8 @@
 - First real mission.
 
 - AI Target-Visibility (LOS): Don't shoot when target is behind a wall.
+
+- Radar LOS and Disturbances?
 
 - Waypoints and pathfinding.
 
@@ -28,3 +32,4 @@
 
 - AI shall support allied Objects (attack their targets/attackers, learn their enemies, follow allies on demand).
 
+- AI allies should pop follow command when leader is wrecked.

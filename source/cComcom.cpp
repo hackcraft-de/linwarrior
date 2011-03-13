@@ -3,41 +3,53 @@
 #include "cWorld.h"
 
 #include "psi3d/snippetsgl.h"
+
+// for Console and glprintf
 #include "psi3d/instfont.h"
+
+DEFINE_Console_printf
+DEFINE_glprintf
+
+// FIXME: Forcom and Wepcom rely on mech.
+#include "cMech.h"
 
 #include <iostream>
 using std::cout;
 using std::endl;
 
-DEFINE_Console_printf
-DEFINE_glprintf
 
 // -----------------------------------------------
 
-cComcom::cComcom(cObject* device) {
-    mDevice = device;
+
+rComcom::rComcom(cObject* obj) {
+    object = obj;
+    role = "COMCOM";
+
     int w = 20;
     int h = 10;
     mConsole = Console_new(w * h, w);
     assert(mConsole != NULL);
+    Console* console = (Console*) mConsole;
     //Console_printf(mConsole, "* Welcome to LinWarrior3D\n");
-    Console_printf(mConsole, "ComCOM(1) - MENU\n\n");
-    Console_printf(mConsole, " [1] Formation\n");
-    Console_printf(mConsole, " [2] Engage\n");
-    Console_printf(mConsole, " [3] Report\n");
-    Console_printf(mConsole, " [4] Objectives\n");
-    Console_printf(mConsole, "\n\n > ");
+    Console_printf(console, "ComCOM(1) - MENU\n\n");
+    Console_printf(console, " [1] Formation\n");
+    Console_printf(console, " [2] Engage\n");
+    Console_printf(console, " [3] Report\n");
+    Console_printf(console, " [4] Objectives\n");
+    Console_printf(console, "\n\n > ");
     mLastMessage = 0;
 }
 
-void cComcom::process(float spf) {
+void rComcom::animate(float spf) {
     cMessage* message = NULL;//cWorld::instance->recvMessage(0, mLastMessage);
     if (message != NULL) {
         mLastMessage = message->getTimestamp();
     }
 }
 
-void cComcom::drawHUD() {
+void rComcom::drawHUD() {
+    if (!active) return;
+
     //glColor4f(0,0.1,0,0.2);
     glBegin(GL_QUADS);
     glVertex3f(1, 1, 0);
@@ -49,28 +61,38 @@ void cComcom::drawHUD() {
     {
         glColor4f(0, 1, 0, 0.9);
         //glColor4f(0.99, 0.99, 0.19, 1);
-        float w = mConsole->width;
-        float h = mConsole->size / mConsole->width;
+        Console* console = (Console*) mConsole;
+        float w = console->width;
+        float h = console->size / console->width;
         glTranslatef(0, 1.0f + (1.0f / h), 0);
         glScalef(1.0f / w, 1.0f / h, 1.0f);
-        Console_draw(mConsole);
+        Console_draw(console);
     }
     glPopMatrix();
 }
 
 // -----------------------------------------------
 
-cTarcom::cTarcom(cObject* device) {
-    mDevice = device;
+rTarcom::rTarcom(cObject* obj) {
+    object = obj;
+    role = "TARCOM";
+
+    quat_zero(ori);
+    vector_zero(pos);
+
     near = NULL;
     selected = 0;
+
+    switching = false;
+    switchnext = false;
+    switchprev = false;
 }
 
-OID cTarcom::getSelected() {
+OID rTarcom::getSelected() {
     return selected;
 }
 
-void cTarcom::nextTarget() {
+void rTarcom::nextTarget() {
     bool found = false;
     OID last = 0;
     foreach(i, *near) {
@@ -91,7 +113,7 @@ void cTarcom::nextTarget() {
     }
 }
 
-void cTarcom::prevTarget() {
+void rTarcom::prevTarget() {
     bool found = false;
     OID last = 0;
     foreach(i, *near) {
@@ -112,12 +134,28 @@ void cTarcom::prevTarget() {
     }
 }
 
-void cTarcom::process(float spf) {
+void rTarcom::animate(float spf) {
+    if (!active) return;
+
+    if (!switching) {
+        if (switchnext) {
+            nextTarget();
+            switching = true;
+        } else if (switchprev) {
+            prevTarget();
+            switching = true;
+        }
+    } else {
+        switching = (switchnext || switchprev);
+    }
+
     delete near;
-    near = cWorld::instance->filterByRange(mDevice, mDevice->traceable->pos, 0, 150, -1, NULL);
+    near = cWorld::instance->filterByRange(object, pos, 0, 150, -1, NULL);
 }
 
-void cTarcom::drawHUD() {
+void rTarcom::drawHUD() {
+    if (!active) return;
+
     //glColor4f(0,0.1,0,0.2);
     glBegin(GL_QUADS);
     glVertex3f(1, 1, 0);
@@ -142,11 +180,11 @@ void cTarcom::drawHUD() {
         glScalef(r2, r2, 1);
         cPrimitives::glDisk(16, 1.0f);
         glScalef(1.0 / r2, 1.0 / r2, 1);
-        quat ori;
-        quat_cpy(ori, mDevice->traceable->ori);
-        quat_conj(ori);
+        quat ori_;
+        quat_cpy(ori_, ori);
+        quat_conj(ori_);
         glRotatef(90, 1,0,0);
-        SGL::glRotateq(ori);
+        SGL::glRotateq(ori_);
         glRotatef(-90, 1,0,0);
         glPointSize(3);
         glBegin(GL_POINTS);
@@ -166,8 +204,8 @@ void cTarcom::drawHUD() {
                 else if (o->hasTag(cObject::BLUE)) glColor4f(0, 0, 1, 1);
                 else if (o->hasTag(cObject::YELLOW)) glColor4f(0, 1, 0, 1);
                 if (o->oid == selected) glColor4f(1,0,1,1);
-                float dx = o->traceable->pos[0] - mDevice->traceable->pos[0];
-                float dz = o->traceable->pos[2] - mDevice->traceable->pos[2];
+                float dx = o->traceable->pos[0] - pos[0];
+                float dz = o->traceable->pos[2] - pos[2];
                 float r = sqrtf(dx * dx + dz * dz);
                 dx /= r;
                 dz /= r;
@@ -189,85 +227,18 @@ void cTarcom::drawHUD() {
 
 // -----------------------------------------------
 
-cSyscom::cSyscom(cObject* device) {
-    mDevice = device;
+rWepcom::rWepcom(cObject* obj) {
+    object = obj;
+    role = "WEPCOM";
 }
 
-void cSyscom::process(float spf) {
+void rWepcom::animate(float spf) {
 }
 
-void cSyscom::drawHUD() {
-    //glColor4f(0,0.1,0,0.2);
-    glBegin(GL_QUADS);
-    glVertex3f(1, 1, 0);
-    glVertex3f(0, 1, 0);
-    glVertex3f(0, 0, 0);
-    glVertex3f(1, 0, 0);
-    glEnd();
-    glColor4f(0.3, 0.3, 0.3, 0.3);
-    for (int i = 1; i <= 5; i += 4) {
-        if (i == 1) glColor4f(1, 1, 1, 0.9);
-        glLineWidth(i);
-        glPushMatrix();
-        {
-            //glLoadIdentity();
-            glTranslatef(0.0f, 0.4f, 0.0f);
-            glScalef(0.333f, 0.3f, 1.0f);
-            //glTranslatef(0.8, 0.1, 0);
-            //glScalef(0.06, 0.08, 1.0);
-            // Left Arm
-            int left = rDamageable::LEFT;
-            if (i != 1) glColor4f(1 - mDevice->damageable->hp[left]*0.01, mDevice->damageable->hp[left]*0.01, 0.4, 0.2);
-            cPrimitives::glLineSquare(0.1f);
-            // Torsor&Head
-            glTranslatef(1, 0, 0);
-            glScalef(1, 1.5, 1);
-            int body = rDamageable::BODY;
-            if (i != 1) glColor4f(1 - mDevice->damageable->hp[body]*0.01, mDevice->damageable->hp[body]*0.01, 0.4, 0.2);
-            cPrimitives::glLineSquare(0.1f);
-            // Right Arm&Shoulder
-            glTranslatef(1, 0, 0);
-            glScalef(1, 1.0f / 1.5f, 1);
-            int right = rDamageable::RIGHT;
-            if (i != 1) glColor4f(1 - mDevice->damageable->hp[right]*0.01, mDevice->damageable->hp[right]*0.01, 0.4, 0.2);
-            cPrimitives::glLineSquare(0.1f);
-            // Legs
-            glTranslatef(-1.6, -1, 0);
-            glScalef(2.2, 1, 1);
-            int legs = rDamageable::LEGS;
-            if (i != 1) glColor4f(1 - mDevice->damageable->hp[legs]*0.01, mDevice->damageable->hp[legs]*0.01, 0.4, 0.2);
-            cPrimitives::glLineSquare(0.1f);
-        }
-        glPopMatrix();
-    }
+void rWepcom::drawHUD() {
+    if (!active) return;
 
-    glPushMatrix();
-    {
-        glColor4f(0.09, 0.99, 0.09, 1);
-        glScalef(1.0f / 20.0f, 1.0f / 10.0f, 1.0f);
-        glTranslatef(0, 1, 0);
-        glprintf("hackcraft.de");
-        glTranslatef(0, 9, 0);
-        int left = rDamageable::LEFT;
-        int body = rDamageable::BODY;
-        int right = rDamageable::RIGHT;
-        int legs = rDamageable::LEGS;
-        glprintf("L %3.0f  T %3.0f  R %3.0f\n       B %3.0f", mDevice->damageable->hp[left], mDevice->damageable->hp[body], mDevice->damageable->hp[right], mDevice->damageable->hp[legs]);
-    }
-    glPopMatrix();
-}
-
-// -----------------------------------------------
-
-cWepcom::cWepcom(cObject* device) {
-    mDevice = device;
-}
-
-void cWepcom::process(float spf) {
-}
-
-void cWepcom::drawHUD() {
-    cMech* mech = (cMech*) mDevice;
+    cMech* mech = (cMech*) object;
     float h = 1.0f / 7.0f * (1 + (mech->weapons.size() + 1) / 2);
     glBegin(GL_QUADS);
     glVertex3f(1, h, 0);
@@ -277,7 +248,7 @@ void cWepcom::drawHUD() {
     glEnd();
     glPushMatrix();
     {
-        glScalef(1.0 / 2.0, 1.0 / 7.0, 1.0);
+        glScalef(1.0f / 2.0f, 1.0f / 7.0f, 1.0f);
         glTranslatef(0, 0.5, 0);
 
         loopi(mech->weapons.size()) {
@@ -303,20 +274,25 @@ void cWepcom::drawHUD() {
 
 // -----------------------------------------------
 
-cForcom::cForcom(cMech* device) {
-    mDevice = device;
+rForcom::rForcom(cObject* obj) {
+    object = obj;
+    role = "FORCOM";
+    quat_zero(ori);
+    vector_zero(twr);
 }
 
-void cForcom::addMessage(std::string msg) {
-    mMessage = msg;
+void rForcom::message(cMessage* message) {
+    mMessage = message->getText();
 }
 
-void cForcom::process(float spf) {
+void rForcom::animate(float spf) {
 }
 
-void cForcom::drawHUD() {
+void rForcom::drawHUD() {
+    if (!active) return;
+
     // Reticle in screen center.
-    if (true && abs(mDevice->mobile->camerastate) == 1) {
+    if (reticle) {
         glPushMatrix();
         {
             glTranslatef(0.5, 0.5, 0);
@@ -359,7 +335,7 @@ void cForcom::drawHUD() {
             glScalef(1.0, 0.02, 1.0);
             glColor4f(0, 1, 0, 0.2);
 
-            float r = atan2(mDevice->traceable->ori[1], mDevice->traceable->ori[3]) / PI_OVER_180;
+            float r = atan2(ori[1], ori[3]) / PI_OVER_180;
             if (r > 180) r -= 360;
             const float d = 1.0f / 360.0f;
 
@@ -462,16 +438,16 @@ void cForcom::drawHUD() {
         {
             glColor4f(0, 0.2, 0.7, 0.4);
             glVertex3f(0.5, 0.1, 0);
-            glVertex3f(0.5 + mDevice->mobile->twr[1] * f, 0.1, 0);
+            glVertex3f(0.5 + twr[1] * f, 0.1, 0);
 
-            glVertex3f(0.5 + mDevice->mobile->twr[1] * f, 0.08, 0);
-            glVertex3f(0.5 + mDevice->mobile->twr[1] * f, 0.12, 0);
+            glVertex3f(0.5 + twr[1] * f, 0.08, 0);
+            glVertex3f(0.5 + twr[1] * f, 0.12, 0);
 
             glVertex3f(0.5, 0.9, 0);
-            glVertex3f(0.5 + mDevice->mobile->twr[1] * f, 0.9, 0);
+            glVertex3f(0.5 + twr[1] * f, 0.9, 0);
 
-            glVertex3f(0.5 + mDevice->mobile->twr[1] * f, 0.88, 0);
-            glVertex3f(0.5 + mDevice->mobile->twr[1] * f, 0.92, 0);
+            glVertex3f(0.5 + twr[1] * f, 0.88, 0);
+            glVertex3f(0.5 + twr[1] * f, 0.92, 0);
         }
         glEnd();
 
@@ -480,16 +456,16 @@ void cForcom::drawHUD() {
         {
             glColor4f(0, 0.2, 0.7, 0.4);
             glVertex3f(0.1, 0.5, 0);
-            glVertex3f(0.1, 0.5 + mDevice->mobile->twr[0] * f, 0);
+            glVertex3f(0.1, 0.5 + twr[0] * f, 0);
 
-            glVertex3f(0.08, 0.5 + mDevice->mobile->twr[0] * f, 0);
-            glVertex3f(0.12, 0.5 + mDevice->mobile->twr[0] * f, 0);
+            glVertex3f(0.08, 0.5 + twr[0] * f, 0);
+            glVertex3f(0.12, 0.5 + twr[0] * f, 0);
 
             glVertex3f(0.9, 0.5, 0);
-            glVertex3f(0.9, 0.5 + mDevice->mobile->twr[0] * f, 0);
+            glVertex3f(0.9, 0.5 + twr[0] * f, 0);
 
-            glVertex3f(0.88, 0.5 + mDevice->mobile->twr[0] * f, 0);
-            glVertex3f(0.92, 0.5 + mDevice->mobile->twr[0] * f, 0);
+            glVertex3f(0.88, 0.5 + twr[0] * f, 0);
+            glVertex3f(0.92, 0.5 + twr[0] * f, 0);
         }
         glEnd();
 
@@ -516,8 +492,12 @@ void cForcom::drawHUD() {
 
 // -----------------------------------------------
 
-cNavcom::cNavcom(cObject* device) {
-    mDevice = device;
+rNavcom::rNavcom(cObject* obj) {
+    object = obj;
+    role = "NAVCOM";
+
+    vector_zero(pos);
+    quat_zero(ori);
 
     std::vector<float> p;
     p.reserve(3);
@@ -553,7 +533,7 @@ cNavcom::cNavcom(cObject* device) {
     mRoute.push_back(5);
 }
 
-void cNavcom::drawPOI(float x, float y, float s) {
+void rNavcom::drawPOI(float x, float y, float s) {
     glBegin(GL_LINE_STRIP);
     {
         glVertex3f(x, y - s, 0);
@@ -565,18 +545,20 @@ void cNavcom::drawPOI(float x, float y, float s) {
     glEnd();
 }
 
-void cNavcom::process(float spf) {
+void rNavcom::animate(float spf) {
 }
 
-void cNavcom::drawHUD() {
+void rNavcom::drawHUD() {
+    if (!active) return;
+
     glBegin(GL_QUADS);
     glVertex3f(1, 1, 0);
     glVertex3f(0, 1, 0);
     glVertex3f(0, 0, 0);
     glVertex3f(1, 0, 0);
     glEnd();
-    float x = mDevice->traceable->pos[0];
-    float z = mDevice->traceable->pos[2];
+    float x = pos[0];
+    float z = pos[2];
     float s = 0.005;
 
     glPushMatrix();
@@ -624,10 +606,10 @@ void cNavcom::drawHUD() {
 
         // Draw arrow direction indicator
         {
-            quat ori;
-            quat_cpy(ori, mDevice->traceable->ori);
+            quat ori_;
+            quat_cpy(ori_, ori);
             glRotatef(90, 1,0,0);
-            SGL::glRotateq(ori);
+            SGL::glRotateq(ori_);
             glRotatef(-90, 1,0,0);
             glColor4f(0.9, 0.9, 0.9, 0.9);
             glBegin(GL_LINE_STRIP);
@@ -651,13 +633,13 @@ void cNavcom::drawHUD() {
         //glRotatef(1, 0,0,1);
         glTranslatef(0, -0, 0);
         cWorld* w = cWorld::instance;
-        int x = int(mDevice->traceable->pos[0]);
-        int z = int(mDevice->traceable->pos[2]);
+        int x = int(pos[0]);
+        int z = int(pos[2]);
         glprintf("Merc: %06i %06i", x, z);
         glTranslatef(0, -1, 0);
-        glprintf("Alt: %3.2f", (mDevice->traceable->pos[1]));
+        glprintf("Alt: %3.2f", (pos[1]));
         glTranslatef(0, -1, 0);
-        float angle = atan2(mDevice->traceable->ori[1], mDevice->traceable->ori[3]);
+        float angle = atan2(ori[1], ori[3]);
         glprintf("MKS: %2i", int(64 - angle * 64 / M_PI) % 64);
         glTranslatef(0, -6, 0);
         s << "Date: " << w->getTiming()->getDate();
@@ -670,3 +652,4 @@ void cNavcom::drawHUD() {
     }
     glPopMatrix();
 }
+

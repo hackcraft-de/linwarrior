@@ -9,23 +9,26 @@
 #ifndef _CCOMCOM_H
 #define	_CCOMCOM_H
 
-class cComputer;
-class cComcom;
-class cTarcom;
-class cWepcom;
-class cSyscom;
-class cForcom;
-class cNavcom;
+struct rComputer;
+struct rComcom;
+struct rTarcom;
+struct rWepcom;
+struct rForcom;
+struct rNavcom;
 
-#include "cMech.h"
+#include "cObject.h"
 
-// for Console
-#include "psi3d/instfont.h"
 
-class cComputer {
+/** Computer Component
+ *  Placeholder base class for computerised components.
+ *  Computers have to implement animate and drawHUD methods to be useful.
+ *  The message method isn't mandatory.
+ */
+struct rComputer : rRole {
 public:
+    virtual void message(cMessage* message) {};
+    virtual void animate(float spf) = 0;
     virtual void drawHUD() = 0;
-    virtual void process(float spf) = 0;
 };
 
 /** Communication Computer
@@ -33,88 +36,80 @@ public:
  *  and stores these messages.
  *  Orders to comrades may enhance strategic advance.
  */
-class cComcom : public cComputer {
+struct rComcom : public rComputer {
 protected:
-    cObject* mDevice;
-    Console* mConsole;
+    void* mConsole;
     OID mLastMessage;
 public:
-    cComcom(cObject* device);
-    void process(float spf);
-    void drawHUD();
+    rComcom(cObject* obj = NULL);
+    virtual void animate(float spf);
+    virtual void drawHUD();
 };
 
 /** Targeting Computer,
  * includes Radar, target-selection and -display.
  */
-class cTarcom : public cComputer {
+struct rTarcom : public rComputer {
 public:
-    cObject* mDevice;
+    quat ori;
+    vec3 pos;
     std::list<cObject*>* near;
     OID selected;
+    bool switchnext;
+    bool switchprev;
+    bool switching;
 public:
-    cTarcom(cObject* device);
+    rTarcom(cObject* obj = NULL);
     OID getSelected();
     void nextTarget();
     void prevTarget();
-    void process(float spf);
-    void drawHUD();
-};
-
-/** System Monitoring Computer
- *  includes damage indicators.
- */
-class cSyscom : public cComputer {
-public:
-    cObject* mDevice;
-public:
-    cSyscom(cObject* device);
-    void process(float spf);
-    void drawHUD();
+    virtual void animate(float spf);
+    virtual void drawHUD();
 };
 
 /** Weapon Computer
  * currently just draws weapon status.
  */
-class cWepcom : public cComputer {
+struct rWepcom : public rComputer {
 public:
-    cObject* mDevice;
-public:
-    cWepcom(cObject* device);
-    void process(float spf);
-    void drawHUD();
+    rWepcom(cObject* obj = NULL); // FIXME: Must be a cMech.
+    virtual void animate(float spf);
+    virtual void drawHUD();
 };
 
 /** Forward Computer
  * Forward-looking information overlay.
  */
-class cForcom : public cComputer {
+struct rForcom : public rComputer {
 public:
-    cMech* mDevice;
     std::string mMessage;
+    quat ori;
+    vec3 twr;
+    bool reticle;
 public:
-    cForcom(cMech* device);
-    void addMessage(std::string msg);
-    void process(float spf);
-    void drawHUD();
+    rForcom(cObject* obj = NULL); // FIXME: Must be a cMech.
+    virtual void message(cMessage* message);
+    virtual void animate(float spf);
+    virtual void drawHUD();
 };
 
-// Navigation Computer,
-// stores mission critical POints of Interest (POIs),
-// routes, map data and encapsulates path-finding.
-
-class cNavcom : public cComputer {
+/** Navigation Computer,
+ * stores mission critical POints of Interest (POIs),
+ * routes, map data and encapsulates path-finding.
+ */
+struct rNavcom : public rComputer {
 public:
-    cObject* mDevice;
+    quat ori;
+    vec3 pos;
     int mWaypoint;
     bool mCyclic;
     std::vector< int > mRoute;
     std::vector< std::vector<float> > mPOIs;
 public:
-    cNavcom(cObject* device);
+    rNavcom(cObject* obj = NULL);
     void drawPOI(float x, float y, float s);
-    void process(float spf);
-    void drawHUD();
+    virtual void animate(float spf);
+    virtual void drawHUD();
 };
 
 

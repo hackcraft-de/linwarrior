@@ -17,6 +17,8 @@ Enhanced Landscape Rendering
 - Added Sprite based particle Trees
 Enhanced Immersion
 - Adjusted field of view
+- Added acceleration heaviness
+- Added steering heaviness
 Enhanced Internals
 - Lessened object-role interdependencies, more component like, next logical step
 - Role'ified Weapons, they are components now
