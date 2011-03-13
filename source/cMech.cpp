@@ -722,9 +722,7 @@ cMech::cMech(float* pos, float* rot) {
 
     rigged = new rRigged(this);
     damageable = new rDamageable(this);
-    //computerised = new rComputerised(this);
     controlled = new rControlled(this);
-    socialised = new rSocialised(this);
     camera = new rCamera(this);
     mobile = new rMobile(this);
 
@@ -1369,11 +1367,11 @@ OID cMech::enemyNearby() {
     std::list<cObject*>* scan = cWorld::instance->filterByRange(this, traceable->pos, 0.0f, 50.0f, -1, NULL);
     if (!scan->empty()) {
         // Find all objects belonging to any enemy party/role.
-        std::list<cObject*>* roles = cWorld::instance->filterByTags(this, &socialised->inc_enemies, false, -1, scan);
+        std::list<cObject*>* roles = cWorld::instance->filterByTags(this, &tarcom->inc_enemies, false, -1, scan);
         if (!roles->empty()) {
             for (std::list<cObject*>::iterator i=roles->begin(); i != roles->end(); i++) {
                 cObject* o = *i;
-                if (!o->anyTags(&socialised->exc_enemies)) {
+                if (!o->anyTags(&tarcom->exc_enemies)) {
                     result = o->oid;
                 }
             }

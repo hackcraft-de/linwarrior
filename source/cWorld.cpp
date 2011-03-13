@@ -344,14 +344,12 @@ string cWorld::getNames(std::list<cObject*>* objects) {
         s << (o->name);
         s << "#";
         s << (o->oid);
-        if (o->socialised) {
-            s << "(";
-            foreach(j, o->tags) {
-                OID tag = *j;
-                s << " " << tag << " ";
-            }
-            s << ")";
+        s << "(";
+        foreach(j, o->tags) {
+            OID tag = *j;
+            s << " " << tag << " ";
         }
+        s << ")";
     }
     s << " ]";
     return s.str();

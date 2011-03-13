@@ -201,37 +201,6 @@ struct rControlled : public rRole {
     virtual void animate(float spf);
 };
 
-/**
- *  Encapsulates social behavior related attributes (merge with entity?).
- */
-struct rSocialised : public rRole {
-    /// Set lists Tags of allies.
-    std::set<OID> inc_allies;
-    /// Set lists Tags of explicitly excluded allied (like dead ones).
-    std::set<OID> exc_allies;
-    /// Set lists Tags of enemies.
-    std::set<OID> inc_enemies;
-    /// Set lists Tags of explicitly excluded enemies (like dead ones).
-    std::set<OID> exc_enemies;
-    
-    /// Constructor.
-    rSocialised(cObject* obj = NULL);
-    /// Copy Constructor.
-    rSocialised(rSocialised * original);
-    virtual rRole* clone();
-    /// Check wether an tag-set is identified as an ally.
-    bool isAllied(std::set<OID>* tags);
-    /// Add tags which allies of this object have (not).
-    void addAllied(OID tag, bool include = false);
-    /// Remove tags which alies of this object have (not).
-    void remAllied(OID tag, bool include = false);
-    /// Check wether an tag-set is identified as an enemy.
-    bool isEnemy(std::set<OID>* tags);
-    /// Add roles which enemies of this object play.
-    void addEnemy(OID tag, bool include = true);
-    /// Remove objects playing a certain role from enemy list.
-    void remEnemy(OID tag, bool include = false);
-};
 
 /**
  * Object Group - as for now intended for messaging maillist-groups.
@@ -280,7 +249,6 @@ public: // Basic Object attributes for managing.
 public: // FIXME: Predefined Roles, to be removed from cObject
 
     rNameable* nameable;
-    rSocialised* socialised;
     rTraceable* traceable;
     rDamageable* damageable;
     rControlled* controlled;
@@ -327,14 +295,12 @@ public:
         name = "";
         if (roleprotos.empty()) {
             registerRole(new rNameable, FIELDOFS(nameable), ROLEPTR(cObject::nameable));
-            registerRole(new rSocialised, FIELDOFS(socialised), ROLEPTR(cObject::socialised));
             registerRole(new rTraceable, FIELDOFS(traceable), ROLEPTR(cObject::traceable));
             registerRole(new rDamageable, FIELDOFS(damageable), ROLEPTR(cObject::damageable));
             registerRole(new rControlled, FIELDOFS(controlled), ROLEPTR(cObject::controlled));
             registerRole(new rGrouping, FIELDOFS(grouping), ROLEPTR(cObject::grouping));
         }
         nameable = new rNameable(this);
-        socialised = NULL;
         traceable = new rTraceable(this);
         damageable = NULL;
         controlled = NULL;
@@ -348,7 +314,6 @@ public:
         if (original->traceable) traceable = new rTraceable(original->traceable);
         if (original->damageable) damageable = new rDamageable(original->damageable);
         if (original->controlled) controlled = new rControlled(original->controlled);
-        if (original->socialised) socialised = new rSocialised(original->socialised);
         if (original->grouping) grouping = new rGrouping(original->grouping);
     }
 
@@ -357,7 +322,6 @@ public:
         delete this->traceable;
         delete this->damageable;
         delete this->controlled;
-        delete this->socialised;
         delete this->grouping;
     }
 

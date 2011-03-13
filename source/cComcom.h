@@ -51,20 +51,52 @@ public:
  */
 struct rTarcom : public rComputer {
 public:
+    /// Sensor orientation. (hook i)
     quat ori;
+    /// Sensor position. (hook i)
     vec3 pos;
+    /// List of objects in range.
     std::list<cObject*>* near;
+    /// ID of selected object (hook o)
     OID selected;
+    /// Switch to next target. (hook i)
     bool switchnext;
+    /// Switch to previous target. (hook i)
     bool switchprev;
+    /// Switching to next/prev target in progress.
     bool switching;
+    /// Set lists Tags of allies.
+    std::set<OID> inc_allies;
+    /// Set lists Tags of explicitly excluded allied (like dead ones).
+    std::set<OID> exc_allies;
+    /// Set lists Tags of enemies.
+    std::set<OID> inc_enemies;
+    /// Set lists Tags of explicitly excluded enemies (like dead ones).
+    std::set<OID> exc_enemies;
 public:
+    /// Constructor.
     rTarcom(cObject* obj = NULL);
-    OID getSelected();
+protected:
+    /// Switch to next target.
     void nextTarget();
+    /// Switch to previous target.
     void prevTarget();
+public:
     virtual void animate(float spf);
     virtual void drawHUD();
+public:
+    /// Check wether an tag-set is identified as an ally.
+    bool isAllied(std::set<OID>* tags);
+    /// Add tags which allies of this object have (not).
+    void addAllied(OID tag, bool include = false);
+    /// Remove tags which alies of this object have (not).
+    void remAllied(OID tag, bool include = false);
+    /// Check wether an tag-set is identified as an enemy.
+    bool isEnemy(std::set<OID>* tags);
+    /// Add roles which enemies of this object play.
+    void addEnemy(OID tag, bool include = true);
+    /// Remove objects playing a certain role from enemy list.
+    void remEnemy(OID tag, bool include = false);
 };
 
 /** Weapon Computer

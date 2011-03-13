@@ -88,10 +88,6 @@ rTarcom::rTarcom(cObject* obj) {
     switchprev = false;
 }
 
-OID rTarcom::getSelected() {
-    return selected;
-}
-
 void rTarcom::nextTarget() {
     bool found = false;
     OID last = 0;
@@ -223,6 +219,54 @@ void rTarcom::drawHUD() {
         }
     }
     glPopMatrix();
+}
+
+bool rTarcom::isAllied(std::set<OID>* tags) {
+    std::set<OID> inclusion;
+    std::set_intersection(tags->begin(), tags->end(), inc_allies.begin(), inc_allies.end(), std::inserter(inclusion, inclusion.begin()));
+    std::set<OID> exclusion;
+    std::set_intersection(tags->begin(), tags->end(), exc_allies.begin(), exc_allies.end(), std::inserter(exclusion, exclusion.begin()));
+    return (!inclusion.empty() && exclusion.empty());
+}
+
+void rTarcom::addAllied(OID tag, bool include) {
+    if (include) {
+        inc_allies.insert(tag);
+    } else {
+        exc_allies.insert(tag);
+    }
+}
+
+void rTarcom::remAllied(OID tag, bool include) {
+    if (include) {
+        inc_allies.erase(tag);
+    } else {
+        exc_allies.erase(tag);
+    }
+}
+
+bool rTarcom::isEnemy(std::set<OID>* tags) {
+    std::set<OID> inclusion;
+    std::set_intersection(tags->begin(), tags->end(), inc_enemies.begin(), inc_enemies.end(), std::inserter(inclusion, inclusion.begin()));
+    std::set<OID> exclusion;
+    std::set_intersection(tags->begin(), tags->end(), exc_enemies.begin(), exc_enemies.end(), std::inserter(exclusion, exclusion.begin()));
+    return (!inclusion.empty() && exclusion.empty());
+}
+
+void rTarcom::addEnemy(OID tag, bool include) {
+    if (include) {
+        inc_enemies.insert(tag);
+    } else {
+        exc_enemies.insert(tag);
+    }
+}
+
+void rTarcom::remEnemy(OID tag, bool include) {
+    if (include) {
+        inc_enemies.erase(tag);
+    } else {
+        exc_enemies.erase(tag);
+    }
 }
 
 // -----------------------------------------------

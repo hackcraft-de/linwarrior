@@ -2,6 +2,7 @@
 
 #include "cObject.h"
 #include "cWorld.h"
+#include "cMech.h"
 
 #include <cstdlib>
 #include <cassert>
@@ -182,14 +183,17 @@ void cController::attackEnemy() {
         if (controlledDevice->inWeaponRange() > 0.5) controlledDevice->do_fireAt();
         //((cMech*)mDevice)->Pattern(tf, "nrnlln");
     }
-    
+
+    // FIXME: Depends on Mech/tarcom.
+    cMech* mech = (cMech*) controlledDevice;
+
     cObject* target = cWorld::instance->getObject(entity);
     if (target == NULL) {
         // Target disappeared (removed from world: fragged).
         controlledDevice->do_aimFor(NULL);
         pop();
         return;
-    } else if (!controlledDevice->socialised->isEnemy(&target->tags)) {
+    } else if (!mech->tarcom->isEnemy(&target->tags)) {
         // Not an enemy anymore (maybe dead or not interesting anymore).
         controlledDevice->do_aimFor(NULL);
         pop();

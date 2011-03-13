@@ -244,7 +244,7 @@ protected:
     /// Texture Binds shared between instances.
     static std::map<int,long> sTextures;
 
-protected:
+public:
 
     // COMPUTERs
     rComcom* comcom;

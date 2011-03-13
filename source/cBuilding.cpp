@@ -315,7 +315,6 @@ cBuilding::cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
     }
     
     damageable = new rDamageable;
-    socialised = new rSocialised;
 
     quat_set(traceable->ori, 0, 0, 0, 1);
     buildingRooms[0] = 3 * rooms_x;

@@ -79,8 +79,8 @@ cObject* cMission::init(cWorld* world) {
         mech->controlled->controller->controllerEnabled = false; // Disable Autopilot.
         mech->addTag(cObject::BLUE);
         mech->addTag(cObject::HUMANPLAYER);
-        mech->socialised->addEnemy(cObject::RED);
-        mech->socialised->addEnemy(cObject::DEAD, false);
+        mech->tarcom->addEnemy(cObject::RED);
+        mech->tarcom->addEnemy(cObject::DEAD, false);
 
         player = mech;
 
@@ -294,8 +294,8 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
         mech->controlled->controller->controllerEnabled = false; // Disable Autopilot.
         mech->addTag(cObject::BLUE);
         mech->addTag(cObject::HUMANPLAYER);
-        mech->socialised->addEnemy(cObject::RED);
-        mech->socialised->addEnemy(cObject::DEAD, false);
+        mech->tarcom->addEnemy(cObject::RED);
+        mech->tarcom->addEnemy(cObject::DEAD, false);
 
         world->spawnObject(mech);
         group_alliance_player.grouping->members.insert(mech->oid);
@@ -340,8 +340,8 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
         mech->nameable->name = "Joe";
 
         mech->addTag(cObject::BLUE);
-        mech->socialised->addEnemy(cObject::RED);
-        mech->socialised->addEnemy(cObject::DEAD, false);
+        mech->tarcom->addEnemy(cObject::RED);
+        mech->tarcom->addEnemy(cObject::DEAD, false);
 
         world->spawnObject(mech);
         group_alliance_wingmen.grouping->members.insert(mech->oid);
@@ -363,8 +363,8 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
         mech->nameable->name = "Jack";
 
         mech->addTag(cObject::BLUE);
-        mech->socialised->addEnemy(cObject::RED);
-        mech->socialised->addEnemy(cObject::DEAD, false);
+        mech->tarcom->addEnemy(cObject::RED);
+        mech->tarcom->addEnemy(cObject::DEAD, false);
 
         world->spawnObject(mech);
         group_alliance_wingmen.grouping->members.insert(mech->oid);
@@ -426,8 +426,8 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
         mech->nameable->name = "Stortebeker";
 
         mech->addTag(cObject::BLUE);
-        mech->socialised->addEnemy(cObject::RED);
-        mech->socialised->addEnemy(cObject::DEAD, false);
+        mech->tarcom->addEnemy(cObject::RED);
+        mech->tarcom->addEnemy(cObject::DEAD, false);
 
         world->spawnObject(mech);
         group_alliance_all.grouping->members.insert(mech->oid);
@@ -467,8 +467,8 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
         mech->nameable->name = "Offending Villain";
 
         mech->addTag(cObject::RED);
-        mech->socialised->addEnemy(cObject::BLUE);
-        mech->socialised->addEnemy(cObject::DEAD, false);
+        mech->tarcom->addEnemy(cObject::BLUE);
+        mech->tarcom->addEnemy(cObject::DEAD, false);
 
         //ai->newState(cController::WAIT, (char*) NULL);
         //ai->newState(cController::TARGET, "Delta");
@@ -498,8 +498,8 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
         mech->nameable->name = "Lurking Bandit";
 
         mech->addTag(cObject::RED);
-        mech->socialised->addEnemy(cObject::BLUE);
-        mech->socialised->addEnemy(cObject::DEAD, false);
+        mech->tarcom->addEnemy(cObject::BLUE);
+        mech->tarcom->addEnemy(cObject::DEAD, false);
 
         //ai->newState(cController::ENGAGE, "Charly");
         //ai->newState(cController::ROUTE, navs);
@@ -773,8 +773,8 @@ void cOpenMission::initPentaSpaceport(cWorld* world, cPlanetmap* planetmap) {
         mech->name = "Mech/SpacePortGuard_i";
         mech->nameable->name = "Space-Bandit";
         mech->addTag(cObject::RED);
-        mech->socialised->addEnemy(cObject::BLUE);
-        mech->socialised->addEnemy(cObject::DEAD, false);
+        mech->tarcom->addEnemy(cObject::BLUE);
+        mech->tarcom->addEnemy(cObject::DEAD, false);
         world->spawnObject(mech);
         mech->mountWeapon((char*) "Center", new rWeaponMachinegun);
     }
@@ -790,8 +790,8 @@ void cOpenMission::battleField(cWorld* world) {
 
         mech->name = "Mech/Battlemech_i";
         mech->addTag(cObject::RED);
-        mech->socialised->addEnemy(cObject::BLUE);
-        mech->socialised->addEnemy(cObject::DEAD, false);
+        mech->tarcom->addEnemy(cObject::BLUE);
+        mech->tarcom->addEnemy(cObject::DEAD, false);
 
         world->spawnObject(mech);
 
@@ -810,8 +810,8 @@ void cOpenMission::battleField(cWorld* world) {
 
         mech->name = "Mech/Fieldmech_i";
         mech->addTag(cObject::BLUE);
-        mech->socialised->addEnemy(cObject::RED);
-        mech->socialised->addEnemy(cObject::DEAD, false);
+        mech->tarcom->addEnemy(cObject::RED);
+        mech->tarcom->addEnemy(cObject::DEAD, false);
 
         world->spawnObject(mech);
 
@@ -841,12 +841,12 @@ void cOpenMission::smallArmy(int wx, int wy, int wz, cWorld* world, const char* 
         mech->nameable->name = name;
         if (blue) {
             mech->addTag(cObject::BLUE);
-            mech->socialised->addEnemy(cObject::RED);
-            mech->socialised->addEnemy(cObject::DEAD, false);
+            mech->tarcom->addEnemy(cObject::RED);
+            mech->tarcom->addEnemy(cObject::DEAD, false);
         } else {
             mech->addTag(cObject::RED);
-            mech->socialised->addEnemy(cObject::BLUE);
-            mech->socialised->addEnemy(cObject::DEAD, false);
+            mech->tarcom->addEnemy(cObject::BLUE);
+            mech->tarcom->addEnemy(cObject::DEAD, false);
         }
         world->spawnObject(mech);
         if (wpn == 0) {
