@@ -60,6 +60,7 @@ public:
 
     float getSPF();
     unsigned int getDeltacycle();
+    unsigned int getFrame();
 
     void setFPS(float fps);
     void setDate(unsigned int year, unsigned int day);

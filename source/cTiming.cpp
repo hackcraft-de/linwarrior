@@ -35,6 +35,10 @@ unsigned int cTiming::getDeltacycle() {
     return mDeltacycle;
 }
 
+unsigned int cTiming::getFrame() {
+    return mFrame;
+}
+
 void cTiming::setFPS(float fps) {
     mFPS = fps;
     mSPF = 1.0f / fps;

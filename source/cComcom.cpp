@@ -80,8 +80,8 @@ rTarcom::rTarcom(cObject* obj) {
     quat_zero(ori);
     vector_zero(pos);
 
-    far = NULL;
-    near = NULL;
+    near = new std::list<cObject*>();
+    far = new std::list<cObject*>();
     enemies = NULL;
     selected = 0;
 
@@ -147,15 +147,37 @@ void rTarcom::animate(float spf) {
         switching = (switchnext || switchprev);
     }
 
+    unsigned long frame = cWorld::instance->getTiming()->getFrame();
+    unsigned long key = (((unsigned long)this)>>1) * 174763;
+    //cout << "RANGING KEY CODE IS " << key << " !!\n";
+    unsigned int m = 3;
     // Find all objects in far range.
-    //delete far;
-    //far = cWorld::instance->filterByRange(object, pos, 0, 100, -1, NULL);
+    //unsigned char key0 = (key) % m;
+    //if (key0 == framekey) {
+    if ((key % 23) == (frame % 23)) {
+        delete far;
+        far = cWorld::instance->filterByRange(object, pos, 0, 100, -1, NULL);
+        delete near;
+        near = cWorld::instance->filterByRange(object, pos, 0, 50, -1, far);
+        delete enemies;
+        enemies = cWorld::instance->filterByTags(object, &inc_enemies, false, -1, near);
+    }
+    /*
+    unsigned int n = m / 3;
+    unsigned char framekey = frame % m;
+    unsigned char key1 = (key + 1 * n) % m;
+    unsigned char key2 = (key + 2 * n) % m;
     // Find all objects in near range.
-    delete near;
-    near = cWorld::instance->filterByRange(object, pos, 0, 60, -1, NULL);
+    if (key1 == framekey) {
+        delete near;
+        near = cWorld::instance->filterByRange(object, pos, 0, 50, -1, far);
+    }
     // Find all objects belonging to any enemy party/role.
-    delete enemies;
-    enemies = cWorld::instance->filterByTags(object, &inc_enemies, false, -1, near);
+    if (key2 == framekey) {
+        delete enemies;
+        enemies = cWorld::instance->filterByTags(object, &inc_enemies, false, -1, near);
+    }
+    */
 }
 
 void rTarcom::drawHUD() {
@@ -199,7 +221,7 @@ void rTarcom::drawHUD() {
         }
         glEnd();
 
-        foreach(i, *near) {
+        foreach(i, *far) {
             glBegin(GL_POINTS);
             {
                 cObject* o = *i;
