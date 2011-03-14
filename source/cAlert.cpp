@@ -17,13 +17,15 @@ bool cAlert::sDrawzone = !true;
 cAlert::cAlert(float* center, float* range, int shapetype, std::string msgtype, std::string msgtext, OID receiver, std::set<OID>* include, std::set<OID>* exclude, bool positive, bool posedge, bool once, OID fusedelay) {
     vector_cpy(shape.center, center);
     vector_cpy(shape.range, range);
-    this->traceable->radius = 1 + fmax(fabs(shape.range[0]), fmax(fabs(shape.range[1]), fabs(shape.range[2])));
-    if (this->traceable->radius >= 25) {
+
+    this->radius = 1 + fmax(fabs(shape.range[0]), fmax(fabs(shape.range[1]), fabs(shape.range[2])));
+    if (this->radius >= 25) {
         // Make global "position".
-        vector_set(traceable->pos, float_NAN, float_NAN, float_NAN);
+        vector_set(pos, float_NAN, float_NAN, float_NAN);
     } else {
-        vector_cpy(traceable->pos, center);
+        vector_cpy(pos, center);
     }
+
     this->positive = positive;
     this->posedge = posedge;
     this->fusedelay = fusedelay;

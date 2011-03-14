@@ -316,12 +316,14 @@ cBuilding::cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
     
     damageable = new rDamageable;
 
-    quat_set(traceable->ori, 0, 0, 0, 1);
     buildingRooms[0] = 3 * rooms_x;
     buildingRooms[1] = 3 * rooms_y;
     buildingRooms[2] = 3 * rooms_z;
-    vector_set(traceable->pos, x + buildingRooms[0]*0.5f, y, z + buildingRooms[2]*0.5f);
-    this->traceable->radius = sqrtf(0.25f * buildingRooms[0] * buildingRooms[0] + 0.25f * buildingRooms[1] * buildingRooms[1] + 0.25f * buildingRooms[2] * buildingRooms[2]);
+
+    vector_set(this->pos, x + buildingRooms[0]*0.5f, y, z + buildingRooms[2]*0.5f);
+    quat_set(this->ori, 0, 0, 0, 1);
+    this->radius = sqrtf(0.25f * buildingRooms[0] * buildingRooms[0] + 0.25f * buildingRooms[1] * buildingRooms[1] + 0.25f * buildingRooms[2] * buildingRooms[2]);
+
     dirtyBase = true;
 }
 
@@ -349,11 +351,11 @@ float cBuilding::constrainParticle(float* worldpos, float radius, float* localpo
 
     {
         float ori_inv[4];
-        quat_cpy(ori_inv, traceable->ori);
+        quat_cpy(ori_inv, this->ori);
         quat_conj(ori_inv);
 
         vector_cpy(localpos_, worldpos);
-        vector_sub(localpos_, localpos_, traceable->pos);
+        vector_sub(localpos_, localpos_, this->pos);
         quat_apply(localpos_, ori_inv, localpos_);
     }
 
@@ -377,8 +379,8 @@ float cBuilding::constrainParticle(float* worldpos, float radius, float* localpo
     if (localpos != NULL) vector_cpy(localpos, localprj);
 
     {
-        quat_apply(worldpos, traceable->ori, localprj);
-        vector_add(worldpos, worldpos, traceable->pos);
+        quat_apply(worldpos, this->ori, localprj);
+        vector_add(worldpos, worldpos, this->pos);
     }
 
     return depth;
@@ -397,7 +399,7 @@ void cBuilding::transform() {
         dirtyBase = false;
         glPushMatrix();
         {
-            float* p = traceable->pos;
+            float* p = this->pos;
             float r[] = {0, 0, 0};
             float* w = buildingRooms;
             glTranslatef(p[0], p[1], p[2]);
@@ -414,7 +416,7 @@ void cBuilding::transform() {
 void cBuilding::drawSolid() {
     explosionObject.drawSolid();
 
-    float* p = traceable->pos;
+    float* p = this->pos;
     float r[] = {0, 0, 0};
     float* w = buildingRooms;
 
@@ -556,7 +558,7 @@ cScatterfield::cScatterfield(float x, float y, float z, float radius, float dens
         }
     }
 
-    vector_set(traceable->pos, x, y, z);
+    vector_set(this->pos, x, y, z);
 
     int amount = density * 4 * radius * M_PI;
     for (int i = 0; i < amount; i++) {
@@ -935,12 +937,13 @@ cTile::cTile(int x, int y, int z, int kind) {
     } // if sInstances == 1
 
     //    addRole(COLLIDEABLE); // !!
-    vector_set(traceable->pos, x + 4.5f, y, z + 4.5f);
+    vector_set(this->pos, x + 4.5f, y, z + 4.5f);
+
     tileKind = kind;
 }
 
 void cTile::drawSolid() {
-    float* p = traceable->pos;
+    float* p = this->pos;
     float r[] = {0, 0, 0};
 
     glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_TEXTURE_BIT);

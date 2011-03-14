@@ -19,6 +19,8 @@ Enhanced Immersion
 - Adjusted field of view
 - Added acceleration heaviness
 - Added steering heaviness
+Enhanced Usability
+- Camera mode can still be changed when wrecked
 Enhanced Internals
 - Lessened object-role interdependencies, more component like, next logical step
 - Role'ified Weapons, they are components now
@@ -26,8 +28,6 @@ Enhanced Internals
 - Glued role/attributes through bindings in objects
 - Refactoring is still going on
 - Cleaned up model scaling
-Enhanced Usability
-- Camera mode can still be changed when wrecked
 
 
 2010_12_31 r18

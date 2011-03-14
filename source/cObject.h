@@ -241,6 +241,12 @@ public: // Basic Object attributes for managing.
 
     /// Unique Object ID, simulation date:time:deltacycle of spawn.
     OID oid;
+    /// Position for clustering, targeting and placing.
+    vec3 pos;
+    /// Radius for clustering and visibility.
+    float radius;
+    /// Basic object orientation.
+    quat ori;
     /// Age in seconds since spawn, updated by world before animate() call.
     double seconds;
     /// Internal qualified name of the object.
@@ -249,7 +255,7 @@ public: // Basic Object attributes for managing.
 public: // FIXME: Predefined Roles, to be removed from cObject
 
     rNameable* nameable;
-    rTraceable* traceable;
+    //rTraceable* traceable;
     rDamageable* damageable;
     rControlled* controlled;
     rGrouping* grouping;
@@ -291,17 +297,19 @@ public:
 
     cObject() {
         oid = 0;
+        pos[0] = pos[1] = pos[2] = 0.0f;
+        ori[0] = ori[1] = ori[2] = 0.0f; ori[3] = 1.0f;
         seconds = 0;
         name = "";
         if (roleprotos.empty()) {
             registerRole(new rNameable, FIELDOFS(nameable), ROLEPTR(cObject::nameable));
-            registerRole(new rTraceable, FIELDOFS(traceable), ROLEPTR(cObject::traceable));
+            //registerRole(new rTraceable, FIELDOFS(traceable), ROLEPTR(cObject::traceable));
             registerRole(new rDamageable, FIELDOFS(damageable), ROLEPTR(cObject::damageable));
             registerRole(new rControlled, FIELDOFS(controlled), ROLEPTR(cObject::controlled));
             registerRole(new rGrouping, FIELDOFS(grouping), ROLEPTR(cObject::grouping));
         }
         nameable = new rNameable(this);
-        traceable = new rTraceable(this);
+        //traceable = new rTraceable(this);
         damageable = NULL;
         controlled = NULL;
         grouping = NULL;
@@ -311,7 +319,7 @@ public:
 
     cObject(cObject* original) {
         if (original->nameable) nameable = new rNameable(original->nameable);
-        if (original->traceable) traceable = new rTraceable(original->traceable);
+        //if (original->traceable) traceable = new rTraceable(original->traceable);
         if (original->damageable) damageable = new rDamageable(original->damageable);
         if (original->controlled) controlled = new rControlled(original->controlled);
         if (original->grouping) grouping = new rGrouping(original->grouping);
@@ -319,7 +327,7 @@ public:
 
     virtual ~cObject() {
         delete this->nameable;
-        delete this->traceable;
+        //delete this->traceable;
         delete this->damageable;
         delete this->controlled;
         delete this->grouping;

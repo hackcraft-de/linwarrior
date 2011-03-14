@@ -401,7 +401,7 @@ void cMain::drawFrame(int elapsed_msec) {
         }
 
         // Find objects in visible range.
-        float* origin = game.camera->traceable->pos;
+        float* origin = game.camera->pos;
         float maxrange = game.world->getViewdistance();
         float min[] = {origin[0] - maxrange, origin[2] - maxrange};
         float max[] = {origin[0] + maxrange, origin[2] + maxrange};

@@ -253,6 +253,7 @@ public:
     rForcom* forcom;
     rNavcom* navcom;
 
+    rTraceable* traceable;
     rCamera* camera;
     rMobile* mobile;
     rRigged* rigged;

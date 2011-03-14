@@ -148,8 +148,8 @@ void cWorld::clusterObjects() {
         mUncluster.clear();
         foreach(i, mObjects) {
             cObject* o = *i;
-            float px = o->traceable->pos[0];
-            float pz = o->traceable->pos[2];
+            float px = o->pos[0];
+            float pz = o->pos[2];
             if (!finitef(px) || !finitef(pz)) {
                 mUncluster.push_back(o);
             } else {
@@ -229,7 +229,7 @@ void cWorld::drawBack() {
 
 void cWorld::drawSolid(cObject* camera, std::list<cObject*>* objects) {
     //cout << "drawSolid()\n";
-    float* origin = camera->traceable->pos;
+    float* origin = camera->pos;
     if (objects == NULL) objects = &mObjects;
 
     float maxrange = mViewdistance;
@@ -237,9 +237,9 @@ void cWorld::drawSolid(cObject* camera, std::list<cObject*>* objects) {
 
     foreachNoInc(i, *objects) {
         cObject* object = *i++;
-        float x = object->traceable->pos[0] - origin[0];
-        float z = object->traceable->pos[2] - origin[2];
-        float d2 = x * x + z*z;
+        float x = object->pos[0] - origin[0];
+        float z = object->pos[2] - origin[2];
+        float d2 = x * x + z * z;
         if (d2 > maxrange2) continue;
         glPushMatrix();
         {
@@ -251,15 +251,15 @@ void cWorld::drawSolid(cObject* camera, std::list<cObject*>* objects) {
 
 void cWorld::drawEffect(cObject* camera, std::list<cObject*>* objects) {
     //cout << "drawEffect()\n";
-    float* origin = camera->traceable->pos;
+    float* origin = camera->pos;
     if (objects == NULL) objects = &mObjects;
 
     float maxrange2 = mViewdistance * mViewdistance;
 
     foreachNoInc(i, *objects) {
         cObject* object = *i++;
-        float x = object->traceable->pos[0] - origin[0];
-        float z = object->traceable->pos[2] - origin[2];
+        float x = object->pos[0] - origin[0];
+        float z = object->pos[2] - origin[2];
         float d2 = x * x + z*z;
         if (d2 > maxrange2) continue;
         glPushMatrix();
@@ -402,11 +402,11 @@ std::list<cObject*>* cWorld::filterByRange(cObject* ex, float* origin, float min
         if (object->oid == 0) continue;
         // Filter Condition
         float diff[3];
-        vector_sub(diff, origin, object->traceable->pos);
+        vector_sub(diff, origin, object->pos);
         float d2 = vector_dot(diff, diff);
         //float d = vector_distance(origin, object->mPos);
-        float r1 = fmax(0.0f, minrange - object->traceable->radius);
-        float r2 = maxrange + object->traceable->radius;
+        float r1 = fmax(0.0f, minrange - object->radius);
+        float r2 = maxrange + object->radius;
         if (d2 < r1 * r1 || d2 > r2 * r2) continue;
         amount--;
         result->push_back(object);
@@ -454,7 +454,7 @@ std::list<cObject*>* cWorld::filterByBeam(cObject* ex, float* pointa, float* poi
         if (object->oid == 0) continue;
         // Filter Condition
 
-        float* x0 = object->traceable->pos;
+        float* x0 = object->pos;
         float u[] = {x0[0] - x1[0], x0[1] - x1[1], x0[2] - x1[2]};
         float v[] = {x2[0] - x1[0], x2[1] - x1[1], x2[2] - x1[2]};
         float a = u[0] * v[0] + u[1] * v[1] + u[2] * v[2];
@@ -479,7 +479,7 @@ std::list<cObject*>* cWorld::filterByBeam(cObject* ex, float* pointa, float* poi
         };
 
         float d2 = dv[0] * dv[0] + dv[1] * dv[1] + dv[2] * dv[2];
-        float is = radius + object->traceable->radius;
+        float is = radius + object->radius;
 
         if (d2 > is * is) continue;
 

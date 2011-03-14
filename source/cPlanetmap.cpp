@@ -156,10 +156,11 @@ cPlanetmap::cPlanetmap() {
             sSizes.push_back(2.0f*sizes[i]);
         }
     }
-    traceable->radius = 10;
-    vector_set(traceable->pos, float_NAN, float_NAN, float_NAN);
-    name = "PLANETMAP";
 
+    this->radius = 10;
+    vector_set(this->pos, float_NAN, float_NAN, float_NAN);
+    
+    name = "PLANETMAP";
     tree = new cTree();
 }
 
@@ -1085,8 +1086,8 @@ void cPlanetmap::drawEffect() {
                         int type = (b*b+(a >> 1))&7;
 
                         tree->tree = cTree::getCompiledTree(1230+(b&6), type, 2+age);
-                        vector_set(tree->traceable->pos, x__, h-0.2, z__);
-                        tree->traceable->ori[1] = a + b;
+                        vector_set(tree->pos, x__, h-0.2, z__);
+                        tree->ori[1] = a + b;
                         tree->drawSolid();
                         tree->drawEffect();
                     }

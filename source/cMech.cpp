@@ -723,6 +723,7 @@ cMech::cMech(float* pos, float* rot) {
     rigged = new rRigged(this);
     damageable = new rDamageable(this);
     controlled = new rControlled(this);
+    traceable = new rTraceable(this);
     camera = new rCamera(this);
     mobile = new rMobile(this);
 
@@ -788,6 +789,9 @@ cMech::cMech(float* pos, float* rot) {
     traceable->cwm2 = 0.4f /*very bad cw*/ * traceable->radius * traceable->radius * M_PI /*m2*/;
     traceable->mass = 11000.0f; // TODO mass is qubic to size.
     traceable->mass_inv = 1.0f / traceable->mass;
+
+    vector_cpy(this->pos, traceable->pos);
+    this->radius = traceable->radius;
 
     explosion = new rWeaponExplosion(this);
     mountWeapon((char*) "CTorsor", explosion, false);
@@ -906,6 +910,9 @@ void cMech::fireWeapon(unsigned n) {
 
 
 void cMech::animate(float spf) {
+    vector_cpy(this->pos, traceable->pos);
+    this->radius = traceable->radius;
+
     // COMPUTERs
     
     {
@@ -1392,7 +1399,7 @@ float cMech::inMeeleRange() {
     if (target == NULL) return 0.0f;
     float a = 16;
     float b = 24;
-    float d = vector_distance(traceable->pos, target->traceable->pos);
+    float d = vector_distance(traceable->pos, target->pos);
     if (d < a) return 1.0f;
     if (d > b) return 0.0f;
     return (1.0f - (d - a) / (b - a));
@@ -1404,7 +1411,7 @@ float cMech::inWeaponRange() {
     if (target == NULL) return 0.0f;
     float a = 36 + 10;
     float b = 44 + 10;
-    float d = vector_distance(traceable->pos, target->traceable->pos);
+    float d = vector_distance(traceable->pos, target->pos);
     if (d < a) return 1.0f;
     if (d > b) return 0.0f;
     return (1.0f - (d - a) / (b - a));
@@ -1415,7 +1422,7 @@ float cMech::inTargetRange() {
     if (target == NULL) return 0.0f;
     float a = 56;
     float b = 124;
-    float d = vector_distance(traceable->pos, target->traceable->pos);
+    float d = vector_distance(traceable->pos, target->pos);
     if (d < a) return 1.0f;
     if (d > b) return 0.0f;
     return (1.0f - (d - a) / (b - a));
@@ -1432,7 +1439,7 @@ void cMech::do_moveTowards() {
     } else if (controlled->target != 0) {
         cObject* target = cWorld::instance->getObject(controlled->target);
         if (target != NULL) {
-            target_pos = target->traceable->pos;
+            target_pos = target->pos;
         } else {
             controlled->target = 0;
             return;
@@ -1462,7 +1469,7 @@ void cMech::do_moveNear() {
     } else if (controlled->target != 0) {
         cObject* target = cWorld::instance->getObject(controlled->target);
         if (target != NULL) {
-            target_pos = target->traceable->pos;
+            target_pos = target->pos;
         } else {
             controlled->target = 0;
             return;
@@ -1497,7 +1504,7 @@ void cMech::do_aimAt() {
     float* target_pos = NULL;
     if (controlled->target != 0) {
         cObject* target = cWorld::instance->getObject(controlled->target);
-        if (target != NULL) target_pos = target->traceable->pos;
+        if (target != NULL) target_pos = target->pos;
         else return;
     } else return;
 
@@ -1524,7 +1531,7 @@ void cMech::do_fireAt() {
     float* target_pos = NULL;
     if (controlled->target != 0) {
         cObject* target = cWorld::instance->getObject(controlled->target);
-        if (target != NULL) target_pos = target->traceable->pos;
+        if (target != NULL) target_pos = target->pos;
         else return;
     } else return;
 
