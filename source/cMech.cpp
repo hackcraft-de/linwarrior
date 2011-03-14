@@ -685,8 +685,8 @@ cMech::cMech(float* pos, float* rot) {
     sInstances++;
     if (sInstances == 1) {
         if (1) {
-            registerRole(new rMobile((cObject*)NULL), FIELDOFS(mobile), ROLEPTR(cMech::mobile));
-            registerRole(new rRigged((cObject*)NULL), FIELDOFS(rigged), ROLEPTR(cMech::rigged));
+            //registerRole(new rMobile((cObject*)NULL), FIELDOFS(mobile), ROLEPTR(cMech::mobile));
+            //registerRole(new rRigged((cObject*)NULL), FIELDOFS(rigged), ROLEPTR(cMech::rigged));
             //registerRole(new rComputerised((cObject*)NULL), FIELDOFS(computerised), ROLEPTR(cMech::computerised));
 
             cout << "Generating Camoflage..." << endl;
@@ -723,6 +723,7 @@ cMech::cMech(float* pos, float* rot) {
     rigged = new rRigged(this);
     damageable = new rDamageable(this);
     controlled = new rControlled(this);
+    nameable = new rNameable(this);
     traceable = new rTraceable(this);
     camera = new rCamera(this);
     mobile = new rMobile(this);
@@ -1069,6 +1070,28 @@ void cMech::animate(float spf) {
         rigged->transform();
     }
 
+    // NAMEABLE
+    {
+        // from Object
+        {
+            nameable->color[0] = hasTag(RED) ? 1.0f : 0.0f;
+            nameable->color[1] = hasTag(GREEN) ? 1.0f : 0.0f;
+            nameable->color[2] = hasTag(BLUE) ? 1.0f : 0.0f;
+            nameable->effect = !hasTag(HUMANPLAYER);
+        }
+        // from RIGGED
+        {
+            vector_cpy(nameable->pos0, rigged->pos);
+            quat_cpy(nameable->ori0, rigged->ori);
+            int eye = rigged->jointpoints[rRigged::EYE];
+            vector_cpy(nameable->pos1, rigged->joints[eye].v);
+            nameable->pos1[1] += 2.0f;
+            quat_cpy(nameable->ori1, rigged->joints[eye].q);
+        }
+
+        nameable->animate(spf);
+    }
+
     // CAMERA
     {
         // from RIGGED
@@ -1190,7 +1213,6 @@ void cMech::drawSolid() {
     {
         rigged->drawSolid();
     }
-
     {
         mobile->drawSolid();
     }
@@ -1206,7 +1228,6 @@ void cMech::drawEffect() {
     {
         rigged->drawEffect();
     }
-
     {
         mobile->drawEffect();
     }
@@ -1216,37 +1237,9 @@ void cMech::drawEffect() {
     {
         explosion->drawEffect();
     }
-    
-    // Draw name above head. move to nameable?
-    if (!hasTag(HUMANPLAYER) && nameable != NULL) {
-        glPushAttrib(GL_ALL_ATTRIB_BITS);
-        {
-            SGL::glUseProgram_fgplaintexture();
-            glPushMatrix();
-            {
-                int eye = rigged->jointpoints[rRigged::EYE];
-                glTranslatef(rigged->pos[0], rigged->pos[1], rigged->pos[2]);
-                SGL::glRotateq(rigged->ori);
-                glTranslatef(rigged->joints[eye].v[0], rigged->joints[eye].v[1], rigged->joints[eye].v[2]);
-                glTranslatef(0, +2.5, 0);
-                float s = 0.65;
-                glScalef(s, s, s);
-                float n[16];
-                SGL::glGetTransposeInverseRotationMatrix(n);
-                glMultMatrixf(n);
-                int l = nameable->name.length();
-                glTranslatef(-l * 0.5f, 0.0, 0);
-                if (hasTag(RED)) glColor4f(1, 0, 0, 0.99);
-                else if (hasTag(GREEN)) glColor4f(0, 1, 0, 0.99);
-                else if (hasTag(BLUE)) glColor4f(0, 0, 1, 0.99);
-                else glColor4f(1, 1, 0, 0.99);
-                glprintf(nameable->name.c_str());
-            }
-            glPopMatrix();
-        }
-        glPopAttrib();
+    {
+        nameable->drawEffect();
     }
-
 }
 
 void cMech::drawHUD() {

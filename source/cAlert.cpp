@@ -25,6 +25,8 @@ cAlert::cAlert(float* center, float* range, int shapetype, std::string msgtype, 
     } else {
         vector_cpy(pos, center);
     }
+    
+    nameable = new rNameable(this);
 
     this->positive = positive;
     this->posedge = posedge;
@@ -130,27 +132,11 @@ void cAlert::drawEffect() {
     glPushName((GLuint)(this->oid & 0xFFFF));
 
     if (nameable) {
-        glColor4f(0.99, 0.99, 0.2, 1);
-        glPushMatrix();
-        {
-            glPushAttrib(GL_ALL_ATTRIB_BITS);
-            {
-                glDisable(GL_LIGHTING);
-                glDisable(GL_FOG);
-                glDisable(GL_CULL_FACE);
-                float s = 0.85;
-                glTranslatef(center[0],center[1]+0.5f*s,center[2]);
-                glScalef(s, s, s);
-                float n[16];
-                SGL::glGetTransposeInverseRotationMatrix(n);
-                glMultMatrixf(n);
-                int l = nameable->name.length();
-                glTranslatef(-l * 0.5f, 0, 0);
-                glprintf(nameable->name.c_str());
-            }
-            glPopAttrib();
-        }
-        glPopMatrix();
+        vector_cpy(nameable->pos0, center);
+        nameable->color[0] = 0.99f;
+        nameable->color[1] = 0.99f;
+        nameable->color[2] = 0.20f;
+        nameable->drawEffect();
     }
     
     //if (!sDrawzone) return;

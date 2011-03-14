@@ -97,6 +97,18 @@ struct rRole {
  *  Encapsulates onscreen descriptive texts about an object.
  */
 struct rNameable : public rRole {
+    /// Base position for rendering. (hook i)
+    vec3 pos0;
+    /// Base orientation for rendering. (hook i)
+    quat ori0;
+    /// Extended position for rendering. (hook i)
+    vec3 pos1;
+    /// Extended orientation for rendering. (hook i)
+    quat ori1;
+    /// Color for rendering. (hook i)
+    vec4 color;
+    /// Enable effect rendering. (hook i)
+    bool effect;
     /// Name or title of object or the document.
     std::string name;
     /// String describing the object or the document.
@@ -110,6 +122,8 @@ struct rNameable : public rRole {
     rNameable(rNameable * original);
     /// Clone this.
     virtual rRole* clone();
+
+    virtual void drawEffect();
 };
 
 /**
@@ -255,7 +269,7 @@ public: // Basic Object attributes for managing.
 public: // FIXME: Predefined Roles, to be removed from cObject
 
     rNameable* nameable;
-    //rTraceable* traceable;
+    rTraceable* traceable;
     rDamageable* damageable;
     rControlled* controlled;
     rGrouping* grouping;
@@ -302,14 +316,14 @@ public:
         seconds = 0;
         name = "";
         if (roleprotos.empty()) {
-            registerRole(new rNameable, FIELDOFS(nameable), ROLEPTR(cObject::nameable));
+            //registerRole(new rNameable, FIELDOFS(nameable), ROLEPTR(cObject::nameable));
             //registerRole(new rTraceable, FIELDOFS(traceable), ROLEPTR(cObject::traceable));
-            registerRole(new rDamageable, FIELDOFS(damageable), ROLEPTR(cObject::damageable));
-            registerRole(new rControlled, FIELDOFS(controlled), ROLEPTR(cObject::controlled));
-            registerRole(new rGrouping, FIELDOFS(grouping), ROLEPTR(cObject::grouping));
+            //registerRole(new rDamageable, FIELDOFS(damageable), ROLEPTR(cObject::damageable));
+            //registerRole(new rControlled, FIELDOFS(controlled), ROLEPTR(cObject::controlled));
+            //registerRole(new rGrouping, FIELDOFS(grouping), ROLEPTR(cObject::grouping));
         }
-        nameable = new rNameable(this);
-        //traceable = new rTraceable(this);
+        nameable = NULL;
+        traceable = NULL;
         damageable = NULL;
         controlled = NULL;
         grouping = NULL;
