@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Run LinWarrior
+./dist/linwarrior -r 1280 -m 0 -l 1
+
