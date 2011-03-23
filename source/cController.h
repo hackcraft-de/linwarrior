@@ -48,7 +48,19 @@ public:
     cObject* controlledDevice;
     /// The command stack: n Values may form a command frame (command+arguments).
     std::vector<OID> commandStack;
-
+    /// Who disturbed me the last time - ignore now.
+    OID lastDisturbedBy;
+public: // Input hooks.
+    OID disturbedBy;
+    OID enemyNearby;
+public: // Output hooks.
+    OID targetAim;
+    //vec3 targetAim;
+    //bool targetAimActive;
+    //bool targetAimFire;
+    OID targetGoto;
+    //vec3 targetGoto;
+    //bool targetGotoActive;
 public:
     /// Initialises a en-/disabled controller for the given entity->
     cController(cObject* entity, bool enabled = true);

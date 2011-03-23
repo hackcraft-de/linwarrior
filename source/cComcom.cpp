@@ -84,6 +84,7 @@ rTarcom::rTarcom(cObject* obj) {
     far = new std::list<cObject*>();
     enemies = NULL;
     selected = 0;
+    nearbyEnemy = 0;
 
     switching = false;
     switchnext = false;
@@ -150,7 +151,7 @@ void rTarcom::animate(float spf) {
     unsigned long frame = cWorld::instance->getTiming()->getFrame();
     unsigned long key = (((unsigned long)this)>>1) * 174763;
     //cout << "RANGING KEY CODE IS " << key << " !!\n";
-    unsigned int m = 3;
+    //unsigned int m = 3;
     // Find all objects in far range.
     //unsigned char key0 = (key) % m;
     //if (key0 == framekey) {
@@ -158,9 +159,18 @@ void rTarcom::animate(float spf) {
         delete far;
         far = cWorld::instance->filterByRange(object, pos, 0, 100, -1, NULL);
         delete near;
-        near = cWorld::instance->filterByRange(object, pos, 0, 50, -1, far);
+        near = cWorld::instance->filterByRange(object, pos, 0, 55, -1, far);
         delete enemies;
         enemies = cWorld::instance->filterByTags(object, &inc_enemies, false, -1, near);
+        // Filter one nearby.
+        nearbyEnemy = 0;
+        for (std::list<cObject*>::iterator i=enemies->begin(); i != enemies->end(); i++) {
+            cObject* o = *i;
+            if (!o->anyTags(&exc_enemies)) {
+                nearbyEnemy = o->oid;
+                break;
+            }
+        }
     }
     /*
     unsigned int n = m / 3;

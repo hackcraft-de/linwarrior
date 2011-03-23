@@ -1,5 +1,0 @@
-#!/bin/sh
-
-# Run LinWarrior
-./dist/linwarrior -r 320x240 -m 0
-

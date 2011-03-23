@@ -67,10 +67,11 @@ void rWeaponExplosion::animate(float spf) {
     if (trigger) fire();
     trigger = false;
 
-    timeFiring -= spf;
+    if (timeFiring != 0.0f) timeFiring -= spf;
+    
     if (timeFiring < 0) {
-        timeFiring = 0.0f;
-    } else {
+        //timeFiring = 0.0f;
+    } else if (timeFiring > 0) {
         float* source = weaponPosef;
 
         cParticle* s = new cParticle();
@@ -96,6 +97,58 @@ void rWeaponExplosion::animate(float spf) {
 
         vector_scale(s->vel, nrm, 1);
         missileParticles.push_back(s);
+    }
+
+    // Fat smoke production.
+    if (timeFiring < 0.0f)
+    {
+        if (timeFiring < -1.0f * 60.0f) timeFiring = 0.0f;
+        
+        float* source = weaponPosef;
+
+        cParticle* s = new cParticle();
+        assert(s != NULL);
+        s->target = 0;
+        s->fuel = 1.4 + 0.1 * 0.01 * (rand()%100);
+        s->spawn = 0.0f;
+        s->timer = 0.0f;
+
+        s->pos[0] = source[12] + (100.0f - (rand()%200)) * 0.01;
+        s->pos[1] = source[13] + (100.0f - (rand()%200)) * 0.01;
+        s->pos[2] = source[14] + (100.0f - (rand()%200)) * 0.01;
+
+        float nrm[3];
+        float pos2[] = {0, 0, -1};
+
+        pos2[0] = 0.1f * (100 - (rand() % 200)) * 0.01;
+        pos2[1] = 1.2f + 0.1 * fabs((100 - (rand() % 200)) * 0.01);
+        pos2[2] = 0.1f * (100 - (rand() % 200)) * 0.01;
+
+        matrix_apply2(source, pos2);
+        vector_sub(nrm, pos2, s->pos);
+
+        vector_scale(s->vel, nrm, 1);
+        castoffParticles.push_back(s);
+    }
+
+    // Fat smoke movement.
+    foreachNoInc(i, castoffParticles) {
+        cParticle* s = *i++;
+        
+        const float alpha = 0.922f;
+        const float beta = 0.99f;
+        s->vel[0] *= alpha;
+        s->vel[1] *= beta;
+        s->vel[2] *= alpha;
+
+        const float speed = 5;
+        vector_muladd(s->pos, s->pos, s->vel, speed * spf);
+        s->fuel -= spf;
+        s->timer += spf;
+        if (s->fuel < 0) {
+            castoffParticles.remove(s);
+            delete s;
+        }
     }
 
     foreachNoInc(i, missileParticles) {
@@ -224,60 +277,61 @@ void rWeaponExplosion::drawSolid() {
 }
 
 void rWeaponExplosion::drawEffect() {
-    if (missileParticles.empty()) return;
+    if (missileParticles.empty() && castoffParticles.empty()) return;
 
-    if (0) {
-        glPushAttrib(GL_ALL_ATTRIB_BITS);
-        {
-            SGL::glUseProgram_fgaddtexture();
-            glBindTexture(GL_TEXTURE_2D, sTextures[0]);
-            /*
-            glTexEnvf(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
-            glEnable(GL_POINT_SPRITE);
-            glPointSize(90.0f);
-            */
+#if 0
+    // Experiment with hardware Point-Sprites
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    {
+        SGL::glUseProgram_fgaddtexture();
+        glBindTexture(GL_TEXTURE_2D, sTextures[0]);
+        /*
+        glTexEnvf(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
+        glEnable(GL_POINT_SPRITE);
+        glPointSize(90.0f);
+        */
 
-            //float quadratic[] =  { 0.0f, 0.0f, 0.01f };
-            //float quadratic[] =  { 1.0f, 1.0f, 100.0f };
-            float quadratic[] =  { 1.0f, 0.0f, 0.0f };
-            glPointParameterfvARB(GL_POINT_DISTANCE_ATTENUATION_ARB, quadratic);
-            float maxSize = 0.0f;
-            glGetFloatv(GL_POINT_SIZE_MAX_ARB, &maxSize);
-            glPointSize(maxSize);
-            std::cout << maxSize << std::endl;
-            glPointParameterfARB(GL_POINT_SIZE_MAX_ARB, maxSize);
-            glPointParameterfARB(GL_POINT_SIZE_MIN_ARB, 1.0f);
-            glPointParameterfARB(GL_POINT_FADE_THRESHOLD_SIZE_ARB, 50.0f);
-            glTexEnvf(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE);
-            glEnable(GL_POINT_SPRITE_ARB );
+        //float quadratic[] =  { 0.0f, 0.0f, 0.01f };
+        //float quadratic[] =  { 1.0f, 1.0f, 100.0f };
+        float quadratic[] =  { 1.0f, 0.0f, 0.0f };
+        glPointParameterfvARB(GL_POINT_DISTANCE_ATTENUATION_ARB, quadratic);
+        float maxSize = 0.0f;
+        glGetFloatv(GL_POINT_SIZE_MAX_ARB, &maxSize);
+        glPointSize(maxSize);
+        std::cout << maxSize << std::endl;
+        glPointParameterfARB(GL_POINT_SIZE_MAX_ARB, maxSize);
+        glPointParameterfARB(GL_POINT_SIZE_MIN_ARB, 1.0f);
+        glPointParameterfARB(GL_POINT_FADE_THRESHOLD_SIZE_ARB, 50.0f);
+        glTexEnvf(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE);
+        glEnable(GL_POINT_SPRITE_ARB );
 
-            /*
-            glEnable(GL_POINT_SPRITE_NV);
-            glTexEnvf(GL_POINT_SPRITE_NV,GL_COORD_REPLACE_NV,GL_TRUE);
-            //glPointParameterf(GL_POINT_SPRITE_R_MODE_NV,GL_ZERO);
-            glPointSize(100.0);
-            */
+        /*
+        glEnable(GL_POINT_SPRITE_NV);
+        glTexEnvf(GL_POINT_SPRITE_NV,GL_COORD_REPLACE_NV,GL_TRUE);
+        //glPointParameterf(GL_POINT_SPRITE_R_MODE_NV,GL_ZERO);
+        glPointSize(100.0);
+        */
 
-            //glPointSize(9.0f);
+        //glPointSize(9.0f);
 
-            foreachNoInc(i, missileParticles) {
-                cParticle* s = *i++;
+        foreachNoInc(i, missileParticles) {
+            cParticle* s = *i++;
 
-                glBegin(GL_POINTS);
-                foreachNoInc(j, s->trail) {
-                    cParticle* smoke = *j++;
-                    float m = (0.0f + 0.7 * smoke->fuel);
-                    float a = 1.0f;//fmin(1.0f, smoke->fuel);
-                    glColor4f(a*m, a*m * 0.8, a*m * 0.6, 0.9);
-                    glVertex3f(smoke->pos[0], smoke->pos[1], smoke->pos[2]);
-                }
-                glEnd();
+            glBegin(GL_POINTS);
+            foreachNoInc(j, s->trail) {
+                cParticle* smoke = *j++;
+                float m = (0.0f + 0.7 * smoke->fuel);
+                float a = 1.0f;//fmin(1.0f, smoke->fuel);
+                glColor4f(a*m, a*m * 0.8, a*m * 0.6, 0.9);
+                glVertex3f(smoke->pos[0], smoke->pos[1], smoke->pos[2]);
             }
+            glEnd();
         }
-        glPopAttrib();
-
-        return;
     }
+    glPopAttrib();
+
+    return;
+#endif
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
@@ -309,6 +363,26 @@ void rWeaponExplosion::drawEffect() {
                 }
                 glPopMatrix();
             }
+        }
+
+        SGL::glUseProgram_fgplaintexture();
+        glDisable(GL_CULL_FACE);
+
+        foreachNoInc(i, castoffParticles) {
+            cParticle* smoke = *i++;
+            glPushMatrix();
+            {
+                glTranslatef(smoke->pos[0], smoke->pos[1], smoke->pos[2]);
+                glMultMatrixf(n);
+                float total = smoke->fuel + smoke->timer;
+                float alpha = smoke->fuel / total;
+                float beta = 1.0f - alpha;
+                float grey = fmax(alpha, beta) * 0.7;
+                glColor4f(grey,grey,grey,0.5 + cos(0.5 * M_PI * alpha));
+                float size = 0.5f + 1.5f * (smoke->timer / total);
+                cPrimitives::glDisk(5 + WEAPONDETAIL, size);
+            }
+            glPopMatrix();
         }
 
     }

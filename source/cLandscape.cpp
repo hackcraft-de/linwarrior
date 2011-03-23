@@ -32,8 +32,8 @@ void cLandscape::land_rockies(float x, float y, float z, float* color, unsigned 
     int i = ((int) (h * 16.0f)) & 7;
 
     color[RED] = utahcolors[i][0];
-    color[BLU] = utahcolors[i][1];
-    color[GRN] = utahcolors[i][2];
+    color[GRN] = utahcolors[i][1];
+    color[BLU] = utahcolors[i][2];
     color[BUMP] = h;
 }
 
@@ -57,8 +57,42 @@ void cLandscape::land_dunes(float x, float y, float z, float* color, unsigned ch
     // Limit to about [0,1] range.
     float h = (fmin(o1, -o1_)*0.98f + 0.96f);
 
-    float c1[] = {1.00f, 0.96f, 0.79f};
-    float c0[] = {0.86f, 0.78f, 0.59f};
+    const float f = 1.0f / 255.0f;
+    float c1[] = { f*0xfc, f*0xd4, f*0x96 };
+    float c0[] = { f*0x6b, f*0x4f, f*0x28 };
+//    float c1[] = {1.00f, 0.96f, 0.79f};
+//    float c0[] = {0.86f, 0.78f, 0.59f};
+    float alpha = h;
+    float alpha_ = 1.0f - h;
+
+    color[RED] = c0[0] * alpha_ + c1[0] * alpha;
+    color[GRN] = c0[1] * alpha_ + c1[1] * alpha;
+    color[BLU] = c0[2] * alpha_ + c1[2] * alpha;
+    color[BUMP] = h;
+}
+
+
+void cLandscape::land_dunes_red(float x, float y, float z, float* color, unsigned char seed) {
+    // Prime periods => large smallest common multiple.
+    const float p1 = 1.0f / 101.0f;
+
+    float x_ = 90 + x * p1; // + 5*sin(z * PI_OVER_180*30);
+    float y_ = 10 + 2.0f * y * p1;
+    float z_ = 10 + 2.0f * z * p1;
+
+    float o1 = cNoise::simplex3(x_, y_, z_, seed + 0);
+
+    const float a = p1 * 0.5f;
+    const float b = a * 0.5f;
+    const float c = b * 0.5f;
+
+    float o1_ = cNoise::simplex3(a + x_, c + y_ + c, b + z_, seed + 1);
+
+    // Limit to about [0,1] range.
+    float h = (fmin(o1, -o1_)*0.98f + 0.96f);
+    const float f = 1.0f / 255.0f;
+    float c1[] = { f*0xe3, f*0x7f, f*0x2a };
+    float c0[] = { f*0xd0, f*0x59, f*0x1f };
     float alpha = h;
     float alpha_ = 1.0f - h;
 
@@ -127,9 +161,14 @@ void cLandscape::land_grass(float x, float y, float z, float* color, unsigned ch
     const float p3 = 1.0f / 17.0f;
     float o3 = cNoise::simplex3(21 + x*p3, 41 + y*p3, 79 + z*p3, seed + 2);
 
-    float top[] = {0.59f, 0.80f, 0.58f};
-    float bottom[] = {0.85f, 0.93f, 0.58f};
-    float splat[] = {0.93f, 0.95f, 0.61f};
+    //float top[] = {0.59f, 0.80f, 0.58f};
+    //float bottom[] = {0.85f, 0.93f, 0.58f};
+    //float splat[] = {0.93f, 0.95f, 0.61f};
+    const float f = 1.0f / 256.0f;
+    float top[] = {f*0x94, f*0x9b, f*0x57};
+    float bottom[] = {f*0x20, f*0x39, f*0x1b};
+    //float splat[] = {f*0x75, f*0x8b, f*0x67};
+    float splat[] = {f*0x8d, f*0x98, f*0x49};
     float top_alpha = h;
     float bottom_alpha = 1.0f - h;
     float splat_alpha = (exp(o2 * 0.5 + 0.5))*0.1 + (exp(o3 * 0.5 + 0.5))*0.05;

@@ -176,6 +176,8 @@ struct rDamageable : public rRole {
     // float splash[MAX_PARTS];
     // float heat[MAX_PARTS];
     // float sinks[MAX_PARTS];
+    /// Some object that dealt some damage to the object. (hook o) [(oid, damage)]?
+    OID disturber;
 
     /// Constructor.
     rDamageable(cObject* obj = NULL);
@@ -196,8 +198,6 @@ struct rDamageable : public rRole {
 struct rControlled : public rRole {
     /// Aim target.
     OID target;
-    /// Who disturbed me? Replace with a map of (OID, intensity)-pairs?
-    OID disturber;
     /// Movement target, set Not-a-Number for non-validity.
     vec3 destination;
     /// Human, AI/Remote Pad-Control over the Object.

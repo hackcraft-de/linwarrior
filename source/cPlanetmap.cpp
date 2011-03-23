@@ -106,14 +106,16 @@ cPlanetmap::cPlanetmap() {
                     //cSolid::camo_desert((i+i_), (j+j_)*f,(k+k_)*f, color, seed);
                     cSolid::camo_snow((i+i_)*f, (j+j_)*f,(k+k_)*f, color, seed);
 
+                    const float a = 0.475f;
+                    const float b = 1.0f - a;
                     if (l == 0) {
-                        *texel++ = 255 * color[0] * amt;
-                        *texel++ = 255 * color[1] * amt;
-                        *texel++ = 255 * color[2] * amt;
+                        *texel++ = 255 * (a+b*color[0]) * amt;
+                        *texel++ = 255 * (a+b*color[1]) * amt;
+                        *texel++ = 255 * (a+b*color[2]) * amt;
                     } else {
-                        *texel++ += 255 * color[0] * amt;
-                        *texel++ += 255 * color[1] * amt;
-                        *texel++ += 255 * color[2] * amt;
+                        *texel++ += 255 * (a+b*color[0]) * amt;
+                        *texel++ += 255 * (a+b*color[1]) * amt;
+                        *texel++ += 255 * (a+b*color[2]) * amt;
                     }
                 }
             }
@@ -215,15 +217,25 @@ void cPlanetmap::getHeight(float x, float z, float* const color) {
             cLandscape::land_lava(x, y, z, grass);
             h0 = 10 * grass[cLandscape::BUMP];
         }
+#elif 0
+        // Duneset Red
+        if (o1 > 0.005f) {
+            cLandscape::land_dunes_red(x, y, z, snow);
+            h1 = 1 * snow[cLandscape::BUMP];
+        }
+        if (o1 < 0.995f) {
+            cLandscape::land_rockies(x*0.5f, y*0.5f, z*0.5f, grass);
+            h0 = 25 * grass[cLandscape::BUMP];
+        }
 #elif 1
         // Duneset
         if (o1 > 0.005f) {
             cLandscape::land_dunes(x, y, z, snow);
-            h1 = 1 * snow[cLandscape::BUMP];
+            h1 = 5.0f * snow[cLandscape::BUMP];
         }
         if (o1 < 0.995f) {
             cLandscape::land_dunes(x*0.5f, y*0.5f, z*0.5f, grass);
-            h0 = 15 * grass[cLandscape::BUMP];
+            h0 = 18.0f * grass[cLandscape::BUMP];
         }
 #else
         // Grassset
@@ -232,7 +244,7 @@ void cPlanetmap::getHeight(float x, float z, float* const color) {
             h1 = 1 * snow[cLandscape::BUMP];
         }
         if (o1 < 0.995f) {
-            cLandscape::land_grass(x, y, z, grass);
+            cLandscape::land_snow(x, y, z, grass);
             h0 = 40 * grass[cLandscape::BUMP];
         }
 #endif

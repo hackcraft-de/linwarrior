@@ -77,6 +77,8 @@ public:
     std::set<OID> inc_enemies;
     /// Set lists Tags of explicitly excluded enemies (like dead ones).
     std::set<OID> exc_enemies;
+    /// Just any near enemy. (hook o)
+    OID nearbyEnemy;
 public:
     /// Constructor.
     rTarcom(cObject* obj = NULL);

@@ -19,12 +19,17 @@ struct cLandscape {
         RED, GRN, BLU, BUMP
     };
 
-    static inline void land_rockies(float x, float y, float z, float* color, unsigned char seed = 131);
+    static void land_rockies(float x, float y, float z, float* color, unsigned char seed = 131);
 
     /**
      * ~[0,1] normalized desert sand dune landscape.
      */
     static void land_dunes(float x, float y, float z, float* color, unsigned char seed = 131);
+
+    /**
+     * ~[0,1] normalized desert sand dune landscape.
+     */
+    static void land_dunes_red(float x, float y, float z, float* color, unsigned char seed = 131);
 
     /**
      * ~[0,1] normalized lavatic landscape.

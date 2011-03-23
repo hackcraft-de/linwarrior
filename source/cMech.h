@@ -298,7 +298,6 @@ public:
 public:
     // Queries
     virtual OID enemyNearby();
-    virtual OID disturbedBy();
 
     // Fuzzy Predicates [0,1]
     virtual float inDestinationRange();

@@ -22,6 +22,9 @@ using std::string;
 cController::cController(cObject* entity, bool enabled) {
     controlledDevice = entity;
     controllerEnabled = enabled;
+    lastDisturbedBy = 0;
+    disturbedBy = 0;
+    enemyNearby = 0;
 }
 
 cController::~cController() {
@@ -134,8 +137,13 @@ void cController::waitEvent() {
 
     if (patrol) {
         OID enemy = 0;
-        if (enemy == 0) enemy = controlledDevice->disturbedBy();
-        if (enemy == 0) enemy = controlledDevice->enemyNearby();
+        if (enemy == 0 && lastDisturbedBy != disturbedBy) {
+            // Ignore next time - probably destroyed.
+            // FIXME: Find better solution to prevent jumpy/locked behavior.
+            lastDisturbedBy = disturbedBy;
+            enemy = disturbedBy;
+        }
+        if (enemy == 0) enemy = enemyNearby;
         if (enemy) {
             {
                 OID self = controlledDevice->oid;
@@ -230,7 +238,7 @@ void cController::followLeader() {
     }
 
     if (patrol) {
-        OID nearby = controlledDevice->enemyNearby();
+        OID nearby = enemyNearby;//controlledDevice->enemyNearby();
         if (nearby) {
             pushAttackEnemy(nearby);
             return;
@@ -280,7 +288,7 @@ void cController::gotoDestination() {
     }
 
     if (patrol) {
-        OID nearby = controlledDevice->enemyNearby();
+        OID nearby = enemyNearby;//controlledDevice->enemyNearby();
         if (nearby) {
             pushAttackEnemy(nearby);
             return;

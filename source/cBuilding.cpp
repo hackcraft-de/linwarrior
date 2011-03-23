@@ -12,7 +12,7 @@
 using std::cout;
 using std::endl;
 
-#define BUILDINGDETAIL -1
+#define BUILDINGDETAIL 0
 
 static void getVStrings(float x, float y, float* color4f, unsigned char seed = 131) {
     float x_ = fmod(x,1.0f);

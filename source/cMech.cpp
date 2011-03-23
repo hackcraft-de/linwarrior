@@ -792,6 +792,7 @@ cMech::cMech(float* pos, float* rot) {
     traceable->mass_inv = 1.0f / traceable->mass;
 
     vector_cpy(this->pos, traceable->pos);
+    quat_cpy(this->ori, traceable->ori);
     this->radius = traceable->radius;
 
     explosion = new rWeaponExplosion(this);
@@ -912,6 +913,7 @@ void cMech::fireWeapon(unsigned n) {
 
 void cMech::animate(float spf) {
     vector_cpy(this->pos, traceable->pos);
+    quat_cpy(this->ori, traceable->ori);
     this->radius = traceable->radius;
 
     // COMPUTERs
@@ -997,6 +999,14 @@ void cMech::animate(float spf) {
         // from Damageable
         {
             controlled->active = damageable->alife;
+            controlled->controller->disturbedBy = damageable->disturber;
+            //controlled->controller->disturbedBy = this->disturbedBy();
+        }
+
+        // FIXME: from anywhere
+        {
+            //controlled->controller->enemyNearby = this->enemyNearby();
+            controlled->controller->enemyNearby = this->tarcom->nearbyEnemy;
         }
 
         controlled->animate(spf);
@@ -1077,7 +1087,7 @@ void cMech::animate(float spf) {
             nameable->color[0] = hasTag(RED) ? 1.0f : 0.0f;
             nameable->color[1] = hasTag(GREEN) ? 1.0f : 0.0f;
             nameable->color[2] = hasTag(BLUE) ? 1.0f : 0.0f;
-            nameable->effect = !hasTag(HUMANPLAYER);
+            nameable->effect = !hasTag(HUMANPLAYER) && !hasTag(DEAD);
         }
         // from RIGGED
         {
@@ -1162,6 +1172,10 @@ void cMech::animate(float spf) {
         explosion->animate(spf);
         explosion->transform();
     }
+    
+    vector_cpy(this->pos, traceable->pos);
+    quat_cpy(this->ori, traceable->ori);
+    this->radius = traceable->radius;
 }
 
 void cMech::transform() {
@@ -1313,7 +1327,6 @@ void cMech::damageByParticle(float* localpos, float damage, cObject* enactor) {
     else if (localpos[0] < -0.5 && damageable->hp[rDamageable::LEFT] > 0) hitzone = rDamageable::LEFT;
     else if (localpos[0] > +0.5 && damageable->hp[rDamageable::RIGHT] > 0) hitzone = rDamageable::RIGHT;
 
-    if (enactor != NULL) controlled->disturber = enactor->oid;
     if (!damageable->damage(hitzone, damage, enactor)) {
         cout << "cMech::damageByParticle(): DEAD\n";
         //explosion->fire();
@@ -1327,22 +1340,22 @@ void cMech::damageByParticle(float* localpos, float damage, cObject* enactor) {
     if (damageable->hp[body] <= 0) addTag(DEAD);
 }
 
-// move to rCollision or rDamageable?
+// move to rCollision.
 float cMech::constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor) {
     float localpos_[3];
     { // Transform to local.
         quat ori_inv;
-        quat_cpy(ori_inv, traceable->ori);
+        quat_cpy(ori_inv, this->ori);
         quat_conj(ori_inv);
 
         vector_cpy(localpos_, worldpos);
-        vector_sub(localpos_, localpos_, traceable->pos);
+        vector_sub(localpos_, localpos_, this->pos);
         quat_apply(localpos_, ori_inv, localpos_);
     }
 
     float base[3] = {0, -0.0 - radius, 0};
-    float radius_ = traceable->radius + radius;
-    float height = traceable->radius * 2.5 + 2 * radius;
+    float radius_ = this->radius + radius;
+    float height = this->radius * 2.5 + 2 * radius;
     float localprj[3] = { 0, 0, 0 };
 
     float depth = 0;
@@ -1354,8 +1367,8 @@ float cMech::constrainParticle(float* worldpos, float radius, float* localpos, c
     if (localpos != NULL) vector_cpy(localpos, localprj);
 
     { // Transform to global.
-        quat_apply(worldpos, traceable->ori, localprj);
-        vector_add(worldpos, worldpos, traceable->pos);
+        quat_apply(worldpos, this->ori, localprj);
+        vector_add(worldpos, worldpos, this->pos);
     }
 
     return depth;
@@ -1370,12 +1383,6 @@ OID cMech::enemyNearby() {
         }
     }
     return 0;
-}
-
-OID cMech::disturbedBy() {
-    OID disturb = controlled->disturber;
-    controlled->disturber = 0;
-    return disturb;
 }
 
 float cMech::inDestinationRange() {

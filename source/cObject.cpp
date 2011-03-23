@@ -256,6 +256,7 @@ rDamageable::rDamageable(cObject* obj) {
     object = obj;
     alife = true;
     loopi(MAX_PARTS) hp[i] = 100.0f;
+    disturber = 0;
 }
 
 rDamageable::rDamageable(rDamageable * original) {
@@ -266,6 +267,7 @@ rDamageable::rDamageable(rDamageable * original) {
         object = original->object;
         alife = original->alife;
         loopi(MAX_PARTS) hp[i] = original->hp[i];
+        disturber = original->disturber;
     }
 }
 
@@ -278,6 +280,9 @@ bool rDamageable::damage(int hitzone, float damage, cObject* enactor) {
     if (hp[hitzone] < 0.0f) hp[hitzone] = 0.0f;
     if (hp[BODY] <= 0.0f) {
         alife = false;
+    }
+    if (enactor != NULL && damage > 0.001f) {
+        disturber = enactor->oid;
     }
     return alife;
 }
@@ -351,7 +356,7 @@ void rDamageable::drawHUD() {
 #include "cPad.h"
 #include "cController.h"
 
-rControlled::rControlled(cObject* obj) : target(0), disturber(0), pad(new cPad()), controller(new cController(obj, true)) {
+rControlled::rControlled(cObject* obj) : target(0), pad(new cPad()), controller(new cController(obj, true)) {
     role = "CONTROLLED";
     object = obj;
     vector_set(destination, float_NAN, float_NAN, float_NAN);
@@ -364,7 +369,6 @@ rControlled::rControlled(rControlled * original) {
     } else {
         object = original->object;
         target = original->target;
-        disturber = original->disturber;
         vector_cpy(destination, original->destination);
         pad = original->pad;
         controller = original->controller;
