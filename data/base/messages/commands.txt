@@ -1,0 +1,12 @@
+dismiss = dismiss current command.
+when_done = when done:
+strict_follow_me = follow me stricktly.
+follow_me = follow me cautious.
+protect_target = protect my target.
+goto_target = go to my target.
+wait = guard your position.
+afirmative = afirmative.
+negative = negative.
+yes = yes.
+no = no.
+

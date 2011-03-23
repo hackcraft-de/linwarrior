@@ -1,0 +1,14 @@
+powerup = Powering up engine. Booting operating system. System is running. Weapons online. Sensors online. All systems nominal.
+weaponcrt = Weapon: critical.
+weapondes = Weapon: destroyed.
+weaponrep = Weapon: repaired.
+jetcrt = Jumpjet: critical.
+jetdes = Jumpjet: destroyed.
+jetrep = Jumpjet: repaired.
+sensorscrt = Sensors: critical.
+sensorsdes = Sensors: destroyed.
+sensorsrep = Sensors: repaired.
+legscrt = Legs: critical.
+legsdes = Legs: destroyed.
+legsrep = Legs: repaired.
+
