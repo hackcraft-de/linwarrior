@@ -615,20 +615,20 @@ static void getBasicRoad(float x, float y, float z, float* color, unsigned char 
     float walk4fv[4];
     cSurface::stone_plates(x, y, z, walk4fv, seed);
 
-    unsigned char pattern = 0x66;
-    int bitshift = (int) (y * 7.999999f);
+    unsigned short pattern = 0x6666;
+    int bitshift = (int) (y * 7.999999f * 2.0f);
     bool bit = (pattern >> bitshift) & 1;
 
     if (x >  0.495f && x < 0.505f && bit) {
         color[0] = color[0] + 0.35;
         color[1] = color[1] + 0.35;
-        color[2] = color[2] + 0.1;
+        color[2] = color[2] + 0.35;
     }
 
     if ((x > 0.25 && x < 0.26) || (x > (1.0f-0.26f) && x < (1.0f-0.25f))) {
         color[0] = color[0] + 0.35;
         color[1] = color[1] + 0.35;
-        color[2] = color[2] + 0.35;
+        color[2] = color[2] + 0.1;
     }
 
     // sidewalk
@@ -644,16 +644,149 @@ static void getBasicRoad(float x, float y, float z, float* color, unsigned char 
     }
 }
 
+static void getStoplineMask(float x, float y, float z, float* color, unsigned char seed = 131) {
+    float mark = 0.0f;
+    float a = 0.00f;
+    float b = a + 0.04f;
+    float u = 0.28f;
+    float v = 0.49f;
+    if (y < b && y >= a) {
+        if (x > (1.00f - v) && x < (1.00f - u)) {
+            mark = 1.0f;
+        }
+    } else if (y > (1.00f - b) && y <= (1.00f - a)) {
+        if (x < v && x > u) {
+            mark = 1.0f;
+        }
+    }
+    color[0] = 1.0f;
+    color[1] = 1.0f;
+    color[2] = 1.0f;
+    color[3] = 0.0f;//mark;
+}
+
+static void getZebraMask(float x, float y, float z, float* color, unsigned char seed = 131) {
+    float mark = 0.0f;
+    float a = 0.10f;
+    float b = a + 0.1f;
+    float u = 0.27f;
+    float v = 1.0f - u;
+    if ((y < b && y > a) || (y > (1.00f - b) && y < (1.00f - a))) {
+        if (x < v && x > u) {
+            mark = 1.0f;
+        }
+    }
+    {
+        unsigned short pattern = 0x6;
+        int bitshift = (int) fmod(x * 52.0f, 3.0f);
+        bool bit = (pattern >> bitshift) & 1;
+        mark = bit ? mark : 0.0f;
+    }
+    color[0] = 1.0f;
+    color[1] = 1.0f;
+    color[2] = 1.0f;
+    color[3] = mark;
+}
+
 static void getBasicCrossRoad(float x, float y, float z, float* color, unsigned char seed = 131) {
     float ns[4];
     float ew[4];
     getBasicRoad(x,y,z, ns, seed + 0);
     getBasicRoad(y,x,z, ew, seed + 1);
+
+    {
+        float ns_stop[4];
+        float ew_stop[4];
+        getStoplineMask(x,y,z, ns_stop, seed + 0);
+        getStoplineMask(y,1.0f-x,z, ew_stop, seed + 1);
+
+        float a = ns_stop[3] * 0.6f;
+        float b = 1.0f - a;
+        ns[0] = ns_stop[0] * a + b * ns[0];
+        ns[1] = ns_stop[1] * a + b * ns[1];
+        ns[2] = ns_stop[2] * a + b * ns[2];
+        //ns[3] = ns_stop[3] * a + b * ns[3];
+
+        a = ew_stop[3] * 0.6f;
+        b = 1.0f - a;
+        ew[0] = ew_stop[0] * a + b * ew[0];
+        ew[1] = ew_stop[1] * a + b * ew[1];
+        ew[2] = ew_stop[2] * a + b * ew[2];
+    }
+
+    {
+        float ns_zeb[4];
+        float ew_zeb[4];
+        getZebraMask(x,y,z, ns_zeb, seed + 0);
+        getZebraMask(y,1.0f-x,z, ew_zeb, seed + 1);
+
+        float a = ns_zeb[3] * 0.6f;
+        float b = 1.0f - a;
+        ns[0] = ns_zeb[0] * a + b * ns[0];
+        ns[1] = ns_zeb[1] * a + b * ns[1];
+        ns[2] = ns_zeb[2] * a + b * ns[2];
+
+        a = ew_zeb[3] * 0.6f;
+        b = 1.0f - a;
+        ew[0] = ew_zeb[0] * a + b * ew[0];
+        ew[1] = ew_zeb[1] * a + b * ew[1];
+        ew[2] = ew_zeb[2] * a + b * ew[2];
+    }
+
     float alpha = (fabs(0.5f - fmod(x,1)) < fabs(0.5f - fmod(y,1))) ? 1.0f : 0.0f;
+    //alpha = 0.8f;
     color[0] = alpha * ns[0] + (1.0f - alpha) * ew[0];
     color[1] = alpha * ns[1] + (1.0f - alpha) * ew[1];
     color[2] = alpha * ns[2] + (1.0f - alpha) * ew[2];
     color[3] = alpha * ns[3] + (1.0f - alpha) * ew[3];
+}
+
+static void getBasicTSRoad(float x, float y, float z, float* color, unsigned char seed = 131) {
+    float news[4];
+    float ew[4];
+    getBasicCrossRoad(y,x,z, news, seed + 0);
+    getBasicRoad(y,x,z, ew, seed + 1);
+    float alpha = ((fmod(y,1) < fmod(x,1)) && (fmod(y,1) < 1.0f-fmod(x,1))) ? 1.0f : 0.0f;
+    color[0] = alpha * news[0] + (1.0f - alpha) * ew[0];
+    color[1] = alpha * news[1] + (1.0f - alpha) * ew[1];
+    color[2] = alpha * news[2] + (1.0f - alpha) * ew[2];
+    color[3] = alpha * news[3] + (1.0f - alpha) * ew[3];
+}
+
+static void getBasicTNRoad(float x, float y, float z, float* color, unsigned char seed = 131) {
+    float news[4];
+    float ew[4];
+    getBasicCrossRoad(y,x,z, news, seed + 0);
+    getBasicRoad(y,x,z, ew, seed + 1);
+    float alpha = ((fmod(y,1) > fmod(x,1)) && (fmod(y,1) > 1.0f-fmod(x,1))) ? 1.0f : 0.0f;
+    color[0] = alpha * news[0] + (1.0f - alpha) * ew[0];
+    color[1] = alpha * news[1] + (1.0f - alpha) * ew[1];
+    color[2] = alpha * news[2] + (1.0f - alpha) * ew[2];
+    color[3] = alpha * news[3] + (1.0f - alpha) * ew[3];
+}
+
+static void getBasicTERoad(float x, float y, float z, float* color, unsigned char seed = 131) {
+    float news[4];
+    float ew[4];
+    getBasicCrossRoad(y,x,z, news, seed + 0);
+    getBasicRoad(x,1.0f-y,z, ew, seed + 1);
+    float alpha = ((fmod(x,1) > fmod(y,1)) && (fmod(x,1) > 1.0f-fmod(y,1))) ? 1.0f : 0.0f;
+    color[0] = alpha * news[0] + (1.0f - alpha) * ew[0];
+    color[1] = alpha * news[1] + (1.0f - alpha) * ew[1];
+    color[2] = alpha * news[2] + (1.0f - alpha) * ew[2];
+    color[3] = alpha * news[3] + (1.0f - alpha) * ew[3];
+}
+
+static void getBasicTWRoad(float x, float y, float z, float* color, unsigned char seed = 131) {
+    float news[4];
+    float ew[4];
+    getBasicCrossRoad(y,x,z, news, seed + 0);
+    getBasicRoad(x,1.0f-y,z, ew, seed + 1);
+    float alpha = ((fmod(x,1) < fmod(y,1)) && (fmod(x,1) < 1.0f-fmod(y,1))) ? 1.0f : 0.0f;
+    color[0] = alpha * news[0] + (1.0f - alpha) * ew[0];
+    color[1] = alpha * news[1] + (1.0f - alpha) * ew[1];
+    color[2] = alpha * news[2] + (1.0f - alpha) * ew[2];
+    color[3] = alpha * news[3] + (1.0f - alpha) * ew[3];
 }
 
 static void getBasicNERoad(float x, float y, float z, float* color, unsigned char seed = 131) {
@@ -711,7 +844,7 @@ cTile::cTile(int x, int y, int z, int kind) {
     sInstances++;
     if (sInstances == 1) {
         cout << "Generating Roads..." << endl;
-        std::string basepath = std::string("data/base/textures/");
+        std::string basepath = std::string("data/base/roads/");
         bool save = false;
 
         unsigned int texname;
@@ -743,6 +876,114 @@ cTile::cTile(int x, int y, int z, int kind) {
             }
             delete texels;
             sTextures[KIND_ROAD_NEWS] = texname;
+        }
+        // TN-Road
+        {
+            int w = w_;
+            int h = w;
+            int bpp = 3;
+            unsigned char* texels = new unsigned char[((unsigned long)w)*h*bpp];
+            unsigned char* p = texels;
+            loopj(h) {
+                loopi(w) {
+                    float color[16];
+                    getBasicTNRoad(1*(float)i/(float)w, 1*(float)j/(float)h, 0, color);
+                    *p++ = color[2] * 255;
+                    *p++ = color[1] * 255;
+                    *p++ = color[0] * 255;
+                }
+            }
+            //texname = SGL::glBindTextureMipmap2D(0, true, true, true, true, w, h, bpp, texels);
+            texname = SGL::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
+            std::string fname = basepath + std::string("roadTN.tga");
+            if (save) {
+                if (saveTGA(fname.c_str(), w, h, bpp, texels)) {
+                    cout << "Could not save image: " << fname << endl;
+                }
+            }
+            delete texels;
+            sTextures[KIND_ROAD_TN] = texname;
+        }
+        // TS-Road
+        {
+            int w = w_;
+            int h = w;
+            int bpp = 3;
+            unsigned char* texels = new unsigned char[((unsigned long)w)*h*bpp];
+            unsigned char* p = texels;
+            loopj(h) {
+                loopi(w) {
+                    float color[16];
+                    getBasicTSRoad(1*(float)i/(float)w, 1*(float)j/(float)h, 0, color);
+                    *p++ = color[2] * 255;
+                    *p++ = color[1] * 255;
+                    *p++ = color[0] * 255;
+                }
+            }
+            //texname = SGL::glBindTextureMipmap2D(0, true, true, true, true, w, h, bpp, texels);
+            texname = SGL::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
+            std::string fname = basepath + std::string("roadTS.tga");
+            if (save) {
+                if (saveTGA(fname.c_str(), w, h, bpp, texels)) {
+                    cout << "Could not save image: " << fname << endl;
+                }
+            }
+            delete texels;
+            sTextures[KIND_ROAD_TS] = texname;
+        }
+        // TE-Road
+        {
+            int w = w_;
+            int h = w;
+            int bpp = 3;
+            unsigned char* texels = new unsigned char[((unsigned long)w)*h*bpp];
+            unsigned char* p = texels;
+            loopj(h) {
+                loopi(w) {
+                    float color[16];
+                    getBasicTERoad(1*(float)i/(float)w, 1*(float)j/(float)h, 0, color);
+                    *p++ = color[2] * 255;
+                    *p++ = color[1] * 255;
+                    *p++ = color[0] * 255;
+                }
+            }
+            //texname = SGL::glBindTextureMipmap2D(0, true, true, true, true, w, h, bpp, texels);
+            texname = SGL::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
+            std::string fname = basepath + std::string("roadTE.tga");
+            if (save) {
+                if (saveTGA(fname.c_str(), w, h, bpp, texels)) {
+                    cout << "Could not save image: " << fname << endl;
+                }
+            }
+            delete texels;
+            sTextures[KIND_ROAD_TE] = texname;
+        }
+        // TW-Road
+        {
+            int w = w_;
+            int h = w;
+            int bpp = 3;
+            unsigned char* texels = new unsigned char[((unsigned long)w)*h*bpp];
+            unsigned char* p = texels;
+            loopj(h) {
+                loopi(w) {
+                    float color[16];
+                    getBasicTWRoad(1*(float)i/(float)w, 1*(float)j/(float)h, 0, color);
+                    *p++ = color[2] * 255;
+                    *p++ = color[1] * 255;
+                    *p++ = color[0] * 255;
+                }
+            }
+            //texname = SGL::glBindTextureMipmap2D(0, true, true, true, true, w, h, bpp, texels);
+            texname = SGL::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
+            std::string fname = basepath + std::string("roadTW.tga");
+            if (save) {
+                if (saveTGA(fname.c_str(), w, h, bpp, texels)) {
+                    cout << "Could not save image: " << fname << endl;
+                }
+            }
+            delete texels;
+            sTextures[KIND_ROAD_TW] = texname;
         }
         // NS road.
         {

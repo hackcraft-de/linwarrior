@@ -18,7 +18,7 @@ using std::endl;
 #include "psi3d/noise.h"
 #include "psi3d/snippetsgl.h"
 
-#define BKGDETAIL 1
+#define BKGDETAIL 0
 
 #define DOME_XRES 2*6
 #define DOME_YRES 7

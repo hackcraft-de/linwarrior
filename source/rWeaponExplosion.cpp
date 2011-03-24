@@ -102,7 +102,7 @@ void rWeaponExplosion::animate(float spf) {
     // Fat smoke production.
     if (timeFiring < 0.0f)
     {
-        if (timeFiring < -1.0f * 60.0f) timeFiring = 0.0f;
+        if (timeFiring < -4.0f * 60.0f) timeFiring = 0.0f;
         
         float* source = weaponPosef;
 
