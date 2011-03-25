@@ -359,7 +359,7 @@ void rWeaponExplosion::drawEffect() {
                     //float size = 0.1 + 0.3 * pow(1.0 + smoke->timer, 3.5);
                     //float size = 5.0f / (1.0f + 1.0f * smoke->fuel);
                     float size = 3.0f + 5.0f / (1.0f + 9.0f * smoke->fuel);
-                    cPrimitives::glDisk(5 + WEAPONDETAIL, size);
+                    cPrimitives::glXYCenteredTextureSquare(size);
                 }
                 glPopMatrix();
             }
@@ -367,6 +367,7 @@ void rWeaponExplosion::drawEffect() {
 
         SGL::glUseProgram_fgplaintexture();
         glDisable(GL_CULL_FACE);
+        //glEnable(GL_ALPHA_TEST);
 
         foreachNoInc(i, castoffParticles) {
             cParticle* smoke = *i++;
@@ -380,7 +381,7 @@ void rWeaponExplosion::drawEffect() {
                 float grey = fmax(alpha, beta) * 0.7;
                 glColor4f(grey,grey,grey,0.5 + cos(0.5 * M_PI * alpha));
                 float size = 0.5f + 1.5f * (smoke->timer / total);
-                cPrimitives::glDisk(5 + WEAPONDETAIL, size);
+                cPrimitives::glXYCenteredTextureSquare(size);
             }
             glPopMatrix();
         }
