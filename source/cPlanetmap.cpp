@@ -227,7 +227,7 @@ void cPlanetmap::getHeight(float x, float z, float* const color) {
             cLandscape::land_rockies(x*0.5f, y*0.5f, z*0.5f, grass);
             h0 = 25 * grass[cLandscape::BUMP];
         }
-#elif 1
+#elif 0
         // Duneset
         if (o1 > 0.005f) {
             cLandscape::land_dunes(x, y, z, snow);
@@ -244,7 +244,8 @@ void cPlanetmap::getHeight(float x, float z, float* const color) {
             h1 = 1 * snow[cLandscape::BUMP];
         }
         if (o1 < 0.995f) {
-            cLandscape::land_snow(x, y, z, grass);
+            cLandscape::land_grass(x, y, z, grass);
+            //cLandscape::land_snow(x, y, z, grass);
             h0 = 40 * grass[cLandscape::BUMP];
         }
 #endif
@@ -954,6 +955,11 @@ void cPlanetmap::drawEffect() {
     matrix_transpose(m);
     matrix_apply2(m, p);
 
+    // Setup FOV for culling to be a forward cone set back a bit.
+    vec3 fwd = { m[4*2+0], m[4*2+1], m[4*2+2] };
+    float back = 16;
+    vec3 bk = { back*fwd[0], back*fwd[1], back*fwd[2] };
+
     // Construct Billboarding Matrix.
     float n[16];
     SGL::glGetTransposeInverseRotationMatrix(n);
@@ -1008,6 +1014,15 @@ void cPlanetmap::drawEffect() {
                 float dz = (-p[2]-z_-0.5f*step);
                 float dist2 = dx*dx + dz*dz;
 
+                // Check Cone-Frustum
+                float dist = sqrt(dist2)+0.000001f;
+                vec3 relative = { dx + bk[0], 0, dz + bk[2] };
+                float cone = vector_dot(fwd, relative);
+                if (cone < 0.46 * dist) {
+                    j += step*zlook;
+                    continue;
+                }
+
                 const float maxz = s * 1.27f;
                 // opacity: near = 1, >far = 0
                 float opacity = fmax(0.0f, (2.0f / (1.0f + (1.0f/maxz*maxz) * dist2)) - 1.0f);
@@ -1020,12 +1035,14 @@ void cPlanetmap::drawEffect() {
                 unsigned char b = (char) z_;
                 unsigned char key = cNoise::permutation2d(perms, a,b);
 
+                const float b2f = 1.0f / 256.0f;
+
                 float plantscale = 1.0f;
-                float plantdensity = (2.00f * key) / 256.0f;
+                float plantdensity = (1.5f*10.00f * key) * b2f;
                 int visibleplants = plantdensity * opacity;
 
                 key = cNoise::LFSR16(key);
-                float treedensity = (1.51f * key) / 256.0f;
+                float treedensity = (1.5f*2.00f * key) * b2f;
                 float visibletrees = treedensity;
                 
                 //cout << "opacity " << opacity << "  density " << density << endl;
