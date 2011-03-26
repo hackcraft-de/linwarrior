@@ -22,8 +22,8 @@ using std::endl;
 
 #define MECHDETAIL -1
 
-#include "psi3d/instfont.h"
-DEFINE_glprintf
+//#include "psi3d/instfont.h"
+//DEFINE_glprintf
 
 #define EXPERIMENT true
 
@@ -1403,18 +1403,12 @@ void cMech::damageByParticle(float* localpos, float damage, cObject* enactor) {
     if (damageable->hp[body] <= 0) addTag(DEAD);
 }
 
-
-// call rCollision.
 float cMech::constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor) {
     float maxdepth = 0.0f;
     {
-        vec3 worldpos_;
-        vec3 localpos_;
-        float depth = collider->constrainParticle(worldpos_, radius, localpos_, enactor);
+        float depth = collider->constrainParticle(worldpos, radius, localpos, enactor);
         if (depth > maxdepth) {
             maxdepth = depth;
-            vector_cpy(worldpos, worldpos_);
-            vector_cpy(localpos, localpos_);
         }
     }
     return maxdepth;

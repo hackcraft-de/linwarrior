@@ -1016,7 +1016,7 @@ void cPlanetmap::drawEffect() {
 
                 // Check Cone-Frustum
                 float dist = sqrt(dist2)+0.000001f;
-                vec3 relative = { dx + bk[0], 0, dz + bk[2] };
+                vec3 relative = { dx + bk[0], 0.0f, dz + bk[2] };
                 float cone = vector_dot(fwd, relative);
                 if (cone < 0.46 * dist) {
                     j += step*zlook;
