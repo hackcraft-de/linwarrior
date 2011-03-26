@@ -1,3 +1,5 @@
+- Wingmen shall maintain minimum distance to each other (collision avoidance).
+
 - Take slope into account for Planetmap erosion and material within second pass.
 
 - Calculate Bounding-Box/Cylinder for rRigged meshes.

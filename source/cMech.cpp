@@ -684,6 +684,7 @@ rCollider::rCollider(cObject * obj) {
     quat_zero(ori);
     vector_zero(pos);
     radius = 0.5f;
+    ratio = 2.5f;
 }
 
 float rCollider::constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor) {
@@ -700,7 +701,7 @@ float rCollider::constrainParticle(float* worldpos, float radius, float* localpo
 
     float base[3] = {0, -0.0 - radius, 0};
     float radius_ = this->radius + radius;
-    float height = this->radius * 2.5 + 2 * radius;
+    float height = this->radius * ratio + 2 * radius;
     float localprj[3] = { 0, 0, 0 };
 
     float depth = 0;

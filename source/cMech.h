@@ -225,7 +225,10 @@ struct rMobile : public rRole {
 struct rCollider : public rRole {
     quat ori;
     vec3 pos;
+    /// Radius for cylinder or sphere.
     float radius;
+    /// Ratio of radius to height (height = ratio * radius).
+    float ratio;
 
     /// Constructor
     rCollider(cObject * obj);

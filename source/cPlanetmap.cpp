@@ -926,8 +926,125 @@ void cPlanetmap::drawSolid() {
 }
 #endif
 
+static inline void drawStar() {
+    glBegin(GL_QUADS);
+    {
+        // _
+        glTexCoord2i(1, 0);
+        glVertex3f(+0.5f, 0.0f, -0.0f);
+        glTexCoord2i(0, 0);
+        glVertex3f(-0.5f, 0.0f, -0.0f);
+        glTexCoord2i(0, 1);
+        glVertex3f(-0.5f, +1.0f, -0.0f);
+        glTexCoord2i(1, 1);
+        glVertex3f(+0.5f, +1.0f, -0.0f);
+        // /
+        glTexCoord2i(1, 0);
+        glVertex3f(+0.25f, 0.0f, +0.43f);
+        glTexCoord2i(0, 0);
+        glVertex3f(-0.25f, 0.0f, -0.43f);
+        glTexCoord2i(0, 1);
+        glVertex3f(-0.25f, +1.0f, -0.43f);
+        glTexCoord2i(1, 1);
+        glVertex3f(+0.25f, +1.0f, +0.43f);
+        // / inverted
+        glTexCoord2i(1, 0);
+        glVertex3f(+0.25f, 0.0f, -0.43f);
+        glTexCoord2i(0, 0);
+        glVertex3f(-0.25f, 0.0f, +0.43f);
+        glTexCoord2i(0, 1);
+        glVertex3f(-0.25f, +1.0f, +0.43f);
+        glTexCoord2i(1, 1);
+        glVertex3f(+0.25f, +1.0f, -0.43f);
+    }
+    glEnd();
+}
+
+static inline void drawBrush() {
+    const float f = 0.20f;
+    const float s0 = +0.0000f*f;
+    const float c0 = +1.0000f*f;
+    const float s1 = +0.8660f*f;
+    const float c1 = -0.5000f*f;
+    const float s2 = -0.8660f*f;
+    const float c2 = -0.5000f*f;
+    glBegin(GL_QUADS);
+    {
+        // _
+        glTexCoord2i(1, 0);
+        glVertex3f(+0.5f+s0, 0.0f, -0.0f+c0);
+        glTexCoord2i(0, 0);
+        glVertex3f(-0.5f+s0, 0.0f, -0.0f+c0);
+        glTexCoord2i(0, 1);
+        glVertex3f(-0.5f-s0, +1.0f, -0.0f-c0);
+        glTexCoord2i(1, 1);
+        glVertex3f(+0.5f-s0, +1.0f, -0.0f-c0);
+        // /
+        glTexCoord2i(1, 0);
+        glVertex3f(+0.25f+s1, 0.0f, +0.43f+c1);
+        glTexCoord2i(0, 0);
+        glVertex3f(-0.25f+s1, 0.0f, -0.43f+c1);
+        glTexCoord2i(0, 1);
+        glVertex3f(-0.25f-s1, +1.0f, -0.43f-c1);
+        glTexCoord2i(1, 1);
+        glVertex3f(+0.25f-s1, +1.0f, +0.43f-c1);
+        // / inverted
+        glTexCoord2i(1, 0);
+        glVertex3f(+0.25f+s2, 0.0f, -0.43f+c2);
+        glTexCoord2i(0, 0);
+        glVertex3f(-0.25f+s2, 0.0f, +0.43f+c2);
+        glTexCoord2i(0, 1);
+        glVertex3f(-0.25f-s2, +1.0f, +0.43f-c2);
+        glTexCoord2i(1, 1);
+        glVertex3f(+0.25f-s2, +1.0f, -0.43f-c2);
+    }
+    glEnd();
+}
+
+static inline void drawSharp() {
+    const float f = 0.10f;
+    const float s0 = +0.0000f*f;
+    const float c0 = +1.0000f*f;
+    const float s1 = +0.8660f*f;
+    const float c1 = -0.5000f*f;
+    const float s2 = -0.8660f*f;
+    const float c2 = -0.5000f*f;
+    glBegin(GL_QUADS);
+    {
+        // _
+        glTexCoord2i(1, 0);
+        glVertex3f(+0.5f+s0, 0.0f, -0.0f+c0);
+        glTexCoord2i(0, 0);
+        glVertex3f(-0.5f+s0, 0.0f, -0.0f+c0);
+        glTexCoord2i(0, 1);
+        glVertex3f(-0.5f+s0, +1.0f, -0.0f+c0);
+        glTexCoord2i(1, 1);
+        glVertex3f(+0.5f+s0, +1.0f, -0.0f+c0);
+        // /
+        glTexCoord2i(1, 0);
+        glVertex3f(+0.25f+s1, 0.0f, +0.43f+c1);
+        glTexCoord2i(0, 0);
+        glVertex3f(-0.25f+s1, 0.0f, -0.43f+c1);
+        glTexCoord2i(0, 1);
+        glVertex3f(-0.25f+s1, +1.0f, -0.43f+c1);
+        glTexCoord2i(1, 1);
+        glVertex3f(+0.25f+s1, +1.0f, +0.43f+c1);
+        // / inverted
+        glTexCoord2i(1, 0);
+        glVertex3f(+0.25f+s2, 0.0f, -0.43f+c2);
+        glTexCoord2i(0, 0);
+        glVertex3f(-0.25f+s2, 0.0f, +0.43f+c2);
+        glTexCoord2i(0, 1);
+        glVertex3f(-0.25f+s2, +1.0f, +0.43f+c2);
+        glTexCoord2i(1, 1);
+        glVertex3f(+0.25f+s2, +1.0f, -0.43f+c2);
+    }
+    glEnd();
+}
 
 void cPlanetmap::drawEffect() {
+    const float totaldensity = 1.2f;
+
     // Pseudorandom Permutation.
     static unsigned char perms[3*256];
     static bool init = true;
@@ -1038,11 +1155,11 @@ void cPlanetmap::drawEffect() {
                 const float b2f = 1.0f / 256.0f;
 
                 float plantscale = 1.0f;
-                float plantdensity = (1.3f*10.00f * key) * b2f;
+                float plantdensity = (totaldensity*10.00f * key) * b2f;
                 int visibleplants = plantdensity * opacity;
 
                 key = cNoise::LFSR16(key);
-                float treedensity = (1.3f*2.00f * key) * b2f;
+                float treedensity = (totaldensity*2.00f * key) * b2f;
                 float visibletrees = treedensity;
                 
                 //cout << "opacity " << opacity << "  density " << density << endl;
@@ -1075,7 +1192,7 @@ void cPlanetmap::drawEffect() {
                         unsigned char tex = (rot >> 4) & 7;
                         unsigned char size = rot;
                         glBindTexture(GL_TEXTURE_2D, sTextures[tex + 1]);
-
+#if 0
                         glTranslatef(x__, h-0.2, z__);
                         glMultMatrixf(n);
                         //glRotatef(rot*0.351563f, 0, 1, 0);
@@ -1086,6 +1203,13 @@ void cPlanetmap::drawEffect() {
                         cPrimitives::glXCenteredTextureSquare();
                         //glRotatef(90, 0, 1, 0);
                         //glXCenteredTextureSquare(sTextures[tex + 1]);
+#else
+                        float sizef = size * 0.003906f;
+                        float s = plantscale * sSizes[tex] * (0.35f + 0.65f * sizef + 0.005f * plantdensity);
+                        glTranslatef(x__, h-0.2, z__);
+                        glScalef(1.2f*s,0.7f*s,1.2f*s);
+                        drawBrush();
+#endif
                     }
                     glPopMatrix();
                 } // loopi visibleplants
