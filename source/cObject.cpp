@@ -281,7 +281,7 @@ bool rDamageable::damage(int hitzone, float damage, cObject* enactor) {
     if (hp[BODY] <= 0.0f) {
         alife = false;
     }
-    if (enactor != NULL && damage > 0.001f) {
+    if (enactor != NULL && damage > 0.0001f) {
         disturber = enactor->oid;
     }
     return alife;

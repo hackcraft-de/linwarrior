@@ -85,6 +85,7 @@ struct rRole {
         return new rRole(this);
     }
 
+    virtual float constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor) { return 0.0f; };
     virtual void message(cMessage* message) {};
     virtual void animate(float spf) {};
     virtual void transform() {};

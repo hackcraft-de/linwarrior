@@ -677,6 +677,52 @@ void rMobile::drawEffect() {
 // -------------------------------------------------------------------
 
 
+rCollider::rCollider(cObject * obj) {
+    object = obj;
+    role = "COLLIDER";
+
+    quat_zero(ori);
+    vector_zero(pos);
+    radius = 0.5f;
+}
+
+float rCollider::constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor) {
+    float localpos_[3];
+    { // Transform to local.
+        quat ori_inv;
+        quat_cpy(ori_inv, this->ori);
+        quat_conj(ori_inv);
+
+        vector_cpy(localpos_, worldpos);
+        vector_sub(localpos_, localpos_, this->pos);
+        quat_apply(localpos_, ori_inv, localpos_);
+    }
+
+    float base[3] = {0, -0.0 - radius, 0};
+    float radius_ = this->radius + radius;
+    float height = this->radius * 2.5 + 2 * radius;
+    float localprj[3] = { 0, 0, 0 };
+
+    float depth = 0;
+    depth = cParticle::constraintParticleByCylinder(localpos_, base, radius_, height, localprj);
+    //depth = cParticle::constraintParticleByCone(localpos_, base, radius_, height, localprj);
+
+    if (depth <= 0) return 0;
+
+    if (localpos != NULL) vector_cpy(localpos, localprj);
+
+    { // Transform to global.
+        quat_apply(worldpos, this->ori, localprj);
+        vector_add(worldpos, worldpos, this->pos);
+    }
+
+    return depth;
+}
+
+
+// -------------------------------------------------------------------
+
+
 int cMech::sInstances = 0;
 std::map<int, long> cMech::sTextures;
 
@@ -720,6 +766,7 @@ cMech::cMech(float* pos, float* rot) {
         }
     }
 
+    collider = new rCollider(this);
     rigged = new rRigged(this);
     damageable = new rDamageable(this);
     controlled = new rControlled(this);
@@ -794,6 +841,10 @@ cMech::cMech(float* pos, float* rot) {
     vector_cpy(this->pos, traceable->pos);
     quat_cpy(this->ori, traceable->ori);
     this->radius = traceable->radius;
+
+    vector_cpy(collider->pos, this->pos);
+    quat_cpy(collider->ori, this->ori);
+    collider->radius = this->radius;
 
     explosion = new rWeaponExplosion(this);
     mountWeapon((char*) "CTorsor", explosion, false);
@@ -915,6 +966,18 @@ void cMech::animate(float spf) {
     vector_cpy(this->pos, traceable->pos);
     quat_cpy(this->ori, traceable->ori);
     this->radius = traceable->radius;
+
+    // COLLIDER
+    {
+        // from SELF:
+        {
+            vector_cpy(collider->pos, this->pos);
+            quat_cpy(collider->ori, this->ori);
+            collider->radius = this->radius;
+        }
+
+        collider->animate(spf);
+    }
 
     // COMPUTERs
     
@@ -1340,38 +1403,21 @@ void cMech::damageByParticle(float* localpos, float damage, cObject* enactor) {
     if (damageable->hp[body] <= 0) addTag(DEAD);
 }
 
-// move to rCollision.
+
+// call rCollision.
 float cMech::constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor) {
-    float localpos_[3];
-    { // Transform to local.
-        quat ori_inv;
-        quat_cpy(ori_inv, this->ori);
-        quat_conj(ori_inv);
-
-        vector_cpy(localpos_, worldpos);
-        vector_sub(localpos_, localpos_, this->pos);
-        quat_apply(localpos_, ori_inv, localpos_);
+    float maxdepth = 0.0f;
+    {
+        vec3 worldpos_;
+        vec3 localpos_;
+        float depth = collider->constrainParticle(worldpos_, radius, localpos_, enactor);
+        if (depth > maxdepth) {
+            maxdepth = depth;
+            vector_cpy(worldpos, worldpos_);
+            vector_cpy(localpos, localpos_);
+        }
     }
-
-    float base[3] = {0, -0.0 - radius, 0};
-    float radius_ = this->radius + radius;
-    float height = this->radius * 2.5 + 2 * radius;
-    float localprj[3] = { 0, 0, 0 };
-
-    float depth = 0;
-    depth = cParticle::constraintParticleByCylinder(localpos_, base, radius_, height, localprj);
-    //depth = cParticle::constraintParticleByCone(localpos_, base, radius_, height, localprj);
-
-    if (depth <= 0) return 0;
-
-    if (localpos != NULL) vector_cpy(localpos, localprj);
-
-    { // Transform to global.
-        quat_apply(worldpos, this->ori, localprj);
-        vector_add(worldpos, worldpos, this->pos);
-    }
-
-    return depth;
+    return maxdepth;
 }
 
 OID cMech::enemyNearby() {

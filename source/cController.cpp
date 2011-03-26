@@ -142,8 +142,14 @@ void cController::waitEvent() {
             // FIXME: Find better solution to prevent jumpy/locked behavior.
             lastDisturbedBy = disturbedBy;
             enemy = disturbedBy;
+            cout << "DISTURBER !!!!!!!!!!!!!\n";
         }
-        if (enemy == 0) enemy = enemyNearby;
+        if (enemy == 0) {
+            enemy = enemyNearby;
+            if (enemy != 0) {
+                cout << "INTRUDER !!!!!!!!!!!!!\n";
+            }
+        }
         if (enemy) {
             {
                 OID self = controlledDevice->oid;
@@ -206,7 +212,7 @@ void cController::attackEnemy() {
         controlledDevice->do_aimFor(NULL);
         pop();
         return;
-    } else if (controlledDevice->inTargetRange() < 0.01) {
+    } else if (controlledDevice->inTargetRange() < 0.001f) {
         // Target is out of targeting range.
         controlledDevice->do_aimFor(NULL);
         pop();

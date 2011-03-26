@@ -15,6 +15,7 @@ Enhanced Models
 Enhanced Landscape Rendering
 - Added crater-modification
 - Added Sprite based particle Trees
+- Added Tree-clusters frustum culling for speedup and quality
 Enhanced Immersion
 - Adjusted field of view
 - Added acceleration heaviness

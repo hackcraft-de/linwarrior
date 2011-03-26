@@ -1,12 +1,24 @@
-- Simple Object-Placement Edit-Mode
+- Take slope into account for Planetmap erosion and material within second pass.
 
-- Identify Target
+- Calculate Bounding-Box/Cylinder for rRigged meshes.
+
+- Collision zone shall be determined by mesh's boundary size.
+
+- Global lightsource-position shall be animated according to sun/moon.
+
+- Render Debug-Object-Information when Paused/Debug-Mode.
+
+- Extend Pause/Debug-Mode to Simple Object-Placement Edit-Mode.
+
+- Select target ahead (button).
+
+- Selected target should be identified (button/automatically-timed).
 
 - Wingmen Orders
 
 - Reload/Refill/Repair Zones.
 
-- OGG or FLAC loader?
+- OGG or FLAC loader instead of flat WAV?
 
 - Footstep sound
 
@@ -18,18 +30,24 @@
 
 - Radar LOS and Disturbances?
 
-- Waypoints and pathfinding.
+- Waypoints and pathfinding? (works fine so far without)
 
 - City-generator.
 
-- Weapon-Engage and -Disengage time.
+- Weapon-Engage and -Disengage time. (necessary?)
 
 - Colored particles indicating damage inflicted (chipping off).
 
-- Decide on static object format(s), any at all?
+- Decide on static object format(s). (same as rigged meshes? special ones?)
 
-- Mission File Loading
+- Mission File Loading.
 
 - AI shall support allied Objects (attack their targets/attackers, learn their enemies, follow allies on demand).
 
 - AI allies should pop follow command when leader is wrecked.
+
+- Someday with shaders: Shadowmapping for global sun/moon lightsource.
+
+- Someday with shaders: Environment-Ambient-lighting according to the dome.
+
+- Maybe someday: Outsource Tools and generating from Simulator?

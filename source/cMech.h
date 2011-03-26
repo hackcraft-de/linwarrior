@@ -222,6 +222,20 @@ struct rMobile : public rRole {
 };
 
 
+struct rCollider : public rRole {
+    quat ori;
+    vec3 pos;
+    float radius;
+
+    /// Constructor
+    rCollider(cObject * obj);
+    /// Destructor
+    ~rCollider() { }
+
+    virtual float constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor);
+};
+
+
 /**
  * Models Mechlike Objects.
  * 
@@ -257,6 +271,7 @@ public:
     rCamera* camera;
     rMobile* mobile;
     rRigged* rigged;
+    rCollider* collider;
 
     // WEAPON: EXPLOSION
     rWeaponExplosion* explosion;

@@ -241,7 +241,7 @@ void cPlanetmap::getHeight(float x, float z, float* const color) {
         // Grassset
         if (o1 > 0.005f) {
             cLandscape::land_grass(x, y, z, snow);
-            h1 = 1 * snow[cLandscape::BUMP];
+            h1 = 5.0f * snow[cLandscape::BUMP];
         }
         if (o1 < 0.995f) {
             cLandscape::land_grass(x, y, z, grass);
@@ -1038,11 +1038,11 @@ void cPlanetmap::drawEffect() {
                 const float b2f = 1.0f / 256.0f;
 
                 float plantscale = 1.0f;
-                float plantdensity = (1.5f*10.00f * key) * b2f;
+                float plantdensity = (1.3f*10.00f * key) * b2f;
                 int visibleplants = plantdensity * opacity;
 
                 key = cNoise::LFSR16(key);
-                float treedensity = (1.5f*2.00f * key) * b2f;
+                float treedensity = (1.3f*2.00f * key) * b2f;
                 float visibletrees = treedensity;
                 
                 //cout << "opacity " << opacity << "  density " << density << endl;
