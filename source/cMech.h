@@ -65,6 +65,10 @@ struct rRigged : public rRole {
     std::map<int, float*> basenorms;
     /// Basic 3d texture bind when greater 0.
     int basetexture3d;
+    /// Current model height - only messured above ground ie. > 0. (hook o)
+    float height;
+    /// Current model radius as seen from above. (hook o)
+    float radius;
 
     /// Enumeration for indexing joints in animation.
     enum Jointpoints {
@@ -76,7 +80,7 @@ struct rRigged : public rRole {
 
     /// Constructor
 
-    rRigged(cObject* obj = NULL) : scale(1.0f), seconds(0.0f), grounded(0.0f), jetting(0.0f), model(NULL), joints(NULL) {
+    rRigged(cObject* obj = NULL) : scale(1.0f), seconds(0.0f), grounded(0.0f), jetting(0.0f), model(NULL), joints(NULL), height(0.1f), radius(0.1f) {
         role = "RIGGED";
         object = obj;
         vector_zero(pos);
@@ -171,13 +175,16 @@ struct rCamera : public rRole {
     virtual void animate(float spf);
 };
 
-
+/**
+ * Flat-Motoric-Behavior of a mobile unit with base-heading and turret-heading.
+ * TODO: Add pos and make bse_ori just ori - fixup naming scheme.
+ */
 struct rMobile : public rRole {
     /// Base angles in radians. (hook o)
     vec3 bse;
     /// Base orientation. (hook o)
     quat bse_ori;
-    /// Tower angles in radians. (hook o)
+    /// Tower angles relative to base in radians. (hook o)
     vec3 twr;
     /// Tower orientation.
     //quat twr_ori;
@@ -227,8 +234,10 @@ struct rCollider : public rRole {
     vec3 pos;
     /// Radius for cylinder or sphere.
     float radius;
-    /// Ratio of radius to height (height = ratio * radius).
+    /// Ratio of radius to height (height = ratio * radius) if not zero.
     float ratio;
+    /// Height of cylinder if ratio not zero.
+    float height;
 
     /// Constructor
     rCollider(cObject * obj);
@@ -236,6 +245,8 @@ struct rCollider : public rRole {
     ~rCollider() { }
 
     virtual float constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor);
+    virtual void animate(float spf);
+    virtual void drawEffect();
 };
 
 

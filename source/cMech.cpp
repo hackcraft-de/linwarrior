@@ -61,49 +61,25 @@ void rRigged::drawBones() {
 }
 
 void rRigged::drawMeshes() {
-    // Generate base vertices and normals for 3d-tex-coords.
-    if (baseverts.empty()) {
-        MD5Format::mesh* msh = MD5Format::getFirstMesh(model);
-        MD5Format::joint* staticjoints = MD5Format::getJoints(model);
-
-        loopi(model->numMeshes) {
-            float* cur_baseverts = new float[msh->numverts * 3];
-            float* cur_basenorms = new float[msh->numverts * 3];
-            MD5Format::animatedMeshVertices(msh, staticjoints, cur_baseverts, cur_basenorms);
-            baseverts[i] = cur_baseverts;
-            basenorms[i] = cur_basenorms;
-            // TODO: recalculate normals, invert and to weights.
-            {
-                MD5Format::tri* tris = MD5Format::getTris(msh);
-                // TODO: Normals need to be averaged/smoothed.
-                for (int j = 0; j < msh->numtris; j++) {
-                    float* a = &cur_baseverts[3*tris[j].a];
-                    float* b = &cur_baseverts[3*tris[j].b];
-                    float* c = &cur_baseverts[3*tris[j].c];
-                    float ab[3];
-                    float bc[3];
-                    float n[3];
-                    vector_sub(ab, b, a);
-                    vector_sub(bc, c, b);
-                    vector_cross(n, bc, ab);
-                    vector_norm(n, n);
-                    vector_cpy(&cur_basenorms[3*tris[j].a], n);
-                    vector_cpy(&cur_basenorms[3*tris[j].b], n);
-                    vector_cpy(&cur_basenorms[3*tris[j].c], n);
-                }
-            }
-            MD5Format::unanimatedMeshNormals(msh, staticjoints, cur_basenorms);
-            msh = MD5Format::getNextMesh(msh);
-        }
-    }
-
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
         SGL::glUseProgram_fglittexture3d();
         glColor4f(1, 1, 1, 1);
         glFrontFace(GL_CW);
 
+        // Get first mesh of model to iterate through.
         MD5Format::mesh* msh = MD5Format::getFirstMesh(model);
+        
+        // Bounding box min and max corner.
+        // Bounding box dimensions are model orientation dependent...
+        /*
+        const float e = 100000.0f;
+        vec3 mins = { +e, +e, +e };
+        vec3 maxs = { -e, -e, -e };
+        */
+        // Reset cylindrical dimensions.
+        radius = 0;
+        height = 0;
 
         loopi(model->numMeshes) {
             //cout << curr->numverts << " " << curr->numtris << " " << curr->numweights << endl;
@@ -138,10 +114,31 @@ void rRigged::drawMeshes() {
                 glVertex3fv(&vtx[3 * k]);
             }
             glEnd();
+            // Calculate boundaries of current pose.
+            {
+                int nvtx = msh->numverts;
+                loopj(nvtx) {
+                    float* v = &vtx[3*j];
+                    /*
+                    loopk(3) {
+                        mins[k] = (v[k] < mins[k]) ? v[k] : mins[k];
+                        maxs[k] = (v[k] > maxs[k]) ? v[k] : maxs[k];
+                    }
+                    */
+                    float r = v[0]*v[0] + v[2]*v[2];
+                    radius = (r > radius) ? r : radius;
+                    height = v[1] > height ? v[1] : height;
+                }
+            }
+            //
             delete vtx;
             delete nrm;
+            // Process next mesh of model in next iteration.
             msh = MD5Format::getNextMesh(msh);
         }
+        radius = sqrt(radius);
+        //cout << " Model-Dimensions: r = " << radius << " h = " << height << "\n";
+        //cout << " Model-Dimensions: (" << mins[0] << " " << mins[1] << " " << mins[2] << ") (" << maxs[0] << " " << maxs[1] << " " << maxs[2] << ")\n";
     }
     glPopAttrib();
 }
@@ -356,6 +353,43 @@ void rRigged::loadModel(std::string filename) {
     loopi(MAX_JOINTPOINTS) {
         jointpoints[i] = MD5Format::findJoint(model, getJointname(i).c_str());
         //if (jointpoints[i] < 0) jointpoints[i] = MD5Format::findJoint(model, getJointname2(i).c_str());
+    }
+
+    // Generate base vertices and normals for 3d-tex-coords:
+
+    if (baseverts.empty()) {
+        MD5Format::mesh* msh = MD5Format::getFirstMesh(model);
+        MD5Format::joint* staticjoints = MD5Format::getJoints(model);
+
+        loopi(model->numMeshes) {
+            float* cur_baseverts = new float[msh->numverts * 3];
+            float* cur_basenorms = new float[msh->numverts * 3];
+            MD5Format::animatedMeshVertices(msh, staticjoints, cur_baseverts, cur_basenorms);
+            baseverts[i] = cur_baseverts;
+            basenorms[i] = cur_basenorms;
+            // Recalculate normals, invert and set as normal-weights.
+            {
+                MD5Format::tri* tris = MD5Format::getTris(msh);
+                // TODO: Normals need to be averaged/smoothed.
+                for (int j = 0; j < msh->numtris; j++) {
+                    float* a = &cur_baseverts[3*tris[j].a];
+                    float* b = &cur_baseverts[3*tris[j].b];
+                    float* c = &cur_baseverts[3*tris[j].c];
+                    float ab[3];
+                    float bc[3];
+                    float n[3];
+                    vector_sub(ab, b, a);
+                    vector_sub(bc, c, b);
+                    vector_cross(n, bc, ab);
+                    vector_norm(n, n);
+                    vector_cpy(&cur_basenorms[3*tris[j].a], n);
+                    vector_cpy(&cur_basenorms[3*tris[j].b], n);
+                    vector_cpy(&cur_basenorms[3*tris[j].c], n);
+                }
+                MD5Format::unanimatedMeshNormals(msh, staticjoints, cur_basenorms);
+            }
+            msh = MD5Format::getNextMesh(msh);
+        }
     }
 }
 
@@ -683,8 +717,9 @@ rCollider::rCollider(cObject * obj) {
 
     quat_zero(ori);
     vector_zero(pos);
-    radius = 0.5f;
-    ratio = 2.5f;
+    radius = 0.1f;
+    ratio = 0.0f;
+    height = 0.1f;
 }
 
 float rCollider::constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor) {
@@ -701,7 +736,7 @@ float rCollider::constrainParticle(float* worldpos, float radius, float* localpo
 
     float base[3] = {0, -0.0 - radius, 0};
     float radius_ = this->radius + radius;
-    float height = this->radius * ratio + 2 * radius;
+    float height = this->height + 2 * radius;
     float localprj[3] = { 0, 0, 0 };
 
     float depth = 0;
@@ -718,6 +753,73 @@ float rCollider::constrainParticle(float* worldpos, float radius, float* localpo
     }
 
     return depth;
+}
+
+void rCollider::animate(float spf) {
+    height = (ratio > 0) ? radius * ratio : height;
+}
+
+void rCollider::drawEffect() {
+    return; // !!
+    
+    glPushMatrix();
+    {
+        glTranslatef(pos[0], pos[1], pos[2]);
+        SGL::glRotateq(ori);
+        
+        glPushAttrib(GL_ALL_ATTRIB_BITS);
+        {
+            SGL::glUseProgram_fgplaincolor();
+
+            float c1[] = { 1.0f, 0.0f, 0.0f, 1.0f };
+            float c2[] = { 0.5f, 0.0f, 0.0f, 1.0f };
+            vec3 range = { radius, height*0.5f, radius };
+            vec3 center = { 0, height*0.5f, 0 };
+            // Draw cylinder.
+            {
+                float a = 0;
+                const int n = 12;
+                const float a_inc = M_PI * 2.0 / (double)n;
+                // XZ-Bottom-Plane
+                glColor4fv(c1);
+                a = 0;
+                glBegin(GL_LINE_STRIP);
+                loopi(n+1) {
+                    float rx = sin(a)*range[0];
+                    float rz = cos(a)*range[2];
+                    a += a_inc;
+                    glVertex3f(center[0]+rx,center[1]-range[1],center[2]+rz);
+                }
+                glEnd();
+                // XZ-Top-Plane
+                glColor4fv(c1);
+                a = 0;
+                glBegin(GL_LINE_STRIP);
+                loopi(n+1) {
+                    float rx = sin(a)*range[0];
+                    float rz = cos(a)*range[2];
+                    a += a_inc;
+                    glVertex3f(center[0]+rx,center[1]+range[1],center[2]+rz);
+                }
+                glEnd();
+                // Sides
+                glColor4fv(c2);
+                a = 0;
+                glBegin(GL_LINES);
+                loopi(n) {
+                    float rx = sin(a)*range[0];
+                    float rz = cos(a)*range[2];
+                    a += a_inc;
+                    glVertex3f(center[0]+rx,center[1]-range[1],center[2]+rz);
+                    glVertex3f(center[0]+rx,center[1]+range[1],center[2]+rz);
+                }
+                glEnd();
+                //break;
+            }
+        }
+        glPopAttrib();
+    }
+    glPopMatrix();
 }
 
 
@@ -964,6 +1066,7 @@ void cMech::fireWeapon(unsigned n) {
 
 
 void cMech::animate(float spf) {
+    // Read in.
     vector_cpy(this->pos, traceable->pos);
     quat_cpy(this->ori, traceable->ori);
     this->radius = traceable->radius;
@@ -975,6 +1078,12 @@ void cMech::animate(float spf) {
             vector_cpy(collider->pos, this->pos);
             quat_cpy(collider->ori, this->ori);
             collider->radius = this->radius;
+        }
+        // from RIGGED:
+        {
+            collider->radius = rigged->radius;
+            collider->ratio = 0.0f;
+            collider->height = rigged->height;
         }
 
         collider->animate(spf);
@@ -1236,7 +1345,8 @@ void cMech::animate(float spf) {
         explosion->animate(spf);
         explosion->transform();
     }
-    
+
+    // Write back.
     vector_cpy(this->pos, traceable->pos);
     quat_cpy(this->ori, traceable->ori);
     this->radius = traceable->radius;
@@ -1303,6 +1413,9 @@ void cMech::drawSolid() {
 }
 
 void cMech::drawEffect() {
+    {
+        collider->drawEffect();
+    }
     {
         rigged->drawEffect();
     }
@@ -1387,7 +1500,7 @@ void cMech::damageByParticle(float* localpos, float damage, cObject* enactor) {
     if (!damageable->alife || damage == 0.0f) return;
 
     int hitzone = rDamageable::BODY;
-    if (localpos[1] < 1.3 && damageable->hp[rDamageable::LEGS] > 0) hitzone = rDamageable::LEGS;
+    if (localpos[1] < 1.1*rigged->height && damageable->hp[rDamageable::LEGS] > 0) hitzone = rDamageable::LEGS;
     else if (localpos[0] < -0.5 && damageable->hp[rDamageable::LEFT] > 0) hitzone = rDamageable::LEFT;
     else if (localpos[0] > +0.5 && damageable->hp[rDamageable::RIGHT] > 0) hitzone = rDamageable::RIGHT;
 

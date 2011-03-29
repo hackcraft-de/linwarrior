@@ -142,12 +142,12 @@ void cController::waitEvent() {
             // FIXME: Find better solution to prevent jumpy/locked behavior.
             lastDisturbedBy = disturbedBy;
             enemy = disturbedBy;
-            cout << "DISTURBER !!!!!!!!!!!!!\n";
+            //cout << "DISTURBER !!!!!!!!!!!!!\n";
         }
         if (enemy == 0) {
             enemy = enemyNearby;
             if (enemy != 0) {
-                cout << "INTRUDER !!!!!!!!!!!!!\n";
+                //cout << "INTRUDER !!!!!!!!!!!!!\n";
             }
         }
         if (enemy) {
