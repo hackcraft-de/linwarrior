@@ -87,6 +87,10 @@ void cTree::drawEffect() {
         vector_cross(&n[0], &n[4], &n[8]);
         vector_norm(&n[0], &n[0]);
         vector_cross(&n[8], &n[0], &n[4]);
+
+        float color[4];
+        glGetFloatv(GL_CURRENT_COLOR, color);
+        //cout << color[3] << "\n";
         
         glPushAttrib(GL_ENABLE_BIT);
         {
@@ -115,7 +119,7 @@ void cTree::drawEffect() {
                 y += dy * shake;
                 z += dz * shake;
                 glNormal3f(0,1,0);
-                glColor4f(light,light,light,1);
+                glColor4f(light,light,light, color[3]);
                 //float v[] = { x, y, z };
                 //vector_print(v);
                 glPushMatrix();
@@ -199,7 +203,7 @@ cTree::rTree* cTree::getCompiledTree(int seed, int type, int age) {
     glPushAttrib(GL_ENABLE_BIT);
     {
         SGL::glUseProgram_fglitcolor();
-        glColor4f(0.5f, 0.5f, 0.3f, 1.0f);
+        glColor4f(0.3f, 0.3f, 0.1f, 1.0f);
         glPushMatrix();
         {
             glLoadIdentity();

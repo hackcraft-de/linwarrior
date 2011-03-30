@@ -1110,7 +1110,7 @@ void cPlanetmap::drawEffect() {
 
         const float step = 16;
         //const float near = (step*2)*(step*2);
-        const float s = 5 * step;
+        const float s = 6 * step;
         const float x = -((int) (p[0] / step)) * step;
         const float z = -((int) (p[2] / step)) * step;
         //cout << x << " " << z << endl;
@@ -1143,12 +1143,8 @@ void cPlanetmap::drawEffect() {
                     continue;
                 }
 
-                const float maxz = s * 1.27f;
                 // opacity: near = 1, >far = 0
-                float opacity = fmax(0.0f, (2.0f / (1.0f + (1.0f/maxz*maxz) * dist2)) - 1.0f);
-                opacity = (2.0f / (1.0f + (1.0f/(maxz*maxz)) * dist2) - 1.0f);
-
-                glColor4f(1, 1, 1, opacity);
+                float opacity = fmax(0.0f, fmin(1.0f, 0.0f + 0.015f * (s + 4.0f * step - dist)));
 
                 // Field index key
                 unsigned char a = (char) x_;
@@ -1195,6 +1191,7 @@ void cPlanetmap::drawEffect() {
 
                         unsigned char tex = (rot >> 4) & 7;
                         unsigned char size = rot;
+                        glColor4f(1, 1, 1, opacity);
                         glBindTexture(GL_TEXTURE_2D, sTextures[tex + 1]);
 #if 0
                         glTranslatef(x__, h-0.2, z__);
@@ -1245,7 +1242,9 @@ void cPlanetmap::drawEffect() {
                         tree->tree = cTree::getCompiledTree(1230+(b&6), type, 2+age);
                         vector_set(tree->pos, x__, h-0.2, z__);
                         tree->ori[1] = a + b;
+                        glColor4f(0.15f, 0.09f, 0.03f, opacity);
                         tree->drawSolid();
+                        glColor4f(1, 1, 1, opacity);
                         tree->drawEffect();
                     }
                     glPopMatrix();
