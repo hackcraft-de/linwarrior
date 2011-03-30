@@ -434,9 +434,9 @@ void cPlanetmap::getCachedHeight(float x, float z, float* const color) {
     } else {
         float* height = (float*) &bytes[0];
         color[3] = *height;
-        color[0] = exp(bytes[4] * logbaseinv) - 1.0f;
-        color[1] = exp(bytes[5] * logbaseinv) - 1.0f;
-        color[2] = exp(bytes[6] * logbaseinv) - 1.0f;
+        color[0] = float(exp(bytes[4] * logbaseinv)) - 1.0f;
+        color[1] = float(exp(bytes[5] * logbaseinv)) - 1.0f;
+        color[2] = float(exp(bytes[6] * logbaseinv)) - 1.0f;
     }
     color[4] = normal[0] * 0.007936f; // div by 126.
     color[5] = normal[1] * 0.007936f;

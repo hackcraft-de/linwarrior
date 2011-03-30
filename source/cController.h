@@ -56,11 +56,13 @@ public: // Input hooks.
 public: // Output hooks.
     OID targetAim;
     //vec3 targetAim;
-    //bool targetAimActive;
-    //bool targetAimFire;
-    OID targetGoto;
-    //vec3 targetGoto;
-    //bool targetGotoActive;
+    bool targetAimActive;
+    bool targetAimFire;
+    bool targetGotoAim;
+    //OID targetGoto;
+    vec3 targetGoto;
+    bool targetGotoActive;
+    bool idling;
 public:
     /// Initialises a en-/disabled controller for the given entity->
     cController(cObject* entity, bool enabled = true);
@@ -79,6 +81,9 @@ public:
     void printState();
 
 protected:
+    /// Set output impulses.
+    void doit(OID aim, float* go, bool fire);
+
     /// Get the name of the current stack/command frame.
     std::string getFrameName();
 

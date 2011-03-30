@@ -25,10 +25,45 @@ cController::cController(cObject* entity, bool enabled) {
     lastDisturbedBy = 0;
     disturbedBy = 0;
     enemyNearby = 0;
+
+    targetAim = 0;
+    targetAimActive = false;
+    targetAimFire = false;
+    vector_zero(targetGoto);
+    targetGotoActive = false;
+    targetGotoAim = false;
+    idling = false;
 }
 
 cController::~cController() {
     while (!commandStack.empty()) commandStack.pop_back();
+}
+
+void cController::doit(OID aim, float* go, bool fire) {
+    targetAim = aim;
+    targetAimActive = (aim != 0);
+    targetAimFire = fire;
+    if (go != NULL) {
+        vector_cpy(targetGoto, go);
+        targetGotoActive = true;
+    } else {
+        targetGotoActive = false;
+    }
+    targetGotoAim = (aim != 0) && (go == NULL);
+    idling = !targetAimFire && !targetAimActive && !targetGotoActive;
+
+    if (true) {
+        controlledDevice->do_moveFor(go);
+        controlledDevice->do_aimFor(aim);
+        controlledDevice->do_aimAt();
+        if (go) {
+            controlledDevice->do_moveTowards();
+        } else if (aim) {
+            controlledDevice->do_moveNear();
+        }
+        if (fire) controlledDevice->do_fireAt();
+        if (idling) controlledDevice->do_idle();
+    }
 }
 
 void cController::printState() {
@@ -132,7 +167,7 @@ void cController::waitEvent() {
     bool patrol = getParameter(2);
     
     {
-        controlledDevice->do_idle();
+        this->doit(0, NULL, false);
     }
 
     if (patrol) {
@@ -190,12 +225,8 @@ void cController::attackEnemy() {
     OID entity = getParameter(1);
 
     {
-        controlledDevice->do_moveFor(NULL);
-        controlledDevice->do_aimFor(entity);
-        controlledDevice->do_moveNear();
-        controlledDevice->do_aimAt();
-        if (controlledDevice->inWeaponRange() > 0.5) controlledDevice->do_fireAt();
         //((cMech*)mDevice)->Pattern(tf, "nrnlln");
+        this->doit(entity, NULL, (controlledDevice->inWeaponRange() > 0.5));
     }
 
     // FIXME: Depends on Mech/tarcom.
@@ -204,17 +235,17 @@ void cController::attackEnemy() {
     cObject* target = cWorld::instance->getObject(entity);
     if (target == NULL) {
         // Target disappeared (removed from world: fragged).
-        controlledDevice->do_aimFor(NULL);
+        this->doit(entity, NULL, false);
         pop();
         return;
     } else if (!mech->tarcom->isEnemy(&target->tags)) {
         // Not an enemy anymore (maybe dead or not interesting anymore).
-        controlledDevice->do_aimFor(NULL);
+        this->doit(entity, NULL, false);
         pop();
         return;
     } else if (controlledDevice->inTargetRange() < 0.001f) {
         // Target is out of targeting range.
-        controlledDevice->do_aimFor(NULL);
+        this->doit(entity, NULL, false);
         pop();
         return;
     }
@@ -237,10 +268,7 @@ void cController::followLeader() {
     OID patrol = getParameter(2);
 
     {
-        controlledDevice->do_aimFor(entity);
-        controlledDevice->do_moveFor(NULL);
-        controlledDevice->do_moveNear();
-        controlledDevice->do_aimAt();
+        this->doit(entity, NULL, false);
     }
 
     if (patrol) {
@@ -280,10 +308,7 @@ void cController::gotoDestination() {
 
     {
         if (debug_state) cout << "going " << ((patrol > 0) ? "patrolling" : "directly") << " to <" << v[0] << "," << v[1] << "," << v[2] << " >\n";
-        controlledDevice->do_moveFor(v);
-        //controlledDevice->do_aimFor(0);
-        controlledDevice->do_aimAt();
-        controlledDevice->do_moveTowards();
+        this->doit(0, v, false);
     }
 
     float range = controlledDevice->inDestinationRange();

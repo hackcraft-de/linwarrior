@@ -771,6 +771,8 @@ void rCollider::drawEffect() {
         {
             SGL::glUseProgram_fgplaincolor();
 
+            cPrimitives::glAxis(1.0f);
+
             float c1[] = { 1.0f, 0.0f, 0.0f, 1.0f };
             float c2[] = { 0.5f, 0.0f, 0.0f, 1.0f };
             vec3 range = { radius, height*0.5f, radius };

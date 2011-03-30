@@ -417,7 +417,8 @@ typedef unsigned int four_bytes;
 
 #define glPrint(buffer) \
 { \
-    int len = strlen(buffer); \
+    char* buf = (char*) buffer; \
+    int len = strlen(buf); \
     if (gInstantfont == NULL) return; \
     unsigned int* asciibinds = gInstantfont; \
     glPushAttrib(GL_ENABLE_BIT); \
@@ -428,14 +429,14 @@ typedef unsigned int four_bytes;
         { \
             int i, col = 0; \
             for (i = 0; i < len; i++) { \
-                if (buffer[i] == '\n') { \
+                if (buf[i] == '\n') { \
                     glTranslatef(-col, -1, 0); \
                     col = 0; \
-                } else if (buffer[i] == '\t') { \
+                } else if (buf[i] == '\t') { \
                     glTranslatef((col + 1) % 5, 0, 0); \
                     col += ((col + 1) % 5); \
                 } else { \
-                    glTexturedSquare(asciibinds[(unsigned char)buffer[i]]); \
+                    glTexturedSquare(asciibinds[(unsigned char)buf[i]]); \
                     glTranslatef(1, 0, 0); \
                     col++; \
                 } \
