@@ -52,12 +52,20 @@ CFLAGS += -O1 -funroll-loops
 
 # Fast-Math doesn't work because of NaN usage.
 
+# Flags for profiling, instructions:
+# 1. Recompile everything with these flags un-commented.
+# 2. Run the binaray to collect data.
+# 3. Call gprof with the binary as a parameter to analyse the collected data.
+# 4. Disable/Comment these flags again and recompile everything.
+#CFLAGS += -pg
+#LFLAGS += -pg
+
 # Default makefile Target.
 all: $(TARGET)
 
 # For executable we need all sources compiled to objects.
 $(TARGET): $(OBJECTS)
-	$(CPP) -o $(TARGET) $(OBJECTS) $(LIBRARIES)
+	$(CPP) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(LIBRARIES)
 
 # Compile all Source files, creates output directories as necessary.
 build/%.o: %.cpp

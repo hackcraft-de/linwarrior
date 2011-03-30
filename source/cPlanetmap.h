@@ -17,6 +17,15 @@ class cPlanetmap;
 
 #include "cTree.h"
 
+#define USE_UNORDERED_MAP
+#if defined(USE_UNORDERED_MAP)
+#include <tr1/unordered_map>
+#define maptype std::tr1::unordered_map
+#else
+#include <map>
+#define maptype std::map
+#endif
+
 // Amount of cached patches.
 #define PLANETMAP_CACHESIZE 512
 
@@ -59,7 +68,8 @@ public:
         long normal[(1UL << PLANETMAP_TILESIZE)*(1UL << PLANETMAP_TILESIZE)];
     };
     /// LRU Surface Cache.
-    std::map<unsigned long, sPatch*> patches;
+    maptype<unsigned long, sPatch*> patches;
+    /// Tree template for drawing of all trees.
     cTree* tree;
 public:
     cPlanetmap();

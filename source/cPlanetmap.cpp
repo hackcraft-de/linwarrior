@@ -168,7 +168,7 @@ cPlanetmap::cPlanetmap() {
 
 void cPlanetmap::invalidateCache() {
     const long TILESIZE = PLANETMAP_TILESIZE;
-    for (std::map<unsigned long, sPatch*>::iterator i = patches.begin(); i != patches.end(); i++) {
+    for (maptype<unsigned long, sPatch*>::iterator i = patches.begin(); i != patches.end(); i++) {
         sPatch* patch = (*i).second;
         OID* ptr = patch->heightcolor;
         const unsigned long totaltilesize = (1UL << (TILESIZE + TILESIZE));
@@ -343,6 +343,9 @@ void cPlanetmap::getCachedHeight(float x, float z, float* const color) {
     const long detailfactor = (1L << (TILESIZE - PATCHSIZE));
     long tx = ((long) x) >> PATCHSIZE;
     long tz = ((long) z) >> PATCHSIZE;
+    // Key needs to be unique, that can't be quaranteed with
+    // key = (23473 * tx) ^ (23497 * tz) which seems to be ok but may fail!
+    // The used formula quarantees uniqueness just within limited value range.
     tx &= 0xFFFF;
     tz &= 0xFFFF;
     unsigned long key = (tx << 16) | tz;
@@ -354,8 +357,8 @@ void cPlanetmap::getCachedHeight(float x, float z, float* const color) {
             recycled = true;
             unsigned long mintouches = -1;
             sPatch* minpatch = NULL;
-            std::map<unsigned long,sPatch*>::iterator mini;
-            std::map<unsigned long,sPatch*>::iterator i;
+            maptype<unsigned long,sPatch*>::iterator mini;
+            maptype<unsigned long,sPatch*>::iterator i;
             for (i = patches.begin(); i != patches.end(); i++) {
                 sPatch* patch_ = i->second;
                 if (patch_ == NULL) continue;
@@ -369,7 +372,7 @@ void cPlanetmap::getCachedHeight(float x, float z, float* const color) {
             patch = minpatch;
         } else {
             patch = new sPatch();
-            assert(patch != NULL);
+            //assert(patch != NULL);
         }
         patch->touches = 0;
         patch->key = key;
@@ -688,7 +691,7 @@ void cPlanetmap::drawSolid() {
     glPopMatrix();
 
     // Reset Touches for LRU
-    for (std::map<unsigned long,sPatch*>::iterator i = patches.begin(); i != patches.end(); i++) {
+    for (maptype<unsigned long,sPatch*>::iterator i = patches.begin(); i != patches.end(); i++) {
         //cout << "A2" << endl;
         sPatch* patch_ = i->second;
         if (patch_ == NULL) continue;
@@ -1165,7 +1168,8 @@ void cPlanetmap::drawEffect() {
                 //cout << "opacity " << opacity << "  density " << density << endl;
 
                 // Load LFSR using position, key and some scrambling.
-                unsigned short lfsr16 = (((unsigned short)(a^key)) << 8) | (b^key);
+                unsigned short lfsr16 = (13 * key) ^ (17 * a) ^ (23 * b);
+                //unsigned short lfsr16 = (((unsigned short)(a^key)) << 8) | (b^key);
                 unsigned short lfsr16tmp = lfsr16;
                 lfsr16 = (lfsr16 == 0) ? 1 : lfsr16;
                 lfsr16 ^= 0x7493;
