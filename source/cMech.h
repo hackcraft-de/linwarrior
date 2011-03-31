@@ -325,9 +325,6 @@ public:
     virtual void damageByParticle(float* localpos, float damage, cObject* enactor = NULL);
     virtual float constrainParticle(float* worldpos, float radius = 0.0f, float* localpos = NULL, cObject* enactor = NULL);
 public:
-    // Queries
-    virtual OID enemyNearby();
-
     // Fuzzy Predicates [0,1]
     virtual float inDestinationRange();
     virtual float inMeeleRange();

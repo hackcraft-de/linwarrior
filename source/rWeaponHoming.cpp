@@ -38,10 +38,6 @@ void rWeaponHoming::fire() {
         }
     }
 
-    if (target == 0 && object != NULL) {
-        target = object->enemyNearby();
-    }
-
     float* source = weaponPosef;
 
     cParticle* s = new cParticle();

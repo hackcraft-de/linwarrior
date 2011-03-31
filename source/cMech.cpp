@@ -1530,17 +1530,6 @@ float cMech::constrainParticle(float* worldpos, float radius, float* localpos, c
     return maxdepth;
 }
 
-OID cMech::enemyNearby() {
-    if (tarcom->enemies == NULL) return 0;
-    for (std::list<cObject*>::iterator i=tarcom->enemies->begin(); i != tarcom->enemies->end(); i++) {
-        cObject* o = *i;
-        if (!o->anyTags(&tarcom->exc_enemies)) {
-            return o->oid;
-        }
-    }
-    return 0;
-}
-
 float cMech::inDestinationRange() {
     float a = 0;
     float b = 6;

@@ -503,20 +503,6 @@ public:
 
     // Related to States:
 
-    // Queries
-
-    /// Search through world-database to find nearest enemy, returns OID.
-
-    virtual OID enemyNearby() {
-        return 0;
-    }
-
-    /// If object was disturbed by an enemy this may return it's OID.
-
-    virtual OID disturbedBy() {
-        return 0;
-    }
-
     // Fuzzy Predicates [0,1]
 
     /// Has this object reached it's destination position? Fuzzyvalue in [0,1].
