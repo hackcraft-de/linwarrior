@@ -1,5 +1,6 @@
 dep
 dist
 build
-data/freesound
+data/freesound.org
+doc/doxygen
 

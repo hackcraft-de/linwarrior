@@ -3,18 +3,90 @@ List of Important Concepts
 (top secret - eyes only)
 
 
-Virtual Gamepad
+
+Object-ID
+---------
+
+Every object is uniquely identified by an id given at the time of it's spawn.
+It can be understood as a kind of special tag (see Object-Tags) which is kept
+separate for it's importance and for performance reasons.
+
+
+
+Object-Tags
+-----------
+
+Every object contains a set of tags used for searching, selecting and identifying
+friend, foe, group, kind, role, etc. (see Object-Filtering).
+
+
+
+Object-Pose
+-----------
+
+Every Object provides a position, orientation and basic radius used for object
+managing by the simulation-world and basic needs of other objects for sensing.
+This pose is not necessarily the same as for rendering, physics or other purposes.
+It is merely the result of internal computations (see Bound-Components) and
+will be used for hand placing objects.
+
+
+
+Object-Filtering
+----------------
+
+Finding objects which have certain specified properties, values, intersections
+with geometric primitives etc or any combination of those are done by filtering.
+First the whole set of objects can be filtered by one property through
+one filtering method and then the resulting object set can be filtered again
+and again by other filters. For example: First you can filter by object tags
+(roles), to get that kind of object then you can filter by range to get all
+nearby objects of that kind. This is very similar to a Geo-Database populated
+by objects to which you can send querries like:
+"select * from objects where flags=1100101 and distance < 100"
+
+
+
+Bound-Components
+----------------
+
+An World-Object may be built out of several self enclosed Component-Objects.
+Simulation-step calls are redirected to components to update their own state,
+to determine outcomes of collision and interaction and finally to render themselves.
+The simulator/simulation-world doesn't know these inner components of an object.
+Components provide an interface through input and output attributes/variables.
+These signals can be bound between Components. Ie. an output variable of one Component
+can be bound to an input variable of another Component of that object.
+Binding is done via copying of signal variable contents when stepping the simulation.
+Also this leads to variable-redundancy and a lot of copying and more lines of code
+the advantages of this simple concept are great:
+- Components are self-contained with no immediate inter-dependency.
+- Components are reusable in unthought ways and solve individual problems.
+- Exchangeable behavior (eg. single particle to multi particle-mesh physics).
+- Interaction of components is restricted to a single place where bound variables are copied.
+- Objects are just defined by their components and their bindings.
+- Soft-Bindings may be defined in configuration files to customize behavior (someday - hardcoded now).
+- Soft-Bindings be visualised and changed at runtime to construct and 'reprogram' objects (someday).
+- May be extended to component-hierarchies (Objects are already systems of subsystems).
+
+
+
+Virtual-Gamepad
 ---------------
 
 One uniform input interface - the virtual gamepad - simplifies and abstracts
 non-uniform input methods (keyboard/+mouse, gamepad, joystick, network,
 autopilot) and serves as a common source of command-wishes for any Object,
 not only those controlled by human players. The virtual gamepad does
-provide easy means for storing and replaying demos.
+provide easy means for storing and replaying demos (provided everything else
+is predictable and repeatable pseudorandom as well). The virtual-gamepad
+becomes part of an object's component (see Bound-Components) to deliver input
+to the object's other components. Itself may get it's input from a real device
+as mentioned before or as the result of an AI-component.
 
 
 
-Command Stack
+Command-Stack
 -------------
 
 A Stack onto which tactical and operational orders can be placed
@@ -24,61 +96,26 @@ superceded by new orders without the pevious being lost for later resume.
 A tactical plan can be build by placing several operational orders on
 the stack or by placing an order onto the stack which keeps track of operations.
 
-Behavior for the current order (state) is implemented by calling do_* methods
-of the controlled object. Whether to add or remove orders (state-switch) is
-determined by calling fuzzy-predicates which are implemented by the controlled
-object, too.
+The command-stack is implemented (as part of) a component (see Bound-Components).
+Therefore behavior output for the current order (or state) is through signaling variables.
 
-Therefore execution of an order and determining when change of orders has
-to happen is implemented by means of abstract methods (you get what you mean).
-
+As for now adding and removing orders (state-switch) are determined by calling
+fuzzy-predicates which are implemented by the controlled object.
+This is a remnant and needs to change to fit the Bound-Components pattern.
 A fuzzy-predicate could be "inFireRange" and an Action-Method could be
-"aimAtTarget". Note that thereby the Command-Stack-Engine does only hardcode
+"aimAtTarget". Note that the Fuzzy-Predicates are a kind of input to the
+Stack-Automata.
+
+Note that thereby the Command-Stack-Engine does only hardcode
 the general logical structure in which objectives are fulfilled but does
 not hardcode the way it is exactly executed. That is the Stack may tell
 you which object to target, where to move, when to fire - but does not
 tell you how you have to hold your hand, how to move your feet or how to
 trigger the weapon.
 
-Note that the Fuzzy-Predicates are a kind of input to the Stack-Automata
-and the Action-Methods are a kind of output-function.
 
 
-
-Object Filtering
-----------------
-
-Finding objects which have certain specified properties, values, intersections
-with geometric primitives etc or any combination of those are done by filtering.
-First the whole set of objects can be filtered by one property through
-one filtering method and then the resulting object set can be filtered again
-and again by other filters. For example: First you can filter by object type
-(roles), to get that kind of object then you can filter by range to get all
-nearby objects of that kind. This is very similar to a Geo-Database populated
-by objects to which you can send querries like:
-"select * from objects where flags=1100101 and distance < 100"
-
-
-
-Object with Roles
------------------
-
-The Base-Object already includes several common variables - also not needed
-by all specific (sub-)objects. The Base-Object includes a bitmask which
-lists all roles the object belongs to (one bit one role).
-These bitmasks do not only tell which variables hold senseful information
-but they also tell to which game related groups the object belongs to and
-which state it has inside the game world. By Object-Filtering objects playing
-certain roles can be selected. The Base-Object holds many method-stubs without
-senseful bodies - to be filled by subclasses. This is some kind of poor-man's
-role based programming. Subclasses will only add specialiased attributes
-needed to represent internal state and will implement those stubbed methods
-to change or implement new behavior. When de-/serializing objects only those
-attributes must be considered which are meaningful to the assumed roles.
-
-
-
-Particle Physics
+Particle-Physics
 ----------------
 
 Also particle physics sounds like rocket science (which it is) it is
@@ -91,15 +128,17 @@ p'' = 2 * p' - p + a * dt * dt    (the Verlet-Integration)
 Note that it is mandatory to have a fixed framerate (a fixed framerate
 spares a lot of trouble elsewhere, too).
 Then collision detection is reduced to deciding wether a point is inside
-another object (maybe extended by particle radius).
+another object (with boundaries extended by particle radius).
 And collision correction is reduced to placing (constraining) the offending
 particle to the nearest non offending point on the objects boundary hull.
+And using spring forces particles can be assembled into a mesh for soft-body-physics.
 It is soo simple yet soo powerful it almost feels like beeing 2d again.
+Note that object-physics is implemented in an individual component (see Bound-Components).
 
 
 
-Norm Units
-----------
+SI-Units
+--------
 
 The International System of Units - short SI-Units spares a lot of trouble.
 Game specific, country or computer specific units can lead to headaches.
@@ -113,6 +152,6 @@ To me it seemed odd a long time to use radians (2 * pi) instead of
 degrees (360) but one needs to supply the sin/cos functions with radians
 anyway which means a lot of conversions. So using SI-Units is a straight
 forward thing - whenever you see a variable like "mass" it should be
-kilogramms or at least when noted: micro-, milli-, ...
+kilogramms or at least when noted: micro-, milli-, ... grams
 
 
