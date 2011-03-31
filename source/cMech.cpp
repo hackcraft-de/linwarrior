@@ -1083,6 +1083,21 @@ void cMech::animate(float spf) {
     quat_cpy(this->ori, traceable->ori);
     this->radius = traceable->radius;
 
+    /* Index of Component order
+     * ------------------------
+     * COLLIDER
+     * DAMAGEABLE
+     * COMPUTERs
+     * CONTROLLED
+     * MOBILE
+     * TRACEABLE
+     * RIGGED
+     * NAMEABLE
+     * CAMERA
+     * WEAPON
+     * EXPLOSION
+     */
+
     // COLLIDER
     {
         // from SELF:
@@ -1101,8 +1116,18 @@ void cMech::animate(float spf) {
         collider->animate(spf);
     }
 
-    // COMPUTERs
-    
+    // DAMAGEABLE
+    {
+        // from DAMAGEABLE
+        {
+            damageable->active = damageable->alife;
+        }
+        damageable->animate(spf);
+    }
+
+    // begin COMPUTERs -->
+
+    // COMCOM
     {
         // from DAMAGEABLE
         {
@@ -1111,6 +1136,7 @@ void cMech::animate(float spf) {
         comcom->animate(spf);
     }
 
+    // TARCOM
     {
         // from CONTROLLED
         {
@@ -1129,15 +1155,7 @@ void cMech::animate(float spf) {
         tarcom->animate(spf);
     }
 
-    // DAMAGEABLE
-    {
-        // from DAMAGEABLE
-        {
-            damageable->active = damageable->alife;
-        }
-        damageable->animate(spf);
-    }
-
+    // WEPCOM
     {
         // from DAMAGEABLE
         {
@@ -1146,6 +1164,7 @@ void cMech::animate(float spf) {
         wepcom->animate(spf);
     }
 
+    // FORCOM
     {
         // from DAMAGEABLE
         {
@@ -1166,6 +1185,7 @@ void cMech::animate(float spf) {
         forcom->animate(spf);
     }
 
+    // NAVCOM
     {
         // from DAMAGEABLE
         {
@@ -1178,6 +1198,8 @@ void cMech::animate(float spf) {
         }
         navcom->animate(spf);
     }
+
+    // <-- end COMPUTERs
 
     // CONTROLLED
     {
