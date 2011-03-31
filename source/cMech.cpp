@@ -1569,7 +1569,7 @@ float cMech::constrainParticle(float* worldpos, float radius, float* localpos, c
 float cMech::inDestinationRange() {
     float a = 0;
     float b = 6;
-    float d = vector_distance(traceable->pos, controlled->destination);
+    float d = vector_distance(mobile->pos, controlled->destination);
     if (d < a) return 1.0f;
     if (d > b) return 0.0f;
     return (1.0f - (d - a) / (b - a));
@@ -1580,7 +1580,7 @@ float cMech::inMeeleRange() {
     if (target == NULL) return 0.0f;
     float a = 16;
     float b = 24;
-    float d = vector_distance(traceable->pos, target->pos);
+    float d = vector_distance(mobile->pos, target->pos);
     if (d < a) return 1.0f;
     if (d > b) return 0.0f;
     return (1.0f - (d - a) / (b - a));
@@ -1592,7 +1592,7 @@ float cMech::inWeaponRange() {
     if (target == NULL) return 0.0f;
     float a = 36 + 10;
     float b = 44 + 10;
-    float d = vector_distance(traceable->pos, target->pos);
+    float d = vector_distance(mobile->pos, target->pos);
     if (d < a) return 1.0f;
     if (d > b) return 0.0f;
     return (1.0f - (d - a) / (b - a));
@@ -1603,7 +1603,7 @@ float cMech::inTargetRange() {
     if (target == NULL) return 0.0f;
     float a = 56;
     float b = 124;
-    float d = vector_distance(traceable->pos, target->pos);
+    float d = vector_distance(mobile->pos, target->pos);
     if (d < a) return 1.0f;
     if (d > b) return 0.0f;
     return (1.0f - (d - a) / (b - a));
