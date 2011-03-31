@@ -1,3 +1,15 @@
+- Move object's do_*() functionality to Movable and add bindings to Controller?
+
+- Move object's in_*() functionality to Movable and add bindings to Controller?
+
+- Components/Roles shall get their own files (at least one file for all).
+
+- Object's damageByParticle() shall be represented in components, too.
+
+- Resolve HUD dependency on cMech-Class's weapons.
+
+- Make weapon chaining work with weapon-bindings.
+
 - Wingmen shall maintain minimum distance to each other (collision avoidance).
 
 - Take slope into account for Planetmap erosion and material within second pass.

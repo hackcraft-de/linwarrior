@@ -580,10 +580,11 @@ void rCamera::animate(float spf) {
 rMobile::rMobile(cObject * obj) : jeten(0), jetthrottle(0), driveen(0), drivethrottle(0), immobile(false), chassis_lr(0), chassis_lr_(0), chassis_ud(0), chassis_ud_(0), tower_lr(0), tower_ud(0) {
     role = "MOBILE";
     object = obj;
-    twr[0] = twr[1] = twr[2] = 0.0f;
-    bse[0] = bse[1] = bse[2] = 0.0f;
-    quat_zero(bse_ori);
-    //quat_zero(twr_ori);
+    vector_zero(pos);
+    vector_zero(twr);
+    vector_zero(bse);
+    quat_zero(ori);
+    quat_zero(ori1);
 }
 
 void rMobile::ChassisLR(float radians) {
@@ -669,7 +670,16 @@ void rMobile::animate(float spf) {
     quat pitch_ori;
     quat_rotaxis(pitch_ori, bse[0], pitch);
     // combine pitch, yaw
-    quat_mul(bse_ori, yaw_ori, pitch_ori);
+    quat_mul(ori, yaw_ori, pitch_ori);
+
+    // yaw
+    quat tower_ori;
+    quat_set(tower_ori, 0, sin(0.5 * twr[1]), 0, cos(0.5 * twr[1]));
+    // pitch
+    quat tower_ori_v;
+    quat_set(tower_ori_v, sin(0.5 * twr[0]), 0, 0, cos(0.5 * twr[0]));
+    // combined pitch and yaw
+    quat_mul(ori1, tower_ori, tower_ori_v);
 }
 
 void rMobile::transform() {
@@ -1201,6 +1211,10 @@ void cMech::animate(float spf) {
         {
             mobile->active = damageable->alife;
         }
+        // from traceable
+        {
+            vector_cpy(mobile->pos, traceable->pos);
+        }
         mobile->animate(spf);
     }
 
@@ -1208,7 +1222,7 @@ void cMech::animate(float spf) {
     {
         // from MOBILE:
         {
-            quat_cpy(traceable->ori, mobile->bse_ori);
+            quat_cpy(traceable->ori, mobile->ori);
             traceable->jetthrottle = mobile->jetthrottle;
             traceable->throttle = mobile->drivethrottle;
         }
@@ -1593,13 +1607,12 @@ void cMech::do_moveTowards() {
 
     // Determine nearest rotation direction
     vec2 rd;
-    cParticle::rotationTo(rd, traceable->pos, target_pos, traceable->ori);
+    cParticle::rotationTo(rd, mobile->pos, target_pos, mobile->ori);
     controlled->pad->setAxis(cPad::MECH_CHASSIS_LR_AXIS, rd[0]);
-
-    //float thr = 20.0f * (1.0f - fabs(rd[0]) / 360.0f);
+    // Determine throttling according to angle.
     float thr = 1.0f * (1.0f - 0.6 * fabs(rd[0]));
+
     //cout << "Throttle: " << thr << "\n";
-    //mPad->setAxis(cPad::MECH_THROTTLE_AXIS, (char) - thr);
     controlled->pad->setAxis(cPad::MECH_THROTTLE_AXIS, -thr);
 }
 
@@ -1621,24 +1634,20 @@ void cMech::do_moveNear() {
         }
     } else return;
 
-    // Determine nearest rotation direction
+    // Determine nearest rotation direction.
     vec2 rd;
-    cParticle::rotationTo(rd, traceable->pos, target_pos, traceable->ori);
-    controlled->pad->setAxis(cPad::MECH_CHASSIS_LR_AXIS, 2 * rd[0]);
-
-    float d = vector_distance(traceable->pos, target_pos);
-
+    cParticle::rotationTo(rd, mobile->pos, target_pos, mobile->ori);
+    // Determine distance.
+    float d = vector_distance(mobile->pos, target_pos);
+    // Throttle according to angle and distance.
     float thr = 1.0f * (1.0f - 0.7 * fabs(rd[0]));
-
     float f = (d - 23);
-    if (f < -1) f = -1;
-    if (f > +1) f = +1;
-
+    f = fmin(+1.0f, fmax(-1.0f, f));
     f *= thr;
 
+    controlled->pad->setAxis(cPad::MECH_CHASSIS_LR_AXIS, 2 * rd[0]);
     controlled->pad->setAxis(cPad::MECH_THROTTLE_AXIS, -f);
     //cout << "Throttle: " << thr << "\n";
-    //mPad->setAxis(cPad::MECH_THROTTLE_AXIS, (char) - thr);
 }
 
 void cMech::do_aimAt() {
@@ -1654,16 +1663,9 @@ void cMech::do_aimAt() {
     } else return;
 
     // Determine nearest rotation direction
-    quat tower_ori;
-    quat_set(tower_ori, 0, sin(0.5 * this->mobile->twr[1]), 0, cos(0.5 * this->mobile->twr[1]));
-
-    quat tower_ori_v;
-    quat_set(tower_ori_v, sin(0.5 * this->mobile->twr[0]), 0, 0, cos(0.5 * this->mobile->twr[0]));
-
-    quat_mul(tower_ori, tower_ori, tower_ori_v);
-
     vec2 rd;
-    cParticle::rotationTo(rd, traceable->pos, target_pos, traceable->ori, tower_ori);
+    cParticle::rotationTo(rd, mobile->pos, target_pos, mobile->ori, mobile->ori1);
+
     controlled->pad->setAxis(cPad::MECH_TURRET_LR_AXIS, 2 * rd[0]);
     controlled->pad->setAxis(cPad::MECH_TURRET_UD_AXIS, rd[1]);
 }
@@ -1681,10 +1683,9 @@ void cMech::do_fireAt() {
     } else return;
 
     // Determine nearest rotation direction
-    quat tower_ori;
-    quat_set(tower_ori, 0, sin(0.5 * this->mobile->twr[1]), 0, cos(0.5 * this->mobile->twr[1]));
     vec2 rd;
-    cParticle::rotationTo(rd, traceable->pos, target_pos, traceable->ori, tower_ori);
+    cParticle::rotationTo(rd, mobile->pos, target_pos, mobile->ori, mobile->ori1);
+
     // Fire at random and only if angle small enough.
     if (rand() % 100 <= 40 && fabs(rd[0]) < 0.5) {
         controlled->pad->setButton(cPad::MECH_FIRE_BUTTON1, true);

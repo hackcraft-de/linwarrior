@@ -177,15 +177,19 @@ struct rCamera : public rRole {
 
 /**
  * Flat-Motoric-Behavior of a mobile unit with base-heading and turret-heading.
- * TODO: Add pos and make bse_ori just ori - fixup naming scheme.
+ * TODO: Add pos - fixup naming scheme.
  */
 struct rMobile : public rRole {
+    /// Base position. (hook i)
+    vec3 pos;
     /// Base angles in radians. (hook o)
     vec3 bse;
     /// Base orientation. (hook o)
-    quat bse_ori;
+    quat ori;
     /// Tower angles relative to base in radians. (hook o)
     vec3 twr;
+    /// Tower orientation. (hook o)
+    quat ori1;
     /// Tower orientation.
     //quat twr_ori;
     /// Current jumpjet set-point [-1,1]. (hook i)
