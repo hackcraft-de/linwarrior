@@ -6,6 +6,8 @@
 using std::cout;
 using std::endl;
 
+#include <stdio.h>
+
 // OBJECT
 
 std::map<std::string, rComponent*> cObject::roleprotos;

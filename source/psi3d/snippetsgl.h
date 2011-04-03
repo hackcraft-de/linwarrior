@@ -12,6 +12,10 @@
 // memcpy
 #include "string.h"
 
+#include "macros.h"
+#include <stdio.h>
+#include <stdlib.h>
+
 /// Primitives
 struct cPrimitives {
 
@@ -672,7 +676,7 @@ struct SGL {
             glGetShaderiv(vs, GL_INFO_LOG_LENGTH, &length);
             char* log = new char[length];
             glGetShaderInfoLog(vs, length, &length, log);
-            str << "Vertex Shader Log:\n" << log << "\n";
+            //str << "Vertex Shader Log:\n" << log << "\n";
             delete log;
         }
 
@@ -687,7 +691,7 @@ struct SGL {
             glGetShaderiv(fs, GL_INFO_LOG_LENGTH, &length);
             char* log = new char[length];
             glGetShaderInfoLog(fs, length, &length, log);
-            str << "Fragment Shader Log:\n" << log << "\n";
+            //str << "Fragment Shader Log:\n" << log << "\n";
             delete log;
         }
 

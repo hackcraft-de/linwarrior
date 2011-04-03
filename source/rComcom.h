@@ -18,6 +18,8 @@ struct rNavcom;
 
 #include "cObject.h"
 
+#include <list>
+
 
 /** Computer Component
  *  Placeholder base class for computerised components.

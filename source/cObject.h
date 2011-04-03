@@ -20,18 +20,21 @@ struct rDamageable;
 struct rControlled;
 struct rGrouping;
 
-#include "rComponent.h"
+//#include "rComponent.h"
+#include "rNameable.h"
+#include "rDamageable.h"
+#include "rControlled.h"
+#include "rGrouping.h"
 
-//#include "cWorld.h"
 #include "OID.h"
 #include "cMessage.h"
 
-#include <string>
 #include <vector>
 #include <set>
 #include <map>
 #include <algorithm>
 #include <string>
+#include <iostream>
 
 #include <GL/glew.h>
 #include <AL/al.h>

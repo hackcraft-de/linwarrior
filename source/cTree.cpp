@@ -1,6 +1,7 @@
 #include "cTree.h"
 #include "psi3d/macros.h"
 #include "psi3d/snippetsgl.h"
+#include "cParticle.h"
 
 #include <cmath>
 #include <cassert>
