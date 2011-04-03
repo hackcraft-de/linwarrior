@@ -14,7 +14,6 @@
 class cController;
 
 #include "cObject.h"
-#include "cComcom.h"
 
 #include <vector>
 #include <string>

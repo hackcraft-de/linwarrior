@@ -26,7 +26,7 @@ class rWeapon;
  * their visual effects. Note that weapons are themselves responsible for
  * drawing themselves, their bullets, missiles, dust, smoke and other particles.
  */
-class rWeapon : public rRole {
+class rWeapon : public rComponent {
 public:
     /// Instance counter.
     static int sInstances;

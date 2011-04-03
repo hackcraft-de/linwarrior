@@ -13,15 +13,18 @@
 #ifndef _COBJECT_H
 #define _COBJECT_H
 
-class cObject;
-class cPad;
-class cController;
 class cWorld;
+
+struct rNameable;
+struct rDamageable;
+struct rControlled;
+struct rGrouping;
+
+#include "rComponent.h"
 
 //#include "cWorld.h"
 #include "OID.h"
 #include "cMessage.h"
-#include "cParticle.h"
 
 #include <string>
 #include <vector>
@@ -56,183 +59,6 @@ unsigned char* loadTGA(const char *fname, int *w, int* h, int* bpp);
  * An enhancement may be to have *.tga.gz if at all.
  */
 int saveTGA(const char *fname, int w, int h, int bpp, unsigned char* image);
-
-class cObject;
-
-/**
- * Base-Class of all roles.
- * A role can be understood as a set of object attributes reflecting
- * a certain part, component or aspect of the object.
- */
-struct rRole {
-    cObject* object;
-    std::string role;
-    bool active;
-
-    rRole(rRole* original = NULL) {
-        if (original != NULL) {
-            object = original->object;
-            active = original->active;
-            role = original->role;
-        } else {
-            object = NULL;
-            active = true;
-            role = "";
-        }
-    }
-
-    virtual rRole* clone() {
-        return new rRole(this);
-    }
-
-    virtual float constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor) { return 0.0f; };
-    virtual void message(cMessage* message) {};
-    virtual void animate(float spf) {};
-    virtual void transform() {};
-    virtual void drawSolid() {};
-    virtual void drawEffect() {};
-    virtual void drawHUD() {};
-};
-
-/**
- *  Encapsulates onscreen descriptive texts about an object.
- */
-struct rNameable : public rRole {
-    /// Base position for rendering. (hook i)
-    vec3 pos0;
-    /// Base orientation for rendering. (hook i)
-    quat ori0;
-    /// Extended position for rendering. (hook i)
-    vec3 pos1;
-    /// Extended orientation for rendering. (hook i)
-    quat ori1;
-    /// Color for rendering. (hook i)
-    vec4 color;
-    /// Enable effect rendering. (hook i)
-    bool effect;
-    /// Name or title of object or the document.
-    std::string name;
-    /// String describing the object or the document.
-    std::string description;
-    /// { 0, .., 25 } for { a, ..., z }.
-    unsigned int designation;
-
-    /// Constructor.
-    rNameable(cObject* obj = NULL);
-    /// Copy Constructor.
-    rNameable(rNameable * original);
-    /// Clone this.
-    virtual rRole* clone();
-
-    virtual void drawEffect();
-};
-
-/**
- * Encapsulates physical state as far as movement and position is concerned.
- */
-struct rTraceable : public cParticle, public rRole {
-    /// Averaged amount of groundedness [0,1] result from collision checks.
-    float grounded;
-    /// Jetdrive throttle setting hook usually [0,1].
-    float jetthrottle;
-    /// Grounddrive throttle setting hook usually [0,1].
-    float throttle;
-
-    /// Constructor.
-    rTraceable(cObject* obj = NULL);
-    /// Copy Constructor.
-    rTraceable(rTraceable * original);
-    /// Clone this.
-    virtual rRole* clone();
-    /// Accumulate steering and environmental forces.
-    void accumulate(float spf);
-    /// Integrate position and derive velocity given forces and old state.
-    void integrate(float spf);
-    /// Adjust position to nullify collisions.
-    void collide(float spf);
-    /// Accumulate, integrate and collide.
-    virtual void animate(float spf);
-};
-
-
-/**
- * Encapsulates attributes related to body damage and armor state.
- */
-struct rDamageable : public rRole {
-    /// Marks object as still alife.
-    bool alife;
-    /// Enumeration of entity body part units: Body, Legs, Left, Right.
-    enum Parts {
-        BODY = 0, // Some Objects only have this
-        LEGS,
-        LEFT,
-        RIGHT,
-        MAX_PARTS
-    };
-    /// Health-Points for Body-Parts.
-    float hp[MAX_PARTS];
-    // Diverse armor for Body-Parts.
-    // float beam[MAX_PARTS];
-    // float pierce[MAX_PARTS];
-    // float splash[MAX_PARTS];
-    // float heat[MAX_PARTS];
-    // float sinks[MAX_PARTS];
-    /// Some object that dealt some damage to the object. (hook o) [(oid, damage)]?
-    OID disturber;
-
-    /// Constructor.
-    rDamageable(cObject* obj = NULL);
-    /// Copy Constructor.
-    rDamageable(rDamageable * original);
-    /// Clone this.
-    virtual rRole* clone();
-    /// Apply damage to a hitzone, and return alife.
-    virtual bool damage(int hitzone, float damage, cObject* enactor);
-    /// Display damaging.
-    virtual void drawHUD();
-};
-
-
-/**
- * Encapsulates thoughtful steering behavior attributes and code.
- */
-struct rControlled : public rRole {
-    /// Aim target.
-    OID target;
-    /// Movement target, set Not-a-Number for non-validity.
-    vec3 destination;
-    /// Human, AI/Remote Pad-Control over the Object.
-    cPad* pad;
-    /// Command Stack controlls the pad when enabled.
-    cController* controller;
-    
-    /// Constructor.
-    rControlled(cObject* obj = NULL);
-    /// Copy Constructor.
-    rControlled(rControlled * original);
-    /// Clone this.
-    virtual rRole* clone();
-    /// Process autopilot-controller.
-    virtual void animate(float spf);
-};
-
-
-/**
- * Object Group - as for now intended for messaging maillist-groups.
- */
-struct rGrouping : public rRole {
-    /// Group name.
-    std::string name;
-    /// Lists registered members of this group.
-    std::set<OID> members;
-
-    /// Constructor
-    rGrouping(cObject* obj = NULL);
-    /// Copy Constructor
-    rGrouping(rGrouping * original);
-    /// Clone this.
-    virtual rRole* clone();
-};
 
 #define FIELDOFS(attribute)     (((OID)&attribute) - ((OID)this))
 #define ROLEPTR(attribute)      ((rRole* cObject::*) &attribute)
@@ -270,14 +96,13 @@ public: // Basic Object attributes for managing.
 public: // FIXME: Predefined Roles, to be removed from cObject
 
     rNameable* nameable;
-    rTraceable* traceable;
     rDamageable* damageable;
     rControlled* controlled;
     rGrouping* grouping;
 
 public: // Experimental Role "Managing"
 
-    static std::map<std::string, rRole*> roleprotos;
+    static std::map<std::string, rComponent*> roleprotos;
     static std::map<std::string, OID> roleoffsets;
     //static std::map<std::string, OID> roleids;
     //static std::map<OID, rRole*> roletypes;
@@ -324,7 +149,6 @@ public:
             //registerRole(new rGrouping, FIELDOFS(grouping), ROLEPTR(cObject::grouping));
         }
         nameable = NULL;
-        traceable = NULL;
         damageable = NULL;
         controlled = NULL;
         grouping = NULL;
@@ -348,7 +172,7 @@ public:
         delete this->grouping;
     }
 
-    static void registerRole(rRole* prototype, OID attribute_offset, rRole* cObject::* ptr = NULL) {
+    static void registerRole(rComponent* prototype, OID attribute_offset, rComponent* cObject::* ptr = NULL) {
         roleprotos[prototype->role] = prototype;
         roleoffsets[prototype->role] = attribute_offset;
         std::cout << "NEW ROLE " << prototype->role << " @ " << attribute_offset << " # " << ptr << "\n";

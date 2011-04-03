@@ -35,7 +35,6 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/source/main.o \
 	${OBJECTDIR}/source/cAlert.o \
-	${OBJECTDIR}/source/cComcom.o \
 	${OBJECTDIR}/source/cLandscape.o \
 	${OBJECTDIR}/source/rWeaponPlasmagun.o \
 	${OBJECTDIR}/source/rWeaponHoming.o \
@@ -43,12 +42,14 @@ OBJECTFILES= \
 	${OBJECTDIR}/source/cWorld.o \
 	${OBJECTDIR}/source/cBackground.o \
 	${OBJECTDIR}/source/cTiming.o \
+	${OBJECTDIR}/source/rComcom.o \
 	${OBJECTDIR}/source/cObject.o \
 	${OBJECTDIR}/source/rWeapon.o \
 	${OBJECTDIR}/source/cSolid.o \
 	${OBJECTDIR}/source/rWeaponSparkgun.o \
 	${OBJECTDIR}/_ext/880981645/cMessage.o \
 	${OBJECTDIR}/source/cTree.o \
+	${OBJECTDIR}/source/rComponent.o \
 	${OBJECTDIR}/source/cPlanetmap.o \
 	${OBJECTDIR}/source/cPadmap.o \
 	${OBJECTDIR}/source/rWeaponExplosion.o \
@@ -94,11 +95,6 @@ ${OBJECTDIR}/source/cAlert.o: source/cAlert.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/cAlert.o source/cAlert.cpp
 
-${OBJECTDIR}/source/cComcom.o: source/cComcom.cpp 
-	${MKDIR} -p ${OBJECTDIR}/source
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/cComcom.o source/cComcom.cpp
-
 ${OBJECTDIR}/source/cLandscape.o: source/cLandscape.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source
 	${RM} $@.d
@@ -134,6 +130,11 @@ ${OBJECTDIR}/source/cTiming.o: source/cTiming.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/cTiming.o source/cTiming.cpp
 
+${OBJECTDIR}/source/rComcom.o: source/rComcom.cpp 
+	${MKDIR} -p ${OBJECTDIR}/source
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/rComcom.o source/rComcom.cpp
+
 ${OBJECTDIR}/source/cObject.o: source/cObject.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source
 	${RM} $@.d
@@ -163,6 +164,11 @@ ${OBJECTDIR}/source/cTree.o: source/cTree.cpp
 	${MKDIR} -p ${OBJECTDIR}/source
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/cTree.o source/cTree.cpp
+
+${OBJECTDIR}/source/rComponent.o: source/rComponent.cpp 
+	${MKDIR} -p ${OBJECTDIR}/source
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/rComponent.o source/rComponent.cpp
 
 ${OBJECTDIR}/source/cPlanetmap.o: source/cPlanetmap.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source

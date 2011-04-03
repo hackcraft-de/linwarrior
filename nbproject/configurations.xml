@@ -4,12 +4,9 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <logicalFolder name="f1"
-                     displayName="components: computers"
-                     projectFiles="true">
-        <itemPath>source/cComcom.h</itemPath>
-      </logicalFolder>
-      <logicalFolder name="f2" displayName="components: weapons" projectFiles="true">
+      <logicalFolder name="f2" displayName="components" projectFiles="true">
+        <itemPath>source/rComcom.h</itemPath>
+        <itemPath>source/rComponent.h</itemPath>
         <itemPath>source/rWeapon.h</itemPath>
         <itemPath>source/rWeaponExplosion.h</itemPath>
         <itemPath>source/rWeaponHoming.h</itemPath>
@@ -62,7 +59,6 @@
       <itemPath>source/cAlert.cpp</itemPath>
       <itemPath>source/cBackground.cpp</itemPath>
       <itemPath>source/cBuilding.cpp</itemPath>
-      <itemPath>source/cComcom.cpp</itemPath>
       <itemPath>source/cController.cpp</itemPath>
       <itemPath>source/cLandscape.cpp</itemPath>
       <itemPath>source/cMech.cpp</itemPath>
@@ -77,6 +73,8 @@
       <itemPath>source/cTree.cpp</itemPath>
       <itemPath>source/cWorld.cpp</itemPath>
       <itemPath>source/main.cpp</itemPath>
+      <itemPath>source/rComcom.cpp</itemPath>
+      <itemPath>source/rComponent.cpp</itemPath>
       <itemPath>source/rWeapon.cpp</itemPath>
       <itemPath>source/rWeaponExplosion.cpp</itemPath>
       <itemPath>source/rWeaponHoming.cpp</itemPath>
