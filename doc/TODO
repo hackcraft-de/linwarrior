@@ -1,6 +1,8 @@
-- Move object's do_*() functionality to Movable and add bindings to Controller?
+- Add target and destination attributes to Mobile and bind them.
 
-- Move object's in_*() functionality to Movable and add bindings to Controller?
+- Move object's do_*() functionality to Mobile and add bindings to Controller?
+
+- Move object's in_*() functionality to Mobile and add bindings to Controller?
 
 - Components/Roles shall get their own files (at least one file for all).
 

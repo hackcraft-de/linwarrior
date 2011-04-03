@@ -14,6 +14,7 @@
 using namespace std;
 
 #define GROUNDDETAIL -1
+#define VEGETATION 0.8f
 
 int cPlanetmap::sInstances = 0;
 std::vector<long> cPlanetmap::sTextures;
@@ -1046,7 +1047,7 @@ static inline void drawSharp() {
 }
 
 void cPlanetmap::drawEffect() {
-    const float totaldensity = 1.2f;
+    const float totaldensity = VEGETATION;
 
     // Pseudorandom Permutation.
     static unsigned char perms[3*256];

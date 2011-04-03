@@ -1630,12 +1630,14 @@ void cMech::do_moveTowards() {
     // Determine nearest rotation direction
     vec2 rd;
     cParticle::rotationTo(rd, mobile->pos, target_pos, mobile->ori);
-    controlled->pad->setAxis(cPad::MECH_CHASSIS_LR_AXIS, rd[0]);
+    float lr = rd[0];
     // Determine throttling according to angle.
     float thr = 1.0f * (1.0f - 0.6 * fabs(rd[0]));
+    float throttle = -thr;
+    //cout << "Throttle: " << throttle << "\n";
 
-    //cout << "Throttle: " << thr << "\n";
-    controlled->pad->setAxis(cPad::MECH_THROTTLE_AXIS, -thr);
+    controlled->pad->setAxis(cPad::MECH_CHASSIS_LR_AXIS, lr);
+    controlled->pad->setAxis(cPad::MECH_THROTTLE_AXIS, throttle);
 }
 
 void cMech::do_moveNear() {
@@ -1659,6 +1661,7 @@ void cMech::do_moveNear() {
     // Determine nearest rotation direction.
     vec2 rd;
     cParticle::rotationTo(rd, mobile->pos, target_pos, mobile->ori);
+    float lr = 2 * rd[0];
     // Determine distance.
     float d = vector_distance(mobile->pos, target_pos);
     // Throttle according to angle and distance.
@@ -1666,10 +1669,11 @@ void cMech::do_moveNear() {
     float f = (d - 23);
     f = fmin(+1.0f, fmax(-1.0f, f));
     f *= thr;
+    float throttle = -f;
+    //cout << "Throttle: " << throttle << "\n";
 
-    controlled->pad->setAxis(cPad::MECH_CHASSIS_LR_AXIS, 2 * rd[0]);
-    controlled->pad->setAxis(cPad::MECH_THROTTLE_AXIS, -f);
-    //cout << "Throttle: " << thr << "\n";
+    controlled->pad->setAxis(cPad::MECH_CHASSIS_LR_AXIS, lr);
+    controlled->pad->setAxis(cPad::MECH_THROTTLE_AXIS, throttle);
 }
 
 void cMech::do_aimAt() {
@@ -1687,9 +1691,11 @@ void cMech::do_aimAt() {
     // Determine nearest rotation direction
     vec2 rd;
     cParticle::rotationTo(rd, mobile->pos, target_pos, mobile->ori, mobile->ori1);
+    float lr = 2 * rd[0];
+    float ud = rd[1];
 
-    controlled->pad->setAxis(cPad::MECH_TURRET_LR_AXIS, 2 * rd[0]);
-    controlled->pad->setAxis(cPad::MECH_TURRET_UD_AXIS, rd[1]);
+    controlled->pad->setAxis(cPad::MECH_TURRET_LR_AXIS, lr);
+    controlled->pad->setAxis(cPad::MECH_TURRET_UD_AXIS, ud);
 }
 
 void cMech::do_fireAt() {
@@ -1707,12 +1713,11 @@ void cMech::do_fireAt() {
     // Determine nearest rotation direction
     vec2 rd;
     cParticle::rotationTo(rd, mobile->pos, target_pos, mobile->ori, mobile->ori1);
+    //  Fire at random and only if angle small enough.
+    bool fire = (rand() % 100 <= 40 && fabs(rd[0]) < 0.5);
+    //cout "Fire: " << fire << " \n";
 
-    // Fire at random and only if angle small enough.
-    if (rand() % 100 <= 40 && fabs(rd[0]) < 0.5) {
-        controlled->pad->setButton(cPad::MECH_FIRE_BUTTON1, true);
-        //cout "fire\n";
-    }
+    controlled->pad->setButton(cPad::MECH_FIRE_BUTTON1, fire);
 }
 
 void cMech::do_idle() {
