@@ -15,14 +15,15 @@
 
 class cWorld;
 
-struct rControlled;
 struct rGrouping;
 
-#include "rControlled.h"
 #include "rGrouping.h"
 
 #include "OID.h"
 #include "cMessage.h"
+#include "cPad.h"
+
+#include "psi3d/math3d.h"
 
 #include <vector>
 #include <set>
@@ -90,12 +91,11 @@ public: // Basic Object attributes for managing.
     double seconds;
     /// Internal qualified name of the object.
     std::string name;
+    /// Input to the object through common input device if not null.
+    cPad* pad;
 
-public: // FIXME: Predefined Roles, to be removed from cObject
+public: // FIXME: Predefined Components, to be removed from cObject
 
-    //rNameable* nameable;
-    //rDamageable* damageable;
-    rControlled* controlled;
     rGrouping* grouping;
 
 public: // Experimental Component "Managing"
@@ -146,26 +146,17 @@ public:
             //registerRole(new rControlled, FIELDOFS(controlled), ROLEPTR(cObject::controlled));
             //registerRole(new rGrouping, FIELDOFS(grouping), ROLEPTR(cObject::grouping));
         }
-        //nameable = NULL;
-        controlled = NULL;
         grouping = NULL;
+        pad = NULL;
         //rRole* r = GETROLE(FIELDOFS(nameable));
         //std::cout << "TEST: " << r << " vs " << nameable << "\n";
     }
 
     cObject(cObject* original) {
-        //if (original->nameable) nameable = new rNameable(original->nameable);
-        //if (original->traceable) traceable = new rTraceable(original->traceable);
-        //if (original->damageable) damageable = new rDamageable(original->damageable);
-        if (original->controlled) controlled = new rControlled(original->controlled);
         if (original->grouping) grouping = new rGrouping(original->grouping);
     }
 
     virtual ~cObject() {
-        //delete this->nameable;
-        //delete this->traceable;
-        //delete this->damageable;
-        delete this->controlled;
         delete this->grouping;
     }
 

@@ -1,4 +1,6 @@
-- Remove all components from base Object.
+- Remove components from base Object.
+
+- Convert visual/model objects (tree, planetmap, building, etc.) to components?
 
 - Add target and destination attributes to Mobile and bind them.
 

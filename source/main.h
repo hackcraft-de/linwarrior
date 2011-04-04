@@ -13,7 +13,7 @@
 #include "userkeys.h"
 
 #include "cPad.h"
-#include "cController.h"
+#include "rController.h"
 #include "cBackground.h"
 #include "cMission.h"
 #include "cWorld.h"

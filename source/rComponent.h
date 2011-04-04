@@ -61,7 +61,7 @@ struct rComponent {
 #include "rNameable.h"
 #include "rTraceable.h"
 #include "rDamageable.h"
-#include "rControlled.h"
+#include "cController.h"
 #include "rGrouping.h"
 #include "rRigged.h"
 #include "rCamera.h"

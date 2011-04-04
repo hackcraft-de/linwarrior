@@ -9,6 +9,7 @@
 #ifndef RMOBILE_H
 #define	RMOBILE_H
 
+#include "OID.h"
 #include "rComponent.h"
 #include "psi3d/math3d.h"
 
@@ -51,6 +52,10 @@ struct rMobile : public rComponent {
     float tower_lr;
     /// Steering angle for turret, left/right radians-per-second wish. (hook i)
     float tower_ud;
+    /// Aim target. (hook i)
+    OID target;
+    /// Movement target, set Not-a-Number for non-validity. (hook i)
+    vec3 destination;
 
     /// Constructor
     rMobile(cObject * obj);

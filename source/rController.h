@@ -1,5 +1,5 @@
 /**
- * File:     cController.h
+ * File:     rController.h
  * Project:  LinWarrior 3D
  * Home:     hackcraft.de
  *
@@ -11,9 +11,12 @@
 #ifndef _CONTROLLER_H
 #define _CONTROLLER_H
 
-class cController;
+struct rController;
 
-#include "cObject.h"
+//#include "cObject.h"
+#include "OID.h"
+#include "rComponent.h"
+#include "psi3d/math3d.h"
 
 #include <vector>
 #include <string>
@@ -23,7 +26,7 @@ class cController;
  * Implements an stack-automaton for object behavior control
  * and plan execution.
  */
-class cController {
+struct rController : public rComponent {
 public:
     /// Available opcodes of stack-machine.
     enum Opcodes {
@@ -42,9 +45,7 @@ public:
     };
 
     /// Whether control is enabled (autopilot/ai enabled/disabled).
-    bool controllerEnabled;
-    /// The controlled entity cObject.
-    cObject* controlledDevice;
+    bool enabled;
     /// The command stack: n Values may form a command frame (command+arguments).
     std::vector<OID> commandStack;
     /// Who disturbed me the last time - ignore now.
@@ -64,16 +65,17 @@ public: // Output hooks.
     bool idling;
 public:
     /// Initialises a en-/disabled controller for the given entity->
-    cController(cObject* entity, bool enabled = true);
-
+    rController(cObject* entity = NULL, bool enable = true);
     /// Destructor.
-    virtual ~cController();
+    virtual ~rController();
+    /// Clone this.
+    virtual rComponent* clone() { return NULL; }
 
     /// Do a single Instruction step as the top frame on the stack says.
-    void process(float spf = 1.0f);
+    virtual void animate(float spf = 1.0f);
 
     /// Currently there is no hud.
-    void drawHUD() {
+    virtual void drawHUD() {
     };
 
     /// Print out State and Stackinformation.

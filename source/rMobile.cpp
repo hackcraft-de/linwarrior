@@ -4,7 +4,7 @@
 #include "GL/glew.h"
 
 
-rMobile::rMobile(cObject * obj) : jeten(0), jetthrottle(0), driveen(0), drivethrottle(0), immobile(false), chassis_lr(0), chassis_lr_(0), chassis_ud(0), chassis_ud_(0), tower_lr(0), tower_ud(0) {
+rMobile::rMobile(cObject * obj) : jeten(0), jetthrottle(0), driveen(0), drivethrottle(0), immobile(false), chassis_lr(0), chassis_lr_(0), chassis_ud(0), chassis_ud_(0), tower_lr(0), tower_ud(0), target(0) {
     role = "MOBILE";
     object = obj;
     vector_zero(pos);
@@ -12,6 +12,7 @@ rMobile::rMobile(cObject * obj) : jeten(0), jetthrottle(0), driveen(0), drivethr
     vector_zero(bse);
     quat_zero(ori);
     quat_zero(ori1);
+    vector_set(destination, float_NAN, float_NAN, float_NAN);
 }
 
 void rMobile::ChassisLR(float radians) {

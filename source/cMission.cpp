@@ -81,7 +81,7 @@ cObject* cMission::init(cWorld* world) {
 
         mech->nameable->name = "Alpha";
 
-        mech->controlled->controller->controllerEnabled = false; // Disable Autopilot.
+        mech->controller->enabled = false; // Disable Autopilot.
         mech->addTag(cObject::BLUE);
         mech->addTag(cObject::HUMANPLAYER);
         mech->tarcom->addEnemy(cObject::RED);
@@ -296,7 +296,7 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
         player = mech;
         mech->name = "Playermech";
         mech->nameable->name = "Alpha";
-        mech->controlled->controller->controllerEnabled = false; // Disable Autopilot.
+        mech->controller->enabled = false; // Disable Autopilot.
         mech->addTag(cObject::BLUE);
         mech->addTag(cObject::HUMANPLAYER);
         mech->tarcom->addEnemy(cObject::RED);
@@ -352,7 +352,7 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
         group_alliance_wingmen.grouping->members.insert(mech->oid);
         group_alliance_all.grouping->members.insert(mech->oid);
         bool patrol = true;
-        mech->controlled->controller->pushFollowLeader(player->oid, patrol);
+        mech->controller->pushFollowLeader(player->oid, patrol);
         mech->mountWeapon((char*) "LLoArm", new rWeaponMachinegun);
     }
 
@@ -375,7 +375,7 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
         group_alliance_wingmen.grouping->members.insert(mech->oid);
         group_alliance_all.grouping->members.insert(mech->oid);
         bool patrol = true;
-        mech->controlled->controller->pushFollowLeader(player->oid, patrol);
+        mech->controller->pushFollowLeader(player->oid, patrol);
         mech->mountWeapon((char*) "RLoArm", new rWeaponMachinegun);
     }
 
@@ -446,19 +446,19 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
 
         float d[] = { loc[0]+100, loc[1]+0, loc[1]-50 };
         adjustHeight(planetmap, d);
-        mech->controlled->controller->pushGotoDestination(d);
+        mech->controller->pushGotoDestination(d);
         float c[] = { loc[0]+100, loc[1]+0, loc[2]+120 };
         adjustHeight(planetmap, c);
-        mech->controlled->controller->pushGotoDestination(c);
+        mech->controller->pushGotoDestination(c);
         float b[] = { loc[0]-20, loc[1]+0, loc[2]+120 };
         adjustHeight(planetmap, b);
-        mech->controlled->controller->pushGotoDestination(b, false);
+        mech->controller->pushGotoDestination(b, false);
         float a[] = { loc[0]-15, loc[1]+0, loc[2]-50 };
         adjustHeight(planetmap, a);
-        mech->controlled->controller->pushGotoDestination(a);
-        mech->controlled->controller->pushRepeatInstructions(4);
-        mech->controlled->controller->pushWaitEvent(1000 * 2);
-        //mech->mController->pushFollowLeader(player->mSerial, true);
+        mech->controller->pushGotoDestination(a);
+        mech->controller->pushRepeatInstructions(4);
+        mech->controller->pushWaitEvent(1000 * 3);
+        //mech->controller->pushFollowLeader(player->mSerial, true);
     }
 
     // Primary Target

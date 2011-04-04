@@ -3,7 +3,6 @@
 #include "cMech.h"
 
 #include "cWorld.h"
-#include "cController.h"
 #include "cPad.h"
 
 #include "rWeapon.h"
@@ -11,7 +10,7 @@
 #include "rNameable.h"
 #include "rTraceable.h"
 #include "rDamageable.h"
-#include "rControlled.h"
+#include "rController.h"
 #include "rGrouping.h"
 #include "rRigged.h"
 #include "rCamera.h"
@@ -89,10 +88,12 @@ cMech::cMech(float* pos, float* rot) {
         }
     }
 
+    pad = new cPad;
+    
     collider = new rCollider(this);
     rigged = new rRigged(this);
     damageable = new rDamageable(this);
-    controlled = new rControlled(this);
+    controller = new rController(this);
     nameable = new rNameable(this);
     traceable = new rTraceable(this);
     camera = new rCamera(this);
@@ -348,8 +349,8 @@ void cMech::animate(float spf) {
     {
         // from CONTROLLED
         {
-            tarcom->switchnext = controlled->pad->getButton(cPad::MECH_NEXT_BUTTON);
-            tarcom->switchprev = controlled->pad->getButton(cPad::MECH_PREV_BUTTON);
+            tarcom->switchnext = pad->getButton(cPad::MECH_NEXT_BUTTON);
+            tarcom->switchprev = pad->getButton(cPad::MECH_PREV_BUTTON);
         }
         // from DAMAGEABLE
         {
@@ -413,29 +414,29 @@ void cMech::animate(float spf) {
     {
         // from Damageable
         {
-            controlled->active = damageable->alife;
-            controlled->controller->disturbedBy = damageable->disturber;
+            controller->active = damageable->alife;
+            controller->disturbedBy = damageable->disturber;
             //controlled->controller->disturbedBy = this->disturbedBy();
         }
 
         // FIXME: from anywhere
         {
             //controlled->controller->enemyNearby = this->enemyNearby();
-            controlled->controller->enemyNearby = this->tarcom->nearbyEnemy;
+            controller->enemyNearby = tarcom->nearbyEnemy;
         }
 
-        controlled->animate(spf);
+        controller->animate(spf);
     }
 
     // MOBILE
     {
         // from CONTROLLED
         {
-            mobile->tower_lr = controlled->pad->getAxis(cPad::MECH_TURRET_LR_AXIS);
-            mobile->tower_ud = controlled->pad->getAxis(cPad::MECH_TURRET_UD_AXIS);
-            mobile->chassis_lr = controlled->pad->getAxis(cPad::MECH_CHASSIS_LR_AXIS);
-            mobile->driveen = controlled->pad->getAxis(cPad::MECH_THROTTLE_AXIS);
-            mobile->jeten = (controlled->pad->getButton(cPad::MECH_JET_BUTTON1) + controlled->pad->getButton(cPad::MECH_JET_BUTTON2));
+            mobile->tower_lr = pad->getAxis(cPad::MECH_TURRET_LR_AXIS);
+            mobile->tower_ud = pad->getAxis(cPad::MECH_TURRET_UD_AXIS);
+            mobile->chassis_lr = pad->getAxis(cPad::MECH_CHASSIS_LR_AXIS);
+            mobile->driveen = pad->getAxis(cPad::MECH_THROTTLE_AXIS);
+            mobile->jeten = (pad->getButton(cPad::MECH_JET_BUTTON1) + pad->getButton(cPad::MECH_JET_BUTTON2));
         }
         // from DAMAGEABLE
         {
@@ -539,7 +540,7 @@ void cMech::animate(float spf) {
         
         // from CONTROLLED
         {
-            camera->cameraswitch = controlled->pad->getButton(cPad::MECH_CAMERA_BUTTON);
+            camera->cameraswitch = pad->getButton(cPad::MECH_CAMERA_BUTTON);
         }
         
         camera->animate(spf);
@@ -548,7 +549,7 @@ void cMech::animate(float spf) {
     // FIXME: This block needs to be factored out to fit the used component pattern.
     // FIXME: Weapons need to be chained in an independent style.
     if (damageable->alife) {
-        if (controlled->pad->getButton(cPad::MECH_FIRE_BUTTON1) || controlled->pad->getButton(cPad::MECH_FIRE_BUTTON2)) {
+        if (pad->getButton(cPad::MECH_FIRE_BUTTON1) || pad->getButton(cPad::MECH_FIRE_BUTTON2)) {
             if (true) {
                 fireCycleWeapons();
             } else {
@@ -561,7 +562,7 @@ void cMech::animate(float spf) {
     loopi(weapons.size()) {
         // from CONTROLLED:
         {
-            weapons[i]->target = controlled->target;
+            weapons[i]->target = mobile->target;
         }
         // from RIGGED:
         {
@@ -592,6 +593,8 @@ void cMech::animate(float spf) {
         explosion->transform();
     }
 
+    if (pad) pad->reset();
+    
     // Write back.
     vector_cpy(this->pos, traceable->pos);
     quat_cpy(this->ori, traceable->ori);
@@ -777,14 +780,14 @@ float cMech::constrainParticle(float* worldpos, float radius, float* localpos, c
 float cMech::inDestinationRange() {
     float a = 0;
     float b = 6;
-    float d = vector_distance(mobile->pos, controlled->destination);
+    float d = vector_distance(mobile->pos, mobile->destination);
     if (d < a) return 1.0f;
     if (d > b) return 0.0f;
     return (1.0f - (d - a) / (b - a));
 }
 
 float cMech::inMeeleRange() {
-    cObject* target = cWorld::instance->getObject(controlled->target);
+    cObject* target = cWorld::instance->getObject(mobile->target);
     if (target == NULL) return 0.0f;
     float a = 16;
     float b = 24;
@@ -796,7 +799,7 @@ float cMech::inMeeleRange() {
 
 float cMech::inWeaponRange() {
     // TODO inWeaponRange should depend on ready to fire weapons properties.
-    cObject* target = cWorld::instance->getObject(controlled->target);
+    cObject* target = cWorld::instance->getObject(mobile->target);
     if (target == NULL) return 0.0f;
     float a = 36 + 10;
     float b = 44 + 10;
@@ -807,7 +810,7 @@ float cMech::inWeaponRange() {
 }
 
 float cMech::inTargetRange() {
-    cObject* target = cWorld::instance->getObject(controlled->target);
+    cObject* target = cWorld::instance->getObject(mobile->target);
     if (target == NULL) return 0.0f;
     float a = 56;
     float b = 124;
@@ -819,18 +822,18 @@ float cMech::inTargetRange() {
 
 void cMech::do_moveTowards() {
     //cout << "do_moveTowards():\n";
-    if (controlled->pad == NULL) return;
+    if (pad == NULL) return;
 
     // Determine Target (ie. Move- or Aim-Target if former is not available).
     float* target_pos = NULL;
-    if (finitef(controlled->destination[0])) {
-        target_pos = controlled->destination;
-    } else if (controlled->target != 0) {
-        cObject* target = cWorld::instance->getObject(controlled->target);
+    if (finitef(mobile->destination[0])) {
+        target_pos = mobile->destination;
+    } else if (mobile->target != 0) {
+        cObject* target = cWorld::instance->getObject(mobile->target);
         if (target != NULL) {
             target_pos = target->pos;
         } else {
-            controlled->target = 0;
+            mobile->target = 0;
             return;
         }
     } else return;
@@ -844,24 +847,24 @@ void cMech::do_moveTowards() {
     float throttle = -thr;
     //cout << "Throttle: " << throttle << "\n";
 
-    controlled->pad->setAxis(cPad::MECH_CHASSIS_LR_AXIS, lr);
-    controlled->pad->setAxis(cPad::MECH_THROTTLE_AXIS, throttle);
+    pad->setAxis(cPad::MECH_CHASSIS_LR_AXIS, lr);
+    pad->setAxis(cPad::MECH_THROTTLE_AXIS, throttle);
 }
 
 void cMech::do_moveNear() {
     //cout << "do_moveNear():\n";
-    if (controlled->pad == NULL) return;
+    if (pad == NULL) return;
 
     // Determine Target (ie. Move- or Aim-Target if former is not available).
     float* target_pos = NULL;
-    if (finitef(controlled->destination[0])) {
-        target_pos = controlled->destination;
-    } else if (controlled->target != 0) {
-        cObject* target = cWorld::instance->getObject(controlled->target);
+    if (finitef(mobile->destination[0])) {
+        target_pos = mobile->destination;
+    } else if (mobile->target != 0) {
+        cObject* target = cWorld::instance->getObject(mobile->target);
         if (target != NULL) {
             target_pos = target->pos;
         } else {
-            controlled->target = 0;
+            mobile->target = 0;
             return;
         }
     } else return;
@@ -880,18 +883,18 @@ void cMech::do_moveNear() {
     float throttle = -f;
     //cout << "Throttle: " << throttle << "\n";
 
-    controlled->pad->setAxis(cPad::MECH_CHASSIS_LR_AXIS, lr);
-    controlled->pad->setAxis(cPad::MECH_THROTTLE_AXIS, throttle);
+    pad->setAxis(cPad::MECH_CHASSIS_LR_AXIS, lr);
+    pad->setAxis(cPad::MECH_THROTTLE_AXIS, throttle);
 }
 
 void cMech::do_aimAt() {
     //cout "do_aimAt():\n";
-    if (controlled->pad == NULL) return;
+    if (pad == NULL) return;
 
     // Get aim-target position.
     float* target_pos = NULL;
-    if (controlled->target != 0) {
-        cObject* target = cWorld::instance->getObject(controlled->target);
+    if (mobile->target != 0) {
+        cObject* target = cWorld::instance->getObject(mobile->target);
         if (target != NULL) target_pos = target->pos;
         else return;
     } else return;
@@ -902,18 +905,18 @@ void cMech::do_aimAt() {
     float lr = 2 * rd[0];
     float ud = rd[1];
 
-    controlled->pad->setAxis(cPad::MECH_TURRET_LR_AXIS, lr);
-    controlled->pad->setAxis(cPad::MECH_TURRET_UD_AXIS, ud);
+    pad->setAxis(cPad::MECH_TURRET_LR_AXIS, lr);
+    pad->setAxis(cPad::MECH_TURRET_UD_AXIS, ud);
 }
 
 void cMech::do_fireAt() {
     //cout << "do_fireAt():\n";
-    if (controlled->pad == NULL) return;
+    if (pad == NULL) return;
 
     // Get aim-target position.
     float* target_pos = NULL;
-    if (controlled->target != 0) {
-        cObject* target = cWorld::instance->getObject(controlled->target);
+    if (mobile->target != 0) {
+        cObject* target = cWorld::instance->getObject(mobile->target);
         if (target != NULL) target_pos = target->pos;
         else return;
     } else return;
@@ -925,28 +928,28 @@ void cMech::do_fireAt() {
     bool fire = (rand() % 100 <= 40 && fabs(rd[0]) < 0.5);
     //cout "Fire: " << fire << " \n";
 
-    controlled->pad->setButton(cPad::MECH_FIRE_BUTTON1, fire);
+    pad->setButton(cPad::MECH_FIRE_BUTTON1, fire);
 }
 
 void cMech::do_idle() {
-    if (controlled->pad == NULL) return;
+    if (pad == NULL) return;
     mobile->drivethrottle = 0;
-    controlled->pad->reset();
+    pad->reset();
 }
 
 void cMech::do_aimFor(OID target) {
-    controlled->target = target;
+    mobile->target = target;
 }
 
 void cMech::do_moveFor(float* dest) {
     if (dest != NULL) {
-        vector_cpy(controlled->destination, dest);
+        vector_cpy(mobile->destination, dest);
     } else {
         // Set XYZ to Not-A-Number (NaN) for no location.
         // Note that NaN-ity can only be tested either by
         // isnanf(x), !finite(x) or by x!=x as NaN always != NaN.
-        vector_set(controlled->destination, float_NAN, float_NAN, float_NAN);
-        assert(controlled->destination[0] != controlled->destination[0]);
+        vector_set(mobile->destination, float_NAN, float_NAN, float_NAN);
+        assert(mobile->destination[0] != mobile->destination[0]);
         //cout << "Destination is " << ((finitef(mDestination[0])) ? "finite" : "infinite" ) << "\n";
     }
 }

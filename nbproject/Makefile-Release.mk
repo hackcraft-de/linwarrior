@@ -53,7 +53,6 @@ OBJECTFILES= \
 	${OBJECTDIR}/source/rWeaponSparkgun.o \
 	${OBJECTDIR}/source/rNameable.o \
 	${OBJECTDIR}/source/rTraceable.o \
-	${OBJECTDIR}/source/rControlled.o \
 	${OBJECTDIR}/source/cTree.o \
 	${OBJECTDIR}/_ext/880981645/cMessage.o \
 	${OBJECTDIR}/source/rComponent.o \
@@ -66,7 +65,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/source/rCamera.o \
 	${OBJECTDIR}/source/cMech.o \
 	${OBJECTDIR}/source/rWeaponMachinegun.o \
-	${OBJECTDIR}/source/cController.o \
+	${OBJECTDIR}/source/rController.o \
 	${OBJECTDIR}/source/cSurface.o
 
 
@@ -194,11 +193,6 @@ ${OBJECTDIR}/source/rTraceable.o: source/rTraceable.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/rTraceable.o source/rTraceable.cpp
 
-${OBJECTDIR}/source/rControlled.o: source/rControlled.cpp 
-	${MKDIR} -p ${OBJECTDIR}/source
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/rControlled.o source/rControlled.cpp
-
 ${OBJECTDIR}/source/cTree.o: source/cTree.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source
 	${RM} $@.d
@@ -259,10 +253,10 @@ ${OBJECTDIR}/source/rWeaponMachinegun.o: source/rWeaponMachinegun.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/rWeaponMachinegun.o source/rWeaponMachinegun.cpp
 
-${OBJECTDIR}/source/cController.o: source/cController.cpp 
+${OBJECTDIR}/source/rController.o: source/rController.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/cController.o source/cController.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/rController.o source/rController.cpp
 
 ${OBJECTDIR}/source/cSurface.o: source/cSurface.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source

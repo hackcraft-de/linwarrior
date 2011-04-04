@@ -1,4 +1,4 @@
-#include "cController.h"
+#include "rController.h"
 
 #include "cObject.h"
 #include "cWorld.h"
@@ -20,9 +20,11 @@ using std::string;
 
 // -------------------------------------------------------------
 
-cController::cController(cObject* entity, bool enabled) {
-    controlledDevice = entity;
-    controllerEnabled = enabled;
+rController::rController(cObject* entity, bool enable) {
+    object = entity;
+    enabled = enable;
+    role = "CONTROLLER";
+
     lastDisturbedBy = 0;
     disturbedBy = 0;
     enemyNearby = 0;
@@ -36,11 +38,11 @@ cController::cController(cObject* entity, bool enabled) {
     idling = false;
 }
 
-cController::~cController() {
+rController::~rController() {
     while (!commandStack.empty()) commandStack.pop_back();
 }
 
-void cController::doit(OID aim, float* go, bool fire) {
+void rController::doit(OID aim, float* go, bool fire) {
     targetAim = aim;
     targetAimActive = (aim != 0);
     targetAimFire = fire;
@@ -54,26 +56,26 @@ void cController::doit(OID aim, float* go, bool fire) {
     idling = !targetAimFire && !targetAimActive && !targetGotoActive;
 
     if (true) {
-        controlledDevice->do_moveFor(go);
-        controlledDevice->do_aimFor(aim);
-        controlledDevice->do_aimAt();
+        object->do_moveFor(go);
+        object->do_aimFor(aim);
+        object->do_aimAt();
         if (go) {
-            controlledDevice->do_moveTowards();
+            object->do_moveTowards();
         } else if (aim) {
-            controlledDevice->do_moveNear();
+            object->do_moveNear();
         }
-        if (fire) controlledDevice->do_fireAt();
-        if (idling) controlledDevice->do_idle();
+        if (fire) object->do_fireAt();
+        if (idling) object->do_idle();
     }
 }
 
-void cController::printState() {
+void rController::printState() {
     int framesize = getFrameSize();
     string framename = getFrameName();
-    cout << "CtrlSt of " << controlledDevice->name.c_str() << "#" << controlledDevice->oid << "  Frame: " << framename << "  Framesize:" << framesize << "  Stack: " << commandStack.size() << endl;
+    cout << "CtrlSt of " << object->name.c_str() << "#" << object->oid << "  Frame: " << framename << "  Framesize:" << framesize << "  Stack: " << commandStack.size() << endl;
 }
 
-string cController::getFrameName() {
+string rController::getFrameName() {
     //cout << "getFrameName()\n";
     const char* names[] = {
         "WAIT", "ATTACK", "FOLLOW", "GOTO", "REPEAT",
@@ -85,7 +87,7 @@ string cController::getFrameName() {
     return s;
 };
 
-unsigned int cController::getFrameSizeOf(int opcode) {
+unsigned int rController::getFrameSizeOf(int opcode) {
     switch (opcode) {
         case WAIT: return 3;
         case ATTACK: return 2;
@@ -96,25 +98,25 @@ unsigned int cController::getFrameSizeOf(int opcode) {
     }
 }
 
-unsigned int cController::getFrameSize() {
+unsigned int rController::getFrameSize() {
     return getFrameSizeOf(commandStack.back());
 }
 
-OID cController::getParameter(int offset) {
+OID rController::getParameter(int offset) {
     return commandStack[commandStack.size() - offset - 1];
 }
 
-void cController::setParameter(int offset, OID value) {
+void rController::setParameter(int offset, OID value) {
     commandStack[commandStack.size() - offset - 1] = value;
 }
 
-void cController::push(OID value) {
+void rController::push(OID value) {
     commandStack.push_back(value);
 }
 
-void cController::pop() {
+void rController::pop() {
     if (debug_transitions) {
-        cout << controlledDevice->name.c_str() << "#" << controlledDevice->oid << ".pop()\n";
+        cout << object->name.c_str() << "#" << object->oid << ".pop()\n";
     }
     int size = getFrameSize(); // Important: eval outside loop-condition!
     loopi(size) commandStack.pop_back();
@@ -123,11 +125,10 @@ void cController::pop() {
     }
 }
 
-void cController::process(float spf) {
+void rController::animate(float spf) {
     if (debug_state) cout << "cController::process()\n";
 
-    if (!controllerEnabled) return;
-    if (controlledDevice == NULL) return;
+    if (!active || !enabled || object == NULL) return;
 
     if (commandStack.empty()) pushWaitEvent();
 
@@ -156,13 +157,13 @@ void cController::process(float spf) {
 
 // -------------------------------------------------------------
 
-void cController::pushWaitEvent(long mseconds, bool patrol) {
+void rController::pushWaitEvent(long mseconds, bool patrol) {
     push(patrol);
     push(mseconds);
     push(WAIT);
 }
 
-void cController::waitEvent() {
+void rController::waitEvent() {
     //OID opcode = getParameter(0);
     long mseconds = getParameter(1);
     bool patrol = getParameter(2);
@@ -188,7 +189,7 @@ void cController::waitEvent() {
         }
         if (enemy) {
             {
-                OID self = controlledDevice->oid;
+                OID self = object->oid;
                 std::stringstream s;
                 s << self << ": Intruder!\n";
                 cWorld::instance->sendMessage(0, self, 0, "DEBUG", s.str());
@@ -209,9 +210,9 @@ void cController::waitEvent() {
 
 // -------------------------------------------------------------
 
-void cController::pushAttackEnemy(OID entity) {
+void rController::pushAttackEnemy(OID entity) {
     if (debug_transitions) {
-        cout << controlledDevice->name.c_str() << "#" << controlledDevice->oid << ".pushAttackEnemy( " << entity << " )\n";
+        cout << object->name.c_str() << "#" << object->oid << ".pushAttackEnemy( " << entity << " )\n";
     }
     {
         //OID self = mDevice->mSerial;
@@ -221,17 +222,17 @@ void cController::pushAttackEnemy(OID entity) {
     push(ATTACK);
 }
  
-void cController::attackEnemy() {
+void rController::attackEnemy() {
     //OID opcode = getParameter(0);
     OID entity = getParameter(1);
 
     {
         //((cMech*)mDevice)->Pattern(tf, "nrnlln");
-        this->doit(entity, NULL, (controlledDevice->inWeaponRange() > 0.5));
+        this->doit(entity, NULL, (object->inWeaponRange() > 0.5));
     }
 
     // FIXME: Depends on Mech/tarcom.
-    cMech* mech = (cMech*) controlledDevice;
+    cMech* mech = (cMech*) object;
 
     cObject* target = cWorld::instance->getObject(entity);
     if (target == NULL) {
@@ -244,7 +245,7 @@ void cController::attackEnemy() {
         this->doit(entity, NULL, false);
         pop();
         return;
-    } else if (controlledDevice->inTargetRange() < 0.001f) {
+    } else if (object->inTargetRange() < 0.001f) {
         // Target is out of targeting range.
         this->doit(entity, NULL, false);
         pop();
@@ -254,16 +255,16 @@ void cController::attackEnemy() {
 
 // -------------------------------------------------------------
 
-void cController::pushFollowLeader(OID entity, bool patrol) {
+void rController::pushFollowLeader(OID entity, bool patrol) {
     if (debug_transitions) {
-        cout << controlledDevice->name.c_str() << "#" << controlledDevice->oid << ".pushFollowLeader( " << entity << ", " << patrol << " )\n";
+        cout << object->name.c_str() << "#" << object->oid << ".pushFollowLeader( " << entity << ", " << patrol << " )\n";
     }
     push(patrol ? 1 : 0);
     push(entity);
     push(FOLLOW);
 }
 
-void cController::followLeader() {
+void rController::followLeader() {
     //OID opcode = getParameter(0);
     OID entity = getParameter(1);
     OID patrol = getParameter(2);
@@ -283,10 +284,10 @@ void cController::followLeader() {
 
 // -------------------------------------------------------------
 
-void cController::pushGotoDestination(float* v, bool patrol) {
+void rController::pushGotoDestination(float* v, bool patrol) {
     if (v == NULL) return;
     if (debug_transitions) {
-        cout << controlledDevice->name.c_str() << "#" << controlledDevice->oid << ".pushGotoDestination( <" << v[0] << "," << v[1] << "," << v[2] << ">, " << patrol << " )\n";
+        cout << object->name.c_str() << "#" << object->oid << ".pushGotoDestination( <" << v[0] << "," << v[1] << "," << v[2] << ">, " << patrol << " )\n";
     }
     unsigned long *p = (unsigned long*) v;
     push(patrol ? !0 : 0);
@@ -296,7 +297,7 @@ void cController::pushGotoDestination(float* v, bool patrol) {
     push(GOTO);
 }
 
-void cController::gotoDestination() {
+void rController::gotoDestination() {
     //OID opcode = getParameter(0);
     OID v0 = getParameter(1);
     OID v1 = getParameter(2);
@@ -312,7 +313,7 @@ void cController::gotoDestination() {
         this->doit(0, v, false);
     }
 
-    float range = controlledDevice->inDestinationRange();
+    float range = object->inDestinationRange();
     if (debug_state) cout << "DestinationRange " << range << endl;
     if (range > 0.0f) {
         pop();
@@ -330,15 +331,15 @@ void cController::gotoDestination() {
 
 // -------------------------------------------------------------
 
-void cController::pushRepeatInstructions(int n) {
+void rController::pushRepeatInstructions(int n) {
     if (debug_transitions) {
-        cout << controlledDevice->name.c_str() << "#" << controlledDevice->oid << ".pushRepeatInstructions( " << n << " )\n";
+        cout << object->name.c_str() << "#" << object->oid << ".pushRepeatInstructions( " << n << " )\n";
     }
     push(n);
     push(REPEAT);
 }
 
-void cController::repeatInstructions() {
+void rController::repeatInstructions() {
     OID opcode = getParameter(0);
     OID n = getParameter(1);
 

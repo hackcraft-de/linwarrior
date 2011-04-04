@@ -22,6 +22,7 @@ struct rNavcom;
 struct rNameable;
 struct rDamageable;
 struct rTraceable;
+struct rController;
 struct rCamera;
 struct rMobile;
 struct rRigged;
@@ -81,6 +82,7 @@ public:
     rNameable* nameable;
     rDamageable* damageable;
     rTraceable* traceable;
+    rController* controller;
     rCamera* camera;
     rMobile* mobile;
     rRigged* rigged;

@@ -9,7 +9,7 @@
         <itemPath>source/rCollider.h</itemPath>
         <itemPath>source/rComcom.h</itemPath>
         <itemPath>source/rComponent.h</itemPath>
-        <itemPath>source/rControlled.h</itemPath>
+        <itemPath>source/rController.h</itemPath>
         <itemPath>source/rDamageable.h</itemPath>
         <itemPath>source/rGrouping.h</itemPath>
         <itemPath>source/rMobile.h</itemPath>
@@ -45,7 +45,6 @@
       </logicalFolder>
       <itemPath>source/OID.h</itemPath>
       <itemPath>source/cBackground.h</itemPath>
-      <itemPath>source/cController.h</itemPath>
       <itemPath>source/cLandscape.h</itemPath>
       <itemPath>/media/44EA-7693/linux_workspaces/netbeans_workspace/linwarrior/source/cMessage.h</itemPath>
       <itemPath>source/cMission.h</itemPath>
@@ -68,7 +67,6 @@
       <itemPath>source/cAlert.cpp</itemPath>
       <itemPath>source/cBackground.cpp</itemPath>
       <itemPath>source/cBuilding.cpp</itemPath>
-      <itemPath>source/cController.cpp</itemPath>
       <itemPath>source/cLandscape.cpp</itemPath>
       <itemPath>source/cMech.cpp</itemPath>
       <itemPath>/media/44EA-7693/linux_workspaces/netbeans_workspace/linwarrior/source/cMessage.cpp</itemPath>
@@ -86,7 +84,7 @@
       <itemPath>source/rCollider.cpp</itemPath>
       <itemPath>source/rComcom.cpp</itemPath>
       <itemPath>source/rComponent.cpp</itemPath>
-      <itemPath>source/rControlled.cpp</itemPath>
+      <itemPath>source/rController.cpp</itemPath>
       <itemPath>source/rDamageable.cpp</itemPath>
       <itemPath>source/rGrouping.cpp</itemPath>
       <itemPath>source/rMobile.cpp</itemPath>
@@ -148,11 +146,6 @@
           <additionalDep>source/cBuilding.h</additionalDep>
         </ccTool>
       </item>
-      <item path="source/cController.cpp" ex="false" tool="1">
-        <ccTool>
-          <additionalDep>source/cController.h</additionalDep>
-        </ccTool>
-      </item>
       <item path="source/cMech.cpp" ex="false" tool="1">
         <ccTool>
           <additionalDep>source/cMech.h</additionalDep>
@@ -181,6 +174,11 @@
       <item path="source/main.cpp" ex="false" tool="1">
         <ccTool>
           <additionalDep>source/main.h</additionalDep>
+        </ccTool>
+      </item>
+      <item path="source/rController.cpp" ex="false" tool="1">
+        <ccTool>
+          <additionalDep>source/cController.h</additionalDep>
         </ccTool>
       </item>
       <item path="source/rWeapon.cpp" ex="false" tool="1">
