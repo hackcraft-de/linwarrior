@@ -3,6 +3,7 @@
 #include "cObject.h"
 #include "cWorld.h"
 #include "cMech.h"
+#include "rComcom.h"
 
 #include <cstdlib>
 #include <cassert>

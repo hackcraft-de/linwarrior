@@ -13,10 +13,15 @@ DEFINE_glprintf
 // FIXME: Wepcom rely on mech.
 #include "cMech.h"
 
+// FIXME? Wepcom rely on weapon.
+#include "rWeapon.h"
+
 #include <iostream>
 using std::cout;
 using std::endl;
 
+#include <sstream>
+using std::stringstream;
 
 // -----------------------------------------------
 

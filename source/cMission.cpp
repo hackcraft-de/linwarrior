@@ -6,6 +6,9 @@
 #include "cAlert.h"
 #include "cPlanetmap.h"
 
+#include "rComcom.h"
+#include "rNameable.h"
+
 #include <list>
 #include <vector>
 #include <cassert>
@@ -13,6 +16,8 @@
 #include <iostream>
 using std::cout;
 using std::endl;
+#include <string>
+using std::string;
 
 void adjustHeight(cPlanetmap* planetmap, float* pos) {
     float color[16];

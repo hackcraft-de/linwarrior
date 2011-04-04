@@ -1,6 +1,7 @@
 /* 
- * File:   rDamageable.h
- * Author: benben
+ * File:     rDamageable.h
+ * Project:  LinWarrior 3D
+ * Home:     hackcraft.de
  *
  * Created on April 3, 2011, 8:49 PM
  */

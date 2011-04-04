@@ -1,6 +1,7 @@
 /* 
- * File:   rNameable.h
- * Author: benben
+ * File:     rNameable.h
+ * Project:  LinWarrior 3D
+ * Home:     hackcraft.de
  *
  * Created on April 3, 2011, 9:00 PM
  */

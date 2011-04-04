@@ -1,10 +1,10 @@
+- Remove all components from base Object.
+
 - Add target and destination attributes to Mobile and bind them.
 
 - Move object's do_*() functionality to Mobile and add bindings to Controller?
 
 - Move object's in_*() functionality to Mobile and add bindings to Controller?
-
-- Components/Roles shall get their own files (at least one file for all).
 
 - Object's damageByParticle() shall be represented in components, too.
 
@@ -15,10 +15,6 @@
 - Wingmen shall maintain minimum distance to each other (collision avoidance).
 
 - Take slope into account for Planetmap erosion and material within second pass.
-
-- Calculate Bounding-Box/Cylinder for rRigged meshes.
-
-- Collision zone shall be determined by mesh's boundary size.
 
 - Global lightsource-position shall be animated according to sun/moon.
 

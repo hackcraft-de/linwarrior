@@ -25,6 +25,7 @@
 #include "cTree.h"
 
 #include <SDL/SDL.h>
+#include <string>
 
 #define DEFAULT_FULLSCREEN true
 #define DEFAULT_FPS 29
@@ -55,7 +56,7 @@ struct cGame {
     int mission;
 
     /// Background music wav filename.
-    string bgm;
+    std::string bgm;
 
     /// Indicates pausing - no time advancement.
     bool paused;

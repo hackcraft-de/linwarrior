@@ -10,6 +10,7 @@
 #define BUILDING_H
 
 class cBuilding;
+struct rDamageable;
 
 #include "cObject.h"
 #include "rWeapon.h"
@@ -18,6 +19,8 @@ class cBuilding;
  * Models a building of varring size.
  */
 class cBuilding : public cObject {
+public:
+    rDamageable* damageable;
 protected:
     static int sInstances;
     static std::map<int,long> sTextures;

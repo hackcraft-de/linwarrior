@@ -66,25 +66,25 @@ void rDamageable::drawHUD() {
             //glScalef(0.06, 0.08, 1.0);
             // Left Arm
             int left = rDamageable::LEFT;
-            if (i != 1) glColor4f(1 - object->damageable->hp[left]*0.01, object->damageable->hp[left]*0.01, 0.4, 0.2);
+            if (i != 1) glColor4f(1 - hp[left]*0.01, hp[left]*0.01, 0.4, 0.2);
             cPrimitives::glLineSquare(0.1f);
             // Torsor&Head
             glTranslatef(1, 0, 0);
             glScalef(1, 1.5, 1);
             int body = rDamageable::BODY;
-            if (i != 1) glColor4f(1 - object->damageable->hp[body]*0.01, object->damageable->hp[body]*0.01, 0.4, 0.2);
+            if (i != 1) glColor4f(1 - hp[body]*0.01, hp[body]*0.01, 0.4, 0.2);
             cPrimitives::glLineSquare(0.1f);
             // Right Arm&Shoulder
             glTranslatef(1, 0, 0);
             glScalef(1, 1.0f / 1.5f, 1);
             int right = rDamageable::RIGHT;
-            if (i != 1) glColor4f(1 - object->damageable->hp[right]*0.01, object->damageable->hp[right]*0.01, 0.4, 0.2);
+            if (i != 1) glColor4f(1 - hp[right]*0.01, hp[right]*0.01, 0.4, 0.2);
             cPrimitives::glLineSquare(0.1f);
             // Legs
             glTranslatef(-1.6, -1, 0);
             glScalef(2.2, 1, 1);
             int legs = rDamageable::LEGS;
-            if (i != 1) glColor4f(1 - object->damageable->hp[legs]*0.01, object->damageable->hp[legs]*0.01, 0.4, 0.2);
+            if (i != 1) glColor4f(1 - hp[legs]*0.01, hp[legs]*0.01, 0.4, 0.2);
             cPrimitives::glLineSquare(0.1f);
         }
         glPopMatrix();
@@ -101,7 +101,7 @@ void rDamageable::drawHUD() {
         int body = rDamageable::BODY;
         int right = rDamageable::RIGHT;
         int legs = rDamageable::LEGS;
-        glprintf("L %3.0f  T %3.0f  R %3.0f\n       B %3.0f", object->damageable->hp[left], object->damageable->hp[body], object->damageable->hp[right], object->damageable->hp[legs]);
+        glprintf("L %3.0f  T %3.0f  R %3.0f\n       B %3.0f", hp[left], hp[body], hp[right], hp[legs]);
     }
     glPopMatrix();
 }

@@ -1,6 +1,7 @@
 // cBuilding.cpp
 
 #include "cBuilding.h"
+#include "rDamageable.h"
 
 #include "psi3d/macros.h"
 #include "psi3d/snippetsgl.h"

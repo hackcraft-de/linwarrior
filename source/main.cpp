@@ -10,6 +10,9 @@
 
 #include <iostream>
 
+using std::cout;
+using std::endl;
+
 #include <SDL/SDL_timer.h>
 #include <AL/alc.h>
 #ifndef __WIN32

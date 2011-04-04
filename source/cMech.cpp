@@ -3,9 +3,21 @@
 #include "cMech.h"
 
 #include "cWorld.h"
-
 #include "cController.h"
 #include "cPad.h"
+
+#include "rWeapon.h"
+#include "rComcom.h"
+#include "rNameable.h"
+#include "rTraceable.h"
+#include "rDamageable.h"
+#include "rControlled.h"
+#include "rGrouping.h"
+#include "rRigged.h"
+#include "rCamera.h"
+#include "rCollider.h"
+#include "rMobile.h"
+
 #include "psi3d/macros.h"
 #include "psi3d/snippetsgl.h"
 
@@ -19,6 +31,9 @@ using std::vector;
 #include <iostream>
 using std::cout;
 using std::endl;
+
+#include <string>
+using std::string;
 
 #define MECHDETAIL -1
 

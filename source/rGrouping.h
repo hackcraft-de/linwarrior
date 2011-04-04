@@ -1,6 +1,7 @@
 /* 
- * File:   rGrouping.h
- * Author: benben
+ * File:     rGrouping.h
+ * Project:  LinWarrior 3D
+ * Home:     hackcraft.de
  *
  * Created on April 3, 2011, 8:40 PM
  */

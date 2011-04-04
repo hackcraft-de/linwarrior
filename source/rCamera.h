@@ -1,6 +1,7 @@
 /* 
- * File:   rCamera.h
- * Author: benben
+ * File:     rCamera.h
+ * Project:  LinWarrior 3D
+ * Home:     hackcraft.de
  *
  * Created on April 3, 2011, 8:33 PM
  */

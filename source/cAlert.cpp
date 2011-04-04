@@ -1,14 +1,14 @@
 #include "cAlert.h"
 
 #include "cWorld.h"
+#include "cParticle.h"
+#include "rNameable.h"
 
 #include <ostream>
 using std::cout;
 using std::endl;
 
 #include "psi3d/snippetsgl.h"
-#include "psi3d/instfont.h"
-DEFINE_glprintf
 
 
 bool cAlert::sDrawzone = !true;

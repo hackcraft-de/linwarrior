@@ -15,14 +15,9 @@
 
 class cWorld;
 
-struct rNameable;
-struct rDamageable;
 struct rControlled;
 struct rGrouping;
 
-//#include "rComponent.h"
-#include "rNameable.h"
-#include "rDamageable.h"
 #include "rControlled.h"
 #include "rGrouping.h"
 
@@ -98,12 +93,12 @@ public: // Basic Object attributes for managing.
 
 public: // FIXME: Predefined Roles, to be removed from cObject
 
-    rNameable* nameable;
-    rDamageable* damageable;
+    //rNameable* nameable;
+    //rDamageable* damageable;
     rControlled* controlled;
     rGrouping* grouping;
 
-public: // Experimental Role "Managing"
+public: // Experimental Component "Managing"
 
     static std::map<std::string, rComponent*> roleprotos;
     static std::map<std::string, OID> roleoffsets;
@@ -151,8 +146,7 @@ public:
             //registerRole(new rControlled, FIELDOFS(controlled), ROLEPTR(cObject::controlled));
             //registerRole(new rGrouping, FIELDOFS(grouping), ROLEPTR(cObject::grouping));
         }
-        nameable = NULL;
-        damageable = NULL;
+        //nameable = NULL;
         controlled = NULL;
         grouping = NULL;
         //rRole* r = GETROLE(FIELDOFS(nameable));
@@ -160,17 +154,17 @@ public:
     }
 
     cObject(cObject* original) {
-        if (original->nameable) nameable = new rNameable(original->nameable);
+        //if (original->nameable) nameable = new rNameable(original->nameable);
         //if (original->traceable) traceable = new rTraceable(original->traceable);
-        if (original->damageable) damageable = new rDamageable(original->damageable);
+        //if (original->damageable) damageable = new rDamageable(original->damageable);
         if (original->controlled) controlled = new rControlled(original->controlled);
         if (original->grouping) grouping = new rGrouping(original->grouping);
     }
 
     virtual ~cObject() {
-        delete this->nameable;
+        //delete this->nameable;
         //delete this->traceable;
-        delete this->damageable;
+        //delete this->damageable;
         delete this->controlled;
         delete this->grouping;
     }

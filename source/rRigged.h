@@ -1,6 +1,7 @@
 /* 
- * File:   rRigged.h
- * Author: benben
+ * File:     rRigged.h
+ * Project:  LinWarrior 3D
+ * Home:     hackcraft.de
  *
  * Created on April 3, 2011, 8:36 PM
  */
@@ -86,8 +87,8 @@ struct rRigged : public rComponent {
             "JET0", "JET1", "JET2", "JET3", "JET4",
             "YAW", "PITCH", "LEFTLEG", "RIGHTLEG", "LEFTCALF", "RIGHTCALF", "LEFTFOOT", "RIGHTFOOT"
         };
-        if (num >= MAX_JOINTPOINTS) return string("");
-        return string(names[num]);
+        if (num >= MAX_JOINTPOINTS) return std::string("");
+        return std::string(names[num]);
     }
 
     int getMountpoint(char* point) {

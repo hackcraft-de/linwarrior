@@ -1,5 +1,9 @@
 #include "rRigged.h"
 
+#include <iostream>
+using std::cout;
+using std::endl;
+
 #include <GL/glew.h>
 #include "psi3d/snippetsgl.h"
 #include "psi3d/instfont.h"

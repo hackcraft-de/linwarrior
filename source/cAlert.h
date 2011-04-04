@@ -10,7 +10,8 @@
 #define	_CALERT_H
 
 #include "cObject.h"
-#include "cParticle.h"
+struct cParticle;
+struct rNameable;
 
 #include <string>
 #include <hash_set>
@@ -49,6 +50,7 @@ public:
         float center[3];
         float range[3];
     };
+    rNameable* nameable;
 private:
     rShape shape;
     std::string msgtype;

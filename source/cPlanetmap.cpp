@@ -559,6 +559,11 @@ void cPlanetmap::drawSolid() {
     // nan position?
     if (p[0] != p[0] || p[2] != p[2]) return;
 
+    // Setup FOV for culling to be a forward cone set back a bit.
+    vec3 fwd = { m[4*2+0], m[4*2+1], m[4*2+2] };
+    float back = 16;
+    vec3 bk = { back*fwd[0], back*fwd[1], back*fwd[2] };
+
     //cout << "here!"<< endl;
     if (T % 100 == 0) detail = (detail + 1) % 4;
     detail = 5;
@@ -635,7 +640,22 @@ void cPlanetmap::drawSolid() {
                         float alpha_o = fmin(alpha_o_z, alpha_o_x);
                         float alpha = alpha_o;
 
-                        if (alpha_o <= 0.0f || alpha_i <= 0.0f) {
+                        bool outside = false;
+                        /*
+                        {
+                            float dx = -(i - x);
+                            float dz = -(j - z);
+                            float dist2 = dx*dx + dz*dz;
+
+                            // Check Cone-Frustum
+                            float dist = sqrt(dist2)+0.000001f;
+                            vec3 relative = { dx + bk[0], 0.0f, dz + bk[2] };
+                            float cone = vector_dot(fwd, relative);
+                            outside = (cone < 0.46 * dist);
+                        }
+                        */
+
+                        if (outside || alpha_o <= 0.0f || alpha_i <= 0.0f) {
                             skip = true;
                             continue;
                         } else if (skip) {

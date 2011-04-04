@@ -18,18 +18,10 @@
 #include <string.h>
 // file operations f...
 #include <cstdio>
-
 #include <cassert>
-
 #include <sstream>
-using std::stringstream;
-
 #include <iostream>
-using std::cout;
-using std::endl;
-
 #include <string>
-using std::string;
 
 // Yes, md5format commandlines can get very very long.
 #define MD5COMMLINE 4096
@@ -180,25 +172,25 @@ public: // QUERIES
         return -1;
     }
     
-    static string getModelStats(model * mod) {
-        stringstream s;
-        s << "version " << mod->version << endl;
-        s << "numJoints " << mod->numJoints << endl;
-        s << "numMeshes " << mod->numMeshes << endl;
-        s << endl;
+    static std::string getModelStats(model * mod) {
+        std::stringstream s;
+        s << "version " << mod->version << std::endl;
+        s << "numJoints " << mod->numJoints << std::endl;
+        s << "numMeshes " << mod->numMeshes << std::endl;
+        s << std::endl;
         joint* j = (joint*) (mod + 1);
         for (int i = 0; i < mod->numJoints; i++) {
-            s << j->name << endl;
+            s << j->name << std::endl;
             j++;
         }
         mesh* m = (mesh*) j;
         for (int i = 0; i < mod->numMeshes; i++) {
-            s << endl;
-            s << m->name << endl;
-            s << m->shader << endl;
-            s << "numverts " << m->numverts << endl;
-            s << "numtris " << m->numtris << endl;
-            s << "numweights " << m->numweights << endl;
+            s << std::endl;
+            s << m->name << std::endl;
+            s << m->shader << std::endl;
+            s << "numverts " << m->numverts << std::endl;
+            s << "numtris " << m->numtris << std::endl;
+            s << "numweights " << m->numweights << std::endl;
             m = (mesh*) (((char*) m) + sizeofMesh(m));
         }
         return s.str();
@@ -305,19 +297,19 @@ protected: // PARSING UTILITIES
                 char* result = fgets(line, sizeof (line), f);
                 if (line[0] == '}') break;
                 if (feof(f) != 0 || result == NULL) throw "unexpected end of file when reading mesh";
-                //cout << line;
+                //std::cout << line;
 
                 // Name of mesh - this is only an optional comment
                 int r = sscanf(line, " // meshes: %[^\n]", m.name);
                 if (r == 1) {
-                    //cout << "meshes " << m.name << endl;
+                    //std::cout << "meshes " << m.name << std::endl;
                     continue;
                 }
 
                 // Name of mesh shader/material
                 r = sscanf(line, " shader \"%[^\"]\"", m.shader);
                 if (r == 1) {
-                    //cout << "shader " << m.shader << endl;
+                    //std::cout << "shader " << m.shader << std::endl;
                     continue;
                 }
 
@@ -325,7 +317,7 @@ protected: // PARSING UTILITIES
                 r = sscanf(line, " numverts %i", &m.numverts);
                 if (r == 1) {
                     if (verts != NULL) throw "duplicate vertlist";
-                    //cout << "numverts " << m.numverts << endl;
+                    //std::cout << "numverts " << m.numverts << std::endl;
                     verts = (vert*) readVerts(f, m.numverts);
                     continue;
                 } // if numverts
@@ -334,7 +326,7 @@ protected: // PARSING UTILITIES
                 r = sscanf(line, " numtris %i", &m.numtris);
                 if (r == 1) {
                     if (tris != NULL) throw "duplicate trilist";
-                    //cout << "numtris " << m.numtris << endl;
+                    //std::cout << "numtris " << m.numtris << std::endl;
                     tris = (tri*) readTris(f, m.numtris);
                     continue;
                 } // if numtris
@@ -343,7 +335,7 @@ protected: // PARSING UTILITIES
                 r = sscanf(line, " numweights %i", &m.numweights);
                 if (r == 1) {
                     if (weights != NULL) throw "duplicate weightlist";
-                    //cout << "numweights " << m.numweights << endl;
+                    //std::cout << "numweights " << m.numweights << std::endl;
                     weights = (weight*) readWeights(f, m.numweights);
                     continue;
                 } // if numweights
@@ -397,13 +389,13 @@ protected: // PARSING UTILITIES
                 char* result = fgets(line, sizeof (line), f);
                 if (line[0] == '}' || result == NULL) break;
                 if (feof(f) != 0) throw "unexpected end of file when reading joints";
-                //cout << line;
+                //std::cout << line;
 
                 if (jointcount == -1) {
                     char s[1024];
                     int r = sscanf(line, " %s {", s);
                     if (r == 1 && strcmp("joints", s) == 0) {
-                        //cout << "starting joints" << endl;
+                        //std::cout << "starting joints" << std::endl;
                         jointcount = 0;
                         continue;
                     }
@@ -416,7 +408,7 @@ protected: // PARSING UTILITIES
                         j.q[3] = (w2 <= 0) ? 0.0f : -sqrtf(w2);
                         if (jointcount >= numjoints) throw "too many joints";
                         memcpy(&joints[jointcount], &j, sizeof (joint));
-                        //cout << j.name << " " << j.parent << " (" << j.v[0] << " " << j.v[1] << " " << j.v[2] << " ) ( " << j.q[0] << " " << j.q[1] << " " << j.q[2] << " )" << endl;
+                        //std::cout << j.name << " " << j.parent << " (" << j.v[0] << " " << j.v[1] << " " << j.v[2] << " ) ( " << j.q[0] << " " << j.q[1] << " " << j.q[2] << " )" << std::endl;
                         jointcount++;
                     }
                 }
@@ -469,10 +461,10 @@ public: // LOADING
                 if (r == 1) header |= 8;
             }
 
-            //cout << "MD5Version " << m.version << endl;
-            //cout << "commandline " << m.commandline << endl;
-            //cout << "numJoints " << m.numJoints << endl;
-            //cout << "numMeshes " << m.numMeshes << endl;
+            //std::cout << "MD5Version " << m.version << std::endl;
+            //std::cout << "commandline " << m.commandline << std::endl;
+            //std::cout << "numJoints " << m.numJoints << std::endl;
+            //std::cout << "numMeshes " << m.numMeshes << std::endl;
 
             joints = (joint*) readJoints(f, m.numJoints);
 
@@ -506,7 +498,7 @@ public: // LOADING
                 chunk_ptr += meshsize;
             }
 
-            //cout << chunksize << " vs " << (chunk_ptr - modelchunk) << endl;
+            //std::cout << chunksize << " vs " << (chunk_ptr - modelchunk) << std::endl;
 
             return (model*) modelchunk;
 
@@ -523,27 +515,27 @@ public: // LOADING
 
 public: // TESTING
 
-    static string formatJoint(float* p, float* q) {
+    static std::string formatJoint(float* p, float* q) {
         char buffer[1024];
         sprintf(buffer, "( %.4f %.4f %.4f ) ( %.4f %.4f %.4f %.4f )", p[0],p[1],p[2], q[0],q[1],q[2],q[3]);
-        return string(buffer);
+        return std::string(buffer);
     }
 
     static void testMD5MeshLoad() {
-        cout << "MD5 Reader" << endl;
+        std::cout << "MD5 Reader" << std::endl;
 
         MD5Format::model* m = NULL;
         try {
             m = MD5Format::mapMD5Mesh("/home/benben/Desktop/workspaces/milk_workspace/diestel.md5mesh");
             //m = mapMD5Mesh("/home/benben/workspaces/mm3d-1.3.8/plugins/MD5Data/t.md5mesh");
         } catch (char* s) {
-            cout << s << endl;
+            std::cout << s << std::endl;
         }
 
-        cout << "=======================================================" << endl;
-        cout << MD5Format::getModelStats(m) << endl;
+        std::cout << "=======================================================" << std::endl;
+        std::cout << MD5Format::getModelStats(m) << std::endl;
 
-        cout << "=======================================================" << endl;
+        std::cout << "=======================================================" << std::endl;
         MD5Format::joint* joints = (MD5Format::joint*) (m + 1);
         //joint* joints_ = new joint[m->numJoints];
         MD5Format::toLocalJoints(m->numJoints, joints, joints);
@@ -555,7 +547,7 @@ public: // TRANSFORMING
 
 
     static void toLocalJoints(int numJoints, joint* joints, joint * joints_) {
-        //cout << "toLocalJoints() -------------------------\n";
+        //std::cout << "toLocalJoints() -------------------------\n";
         joint* locals = joints_;
         if (joints == joints_) {
             locals = new joint[numJoints];
@@ -565,8 +557,8 @@ public: // TRANSFORMING
         joint* j = joints;
         joint* j_ = locals;
         for (int i = 0; i < numJoints; i++) {
-            //cout << j->name << " " << i << " ";
-            //cout << "parent " << j->parent << " ";
+            //std::cout << j->name << " " << i << " ";
+            //std::cout << "parent " << j->parent << " ";
             float v_local[4];
             float q_local[4];
             if (j->parent < 0) {
@@ -594,8 +586,8 @@ public: // TRANSFORMING
             }
 
             quat_rectify_neg(q_local);
-            string s = formatJoint(v_local, q_local);
-            //cout << s << endl;
+            std::string s = formatJoint(v_local, q_local);
+            //std::cout << s << std::endl;
 
             vector_cpy(j_->v, v_local);
             quat_cpy(j_->q, q_local);
@@ -610,7 +602,7 @@ public: // TRANSFORMING
     }
 
     static void toGlobalJoints(int numJoints, joint* joints, joint * joints_, joint* manipulators = NULL) {
-        //cout << "toGlobalJoints() -------------------------\n";
+        //std::cout << "toGlobalJoints() -------------------------\n";
         joint* globals = joints_;
         if (joints == joints_) {
             globals = new joint[numJoints];
@@ -620,8 +612,8 @@ public: // TRANSFORMING
         joint* j = joints;
         joint* j_ = globals;
         for (int i = 0; i < numJoints; i++) {
-            //cout << j->name << " " << i << " ";
-            //cout << "parent " << j->parent << " ";
+            //std::cout << j->name << " " << i << " ";
+            //std::cout << "parent " << j->parent << " ";
             float v_global[4];
             float q_global[4];
             if (j->parent < 0) {
@@ -645,8 +637,8 @@ public: // TRANSFORMING
             }
 
             quat_rectify_neg(q_global);
-            string s = formatJoint(v_global, q_global);
-            //cout << s << endl;
+            std::string s = formatJoint(v_global, q_global);
+            //std::cout << s << std::endl;
 
             vector_cpy(j_->v, v_global);
             quat_cpy(j_->q, q_global);
@@ -668,11 +660,11 @@ public: // TRANSFORMING
         int numverts = msh->numverts;
         vert* v = verts;
         while (numverts-- > 0) {
-            //cout << v->start << " " << v->length << endl;
+            //std::cout << v->start << " " << v->length << std::endl;
             vector_set(v_result, 0, 0, 0);
             vector_set(n_result, 0, 0, 0);
             weight* w = &weights[v->start];
-            //cout << w->idx << " " << w->v[0] << " " << w->v[1] << " " << w->v[2] << endl;
+            //std::cout << w->idx << " " << w->v[0] << " " << w->v[1] << " " << w->v[2] << std::endl;
             // Sum up transformed vertex-weights to get final vertex (and normal).
             int numweights = v->length;
             while (numweights-- > 0) {
@@ -705,9 +697,9 @@ public: // TRANSFORMING
         int numverts = msh->numverts;
         vert* v = verts;
         while (numverts-- > 0) {
-            //cout << v->start << " " << v->length << endl;
+            //std::cout << v->start << " " << v->length << std::endl;
             weight* w = &weights[v->start];
-            //cout << w->idx << " " << w->v[0] << " " << w->v[1] << " " << w->v[2] << endl;
+            //std::cout << w->idx << " " << w->v[0] << " " << w->v[1] << " " << w->v[2] << std::endl;
             // Sum up transformed vertex-weights to get final vertex (and normal).
             int numweights = v->length;
             while (numweights-- > 0) {
@@ -726,10 +718,6 @@ public: // TRANSFORMING
             v++;
             n_result += 3;
         }
-    }
-
-    static void animatedMeshNormals(mesh* msh, joint* joints, float* normals) {
-        // TODO: implement animatedMeshNormals
     }
 
 }; // MD5Format

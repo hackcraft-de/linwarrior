@@ -1,6 +1,7 @@
 /* 
- * File:   rTraceable.h
- * Author: benben
+ * File:     rTraceable.h
+ * Project:  LinWarrior 3D
+ * Home:     hackcraft.de
  *
  * Created on April 3, 2011, 8:56 PM
  */

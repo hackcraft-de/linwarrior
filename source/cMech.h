@@ -13,17 +13,22 @@ class cMech;
 
 #include "cObject.h"
 
-#include "rWeapon.h"
-#include "rComcom.h"
-#include "rNameable.h"
-#include "rTraceable.h"
-#include "rDamageable.h"
-#include "rControlled.h"
-#include "rGrouping.h"
-#include "rRigged.h"
-#include "rCamera.h"
-#include "rCollider.h"
-#include "rMobile.h"
+struct rComcom;
+struct rTarcom;
+struct rWepcom;
+struct rForcom;
+struct rNavcom;
+
+struct rNameable;
+struct rDamageable;
+struct rTraceable;
+struct rCamera;
+struct rMobile;
+struct rRigged;
+struct rCollider;
+
+struct rWeapon;
+struct rWeaponExplosion;
 
 #include <vector>
 #include <map>
@@ -73,6 +78,8 @@ public:
     rForcom* forcom;
     rNavcom* navcom;
 
+    rNameable* nameable;
+    rDamageable* damageable;
     rTraceable* traceable;
     rCamera* camera;
     rMobile* mobile;
