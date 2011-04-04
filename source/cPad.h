@@ -17,7 +17,6 @@
 #include <cstring>
 #include <sstream>
 
-
 /**
  * Emulation of a hardwired "universal" gamepad.
  * It's Structure is like that of available Gamepads.

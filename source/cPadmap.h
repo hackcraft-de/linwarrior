@@ -15,6 +15,7 @@
 class cPadmap : public cObject {
 public:
     /// Possible models of tile.
+
     enum Kinds {
         KIND_CONCRETE,
         KIND_ROAD_EASTWEST,
@@ -27,11 +28,11 @@ protected:
     /// Counts number of instances.
     static int sInstances;
     /// Contains shared texture(s) of all instances.
-    static std::map<int,long> sTextures;
+    static std::map<int, long> sTextures;
     static std::vector<int> sSpiral[2];
 protected:
     int dims[2];
-    float heights[16*16];
+    float heights[16 * 16];
     float mapscale[3];
 public:
     cPadmap(float x, float y, float z);

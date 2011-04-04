@@ -21,6 +21,7 @@ class cTiming;
 // But time & date should be adjusted to the planet and
 // planet's date shall be mapped like beween maya, gregorian
 // or moon calendars.
+
 class cTiming {
 private:
     /// Counts years of simulation universe.

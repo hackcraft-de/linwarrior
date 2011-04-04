@@ -26,7 +26,7 @@ struct rGrouping : public rComponent {
     /// Copy Constructor
     rGrouping(rGrouping * original);
     /// Clone this.
-    virtual rComponent* clone();
+    virtual rComponent * clone();
 };
 
 #endif	/* RGROUPING_H */

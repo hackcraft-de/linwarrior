@@ -54,7 +54,7 @@ void rRigged::drawMeshes() {
         const float e = 100000.0f;
         vec3 mins = { +e, +e, +e };
         vec3 maxs = { -e, -e, -e };
-        */
+         */
         // Reset cylindrical dimensions.
         radius = 0;
         height = 0;
@@ -76,34 +76,35 @@ void rRigged::drawMeshes() {
                 //glTexCoord2fv(verts[k].tmap);
                 //glTexCoord3fv(&vox[3 * k]);
                 glNormal3fv(&nrm[3 * k]);
-                glTexCoord3f(vox[3 * k+0]*s, vox[3 * k+1]*s, vox[3 * k+2]*s);
+                glTexCoord3f(vox[3 * k + 0] * s, vox[3 * k + 1] * s, vox[3 * k + 2] * s);
                 glVertex3fv(&vtx[3 * k]);
                 k = tris[j].b;
                 //glTexCoord2fv(verts[k].tmap);
                 //glTexCoord3fv(&vox[3 * k]);
                 glNormal3fv(&nrm[3 * k]);
-                glTexCoord3f(vox[3 * k+0]*s, vox[3 * k+1]*s, vox[3 * k+2]*s);
+                glTexCoord3f(vox[3 * k + 0] * s, vox[3 * k + 1] * s, vox[3 * k + 2] * s);
                 glVertex3fv(&vtx[3 * k]);
                 k = tris[j].c;
                 //glTexCoord2fv(verts[k].tmap);
                 //glTexCoord3fv(&vox[3 * k]);
                 glNormal3fv(&nrm[3 * k]);
-                glTexCoord3f(vox[3 * k+0]*s, vox[3 * k+1]*s, vox[3 * k+2]*s);
+                glTexCoord3f(vox[3 * k + 0] * s, vox[3 * k + 1] * s, vox[3 * k + 2] * s);
                 glVertex3fv(&vtx[3 * k]);
             }
             glEnd();
             // Calculate boundaries of current pose.
             {
                 int nvtx = msh->numverts;
+
                 loopj(nvtx) {
-                    float* v = &vtx[3*j];
+                    float* v = &vtx[3 * j];
                     /*
                     loopk(3) {
                         mins[k] = (v[k] < mins[k]) ? v[k] : mins[k];
                         maxs[k] = (v[k] > maxs[k]) ? v[k] : maxs[k];
                     }
-                    */
-                    float r = v[0]*v[0] + v[2]*v[2];
+                     */
+                    float r = v[0] * v[0] + v[2] * v[2];
                     radius = (r > radius) ? r : radius;
                     height = v[1] > height ? v[1] : height;
                 }
@@ -150,13 +151,13 @@ void rRigged::poseRunning(float spf) {
         quat_cpy(ori_inv, ori);
         quat_conj(ori_inv);
         quat_apply(v, ori_inv, vel);
-    } else if (vel != NULL){
+    } else if (vel != NULL) {
         vector_cpy(v, vel);
     } else {
         vector_zero(v);
     }
 
-    float fwdvel = copysign( sqrtf(v[0] * v[0] + v[2] * v[2]), v[2] ) * -0.16f;
+    float fwdvel = copysign(sqrtf(v[0] * v[0] + v[2] * v[2]), v[2]) * -0.16f;
     if (fwdvel > 2.8) fwdvel = 2.8;
     if (fwdvel < -1.0) fwdvel = -1.0;
 
@@ -183,16 +184,16 @@ void rRigged::poseRunning(float spf) {
     float bf = bird ? -1.0f : +1.0f;
 
     float l1scale = 0.65;
-    if (bf*l1 > 0) l1 *= l1scale;
-    if (bf*r1 > 0) r1 *= l1scale;
+    if (bf * l1 > 0) l1 *= l1scale;
+    if (bf * r1 > 0) r1 *= l1scale;
 
     float l2scale = 0.45;
-    if (bf*l2 < 0) l2 *= l2scale;
-    if (bf*r2 < 0) r2 *= l2scale;
+    if (bf * l2 < 0) l2 *= l2scale;
+    if (bf * r2 < 0) r2 *= l2scale;
 
     float l3scale = 0.25;
-    if (bf*l3 > 0) l3 *= l3scale;
-    if (bf*r3 > 0) r3 *= l3scale;
+    if (bf * l3 > 0) l3 *= l3scale;
+    if (bf * r3 > 0) r3 *= l3scale;
 
     float s = PI_OVER_180;
     rotators[LEFTLEG][0] = -l1 * s;
@@ -312,14 +313,14 @@ void rRigged::loadModel(std::string filename) {
 
     // Rotate around X to swap Y/Z.
     quat convaxes;
-    vec3 xaxis = {1,0,0};
+    vec3 xaxis = {1, 0, 0};
     quat_rotaxis(convaxes, (-0.5f * M_PI), xaxis);
     quat_mul(joints_[0].q, joints_[0].q, convaxes);
 
     // FIXME: Rotate yaw 180 to make frontfacing.
     if (true) {
         quat convfacing;
-        vec3 yaxis = {0,1,0};
+        vec3 yaxis = {0, 1, 0};
         quat_rotaxis(convfacing, M_PI, yaxis);
         quat_mul(joints_[0].q, joints_[0].q, convfacing);
     }
@@ -350,9 +351,9 @@ void rRigged::loadModel(std::string filename) {
                 MD5Format::tri* tris = MD5Format::getTris(msh);
                 // TODO: Normals need to be averaged/smoothed.
                 for (int j = 0; j < msh->numtris; j++) {
-                    float* a = &cur_baseverts[3*tris[j].a];
-                    float* b = &cur_baseverts[3*tris[j].b];
-                    float* c = &cur_baseverts[3*tris[j].c];
+                    float* a = &cur_baseverts[3 * tris[j].a];
+                    float* b = &cur_baseverts[3 * tris[j].b];
+                    float* c = &cur_baseverts[3 * tris[j].c];
                     float ab[3];
                     float bc[3];
                     float n[3];
@@ -360,9 +361,9 @@ void rRigged::loadModel(std::string filename) {
                     vector_sub(bc, c, b);
                     vector_cross(n, bc, ab);
                     vector_norm(n, n);
-                    vector_cpy(&cur_basenorms[3*tris[j].a], n);
-                    vector_cpy(&cur_basenorms[3*tris[j].b], n);
-                    vector_cpy(&cur_basenorms[3*tris[j].c], n);
+                    vector_cpy(&cur_basenorms[3 * tris[j].a], n);
+                    vector_cpy(&cur_basenorms[3 * tris[j].b], n);
+                    vector_cpy(&cur_basenorms[3 * tris[j].c], n);
                 }
                 MD5Format::unanimatedMeshNormals(msh, staticjoints, cur_basenorms);
             }

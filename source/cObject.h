@@ -111,7 +111,7 @@ public: // Object Tags
 
     /// Tags (IDs, Social-Roles, Parties, States...) this object has.
     std::set<OID> tags;
-    
+
     enum DefaultTags {
         // Roles indicating belonging to certain Social-Parties
         RED,
@@ -136,7 +136,8 @@ public:
     cObject() {
         oid = 0;
         pos[0] = pos[1] = pos[2] = 0.0f;
-        ori[0] = ori[1] = ori[2] = 0.0f; ori[3] = 1.0f;
+        ori[0] = ori[1] = ori[2] = 0.0f;
+        ori[3] = 1.0f;
         seconds = 0;
         name = "";
         if (roleprotos.empty()) {
@@ -199,9 +200,10 @@ public:
         roles.erase(role);
         roleset.erase(role);
     }
-    */
+     */
 
     /// Check wether this Object has at least one of the given tags.
+
     bool anyTags(std::set<OID>* tagset) {
         std::set<OID> result;
         std::set_intersection(tags.begin(), tags.end(), tagset->begin(), tagset->end(), std::inserter(result, result.begin()));
@@ -209,6 +211,7 @@ public:
     }
 
     /// Check wether this Object has all the given tags.
+
     bool allTags(std::set<OID>* tagset) {
         std::set<OID> result;
         std::set_intersection(tags.begin(), tags.end(), tagset->begin(), tagset->end(), std::inserter(result, result.begin()));
@@ -216,16 +219,19 @@ public:
     }
 
     /// Check wether this Object has the given tag.
+
     bool hasTag(OID tag) {
         return (tags.find(tag) != tags.end());
     }
 
     /// Add a tag to this object.
+
     void addTag(OID tag) {
         tags.insert(tag);
     }
 
     /// Remove a tag from this object.
+
     void remTag(OID tag) {
         tags.erase(tag);
     }

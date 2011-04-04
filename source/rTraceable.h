@@ -28,7 +28,7 @@ struct rTraceable : public rComponent, public cParticle {
     /// Copy Constructor.
     rTraceable(rTraceable * original);
     /// Clone this.
-    virtual rComponent* clone();
+    virtual rComponent * clone();
     /// Accumulate steering and environmental forces.
     void accumulate(float spf);
     /// Integrate position and derive velocity given forces and old state.

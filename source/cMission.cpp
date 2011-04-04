@@ -161,7 +161,7 @@ void cOpenMission::onDefeat() {
 
 cObject* cOpenMission::init(cWorld* world) {
     srand(0);
-    
+
     cout << "Setting mission date and time...\n";
     if (!true) {
         world->getTiming()->setTime(12);
@@ -220,17 +220,17 @@ cObject* cOpenMission::init(cWorld* world) {
 
     if (!true) {
         cout << "Initialising Experimental Structure...\n";
-        float loc[] = { -70, 0, -70 };
+        float loc[] = {-70, 0, -70};
 
         float color[16];
-        planetmap->getHeight(loc[0],loc[2], color);
+        planetmap->getHeight(loc[0], loc[2], color);
         loc[1] += color[3];
 
         // Provide flat terrain at that height.
         cPlanetmap::sMod* mod = new cPlanetmap::sMod();
-        mod->pos[0] = loc[0]+7;
+        mod->pos[0] = loc[0] + 7;
         mod->pos[1] = loc[1];
-        mod->pos[2] = loc[2]+7;
+        mod->pos[2] = loc[2] + 7;
         mod->height = loc[1] + 0.019f;
         mod->range = 15;
         planetmap->mods.push_back(mod);
@@ -288,7 +288,7 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
 
     // Player
     if (true) {
-        float pos[3] = {p[0]-20, 0.1, p[2]-50};
+        float pos[3] = {p[0] - 20, 0.1, p[2] - 50};
         float rot[3] = {0, -170, 0};
         adjustHeight(planetmap, pos);
         cMech* mech = new cMech(pos, rot);
@@ -335,7 +335,7 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
 
     // Wing 1
     if (true) {
-        float pos[3] = {p[0]+13 * 1, 0.1, p[2]-50 * 1};
+        float pos[3] = {p[0] + 13 * 1, 0.1, p[2] - 50 * 1};
         float rot[3] = {0, -210, 0};
         adjustHeight(planetmap, pos);
         cMech* mech = new cMech(pos, rot);
@@ -358,7 +358,7 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
 
     // Wing 2
     if (true) {
-        float pos[3] = {p[0]+7 * 1, 0.1, p[2]-50 * 1};
+        float pos[3] = {p[0] + 7 * 1, 0.1, p[2] - 50 * 1};
         float rot[3] = {0, -210, 0};
         adjustHeight(planetmap, pos);
         cMech* mech = new cMech(pos, rot);
@@ -388,10 +388,10 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
 
 void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
     float loc[] = SKYTIDE;
-    
+
     // Get natural height.
     float color[16];
-    planetmap->getHeight(loc[0],loc[2], color);
+    planetmap->getHeight(loc[0], loc[2], color);
     loc[1] = color[3];
 
     // Provide flat terrain at that height.
@@ -407,11 +407,11 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
     //cout << "height before: " << loc[1] << "  height after: " << color[3] << endl;
 
     capitalCity(loc[0], loc[1], loc[2], world);
-    roundForrest(loc[0]+50, loc[1], loc[2]+50, world, 65, 150, 1);
+    roundForrest(loc[0] + 50, loc[1], loc[2] + 50, world, 65, 150, 1);
 
     {
         OID group = group_alliance_player.oid;
-        float pos[] = { loc[0]+48, loc[1] + 9, loc[2]+58 };
+        float pos[] = {loc[0] + 48, loc[1] + 9, loc[2] + 58};
         float range[] = {60.5, 40.5, 60.5};
         string message = string("Skytide City");
         cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
@@ -421,8 +421,8 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
 
     // Allied Patrol
     if (true) {
-        float pos[3] = { loc[0]+10, loc[1], loc[2]-50 };
-        float rot[3] = { 0, -210, 0 };
+        float pos[3] = {loc[0] + 10, loc[1], loc[2] - 50};
+        float rot[3] = {0, -210, 0};
         adjustHeight(planetmap, pos);
         cMech* mech = new cMech(pos, rot);
         assert(mech != NULL);
@@ -444,16 +444,16 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
             mech->mountWeapon((char*) "LTorsor", new rWeaponHoming);
         }
 
-        float d[] = { loc[0]+100, loc[1]+0, loc[1]-50 };
+        float d[] = {loc[0] + 100, loc[1] + 0, loc[1] - 50};
         adjustHeight(planetmap, d);
         mech->controller->pushGotoDestination(d);
-        float c[] = { loc[0]+100, loc[1]+0, loc[2]+120 };
+        float c[] = {loc[0] + 100, loc[1] + 0, loc[2] + 120};
         adjustHeight(planetmap, c);
         mech->controller->pushGotoDestination(c);
-        float b[] = { loc[0]-20, loc[1]+0, loc[2]+120 };
+        float b[] = {loc[0] - 20, loc[1] + 0, loc[2] + 120};
         adjustHeight(planetmap, b);
         mech->controller->pushGotoDestination(b, false);
-        float a[] = { loc[0]-15, loc[1]+0, loc[2]-50 };
+        float a[] = {loc[0] - 15, loc[1] + 0, loc[2] - 50};
         adjustHeight(planetmap, a);
         mech->controller->pushGotoDestination(a);
         mech->controller->pushRepeatInstructions(4);
@@ -463,7 +463,7 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
 
     // Primary Target
     if (true) {
-        float pos[3] = {loc[0]+50, loc[1], loc[2]+50};
+        float pos[3] = {loc[0] + 50, loc[1], loc[2] + 50};
         adjustHeight(planetmap, pos);
         cMech* mech = new cMech(pos);
         assert(mech != NULL);
@@ -494,7 +494,7 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
 
     // Secondary Target
     if (true) {
-        float pos[3] = {loc[0]-50, loc[1], loc[2]+50};
+        float pos[3] = {loc[0] - 50, loc[1], loc[2] + 50};
         adjustHeight(planetmap, pos);
         cMech* mech = new cMech(pos);
         assert(mech != NULL);
@@ -528,11 +528,11 @@ void cOpenMission::initStarcircleTown(cWorld* world, cPlanetmap* planetmap) {
 
     // Get natural height.
     float color[16];
-    planetmap->getHeight(loc[0],loc[2], color);
+    planetmap->getHeight(loc[0], loc[2], color);
     loc[1] = color[3];
     loc[1] = 0.0;
     cout << "STARCIRCLE height: " << loc[1] << endl;
-    
+
     cPlanetmap::sMod* mod = new cPlanetmap::sMod();
     mod->pos[0] = loc[0];
     mod->pos[1] = loc[1];
@@ -543,23 +543,23 @@ void cOpenMission::initStarcircleTown(cWorld* world, cPlanetmap* planetmap) {
 
     {
         OID group = group_alliance_player.oid;
-        float pos[] = { loc[0], loc[1]+9, loc[2] };
+        float pos[] = {loc[0], loc[1] + 9, loc[2]};
         float range[] = {50.5, 40.5, 50.5};
         string message = string("Starcircle Town\n(currently under bandit control)");
         cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
         oob->name = message;
         world->spawnObject(oob);
     }
-    
+
     smallSettling(loc[0], loc[1], loc[2], world, 15);
-    roundForrest(loc[0],loc[1], loc[2], world, 7*2, 22*2, 3);
-    
+    roundForrest(loc[0], loc[1], loc[2], world, 7 * 2, 22 * 2, 3);
+
     if (true) {
-        smallArmy(loc[0], loc[1]+5, loc[2], world, "Bandit Leader", 1, false, 1);
-        smallArmy(loc[0]-48, loc[1]+5, loc[2]+17, world, "Bandits A", 3, false, 3);
-        smallArmy(loc[0]-50, loc[1]+5, loc[2]-50, world, "Bandits B", 2, false, 2);
+        smallArmy(loc[0], loc[1] + 5, loc[2], world, "Bandit Leader", 1, false, 1);
+        smallArmy(loc[0] - 48, loc[1] + 5, loc[2] + 17, world, "Bandits A", 3, false, 3);
+        smallArmy(loc[0] - 50, loc[1] + 5, loc[2] - 50, world, "Bandits B", 2, false, 2);
     }
-    
+
     {
         float pos[] = STARCIRCLE;
         float range[] = {10, 3, 10};
@@ -579,7 +579,7 @@ void cOpenMission::initAcroloidMines(cWorld* world, cPlanetmap* planetmap) {
 
     // Get natural height.
     float color[16];
-    planetmap->getHeight(loc[0],loc[2], color);
+    planetmap->getHeight(loc[0], loc[2], color);
     loc[1] = color[3];
 
     cPlanetmap::sMod* mod = new cPlanetmap::sMod();
@@ -592,7 +592,7 @@ void cOpenMission::initAcroloidMines(cWorld* world, cPlanetmap* planetmap) {
 
     {
         OID group = group_alliance_player.oid;
-        float pos[] = { loc[0], loc[1]+9, loc[2] };
+        float pos[] = {loc[0], loc[1] + 9, loc[2]};
         float range[] = {0.5, 0.5, 0.5};
         string message = string("Acroloid Surface Mining Ltd. Co.\n(under construction)");
         cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
@@ -606,7 +606,7 @@ void cOpenMission::initCollapsiumFactory(cWorld* world, cPlanetmap* planetmap) {
 
     // Get natural height.
     float color[16];
-    planetmap->getHeight(loc[0],loc[2], color);
+    planetmap->getHeight(loc[0], loc[2], color);
     loc[1] = color[3];
 
     cPlanetmap::sMod* mod = new cPlanetmap::sMod();
@@ -619,7 +619,7 @@ void cOpenMission::initCollapsiumFactory(cWorld* world, cPlanetmap* planetmap) {
 
     {
         OID group = group_alliance_player.oid;
-        float pos[] = { loc[0], loc[1]+9, loc[2] };
+        float pos[] = {loc[0], loc[1] + 9, loc[2]};
         float range[] = {0.5, 0.5, 0.5};
         string message = string("Collapsium Factory Ltd.\n(under construction)");
         cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
@@ -633,7 +633,7 @@ void cOpenMission::initJurataJail(cWorld* world, cPlanetmap* planetmap) {
 
     // Get natural height.
     float color[16];
-    planetmap->getHeight(loc[0],loc[2], color);
+    planetmap->getHeight(loc[0], loc[2], color);
     loc[1] = color[3];
 
     cPlanetmap::sMod* mod = new cPlanetmap::sMod();
@@ -646,7 +646,7 @@ void cOpenMission::initJurataJail(cWorld* world, cPlanetmap* planetmap) {
 
     {
         OID group = group_alliance_player.oid;
-        float pos[] = { loc[0], loc[1]+9, loc[2] };
+        float pos[] = {loc[0], loc[1] + 9, loc[2]};
         float range[] = {0.5, 0.5, 0.5};
         string message = string("Jurata Jail Ltd.\n- Service Company -\n(under construction)");
         cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
@@ -660,7 +660,7 @@ void cOpenMission::initSpadenixFactory(cWorld* world, cPlanetmap* planetmap) {
 
     // Get natural height.
     float color[16];
-    planetmap->getHeight(loc[0],loc[2], color);
+    planetmap->getHeight(loc[0], loc[2], color);
     loc[1] = color[3];
 
     cPlanetmap::sMod* mod = new cPlanetmap::sMod();
@@ -673,7 +673,7 @@ void cOpenMission::initSpadenixFactory(cWorld* world, cPlanetmap* planetmap) {
 
     {
         OID group = group_alliance_player.oid;
-        float pos[] = { loc[0], loc[1]+9, loc[2] };
+        float pos[] = {loc[0], loc[1] + 9, loc[2]};
         float range[] = {0.5, 0.5, 0.5};
         string message = string("Spadenix Mechanical Factory Ltd.\n(under construction)");
         cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
@@ -687,9 +687,9 @@ void cOpenMission::initPyraNanoCorp(cWorld* world, cPlanetmap* planetmap) {
 
     // Get natural height.
     float color[16];
-    planetmap->getHeight(loc[0],loc[2], color);
+    planetmap->getHeight(loc[0], loc[2], color);
     loc[1] = color[3];
-    
+
     cPlanetmap::sMod* mod = new cPlanetmap::sMod();
     mod->pos[0] = loc[0];
     mod->pos[1] = loc[1];
@@ -697,10 +697,10 @@ void cOpenMission::initPyraNanoCorp(cWorld* world, cPlanetmap* planetmap) {
     mod->height = loc[1] - 0.009f;
     mod->range = 100;
     planetmap->mods.push_back(mod);
-    
+
     {
         OID group = group_alliance_player.oid;
-        float pos[] = { loc[0], loc[1] + 9, loc[2] };
+        float pos[] = {loc[0], loc[1] + 9, loc[2]};
         float range[] = {50.5, 40.5, 50.5};
         string message = string("Pyra Nano Corporation\n(currently under bandit control)");
         cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
@@ -710,7 +710,7 @@ void cOpenMission::initPyraNanoCorp(cWorld* world, cPlanetmap* planetmap) {
 
     pyramidBuilding(loc[0], loc[1], loc[2], world);
     roundForrest(loc[0], loc[1], loc[2], world, 28, 50, 3);
-    smallArmy(loc[0]+15, loc[1], loc[2]-30, world, "Bandito", 3, false);
+    smallArmy(loc[0] + 15, loc[1], loc[2] - 30, world, "Bandito", 3, false);
 }
 
 void cOpenMission::initPentaSpaceport(cWorld* world, cPlanetmap* planetmap) {
@@ -718,9 +718,9 @@ void cOpenMission::initPentaSpaceport(cWorld* world, cPlanetmap* planetmap) {
 
     // Get natural height.
     float color[16];
-    planetmap->getHeight(loc[0],loc[2], color);
+    planetmap->getHeight(loc[0], loc[2], color);
     loc[1] = color[3];
-    
+
     cPlanetmap::sMod* mod = new cPlanetmap::sMod();
     mod->pos[0] = loc[0];
     mod->pos[1] = loc[1];
@@ -728,10 +728,10 @@ void cOpenMission::initPentaSpaceport(cWorld* world, cPlanetmap* planetmap) {
     mod->height = loc[1] - 0.009f;
     mod->range = 130;
     planetmap->mods.push_back(mod);
-    
+
     {
         OID group = group_alliance_player.oid;
-        float pos[] = { loc[0] + 5, loc[1] + 9, loc[2] + 3 };
+        float pos[] = {loc[0] + 5, loc[1] + 9, loc[2] + 3};
         float range[] = {90.5, 40.5, 90.5};
         string message = string("Penta Interstellar Spaceport\n(currently under bandit control)");
         cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
@@ -740,7 +740,7 @@ void cOpenMission::initPentaSpaceport(cWorld* world, cPlanetmap* planetmap) {
     }
 
     //roundForrest(loc[0],loc[1],loc[2], planet, 40*2, 70*2, 3);
-    
+
     // The Space-Ship Port
 
     cBuilding* port = new cBuilding(-3 + loc[0], 3 + loc[1], 0 + loc[2], 9, 1, 3);
@@ -753,7 +753,7 @@ void cOpenMission::initPentaSpaceport(cWorld* world, cPlanetmap* planetmap) {
     // Bay-Road
 
     loopi(6) {
-        world->spawnObject(new cTile(9*i + loc[0], 0 + loc[1], 0 + loc[2], cTile::KIND_ROAD_EW));
+        world->spawnObject(new cTile(9 * i + loc[0], 0 + loc[1], 0 + loc[2], cTile::KIND_ROAD_EW));
     }
 
     // Generators
@@ -767,8 +767,8 @@ void cOpenMission::initPentaSpaceport(cWorld* world, cPlanetmap* planetmap) {
     }
 
     // Mechs
-    
-    float pos[3] = { loc[0], loc[1], loc[2] + 20};
+
+    float pos[3] = {loc[0], loc[1], loc[2] + 20};
     float rot[3] = {0, 0, 0};
 
     loopi(2) {
@@ -957,11 +957,11 @@ void cOpenMission::capitalCity(int wx, int wy, int wz, cWorld* world) {
             if (center == 1) {
                 //if (east == 1 && west == 1 && north == 1 && south == 1) {
                 if (east + west >= 1 && north + south >= 1) {
-                    world->spawnObject(new cTile(9*i + wx, 0 + wy, 9*j + wz, cTile::KIND_ROAD_NEWS));
+                    world->spawnObject(new cTile(9 * i + wx, 0 + wy, 9 * j + wz, cTile::KIND_ROAD_NEWS));
                 } else if (west == 1 || east == 1) {
-                    world->spawnObject(new cTile(9*i + wx, 0 + wy, 9*j + wz, cTile::KIND_ROAD_EW));
+                    world->spawnObject(new cTile(9 * i + wx, 0 + wy, 9 * j + wz, cTile::KIND_ROAD_EW));
                 } else if (south == 1 || north == 1) {
-                    world->spawnObject(new cTile(9*i + wx, 0 + wy, 9*j + wz, cTile::KIND_ROAD_NS));
+                    world->spawnObject(new cTile(9 * i + wx, 0 + wy, 9 * j + wz, cTile::KIND_ROAD_NS));
                 }
 
             } else {
@@ -1004,7 +1004,7 @@ void cOpenMission::capitalCity(int wx, int wy, int wz, cWorld* world) {
                         //cout << old << " => " << buildings[x][y] << " " << (old + h*100 -h) << "\n";
                     }
                 }
-                world->spawnObject(new cBuilding(i * 3*3 + wx, h_*3 + wy, j * 3*3 + wz, (a - i + 1)*3, h, (b - j + 1)*3));
+                world->spawnObject(new cBuilding(i * 3 * 3 + wx, h_ * 3 + wy, j * 3 * 3 + wz, (a - i + 1)*3, h, (b - j + 1)*3));
             }
         }
     }
@@ -1014,7 +1014,7 @@ void cOpenMission::pyramidBuilding(int x, int y, int z, cWorld* world) {
     int n = 5;
 
     loopi(n) {
-        world->spawnObject(new cBuilding(i*3 + x, i*3 + y, i*3 + z, (n * 2) - 2 * i, 1, (n * 2) - 2 * i));
+        world->spawnObject(new cBuilding(i * 3 + x, i * 3 + y, i * 3 + z, (n * 2) - 2 * i, 1, (n * 2) - 2 * i));
     }
 }
 

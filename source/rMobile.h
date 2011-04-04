@@ -60,7 +60,9 @@ struct rMobile : public rComponent {
     /// Constructor
     rMobile(cObject * obj);
     /// Destructor
-    ~rMobile() { }
+
+    ~rMobile() {
+    }
 
     // Steering
     void ChassisLR(float radians);

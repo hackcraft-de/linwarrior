@@ -48,6 +48,7 @@ public:
     static std::vector<float> sSizes;
 public:
     /// Surface Modifiction
+
     struct sMod {
         float pos[3];
         float range;
@@ -58,6 +59,7 @@ public:
     std::vector<sMod*> mods;
 
     /// LRU Surface Cache-Tile.
+
     struct sPatch {
         // Number of accesses last frame.
         unsigned long touches;

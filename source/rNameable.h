@@ -40,7 +40,7 @@ struct rNameable : public rComponent {
     /// Copy Constructor.
     rNameable(rNameable * original);
     /// Clone this.
-    virtual rComponent* clone();
+    virtual rComponent * clone();
 
     virtual void drawEffect();
 };

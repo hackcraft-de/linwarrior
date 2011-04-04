@@ -25,6 +25,7 @@ cGame cMain::game;
 int cMain::mouseWheel = 0;
 
 unsigned int* gInstantfont = NULL;
+
 DEFINE_glprintf
 
 cGame::cGame()
@@ -166,7 +167,7 @@ void cGame::initMission() {
     assert(this->pad1 != NULL);
 }
 
-void cMain::initGL(int width, int height) {    
+void cMain::initGL(int width, int height) {
     if (true) {
         std::string glinfo;
         glinfo = (const char*) glGetString(GL_RENDERER);
@@ -227,7 +228,7 @@ void cMain::initGL(int width, int height) {
         glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.00001);
         glEnable(GL_COLOR_MATERIAL);
         //glEnable(GL_NORMALIZE);
-        glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
+        glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
     }
 
     // Init instant console font.
@@ -241,9 +242,9 @@ static char* loadTextFile(const char* filename) {
         cstr[0] = 0;
         return cstr;
     }
-    fseek (f , 0 , SEEK_END);
+    fseek(f, 0, SEEK_END);
     unsigned long s = ftell(f);
-    char* cstr = new char[s+1];
+    char* cstr = new char[s + 1];
     rewind(f);
     if (fread(cstr, s, 1, f) != 1) cstr[0] = 0;
     cstr[s] = 0;
@@ -279,8 +280,8 @@ static void postProcess(int width, int height) {
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
         glEnable(GL_TEXTURE_2D);
-        glColor4f(1,1,1,1);
-        
+        glColor4f(1, 1, 1, 1);
+
         glUseProgramObjectARB(postprocess);
         {
             // Capture Color.
@@ -317,7 +318,6 @@ static void postProcess(int width, int height) {
     glPopAttrib();
 }
 
-
 void cMain::drawFrame(int elapsed_msec) {
     //std::cout << "elapsed: " << (elapsed_msec / 1000.0f) << std::endl;
     //if (hurlmotion) elapsed = int(elapsed * 1.0f);
@@ -330,7 +330,7 @@ void cMain::drawFrame(int elapsed_msec) {
         //glGetIntegerv(GL_VIEWPORT, viewport);
         //gluPickMatrix(cx, viewport[3]-cy, 5, 5, viewport);
         //gluPerspective(45,ratio,0.1,1000);
-        glSelectBuffer(SELECTIONSIZE,selection);
+        glSelectBuffer(SELECTIONSIZE, selection);
         glRenderMode(GL_SELECT);
         glInitNames();
         // With Modelview:
@@ -394,7 +394,7 @@ void cMain::drawFrame(int elapsed_msec) {
     }
 
 
-    SGL::glPushPerspectiveProjection(game.fov, 0.07,300);
+    SGL::glPushPerspectiveProjection(game.fov, 0.07, 300);
     {
         // Setup camera.
         glLoadIdentity();
@@ -447,11 +447,13 @@ void cMain::drawFrame(int elapsed_msec) {
         cout << "selected: " << entries << endl;
         // Picking-Entry: n, minz, maxz, n_names
         GLuint* p = selection;
+
         loopi(entries) {
             GLuint n = *p++;
             GLuint minz = *p++;
             GLuint maxz = *p++;
             cout << n << " " << minz << " " << maxz;
+
             loopj(n) {
                 GLuint name = *p++;
                 cout << " " << name;
@@ -558,8 +560,8 @@ void cMain::updatePad(cPad* pad, SDL_Joystick* joy, int* mapping) {
     if (game.mouseInput) {
         int mx = 0;
         int my = 0;
-        int w2 = game.width>>1;
-        int h2 = game.height>>1;
+        int w2 = game.width >> 1;
+        int h2 = game.height >> 1;
         unsigned char mb = SDL_GetRelativeMouseState(&mx, &my);
         SDL_WarpMouse(w2, h2);
         SDL_PumpEvents();
@@ -568,9 +570,9 @@ void cMain::updatePad(cPad* pad, SDL_Joystick* joy, int* mapping) {
         SDL_GetRelativeMouseState(&mx_, &my_);
         //cout << (mx/(float)w2) << " " << (my/(float)h2) << " " << ((int)mb) << "\n";
 
-        pad->setAxis(cPad::AX_LR2, pad->getAxis(cPad::AX_LR2) + 10.0f*mx/(float)w2);
-        pad->setAxis(cPad::AX_UD2, pad->getAxis(cPad::AX_UD2) - 10.0f*my/(float)h2);
-        
+        pad->setAxis(cPad::AX_LR2, pad->getAxis(cPad::AX_LR2) + 10.0f * mx / (float) w2);
+        pad->setAxis(cPad::AX_UD2, pad->getAxis(cPad::AX_UD2) - 10.0f * my / (float) h2);
+
         if (mouseWheel > 0) pad->setButton(cPad::BT_PL, true);
         if (mb & SDL_BUTTON_MMASK) pad->setButton(cPad::BT_PU, true);
         if (mouseWheel < 0) pad->setButton(cPad::BT_PD, true);
@@ -628,14 +630,14 @@ void cleanup() {
 #include <iosfwd>
 
 SDL_mutex* jobsmutex;
-std::queue<int (*)(void*)> jobs;
+std::queue<int (*)(void*) > jobs;
 
 int minion(void* data) {
     unsigned int id = SDL_ThreadID();
     cout << "Minion " << id << " at your service!\n";
     int (*job)(void*) = minion;
     bool done = false;
-    while(!done) {
+    while (!done) {
         // Grab a new job.
         int (*nextjob)(void*) = NULL;
         SDL_mutexP(jobsmutex);
@@ -665,15 +667,15 @@ int minion(void* data) {
 }
 
 int job_render(void* data) {
-    while(true) {
+    while (true) {
         //cout << "Buffering BGM.\n";
-        SDL_Delay(1.0f/DEFAULT_FPS * 1000);
+        SDL_Delay(1.0f / DEFAULT_FPS * 1000);
     }
     return 0;
 }
 
 int job_bgm(void* data) {
-    while(true) {
+    while (true) {
         //cout << "Buffering BGM.\n";
         SDL_Delay(1000);
     }
@@ -683,7 +685,7 @@ int job_bgm(void* data) {
 std::stringstream oss;
 
 int job_output(void* data) {
-    while(true) {
+    while (true) {
         //cout << "Redirecting text output.\n";
         if (!oss.str().empty()) {
             printf("%s", oss.str().c_str());
@@ -799,9 +801,10 @@ int cMain::sdlmain(int argc, char** args) {
 
     cout << "Breeding Minions...\n";
     int maxminions = 3;
-    SDL_Thread* minions[maxminions];
+    SDL_Thread * minions[maxminions];
+
     loopi(maxminions) {
-        minions[i] = SDL_CreateThread (minion, &i);
+        minions[i] = SDL_CreateThread(minion, &i);
     }
 
     bool loadscreen = true;
@@ -820,22 +823,22 @@ int cMain::sdlmain(int argc, char** args) {
                 glPushMatrix();
                 {
                     glLoadIdentity();
-                    glTranslatef(0,1,0);
-                    glScalef(1.0f/80.0f, 1.0f/40.0f, 1.0f);
-                    glColor4f(1,1,0,1);
+                    glTranslatef(0, 1, 0);
+                    glScalef(1.0f / 80.0f, 1.0f / 40.0f, 1.0f);
+                    glColor4f(1, 1, 0, 1);
                     glprintf("LinWarrior 3D  (Build " __DATE__ ") by hackcraft.de");
-                    glColor4f(0,1,0,1);
-                    glTranslatef(0,-34,0);
+                    glColor4f(0, 1, 0, 1);
+                    glTranslatef(0, -34, 0);
                     glprintf("IJKL-Keys   : Aim Weapons");
-                    glTranslatef(0,-1,0);
+                    glTranslatef(0, -1, 0);
                     glprintf("Cursor-Keys : Steer Base");
-                    glTranslatef(0,-1,0);
+                    glTranslatef(0, -1, 0);
                     glprintf("SEDF-Keys   : Main Action Buttons");
-                    glTranslatef(0,-1,0);
+                    glTranslatef(0, -1, 0);
                     glprintf("AW-/RG-Keys : Left/Right Action Buttons");
-                    glTranslatef(0,-1,0);
-                    glTranslatef(0,-1,0);
-                    glColor4f(1,1,0,1);
+                    glTranslatef(0, -1, 0);
+                    glTranslatef(0, -1, 0);
+                    glColor4f(1, 1, 0, 1);
                     glprintf("PROCESSING DATA...this may take a while...");
                 }
                 glPopMatrix();
@@ -876,12 +879,12 @@ int cMain::sdlmain(int argc, char** args) {
                     if (event.key.keysym.sym == SDLK_ESCAPE) done = true;
                     break;
                 }
-                
+
                 case SDL_MOUSEBUTTONUP:
                 {
-                    if(event.button.button == SDL_BUTTON_WHEELUP) {
+                    if (event.button.button == SDL_BUTTON_WHEELUP) {
                         mouseWheel++;
-                    } else if(event.button.button == SDL_BUTTON_WHEELDOWN) {
+                    } else if (event.button.button == SDL_BUTTON_WHEELDOWN) {
                         mouseWheel--;
                     }
                     break;
@@ -945,6 +948,7 @@ int cMain::sdlmain(int argc, char** args) {
     cout << "Shutting Down...\n";
 
     // Better set global signal and SDL_WaitThread.
+
     loopi(maxminions) {
         //SDL_KillThread(minions[i]);
     }

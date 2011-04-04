@@ -61,6 +61,7 @@ void* cMessage::getBlob() {
 }
 
 /// Compare time for message priority queue, fifo.
+
 bool cMessage::operator()(cMessage const* a, cMessage const* b) const {
     return a->mTimestamp > b->mTimestamp;
 }

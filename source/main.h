@@ -98,7 +98,7 @@ struct cGame {
      * Initialises default attribute parameters for running a game.
      */
     cGame();
-    
+
     /**
      * Prints commandline help.
      */
@@ -117,7 +117,6 @@ struct cGame {
     void initMission();
 
 };
-
 
 /**
  * Encapsulates low level system-, startup- and io-code.

@@ -105,7 +105,7 @@ void cWorld::spawnObject(cObject *object) {
     object->oid = serid;
     object->seconds = 0;
     mTiming.advanceDelta();
-    
+
     mObjects.push_back(object);
     object->onSpawn();
     // cout << serid << " spawn complete.\n";
@@ -132,7 +132,6 @@ void cWorld::bagFragged() {
 
 // Simulation Step
 
-
 void cWorld::advanceTime(int deltamsec) {
     //cout << "advanceTime()\n";
     if (mMission) mMission->checkConditions();
@@ -140,12 +139,12 @@ void cWorld::advanceTime(int deltamsec) {
     //cout << getSerial() << ": " << mHour << " " << mMinute << " " << mSecond << " " << mDeltacycle << endl;
 }
 
-
 void cWorld::clusterObjects() {
     try {
         int j = 0;
         mGeomap.clear();
         mUncluster.clear();
+
         foreach(i, mObjects) {
             cObject* o = *i;
             float px = o->pos[0];
@@ -161,7 +160,6 @@ void cWorld::clusterObjects() {
         cout << "Could not cluster world: " << s << endl;
     }
 }
-
 
 void cWorld::dispatchMessages() {
     OID now = getOID();
@@ -187,6 +185,7 @@ void cWorld::dispatchMessages() {
                     // Unable to deliver message to non-existent group?
                     if (group == NULL) continue;
                     // Inform each group member of the new message.
+
                     foreach(i, group->members) {
                         OID oid = *i;
                         this->sendMessage(0, message->getSender(), oid, message->getType(), message->getText(), message->getBlob());
@@ -291,16 +290,14 @@ void cWorld::drawEffect(cObject* camera, std::list<cObject*>* objects) {
 
 // World Scanning And Filtering
 
-
 OID cWorld::getGeokey(long x, long z) {
-    OID xpart = ((OID)((long(x))&0xFFFFFFFF))>>5;
+    OID xpart = ((OID) ((long(x))&0xFFFFFFFF)) >> 5;
     //cout << x << " ~ " << xpart << endl;
-    OID zpart = ((OID)((long(z))&0xFFFFFFFF))>>5;
+    OID zpart = ((OID) ((long(z))&0xFFFFFFFF)) >> 5;
     OID key = (xpart << 32) | zpart;
     //cout << key << endl;
     return key;
 }
-
 
 std::list<cObject*>* cWorld::getGeoInterval(float* min2f, float* max2f, bool addunclustered) {
     std::list<cObject*>* found = new std::list<cObject*>();
@@ -312,9 +309,9 @@ std::list<cObject*>* cWorld::getGeoInterval(float* min2f, float* max2f, bool add
     long bz = ((long) max2f[1] / f) * f;
 
     int n = 0;
-    for (long j = az-f*1; j <= bz+f*1; j+=f) {
-        for (long i = ax-f*1; i <= bx+f*1; i+=f) {
-            std::list<cObject*>* l = &(mGeomap[getGeokey(i,j)]);
+    for (long j = az - f * 1; j <= bz + f * 1; j += f) {
+        for (long i = ax - f * 1; i <= bx + f * 1; i += f) {
+            std::list<cObject*>* l = &(mGeomap[getGeokey(i, j)]);
             if (l != NULL) {
                 //cout << "found " << l->size() << endl;
                 found->insert(found->begin(), l->begin(), l->end());
@@ -332,7 +329,6 @@ std::list<cObject*>* cWorld::getGeoInterval(float* min2f, float* max2f, bool add
     return found;
 }
 
-
 string cWorld::getNames(std::list<cObject*>* objects) {
     if (objects == NULL) objects = &mObjects;
     stringstream s;
@@ -345,6 +341,7 @@ string cWorld::getNames(std::list<cObject*>* objects) {
         s << "#";
         s << (o->oid);
         s << "(";
+
         foreach(j, o->tags) {
             OID tag = *j;
             s << " " << tag << " ";
@@ -354,7 +351,6 @@ string cWorld::getNames(std::list<cObject*>* objects) {
     s << " ]";
     return s.str();
 }
-
 
 std::list<cObject*>* cWorld::filterByTags(cObject* ex, std::set<OID>* rolemask, bool all, int maxamount, std::list<cObject*>* objects) {
     std::list<cObject*>* result = new std::list<cObject*>;
@@ -368,9 +364,9 @@ std::list<cObject*>* cWorld::filterByTags(cObject* ex, std::set<OID>* rolemask, 
         if (object->oid == 0) continue;
         // Filter Condition
         if (all) {
-            if (! object->allTags(rolemask) ) continue;
+            if (!object->allTags(rolemask)) continue;
         } else {
-            if (! object->anyTags(rolemask) ) continue;
+            if (!object->anyTags(rolemask)) continue;
         }
         if (object == ex) continue;
         amount--;
@@ -378,7 +374,6 @@ std::list<cObject*>* cWorld::filterByTags(cObject* ex, std::set<OID>* rolemask, 
     }
     return result;
 }
-
 
 std::list<cObject*>* cWorld::filterByRange(cObject* ex, float* origin, float minrange, float maxrange, int maxamount, std::list<cObject*>* objects) {
     std::list<cObject*>* result = new std::list<cObject*>;
@@ -494,10 +489,10 @@ float cWorld::constrainParticle(cObject* ex, float* worldpos, float radius) {
     float maxrange = 25;
     bool groundplane = !true;
     if (groundplane)
-    if (worldpos[1] - radius < 0.0f) {
-        worldpos[1] = 0.0f + radius;
-        depth += -(worldpos[1] - radius) + 0.000001f;
-    }
+        if (worldpos[1] - radius < 0.0f) {
+            worldpos[1] = 0.0f + radius;
+            depth += -(worldpos[1] - radius) + 0.000001f;
+        }
     std::list<cObject*>* range = filterByRange(ex, worldpos, 0.0f, maxrange, -1, NULL);
     if (!range->empty()) {
 

@@ -9,7 +9,7 @@
 rWeaponHoming::rWeaponHoming(cObject* obj) {
     role = "HOMING";
     object = obj;
-    
+
     clipSize = 4;
     depotSize = 7;
     remainingAmmo = clipSize;
@@ -252,7 +252,7 @@ void rWeaponHoming::drawSolid() {
                 glMultMatrixf(b);
                 //glNormAxis();
                 glBegin(GL_TRIANGLE_FAN);
-                glNormal3f(0,0,1);
+                glNormal3f(0, 0, 1);
                 glVertex3f(0, 0, length);
                 glVertex3f(s1, c1, 0);
                 glVertex3f(s2, c2, 0);
@@ -269,7 +269,7 @@ void rWeaponHoming::drawSolid() {
 
 void rWeaponHoming::drawEffect() {
     if (missileParticles.empty()) return;
-    
+
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
         SGL::glUseProgram_fgaddcolor();
@@ -298,7 +298,7 @@ void rWeaponHoming::drawEffect() {
 
         // Draw Missile's trails.
         SGL::glUseProgram_fgaddtexture();
-        
+
         glBindTexture(GL_TEXTURE_2D, sTextures[0]);
 
         foreachNoInc(i, missileParticles) {

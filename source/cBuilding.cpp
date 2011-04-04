@@ -16,8 +16,8 @@ using std::endl;
 #define BUILDINGDETAIL 0
 
 static void getVStrings(float x, float y, float* color4f, unsigned char seed = 131) {
-    float x_ = fmod(x,1.0f);
-    float sinx = cNoise::simplex3(((x_ < 0.5f)?(x_):(1.0f-x_))*16.0, 0, 0, seed);
+    float x_ = fmod(x, 1.0f);
+    float sinx = cNoise::simplex3(((x_ < 0.5f) ? (x_) : (1.0f - x_))*16.0, 0, 0, seed);
     float sx = 0.8 + 0.2 * sinx;
     float grain = 0.9f + 0.1f * (0.5f + 0.5f * cNoise::simplex3(x * 256.0f, y * 256.0f, 0, seed));
     color4f[0] = color4f[1] = color4f[2] = grain * sx;
@@ -25,38 +25,38 @@ static void getVStrings(float x, float y, float* color4f, unsigned char seed = 1
 }
 
 static void getHStrings(float x, float y, float* color4f, unsigned char seed = 131) {
-    float y_ = fmod(y,1.0f);
+    float y_ = fmod(y, 1.0f);
     float siny = cNoise::simplex3(0, y_ * 8.0f, 0, seed);
     float sy = 0.8 + 0.2 * siny;
-    float grain = 0.9f + 0.1f * (0.5f + 0.5f * cNoise::simplex3(x * 256.0f, y * 256.0f, 0, seed) );
+    float grain = 0.9f + 0.1f * (0.5f + 0.5f * cNoise::simplex3(x * 256.0f, y * 256.0f, 0, seed));
     color4f[0] = color4f[1] = color4f[2] = grain * sy;
     color4f[3] = 1.0f;
 }
 
 static void getInterrior(float x, float y, float* color4fv, unsigned char seed = 131) {
-    float alpha = 0.3f + 0.7f * (0.5f + 0.5f * cNoise::samplex3(x*63, y*63, 0, seed));
-    float dark[] = { 0.2f, 0.2f, 0.2f, 1.0f };
-    float lite[] = { 0.99f, 0.99f, 0.7f, 1.0f };
+    float alpha = 0.3f + 0.7f * (0.5f + 0.5f * cNoise::samplex3(x * 63, y * 63, 0, seed));
+    float dark[] = {0.2f, 0.2f, 0.2f, 1.0f};
+    float lite[] = {0.99f, 0.99f, 0.7f, 1.0f};
     cDistortion::fade4(alpha, dark, lite, color4fv);
 }
 
 static void getExterrior(float x, float y, float* color4fv, unsigned char seed = 131) {
-    float alpha = 0.3f + 0.7f * (0.5f + 0.5f * cNoise::simplex3(x,y,0,seed));
-    float dark[] = { 0.30f, 0.30f, 0.40f, 1.0f };
-    float lite[] = { 0.50f, 0.50f, 0.70f, 1.0f };
+    float alpha = 0.3f + 0.7f * (0.5f + 0.5f * cNoise::simplex3(x, y, 0, seed));
+    float dark[] = {0.30f, 0.30f, 0.40f, 1.0f};
+    float lite[] = {0.50f, 0.50f, 0.70f, 1.0f};
     cDistortion::fade4(alpha, dark, lite, color4fv);
 }
 
 static void getConcrete(float x, float y, float z, float* color4fv, unsigned char seed = 131) {
-    float grain = 0.15f + 0.15f * (0.5f + 0.5f * cNoise::simplex3(x, y, z, seed) );
+    float grain = 0.15f + 0.15f * (0.5f + 0.5f * cNoise::simplex3(x, y, z, seed));
     color4fv[0] = color4fv[1] = color4fv[2] = grain;
     color4fv[3] = 1.0f;
 }
 
-
 static inline void getFacade(float x, float y, int gx, int gy, float age, float* c3f, unsigned char seed = 131) {
 
     // Border Levels from outside to inside.
+
     enum Levels {
         MARGIN, BORDER, PADDING, CONTENT, MAX_LEVELS
     };
@@ -122,33 +122,38 @@ static inline void getFacade(float x, float y, int gx, int gy, float age, float*
         content[3] = r * 0.0001f * h + 0.0001f * h;
     }
 
-    float sum[MAX_LEVELS+1][4] = { {0, 0, 0, 0} };
+    float sum[MAX_LEVELS + 1][4] = {
+        {0, 0, 0, 0}
+    };
+
     loopi(MAX_LEVELS) {
-        sum[i+1][0] = sum[i][0] + dims[4*i + 0];
-        sum[i+1][1] = sum[i][1] + dims[4*i + 1];
-        sum[i+1][2] = sum[i][2] + dims[4*i + 2];
-        sum[i+1][3] = sum[i][3] + dims[4*i + 3];
-    }
-    
-    float pyr[MAX_LEVELS+1];
-    loopi(MAX_LEVELS+1) {
-        pyr[i] = cDistortion::rampPyramid(sum[i][0],sum[i][1], 1.0f-sum[i][2],1.0f-sum[i][3], x,y);
+        sum[i + 1][0] = sum[i][0] + dims[4 * i + 0];
+        sum[i + 1][1] = sum[i][1] + dims[4 * i + 1];
+        sum[i + 1][2] = sum[i][2] + dims[4 * i + 2];
+        sum[i + 1][3] = sum[i][3] + dims[4 * i + 3];
     }
 
-    float inside[MAX_LEVELS+1];
-    loopi(MAX_LEVELS+1) {
+    float pyr[MAX_LEVELS + 1];
+
+    loopi(MAX_LEVELS + 1) {
+        pyr[i] = cDistortion::rampPyramid(sum[i][0], sum[i][1], 1.0f - sum[i][2], 1.0f - sum[i][3], x, y);
+    }
+
+    float inside[MAX_LEVELS + 1];
+
+    loopi(MAX_LEVELS + 1) {
         inside[i] = (pyr[i] >= 0) ? 1.0f : 0.0f;
     }
 
     rgba colors[] = {
-        { 1,0,0,1 },
-        { 0,1,0,1 },
-        { 0,0,1,1 },
-        { 0,1,1,1 },
-        { 1,1,1,1 },
+        { 1, 0, 0, 1},
+        { 0, 1, 0, 1},
+        { 0, 0, 1, 1},
+        { 0, 1, 1, 1},
+        { 1, 1, 1, 1},
     };
 
-    loopi(MAX_LEVELS+1) {
+    loopi(MAX_LEVELS + 1) {
         if (pyr[i] >= 0) {
             c3f[0] = colors[i][0];
             c3f[1] = colors[i][1];
@@ -164,7 +169,7 @@ static inline void getFacade(float x, float y, int gx, int gy, float age, float*
     cl = 0.6f + 0.4f * inv256*cl;
     cl *= (1.0f - chma);
     chma *= inv256;
-    float c0[] = { cl + chma*cr, cl + chma*cg, cl + chma*cb, 1.0f };
+    float c0[] = {cl + chma*cr, cl + chma*cg, cl + chma*cb, 1.0f};
 
     chma = 2.0f * 0.1f;
     cr = r = cNoise::LFSR8(r);
@@ -174,41 +179,46 @@ static inline void getFacade(float x, float y, int gx, int gy, float age, float*
     cl = 0.6f + 0.4f * inv256*cl;
     cl *= (1.0f - chma);
     chma *= inv256;
-    float c1[] = { cl + chma*cr, cl + chma*cg, cl + chma*cb, 1.0f };
+    float c1[] = {cl + chma*cr, cl + chma*cg, cl + chma*cb, 1.0f};
 
     //return;
 
 
     // Vertical Column Pattern.
     float col[4];
-    getVStrings(x, y, col, seed+21);
+    getVStrings(x, y, col, seed + 21);
+
     loopi(4) {
         col[i] *= c0[i];
     }
 
     // Horizontal Row Pattern.
     float row[4];
-    getHStrings(x, y, row, seed+11);
+    getHStrings(x, y, row, seed + 11);
+
     loopi(4) {
         row[i] *= c1[i];
     }
 
     // Glass distortion
-    float dx = 0.01f * cNoise::simplex3((gx+x)*63,(gy+y)*63,0,seed+43);
-    float dy = 0.01f * cNoise::simplex3((gx+x)*63,(gy+y)*63,0,seed+31);
+    float dx = 0.01f * cNoise::simplex3((gx + x)*63, (gy + y)*63, 0, seed + 43);
+    float dy = 0.01f * cNoise::simplex3((gx + x)*63, (gy + y)*63, 0, seed + 31);
 
     // Interrior Room Pattern.
     float interrior[4];
-    getInterrior(gx+x+dx, gy+y+dy, interrior);
-    float innerwalls = 0.6f + fmin(0.4, fmax(0.0f, cDistortion::rampPyramid(0,0.1,1,0.9, x+dx,y+dy)));
-    loopi(4) { interrior[i] *= innerwalls; }
+    getInterrior(gx + x + dx, gy + y + dy, interrior);
+    float innerwalls = 0.6f + fmin(0.4, fmax(0.0f, cDistortion::rampPyramid(0, 0.1, 1, 0.9, x + dx, y + dy)));
+
+    loopi(4) {
+        interrior[i] *= innerwalls;
+    }
 
     // Exterrior Scene Reflection Pattern.
     float exterrior[4];
-    getExterrior(gx+x+2*dx, gy+y+2*dy, exterrior);
+    getExterrior(gx + x + 2 * dx, gy + y + 2 * dy, exterrior);
 
     // Light smearing
-    float smear = 0.8 + 0.2f * cNoise::simplex3((gx+x)*8+(gy+y)*8,(gx+x)*1-(gy+y)*1,0,seed+41);
+    float smear = 0.8 + 0.2f * cNoise::simplex3((gx + x)*8 + (gy + y)*8, (gx + x)*1 - (gy + y)*1, 0, seed + 41);
 
 
     //float glass[] = { 0.90f, 0.90f, 0.99f, 1.0f };
@@ -218,25 +228,25 @@ static inline void getFacade(float x, float y, int gx, int gy, float age, float*
     int v = (y < margin[1]) ? 0 : ((y < 1.0f - margin[3]) ? 1 : 2);
 
     int colpart = ((!rowmajor || v == 1) && u != 1) ? 1 : 0;
-    int rowpart = (( rowmajor || u == 1) && v != 1) ? 1 : 0;
+    int rowpart = ((rowmajor || u == 1) && v != 1) ? 1 : 0;
 
     float mirror = 0.8f;
     mirror *= smear;
 
     float shade[4];
     cDistortion::fade4(mirror, interrior, exterrior, shade);
-    cDistortion::mix3(0.56f*colpart, col, 0.60f*rowpart, row, c3f);
-    
-    int winpart = inside[BORDER+1];
-    cDistortion::mix3(1.0f-winpart, c3f, winpart, shade, c3f);
+    cDistortion::mix3(0.56f * colpart, col, 0.60f * rowpart, row, c3f);
+
+    int winpart = inside[BORDER + 1];
+    cDistortion::mix3(1.0f - winpart, c3f, winpart, shade, c3f);
 
     return;
 
-    float dirt[] = { 0.3, 0.3, 0.25, 1.0f };
-    float dirtf = 1.0f + pyr[BORDER+1];
+    float dirt[] = {0.3, 0.3, 0.25, 1.0f};
+    float dirtf = 1.0f + pyr[BORDER + 1];
     dirtf = (dirtf > 1.0f) ? 0.0f : dirtf;
     dirtf *= 0.99f;
-    cDistortion::mix3(1.0f-dirtf, c3f, dirtf, dirt, c3f);
+    cDistortion::mix3(1.0f - dirtf, c3f, dirtf, dirt, c3f);
 }
 
 
@@ -250,16 +260,18 @@ cBuilding::cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
 
         {
             cout << "Generating Rooftops..." << endl;
-            int w = 1<<(5+BUILDINGDETAIL);
+            int w = 1 << (5 + BUILDINGDETAIL);
             int h = w;
             int bpp = 3;
-            unsigned char* texels = new unsigned char[((unsigned long)w)*h*bpp];
+            unsigned char* texels = new unsigned char[((unsigned long) w) * h * bpp];
             unsigned char* p = texels;
+
             loopj(h) {
+
                 loopi(w) {
                     float c4f[4];
                     //getConcrete(256*(float)i/(float)w, 256*(float)j/(float)h, 0, c4f);
-                    getConcrete(1*(float)i/(float)w, 1*(float)j/(float)h, 0, c4f);
+                    getConcrete(1 * (float) i / (float) w, 1 * (float) j / (float) h, 0, c4f);
                     *p++ = c4f[2] * 255;
                     *p++ = c4f[1] * 255;
                     *p++ = c4f[0] * 255;
@@ -269,26 +281,29 @@ cBuilding::cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
             delete texels;
             sTextures[0] = texname;
         }
-        
+
         {
             //glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
             cout << "Generating Facades..." << endl;
-                loopk(17) {
-                int w = 1<<(7+BUILDINGDETAIL);
+
+            loopk(17) {
+                int w = 1 << (7 + BUILDINGDETAIL);
                 int h = w;
                 int bpp = 3;
-                unsigned char* texels = new unsigned char[((unsigned long)w)*h*bpp];
+                unsigned char* texels = new unsigned char[((unsigned long) w) * h * bpp];
                 unsigned char* p = texels;
+
                 loopj(h) {
+
                     loopi(w) {
-                        float a = (0.0f + ((float)i / (float)w)) * 3.0f;
-                        float b = (1.0f - ((float)j / (float)h)) * 3.0f;
+                        float a = (0.0f + ((float) i / (float) w)) * 3.0f;
+                        float b = (1.0f - ((float) j / (float) h)) * 3.0f;
                         int gx = a;
                         int gy = b;
                         float x = a - gx;
                         float y = b - gy;
                         float c[3];
-                        getFacade(x, y, gx, gy, 0, c, 131 + k* 31);
+                        getFacade(x, y, gx, gy, 0, c, 131 + k * 31);
                         *p++ = c[2] * 255;
                         *p++ = c[1] * 255;
                         *p++ = c[0] * 255;
@@ -297,16 +312,16 @@ cBuilding::cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
 
                 texname = SGL::glBindTextureMipmap2D(0, true, true, true, true, w, h, texels);
                 //texname = SGL::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
-                sTextures[k+1] = texname;
+                sTextures[k + 1] = texname;
 
                 if (0) {
                     try {
-                        char numb[3] = { '0' + (k/10), '0' + (k%10), '\0' };
+                        char numb[3] = {'0' + (k / 10), '0' + (k % 10), '\0'};
                         std::string fname = std::string("data/urban/scraper2/facade") + std::string(numb) + std::string(".tga");
                         if (saveTGA(fname.c_str(), w, h, bpp, texels)) {
                             cout << "Could not save image" << endl;
                         }
-                    } catch(char const* s) {
+                    } catch (char const* s) {
                         cout << "ERROR: " << s << endl;
                     }
                 }
@@ -314,7 +329,7 @@ cBuilding::cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
             }
         }
     }
-    
+
     damageable = new rDamageable;
 
     buildingRooms[0] = 3 * rooms_x;
@@ -330,7 +345,7 @@ cBuilding::cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
 
 void cBuilding::damageByParticle(float* localpos, float damage, cObject* enactor) {
     if (!damageable->alife) return;
-    
+
     if (damage > 0) {
         int body = rDamageable::BODY;
         damageable->hp[body] -= damage;
@@ -424,7 +439,7 @@ void cBuilding::drawSolid() {
     glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_TEXTURE_BIT);
     {
         SGL::glUseProgram_fglittexture();
-        
+
         long roof = sTextures[0];
         long wall = 0;
         if (this->damageable->hp[rDamageable::BODY] <= 0) {
@@ -435,7 +450,7 @@ void cBuilding::drawSolid() {
             glColor3f(0.7f, 0.8f, 0.9f);
         }
 
-        wall = sTextures[1 + (((int)(p[0]*1.234567+p[2]*7.654321))%(sTextures.size()-1))];
+        wall = sTextures[1 + (((int) (p[0]*1.234567 + p[2]*7.654321)) % (sTextures.size() - 1))];
 
         float hp = this->damageable->hp[rDamageable::BODY] * 0.01;
         hp = hp < 0 ? 0 : hp;
@@ -582,7 +597,7 @@ void cScatterfield::drawEffect() {
         glEnable(GL_TEXTURE_2D);
         glColor4f(0.3, 0.7, 0.3, 1);
         glBindTexture(GL_TEXTURE_2D, sTextures[0]);
-        
+
         foreachNoInc(i, decalParticles) {
             cParticle* p = *i++;
             glPushMatrix();
@@ -604,11 +619,10 @@ void cScatterfield::drawEffect() {
 #include "cSolid.h"
 #include "cSurface.h"
 
-
 static void getBasicRoad(float x, float y, float z, float* color, unsigned char seed = 131) {
     cSolid::concrete_cracked(x, y, z, color, seed);
-    
-    float marks = 0.6f + 0.05f * cos(2.0f*4.0f * x * 2.0f * M_PI);
+
+    float marks = 0.6f + 0.05f * cos(2.0f * 4.0f * x * 2.0f * M_PI);
     color[0] *= marks;
     color[1] *= marks;
     color[2] *= marks;
@@ -620,22 +634,22 @@ static void getBasicRoad(float x, float y, float z, float* color, unsigned char 
     int bitshift = (int) (y * 7.999999f * 2.0f);
     bool bit = (pattern >> bitshift) & 1;
 
-    if (x >  0.495f && x < 0.505f && bit) {
+    if (x > 0.495f && x < 0.505f && bit) {
         color[0] = color[0] + 0.35;
         color[1] = color[1] + 0.35;
         color[2] = color[2] + 0.35;
     }
 
-    if ((x > 0.25 && x < 0.26) || (x > (1.0f-0.26f) && x < (1.0f-0.25f))) {
+    if ((x > 0.25 && x < 0.26) || (x > (1.0f - 0.26f) && x < (1.0f - 0.25f))) {
         color[0] = color[0] + 0.35;
         color[1] = color[1] + 0.35;
         color[2] = color[2] + 0.1;
     }
 
     // sidewalk
-    if (x < 0.23 || x > (1.0f-0.23f)) {
+    if (x < 0.23 || x > (1.0f - 0.23f)) {
         float f = 1;
-        if (x < 0.22 || x > (1.0f-0.22f)) {
+        if (x < 0.22 || x > (1.0f - 0.22f)) {
         } else {
             f = 0.7;
         }
@@ -663,7 +677,7 @@ static void getStoplineMask(float x, float y, float z, float* color, unsigned ch
     color[0] = 1.0f;
     color[1] = 1.0f;
     color[2] = 1.0f;
-    color[3] = 0.0f;//mark;
+    color[3] = 0.0f; //mark;
 }
 
 static void getZebraMask(float x, float y, float z, float* color, unsigned char seed = 131) {
@@ -692,14 +706,14 @@ static void getZebraMask(float x, float y, float z, float* color, unsigned char 
 static void getBasicCrossRoad(float x, float y, float z, float* color, unsigned char seed = 131) {
     float ns[4];
     float ew[4];
-    getBasicRoad(x,y,z, ns, seed + 0);
-    getBasicRoad(y,x,z, ew, seed + 1);
+    getBasicRoad(x, y, z, ns, seed + 0);
+    getBasicRoad(y, x, z, ew, seed + 1);
 
     {
         float ns_stop[4];
         float ew_stop[4];
-        getStoplineMask(x,y,z, ns_stop, seed + 0);
-        getStoplineMask(y,1.0f-x,z, ew_stop, seed + 1);
+        getStoplineMask(x, y, z, ns_stop, seed + 0);
+        getStoplineMask(y, 1.0f - x, z, ew_stop, seed + 1);
 
         float a = ns_stop[3] * 0.6f;
         float b = 1.0f - a;
@@ -718,8 +732,8 @@ static void getBasicCrossRoad(float x, float y, float z, float* color, unsigned 
     {
         float ns_zeb[4];
         float ew_zeb[4];
-        getZebraMask(x,y,z, ns_zeb, seed + 0);
-        getZebraMask(y,1.0f-x,z, ew_zeb, seed + 1);
+        getZebraMask(x, y, z, ns_zeb, seed + 0);
+        getZebraMask(y, 1.0f - x, z, ew_zeb, seed + 1);
 
         float a = ns_zeb[3] * 0.6f;
         float b = 1.0f - a;
@@ -734,7 +748,7 @@ static void getBasicCrossRoad(float x, float y, float z, float* color, unsigned 
         ew[2] = ew_zeb[2] * a + b * ew[2];
     }
 
-    float alpha = (fabs(0.5f - fmod(x,1)) < fabs(0.5f - fmod(y,1))) ? 1.0f : 0.0f;
+    float alpha = (fabs(0.5f - fmod(x, 1)) < fabs(0.5f - fmod(y, 1))) ? 1.0f : 0.0f;
     //alpha = 0.8f;
     color[0] = alpha * ns[0] + (1.0f - alpha) * ew[0];
     color[1] = alpha * ns[1] + (1.0f - alpha) * ew[1];
@@ -745,9 +759,9 @@ static void getBasicCrossRoad(float x, float y, float z, float* color, unsigned 
 static void getBasicTSRoad(float x, float y, float z, float* color, unsigned char seed = 131) {
     float news[4];
     float ew[4];
-    getBasicCrossRoad(y,x,z, news, seed + 0);
-    getBasicRoad(y,x,z, ew, seed + 1);
-    float alpha = ((fmod(y,1) < fmod(x,1)) && (fmod(y,1) < 1.0f-fmod(x,1))) ? 1.0f : 0.0f;
+    getBasicCrossRoad(y, x, z, news, seed + 0);
+    getBasicRoad(y, x, z, ew, seed + 1);
+    float alpha = ((fmod(y, 1) < fmod(x, 1)) && (fmod(y, 1) < 1.0f - fmod(x, 1))) ? 1.0f : 0.0f;
     color[0] = alpha * news[0] + (1.0f - alpha) * ew[0];
     color[1] = alpha * news[1] + (1.0f - alpha) * ew[1];
     color[2] = alpha * news[2] + (1.0f - alpha) * ew[2];
@@ -757,9 +771,9 @@ static void getBasicTSRoad(float x, float y, float z, float* color, unsigned cha
 static void getBasicTNRoad(float x, float y, float z, float* color, unsigned char seed = 131) {
     float news[4];
     float ew[4];
-    getBasicCrossRoad(y,x,z, news, seed + 0);
-    getBasicRoad(y,x,z, ew, seed + 1);
-    float alpha = ((fmod(y,1) > fmod(x,1)) && (fmod(y,1) > 1.0f-fmod(x,1))) ? 1.0f : 0.0f;
+    getBasicCrossRoad(y, x, z, news, seed + 0);
+    getBasicRoad(y, x, z, ew, seed + 1);
+    float alpha = ((fmod(y, 1) > fmod(x, 1)) && (fmod(y, 1) > 1.0f - fmod(x, 1))) ? 1.0f : 0.0f;
     color[0] = alpha * news[0] + (1.0f - alpha) * ew[0];
     color[1] = alpha * news[1] + (1.0f - alpha) * ew[1];
     color[2] = alpha * news[2] + (1.0f - alpha) * ew[2];
@@ -769,9 +783,9 @@ static void getBasicTNRoad(float x, float y, float z, float* color, unsigned cha
 static void getBasicTERoad(float x, float y, float z, float* color, unsigned char seed = 131) {
     float news[4];
     float ew[4];
-    getBasicCrossRoad(y,x,z, news, seed + 0);
-    getBasicRoad(x,1.0f-y,z, ew, seed + 1);
-    float alpha = ((fmod(x,1) > fmod(y,1)) && (fmod(x,1) > 1.0f-fmod(y,1))) ? 1.0f : 0.0f;
+    getBasicCrossRoad(y, x, z, news, seed + 0);
+    getBasicRoad(x, 1.0f - y, z, ew, seed + 1);
+    float alpha = ((fmod(x, 1) > fmod(y, 1)) && (fmod(x, 1) > 1.0f - fmod(y, 1))) ? 1.0f : 0.0f;
     color[0] = alpha * news[0] + (1.0f - alpha) * ew[0];
     color[1] = alpha * news[1] + (1.0f - alpha) * ew[1];
     color[2] = alpha * news[2] + (1.0f - alpha) * ew[2];
@@ -781,9 +795,9 @@ static void getBasicTERoad(float x, float y, float z, float* color, unsigned cha
 static void getBasicTWRoad(float x, float y, float z, float* color, unsigned char seed = 131) {
     float news[4];
     float ew[4];
-    getBasicCrossRoad(y,x,z, news, seed + 0);
-    getBasicRoad(x,1.0f-y,z, ew, seed + 1);
-    float alpha = ((fmod(x,1) < fmod(y,1)) && (fmod(x,1) < 1.0f-fmod(y,1))) ? 1.0f : 0.0f;
+    getBasicCrossRoad(y, x, z, news, seed + 0);
+    getBasicRoad(x, 1.0f - y, z, ew, seed + 1);
+    float alpha = ((fmod(x, 1) < fmod(y, 1)) && (fmod(x, 1) < 1.0f - fmod(y, 1))) ? 1.0f : 0.0f;
     color[0] = alpha * news[0] + (1.0f - alpha) * ew[0];
     color[1] = alpha * news[1] + (1.0f - alpha) * ew[1];
     color[2] = alpha * news[2] + (1.0f - alpha) * ew[2];
@@ -793,9 +807,9 @@ static void getBasicTWRoad(float x, float y, float z, float* color, unsigned cha
 static void getBasicNERoad(float x, float y, float z, float* color, unsigned char seed = 131) {
     float ns[4];
     float ew[4];
-    getBasicRoad(x,y,z, ns, seed + 0);
-    getBasicRoad(y,x,z, ew, seed + 1);
-    float alpha = (fmod(y,1) > fmod(x,1)) ? 1.0f : 0.0f;
+    getBasicRoad(x, y, z, ns, seed + 0);
+    getBasicRoad(y, x, z, ew, seed + 1);
+    float alpha = (fmod(y, 1) > fmod(x, 1)) ? 1.0f : 0.0f;
     color[0] = alpha * ns[0] + (1.0f - alpha) * ew[0];
     color[1] = alpha * ns[1] + (1.0f - alpha) * ew[1];
     color[2] = alpha * ns[2] + (1.0f - alpha) * ew[2];
@@ -805,9 +819,9 @@ static void getBasicNERoad(float x, float y, float z, float* color, unsigned cha
 static void getBasicNWRoad(float x, float y, float z, float* color, unsigned char seed = 131) {
     float ns[4];
     float ew[4];
-    getBasicRoad(x,y,z, ns, seed + 0);
-    getBasicRoad(y,x,z, ew, seed + 1);
-    float alpha = (fmod(y,1) > 1.0f-fmod(x,1)) ? 1.0f : 0.0f;
+    getBasicRoad(x, y, z, ns, seed + 0);
+    getBasicRoad(y, x, z, ew, seed + 1);
+    float alpha = (fmod(y, 1) > 1.0f - fmod(x, 1)) ? 1.0f : 0.0f;
     color[0] = alpha * ns[0] + (1.0f - alpha) * ew[0];
     color[1] = alpha * ns[1] + (1.0f - alpha) * ew[1];
     color[2] = alpha * ns[2] + (1.0f - alpha) * ew[2];
@@ -817,9 +831,9 @@ static void getBasicNWRoad(float x, float y, float z, float* color, unsigned cha
 static void getBasicSERoad(float x, float y, float z, float* color, unsigned char seed = 131) {
     float ns[4];
     float ew[4];
-    getBasicRoad(x,y,z, ns, seed + 0);
-    getBasicRoad(y,x,z, ew, seed + 1);
-    float alpha = (1.0f-fmod(y,1) > fmod(x,1)) ? 1.0f : 0.0f;
+    getBasicRoad(x, y, z, ns, seed + 0);
+    getBasicRoad(y, x, z, ew, seed + 1);
+    float alpha = (1.0f - fmod(y, 1) > fmod(x, 1)) ? 1.0f : 0.0f;
     color[0] = alpha * ns[0] + (1.0f - alpha) * ew[0];
     color[1] = alpha * ns[1] + (1.0f - alpha) * ew[1];
     color[2] = alpha * ns[2] + (1.0f - alpha) * ew[2];
@@ -829,9 +843,9 @@ static void getBasicSERoad(float x, float y, float z, float* color, unsigned cha
 static void getBasicSWRoad(float x, float y, float z, float* color, unsigned char seed = 131) {
     float ns[4];
     float ew[4];
-    getBasicRoad(x,y,z, ns, seed + 0);
-    getBasicRoad(y,x,z, ew, seed + 1);
-    float alpha = (1.0f-fmod(y,1) > 1.0f-fmod(x,1)) ? 1.0f : 0.0f;
+    getBasicRoad(x, y, z, ns, seed + 0);
+    getBasicRoad(y, x, z, ew, seed + 1);
+    float alpha = (1.0f - fmod(y, 1) > 1.0f - fmod(x, 1)) ? 1.0f : 0.0f;
     color[0] = alpha * ns[0] + (1.0f - alpha) * ew[0];
     color[1] = alpha * ns[1] + (1.0f - alpha) * ew[1];
     color[2] = alpha * ns[2] + (1.0f - alpha) * ew[2];
@@ -849,19 +863,21 @@ cTile::cTile(int x, int y, int z, int kind) {
         bool save = false;
 
         unsigned int texname;
-        int w_ = 1 << (8+BUILDINGDETAIL);
+        int w_ = 1 << (8 + BUILDINGDETAIL);
 
         // NEWS-Road
         {
             int w = w_;
             int h = w;
             int bpp = 3;
-            unsigned char* texels = new unsigned char[((unsigned long)w)*h*bpp];
+            unsigned char* texels = new unsigned char[((unsigned long) w) * h * bpp];
             unsigned char* p = texels;
+
             loopj(h) {
+
                 loopi(w) {
                     float color[16];
-                    getBasicCrossRoad(1*(float)i/(float)w, 1*(float)j/(float)h, 0, color);
+                    getBasicCrossRoad(1 * (float) i / (float) w, 1 * (float) j / (float) h, 0, color);
                     *p++ = color[2] * 255;
                     *p++ = color[1] * 255;
                     *p++ = color[0] * 255;
@@ -883,12 +899,14 @@ cTile::cTile(int x, int y, int z, int kind) {
             int w = w_;
             int h = w;
             int bpp = 3;
-            unsigned char* texels = new unsigned char[((unsigned long)w)*h*bpp];
+            unsigned char* texels = new unsigned char[((unsigned long) w) * h * bpp];
             unsigned char* p = texels;
+
             loopj(h) {
+
                 loopi(w) {
                     float color[16];
-                    getBasicTNRoad(1*(float)i/(float)w, 1*(float)j/(float)h, 0, color);
+                    getBasicTNRoad(1 * (float) i / (float) w, 1 * (float) j / (float) h, 0, color);
                     *p++ = color[2] * 255;
                     *p++ = color[1] * 255;
                     *p++ = color[0] * 255;
@@ -910,12 +928,14 @@ cTile::cTile(int x, int y, int z, int kind) {
             int w = w_;
             int h = w;
             int bpp = 3;
-            unsigned char* texels = new unsigned char[((unsigned long)w)*h*bpp];
+            unsigned char* texels = new unsigned char[((unsigned long) w) * h * bpp];
             unsigned char* p = texels;
+
             loopj(h) {
+
                 loopi(w) {
                     float color[16];
-                    getBasicTSRoad(1*(float)i/(float)w, 1*(float)j/(float)h, 0, color);
+                    getBasicTSRoad(1 * (float) i / (float) w, 1 * (float) j / (float) h, 0, color);
                     *p++ = color[2] * 255;
                     *p++ = color[1] * 255;
                     *p++ = color[0] * 255;
@@ -937,12 +957,14 @@ cTile::cTile(int x, int y, int z, int kind) {
             int w = w_;
             int h = w;
             int bpp = 3;
-            unsigned char* texels = new unsigned char[((unsigned long)w)*h*bpp];
+            unsigned char* texels = new unsigned char[((unsigned long) w) * h * bpp];
             unsigned char* p = texels;
+
             loopj(h) {
+
                 loopi(w) {
                     float color[16];
-                    getBasicTERoad(1*(float)i/(float)w, 1*(float)j/(float)h, 0, color);
+                    getBasicTERoad(1 * (float) i / (float) w, 1 * (float) j / (float) h, 0, color);
                     *p++ = color[2] * 255;
                     *p++ = color[1] * 255;
                     *p++ = color[0] * 255;
@@ -964,12 +986,14 @@ cTile::cTile(int x, int y, int z, int kind) {
             int w = w_;
             int h = w;
             int bpp = 3;
-            unsigned char* texels = new unsigned char[((unsigned long)w)*h*bpp];
+            unsigned char* texels = new unsigned char[((unsigned long) w) * h * bpp];
             unsigned char* p = texels;
+
             loopj(h) {
+
                 loopi(w) {
                     float color[16];
-                    getBasicTWRoad(1*(float)i/(float)w, 1*(float)j/(float)h, 0, color);
+                    getBasicTWRoad(1 * (float) i / (float) w, 1 * (float) j / (float) h, 0, color);
                     *p++ = color[2] * 255;
                     *p++ = color[1] * 255;
                     *p++ = color[0] * 255;
@@ -991,12 +1015,14 @@ cTile::cTile(int x, int y, int z, int kind) {
             int w = w_;
             int h = w;
             int bpp = 3;
-            unsigned char* texels = new unsigned char[((unsigned long)w)*h*bpp];
+            unsigned char* texels = new unsigned char[((unsigned long) w) * h * bpp];
             unsigned char* p = texels;
+
             loopj(h) {
+
                 loopi(w) {
                     float color[16];
-                    getBasicRoad(1*(float)i/(float)w, 1*(float)j/(float)h, 0, color);
+                    getBasicRoad(1 * (float) i / (float) w, 1 * (float) j / (float) h, 0, color);
                     *p++ = color[2] * 255;
                     *p++ = color[1] * 255;
                     *p++ = color[0] * 255;
@@ -1018,12 +1044,14 @@ cTile::cTile(int x, int y, int z, int kind) {
             int w = w_;
             int h = w;
             int bpp = 3;
-            unsigned char* texels = new unsigned char[((unsigned long)w)*h*bpp];
+            unsigned char* texels = new unsigned char[((unsigned long) w) * h * bpp];
             unsigned char* p = texels;
+
             loopj(h) {
+
                 loopi(w) {
                     float color[16];
-                    getBasicRoad(1*(float)j/(float)h, 1*(float)i/(float)w, 0, color);
+                    getBasicRoad(1 * (float) j / (float) h, 1 * (float) i / (float) w, 0, color);
                     *p++ = color[2] * 255;
                     *p++ = color[1] * 255;
                     *p++ = color[0] * 255;
@@ -1045,12 +1073,14 @@ cTile::cTile(int x, int y, int z, int kind) {
             int w = w_;
             int h = w;
             int bpp = 3;
-            unsigned char* texels = new unsigned char[((unsigned long)w)*h*bpp];
+            unsigned char* texels = new unsigned char[((unsigned long) w) * h * bpp];
             unsigned char* p = texels;
+
             loopj(h) {
+
                 loopi(w) {
                     float color[16];
-                    getBasicNERoad(1*(float)i/(float)h, 1*(float)j/(float)w, 0, color);
+                    getBasicNERoad(1 * (float) i / (float) h, 1 * (float) j / (float) w, 0, color);
                     *p++ = color[2] * 255;
                     *p++ = color[1] * 255;
                     *p++ = color[0] * 255;
@@ -1072,12 +1102,14 @@ cTile::cTile(int x, int y, int z, int kind) {
             int w = w_;
             int h = w;
             int bpp = 3;
-            unsigned char* texels = new unsigned char[((unsigned long)w)*h*bpp];
+            unsigned char* texels = new unsigned char[((unsigned long) w) * h * bpp];
             unsigned char* p = texels;
+
             loopj(h) {
+
                 loopi(w) {
                     float color[16];
-                    getBasicSERoad(1*(float)i/(float)h, 1*(float)j/(float)w, 0, color);
+                    getBasicSERoad(1 * (float) i / (float) h, 1 * (float) j / (float) w, 0, color);
                     *p++ = color[2] * 255;
                     *p++ = color[1] * 255;
                     *p++ = color[0] * 255;
@@ -1099,12 +1131,14 @@ cTile::cTile(int x, int y, int z, int kind) {
             int w = w_;
             int h = w;
             int bpp = 3;
-            unsigned char* texels = new unsigned char[((unsigned long)w)*h*bpp];
+            unsigned char* texels = new unsigned char[((unsigned long) w) * h * bpp];
             unsigned char* p = texels;
+
             loopj(h) {
+
                 loopi(w) {
                     float color[16];
-                    getBasicSWRoad(1*(float)i/(float)h, 1*(float)j/(float)w, 0, color);
+                    getBasicSWRoad(1 * (float) i / (float) h, 1 * (float) j / (float) w, 0, color);
                     *p++ = color[2] * 255;
                     *p++ = color[1] * 255;
                     *p++ = color[0] * 255;
@@ -1126,12 +1160,14 @@ cTile::cTile(int x, int y, int z, int kind) {
             int w = w_;
             int h = w;
             int bpp = 3;
-            unsigned char* texels = new unsigned char[((unsigned long)w)*h*bpp];
+            unsigned char* texels = new unsigned char[((unsigned long) w) * h * bpp];
             unsigned char* p = texels;
+
             loopj(h) {
+
                 loopi(w) {
                     float color[16];
-                    getBasicNWRoad(1*(float)i/(float)h, 1*(float)j/(float)w, 0, color);
+                    getBasicNWRoad(1 * (float) i / (float) h, 1 * (float) j / (float) w, 0, color);
                     *p++ = color[2] * 255;
                     *p++ = color[1] * 255;
                     *p++ = color[0] * 255;
@@ -1153,12 +1189,14 @@ cTile::cTile(int x, int y, int z, int kind) {
             int w = w_;
             int h = w;
             int bpp = 3;
-            unsigned char* texels = new unsigned char[((unsigned long)w)*h*bpp];
+            unsigned char* texels = new unsigned char[((unsigned long) w) * h * bpp];
             unsigned char* p = texels;
+
             loopj(h) {
+
                 loopi(w) {
                     float color[16];
-                    cSurface::stone_plates(1*(float)i/(float)h, 1*(float)j/(float)w, 0, color);
+                    cSurface::stone_plates(1 * (float) i / (float) h, 1 * (float) j / (float) w, 0, color);
                     *p++ = color[2] * 255;
                     *p++ = color[1] * 255;
                     *p++ = color[0] * 255;
@@ -1195,7 +1233,7 @@ void cTile::drawSolid() {
         long ground = sTextures[tileKind];
         glColor4f(1, 1, 1, 1);
         glBindTexture(GL_TEXTURE_2D, ground);
-        
+
         glPushMatrix();
         {
             float x = p[0] - 4.50f;

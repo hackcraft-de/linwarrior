@@ -55,7 +55,7 @@ private:
     // Not Yet, may be merged with Background:
     // Overlays weather effects like rain, snow or dust.
     //cWeather mWeather;
-    
+
     /// Gravity acceleration vector [m/s²]. space = (0,0,0), earth = (0,-9.8,0).
     vec3 mGravity;
 

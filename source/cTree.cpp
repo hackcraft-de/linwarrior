@@ -19,9 +19,8 @@ using std::string;
 
 
 int cTree::sInstances = 0;
-std::map<OID,cTree::rTree*> cTree::sTrees;
+std::map<OID, cTree::rTree*> cTree::sTrees;
 std::vector<long> cTree::sTextures;
-
 
 cTree::cTree(float* pos, float* rot, int seed, int type, int age) {
     sInstances++;
@@ -33,7 +32,8 @@ cTree::cTree(float* pos, float* rot, int seed, int type, int age) {
             string("widowleafs.tga"),
             string("pineleafs.tga"),
         };
-        loopi (4) {
+
+        loopi(4) {
             string name = string(basepath).append(filenames[i]);
             cout << "Loading [" << name << "] ...\n";
             unsigned int texname;
@@ -67,7 +67,7 @@ void cTree::drawSolid() {
         glPushMatrix();
         {
             glTranslatef(this->pos[0], this->pos[1], this->pos[2]);
-            glRotatef(this->ori[1], 0,1,0);
+            glRotatef(this->ori[1], 0, 1, 0);
             glCallList(tree->list);
         }
         glPopMatrix();
@@ -79,7 +79,7 @@ void cTree::drawEffect() {
     glPushMatrix();
     {
         glTranslatef(this->pos[0], this->pos[1], this->pos[2]);
-        glRotatef(this->ori[1], 0,1,0);
+        glRotatef(this->ori[1], 0, 1, 0);
 
         // Construct Billboarding Matrix.
         float n[16];
@@ -92,7 +92,7 @@ void cTree::drawEffect() {
         float color[4];
         glGetFloatv(GL_CURRENT_COLOR, color);
         //cout << color[3] << "\n";
-        
+
         glPushAttrib(GL_ENABLE_BIT);
         {
             SGL::glUseProgram_fglittexture();
@@ -100,17 +100,18 @@ void cTree::drawEffect() {
             glEnable(GL_ALPHA_TEST);
             glAlphaFunc(GL_GREATER, 0.58f);
 
-            glBindTexture(GL_TEXTURE_2D, sTextures[tree->type%sTextures.size()]);
+            glBindTexture(GL_TEXTURE_2D, sTextures[tree->type % sTextures.size()]);
             int m = tree->leaves.size() / 3;
             //std::cout << m << std::endl;
-            loopi(m) {
-                float x = tree->leaves[i*3+0];
-                float y = tree->leaves[i*3+1];
-                float z = tree->leaves[i*3+2];
 
-                float light = 0.5f + 0.4f * (1.0f-exp(-0.1f * y));
-                float shake = 0.4f * (1.0f-exp(-0.1f * y));
-                float swirl = 1.0f + 10.0f * (1.0f-exp(-0.2f * y));
+            loopi(m) {
+                float x = tree->leaves[i * 3 + 0];
+                float y = tree->leaves[i * 3 + 1];
+                float z = tree->leaves[i * 3 + 2];
+
+                float light = 0.5f + 0.4f * (1.0f - exp(-0.1f * y));
+                float shake = 0.4f * (1.0f - exp(-0.1f * y));
+                float swirl = 1.0f + 10.0f * (1.0f - exp(-0.2f * y));
                 float size = 0.5f + log(tree->age)*0.26f + 0.18f * tree->height + 0.03f * sin(seconds * 0.21f + i * 0.1f);
 
                 float dx = 1.0f * sin(seconds * 0.41f + i * 0.1f);
@@ -119,8 +120,8 @@ void cTree::drawEffect() {
                 x += dx * shake;
                 y += dy * shake;
                 z += dz * shake;
-                glNormal3f(0,1,0);
-                glColor4f(light,light,light, color[3]);
+                glNormal3f(0, 1, 0);
+                glColor4f(light, light, light, color[3]);
                 //float v[] = { x, y, z };
                 //vector_print(v);
                 glPushMatrix();
@@ -129,7 +130,7 @@ void cTree::drawEffect() {
                     //glTranslatef(x, y, z);
                     //glColor4f(1,0,0,1);
                     glMultMatrixf(n);
-                    glRotatef(sin(seconds * 0.5f + i * 0.3f)*swirl, 0,0,1);
+                    glRotatef(sin(seconds * 0.5f + i * 0.3f) * swirl, 0, 0, 1);
                     cPrimitives::glXYCenteredTextureSquare(size);
                     //cPrimitives::glDisk();
                     //cPrimitives::glAxis(1.1f);
@@ -220,11 +221,10 @@ cTree::rTree* cTree::getCompiledTree(int seed, int type, int age) {
 
     //cache.push_front(t);
     sTrees[key] = t;
-    
+
     std::cout << "Cached Tree " << sTrees.size() << std::endl;
     return t;
 }
-
 
 int cTree::drawTreePart(int depth, int maxdepth, float length, int seed, GLuint trunk_displaylist, GLuint leaf_displaylist, std::vector<float>* leaves, float* totalheight) {
     // Recursion end?
@@ -250,7 +250,7 @@ int cTree::drawTreePart(int depth, int maxdepth, float length, int seed, GLuint 
                 glTranslatef(0, 0.5f, 0);
                 mat4 M;
                 glGetFloatv(GL_MODELVIEW_MATRIX, M);
-                float v[] = { 0, 0.0f, 0 };
+                float v[] = {0, 0.0f, 0};
                 matrix_apply2(M, v);
                 //std::cout << "Leaf at: " << std::endl;
                 //matrix_print(M);

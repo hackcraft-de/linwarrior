@@ -33,18 +33,18 @@ void rCamera::camera() {
         glTranslatef(pos1[0], pos1[1], pos1[2]);
         SGL::glRotateq(ori1);
         // FIXME: Camera forward is inverted, therefore rotate.
-        glRotatef(180, 0,1,0);
+        glRotatef(180, 0, 1, 0);
 
         SGL::glGetTransposeInverseRotationMatrix(rot_inv);
         SGL::glGetInverseTranslationMatrix(pos_inv);
         // Compose Camera Matrix from inverse components
         glLoadIdentity();
         glMultMatrixf(rot_inv);
-        glRotatef(grand()*jerk, 1,0,0);
-        glRotatef(grand()*jerk, 0,1,0);
-        glRotatef(grand()*jerk, 0,0,1);
+        glRotatef(grand() * jerk, 1, 0, 0);
+        glRotatef(grand() * jerk, 0, 1, 0);
+        glRotatef(grand() * jerk, 0, 0, 1);
         glMultMatrixf(pos_inv);
-        glTranslatef(grand()*shake, grand()*shake, grand()*shake);
+        glTranslatef(grand() * shake, grand() * shake, grand() * shake);
         glGetFloatv(GL_MODELVIEW_MATRIX, cam);
         //matrix_print(cam);
     }

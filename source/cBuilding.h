@@ -23,7 +23,7 @@ public:
     rDamageable* damageable;
 protected:
     static int sInstances;
-    static std::map<int,long> sTextures;
+    static std::map<int, long> sTextures;
 protected:
     /// Need to re-setup base matrix for explosion (true/false)?
     bool dirtyBase;
@@ -35,12 +35,12 @@ protected:
     float buildingRooms[3];
 public:
     cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z);
-    
+
     virtual void damageByParticle(float* localpos, float damage, cObject* enactor = NULL);
     virtual float constrainParticle(float* worldpos, float radius = 0.0f, float* localpos = NULL, cObject* enactor = NULL);
-    
+
     virtual void onSpawn();
-    
+
     virtual void animate(float spf);
     virtual void transform();
     virtual void drawSolid();
@@ -57,10 +57,16 @@ struct cParticle;
 class cScatterfield : public cObject {
 protected:
     static int sInstances;
-    static std::map<int,long> sTextures;
+    static std::map<int, long> sTextures;
 public:
-    enum CollisionType { CT_NONE, CT_CYLINDER, CT_SPHERE, CT_BOX };
-    enum BillboardType { BT_NONE, BT_AROUND, BT_AXIS };
+
+    enum CollisionType {
+        CT_NONE, CT_CYLINDER, CT_SPHERE, CT_BOX
+    };
+
+    enum BillboardType {
+        BT_NONE, BT_AROUND, BT_AXIS
+    };
 protected:
     std::list<cParticle*> decalParticles;
 public:
@@ -68,13 +74,13 @@ public:
     virtual void drawEffect();
 };
 
-
 /**
  * Models an urban street-tile of different types.
  */
 class cTile : public cObject {
 public:
     /// Possible models of tile.
+
     enum Kinds {
         KIND_CONCRETE,
         KIND_ROAD_EW,
@@ -96,8 +102,8 @@ protected:
     /// Counts number of instances.
     static int sInstances;
     /// Contains shared texture(s) of all instances.
-    static std::map<int,long> sTextures;
-    
+    static std::map<int, long> sTextures;
+
 protected:
     /// This tile has the named appeareance (as in Kinds-enum).
     int tileKind;

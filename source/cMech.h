@@ -47,7 +47,6 @@ struct rWeaponExplosion;
 #define MECH_NEXT_BUTTON      BT_PR
 #define MECH_PREV_BUTTON      BT_PL
 
-
 /**
  * Models Mechlike Objects.
  * 
@@ -68,7 +67,7 @@ protected:
     };
 
     /// Texture Binds shared between instances.
-    static std::map<int,long> sTextures;
+    static std::map<int, long> sTextures;
 
 public:
 

@@ -44,17 +44,31 @@ struct rComponent {
         }
     }
 
-    virtual rComponent* clone() {
+    virtual rComponent * clone() {
         return new rComponent(this);
     }
 
-    virtual float constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor) { return 0.0f; };
-    virtual void message(cMessage* message) {};
-    virtual void animate(float spf) {};
-    virtual void transform() {};
-    virtual void drawSolid() {};
-    virtual void drawEffect() {};
-    virtual void drawHUD() {};
+    virtual float constrainParticle(float* worldpos, float radius, float* localpos, cObject * enactor) {
+        return 0.0f;
+    };
+
+    virtual void message(cMessage * message) {
+    };
+
+    virtual void animate(float spf) {
+    };
+
+    virtual void transform() {
+    };
+
+    virtual void drawSolid() {
+    };
+
+    virtual void drawEffect() {
+    };
+
+    virtual void drawHUD() {
+    };
 };
 
 /*
@@ -67,7 +81,7 @@ struct rComponent {
 #include "rCamera.h"
 #include "rCollider.h"
 #include "rMobile.h"
-*/
+ */
 
 #endif	/* RCOMPONENT_H */
 

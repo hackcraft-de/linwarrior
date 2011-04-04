@@ -12,7 +12,6 @@
 #include <sstream>
 #include <iomanip>
 
-
 cTiming::cTiming() {
     setDate(0, 0);
     setTime(0, 0, 0);
@@ -25,7 +24,7 @@ cTiming::cTiming(const cTiming& orig) {
 
 cTiming::~cTiming() {
 }
-*/
+ */
 
 float cTiming::getSPF() {
     return mSPF;

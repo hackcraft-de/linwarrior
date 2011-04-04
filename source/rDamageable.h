@@ -19,6 +19,7 @@ struct rDamageable : public rComponent {
     /// Marks object as still alife.
     bool alife;
     /// Enumeration of entity body part units: Body, Legs, Left, Right.
+
     enum Parts {
         BODY = 0, // Some Objects only have this
         LEGS,
@@ -42,9 +43,9 @@ struct rDamageable : public rComponent {
     /// Copy Constructor.
     rDamageable(rDamageable * original);
     /// Clone this.
-    virtual rComponent* clone();
+    virtual rComponent * clone();
     /// Apply damage to a hitzone, and return alife.
-    virtual bool damage(int hitzone, float damage, cObject* enactor);
+    virtual bool damage(int hitzone, float damage, cObject * enactor);
     /// Display damaging.
     virtual void drawHUD();
 };

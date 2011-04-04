@@ -25,8 +25,8 @@ rComponent* rTraceable::clone() {
 void rTraceable::accumulate(float spf) {
     // Accumulate steering forces
     {
-        float jetuwd =  130000.0f * jetthrottle;
-        float jetfwd =  -80000.0f * throttle * jetthrottle;
+        float jetuwd = 130000.0f * jetthrottle;
+        float jetfwd = -80000.0f * throttle * jetthrottle;
         float whlfwd = -600000.0f * throttle;
         if (friction <= 0.01f) whlfwd = 0.0f;
         float force[] = {0, jetuwd, jetfwd + whlfwd};
@@ -68,7 +68,7 @@ void rTraceable::collide(float spf) {
                 // (Re-)Set position to a position higher than the old position.
                 old[1] += 0.3f;
                 vector_cpy(pos, old);
-                vector_set(vel, 0,0,0);
+                vector_set(vel, 0, 0, 0);
             } else if (dist > 1.3f) {
                 // Way too fast.
                 // Reset position.
@@ -87,7 +87,7 @@ void rTraceable::collide(float spf) {
     // Average groundedness to decide on friction.
     grounded += 0.1 * (onground - grounded);
     // Set friction for next frame.
-    friction = ((grounded > 0.1)?1.0f:0.0f) * cWorld::instance->getGndfriction();
+    friction = ((grounded > 0.1) ? 1.0f : 0.0f) * cWorld::instance->getGndfriction();
 }
 
 void rTraceable::animate(float spf) {

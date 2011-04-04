@@ -43,7 +43,7 @@ unsigned int gPermutationTexture256 = 0;
 
 void ambient_galaxy(float x, float y, float z, float* color, float scale) {
     // Normalise direction vector and scale.
-    float oolen = (0.5 * scale) / sqrtf(x*x + y*y + z*z);
+    float oolen = (0.5 * scale) / sqrtf(x * x + y * y + z * z);
     float v[3] = {
         0.0f + x * oolen,
         0.0f + y * oolen,
@@ -55,8 +55,8 @@ void ambient_galaxy(float x, float y, float z, float* color, float scale) {
 
 void ambient_clouds(float x, float y, float z, float* color) {
     // Normalise direction vector.
-    float oolen = 1.0f / sqrtf(x*x + y*y + z*z);
-    float v[3] = { x * oolen, y * oolen, z * oolen };
+    float oolen = 1.0f / sqrtf(x * x + y * y + z * z);
+    float v[3] = {x * oolen, y * oolen, z * oolen};
     cSolid::planet_cloud(v[0], v[1], v[2], color);
 }
 
@@ -72,22 +72,22 @@ void ambient_sky(float x, float y, float z, float* color, float hour = 24.00f) {
     // => [ -1,   0,  1,   0,  -1] = sin
     // => [  0, 0.5,  1, 0.5,   0] = s daylight sine-wave.
     float s = sin(t) * 0.5f + 0.5f; // = [0,1]
-    float topColor[] = { s * 0.2 + 0.1, s * 0.2 + 0.1, s * 0.8 + 0.2, light };
-    float middleColor[] = { s * 0.95 + 0.05, s * 0.95 + 0.05, s * 0.95 + 0.05, 1 };
-    float bottomColor[] = { s * 0.55 + 0.05, s * 0.55 + 0.05, s * 0.55 + 0.05, 1 };
+    float topColor[] = {s * 0.2 + 0.1, s * 0.2 + 0.1, s * 0.8 + 0.2, light};
+    float middleColor[] = {s * 0.95 + 0.05, s * 0.95 + 0.05, s * 0.95 + 0.05, 1};
+    float bottomColor[] = {s * 0.55 + 0.05, s * 0.55 + 0.05, s * 0.55 + 0.05, 1};
 
     // Dusk and dawn gradient.
     // => [ 0,    1,  0,   1,   0] = c
     float c = pow(fabs(cos(t)) * 0.5f + 0.5f, 4); // = [0,1]
-    float top_[] = { c * 0.25, c * 0.25, c * 0.0, light };
-    float mid_[] = { c * 0.55, c * 0.25, c * 0.0, 1 };
-    float bot_[] = { c * 0.25, c * 0.11, c * 0.0, 1 };
+    float top_[] = {c * 0.25, c * 0.25, c * 0.0, light};
+    float mid_[] = {c * 0.55, c * 0.25, c * 0.0, 1};
+    float bot_[] = {c * 0.25, c * 0.11, c * 0.0, 1};
     vector_add(topColor, topColor, top_);
     vector_add(middleColor, middleColor, mid_);
     vector_add(bottomColor, bottomColor, bot_);
 
     // Normalise direction vector.
-    float oolen = 1.0f / sqrtf(x*x + y*y + z*z);
+    float oolen = 1.0f / sqrtf(x * x + y * y + z * z);
     float yd = y * oolen;
 
     // top = 1 when yd > 0, top = 0 otherwise.
@@ -95,13 +95,13 @@ void ambient_sky(float x, float y, float z, float* color, float hour = 24.00f) {
     float alpha = fabs(yd);
 
     // middleColor could be factored out but it may change.
+
     loopi(4) {
         color[i] =
-                top * (alpha * topColor[i] + (1.0f-alpha) * middleColor[i]) +
-                (1.0f-top) * (alpha * bottomColor[i] + (1.0f-alpha) * middleColor[i]);
+                top * (alpha * topColor[i] + (1.0f - alpha) * middleColor[i]) +
+                (1.0f - top) * (alpha * bottomColor[i] + (1.0f - alpha) * middleColor[i]);
     }
 }
-
 
 cBackground::cBackground() {
     /*
@@ -204,11 +204,11 @@ cBackground::cBackground() {
             float a = 1.0f - pow(r_, 0.6);
             float rad = atan2(dx, dy);
 
-            float c = 0.5f + 0.5f * cNoise::simplex3(rad/(2*M_PI)*256, 0, 0, 21);
-            float d = 0.5f + 0.5f * cNoise::simplex3(r*31, 0, 0, 21);
+            float c = 0.5f + 0.5f * cNoise::simplex3(rad / (2 * M_PI)*256, 0, 0, 21);
+            float d = 0.5f + 0.5f * cNoise::simplex3(r * 31, 0, 0, 21);
 
             rgba c4f = {
-                cDistortion::exposure(3 * a + 3 * c * a + 3 * d*d*d * a),
+                cDistortion::exposure(3 * a + 3 * c * a + 3 * d * d * d * a),
                 cDistortion::exposure(3 * a),
                 cDistortion::exposure(1 * a),
                 a * a
@@ -422,6 +422,7 @@ cBackground::cBackground() {
                     2.0f * ((float) i / (float) (h)) - 1.0f,
                     sign
                 };
+
                 loop(l, rotation) {
                     float tmp = v[2];
                     v[2] = v[1];
@@ -460,7 +461,7 @@ cBackground::cBackground() {
 
 void cBackground::drawBackground(float h) {
     // Reference: dawn sunrise daylight sunset dusk darkness
-    
+
     // Push random seed because the current seed is going to be
     // replaced by a (deterministic) constant value for clouds.
     unsigned int seed = rand();
@@ -482,25 +483,28 @@ void cBackground::drawBackground(float h) {
     //hour = 12;
 
     // Sample and set unlit base ambient haze color.
-    rgba haze = { 0,0,0,0 };
+    rgba haze = {0, 0, 0, 0};
     glFogfv(GL_FOG_COLOR, haze);
     if (1) {
         unsigned char s = 131;
         int samples = 23;
+
         loopi(samples) {
             s = cNoise::LFSR8(s);
             float alpha = s / 256.0f * 2 * M_PI;
             s = cNoise::LFSR8(s);
             float beta = s / 256.0f * 1.0f * M_PI;
             float color[16];
-            vec3 n = { sin(alpha)*sin(beta),0.99f*cos(beta),sin(beta)*cos(alpha) };
+            vec3 n = {sin(alpha) * sin(beta), 0.99f * cos(beta), sin(beta) * cos(alpha)};
             //vector_print(n);
-            ambient_sky(n[0],n[1],n[2], color, hour);
+            ambient_sky(n[0], n[1], n[2], color, hour);
             //quat_print(color);
+
             loopj(4) {
                 haze[j] += color[j];
             }
         }
+
         loopj(4) {
             haze[j] /= float(samples);
         }
@@ -513,8 +517,8 @@ void cBackground::drawBackground(float h) {
         //float p[] = {70, 90, -30, 0};
         float t = ((hour / 24.0f * 2 * M_PI) - 0.5f * M_PI); // = [-0.5pi,+1.5pi]
         float s = sin(t) * 0.5f + 0.5f;
-        float a[] = {0.25*s*haze[0], 0.25*s*haze[1], 0.25*s*s*haze[2], 1};
-        float d[] = {0.9 * s + (1-s)*0.0, 0.9 * s + (1-s)*0.0, 0.4 * s + (1-s)*0.2, 1};
+        float a[] = {0.25 * s * haze[0], 0.25 * s * haze[1], 0.25 * s * s * haze[2], 1};
+        float d[] = {0.9 * s + (1 - s)*0.0, 0.9 * s + (1 - s)*0.0, 0.4 * s + (1 - s)*0.2, 1};
         glLightfv(GL_LIGHT0, GL_POSITION, p);
         glLightfv(GL_LIGHT0, GL_AMBIENT, a);
         glLightfv(GL_LIGHT0, GL_DIFFUSE, d);
@@ -713,13 +717,13 @@ void cBackground::drawUpperDome() {
                     float c = cos(h);
 
                     rgba colour1;
-                    ambient_sky(s1*c, c1+0.0001f, s1 * s, colour1, hour);
+                    ambient_sky(s1*c, c1 + 0.0001f, s1 * s, colour1, hour);
                     glColor4fv(colour1);
                     //glNormal3f(s1*c, c1, s1 * s);
                     glVertex3f(s1*c, c1, s1 * s);
 
                     rgba colour2;
-                    ambient_sky(s2*c, c2+0.0001f, s2 * s, colour2, hour);
+                    ambient_sky(s2*c, c2 + 0.0001f, s2 * s, colour2, hour);
                     glColor4fv(colour2);
                     //glNormal3f(s2*c, c2, s2 * s);
                     glVertex3f(s2*c, c2, s2 * s);
@@ -771,13 +775,13 @@ void cBackground::drawLowerDome() {
                     float c = cos(h);
 
                     rgba colour2;
-                    ambient_sky(s2*c, c2-0.0001f, s2 * s, colour2, hour);
+                    ambient_sky(s2*c, c2 - 0.0001f, s2 * s, colour2, hour);
                     glColor4fv(colour2);
                     //glNormal3f(s2*c, c2, s2 * s);
                     glVertex3f(s2*c, c2, s2 * s);
 
                     rgba colour1;
-                    ambient_sky(s1*c, c1-0.0001f, s1 * s, colour1, hour);
+                    ambient_sky(s1*c, c1 - 0.0001f, s1 * s, colour1, hour);
                     glColor4fv(colour1);
                     //glNormal3f(s1*c, c1, s1 * s);
                     glVertex3f(s1*c, c1, s1 * s);
@@ -920,7 +924,7 @@ void cBackground::drawClouds() {
                 glVertex3f(1, 0, 0);
                 glEnd();
                  */
-                
+
                 glPushMatrix();
                 {
                     glRotatef(yrad / PI_OVER_180, 0, 1, 0);
@@ -1104,6 +1108,7 @@ void cBackground::drawRain() {
     seed = rand();
 
     if (rainstrength > 0) {
+
         loopi(rand() % rainstrength) {
             if (rain.size() >= 1000) break;
             float dx = 0.25f;

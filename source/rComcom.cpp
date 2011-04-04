@@ -25,7 +25,6 @@ using std::stringstream;
 
 // -----------------------------------------------
 
-
 rComcom::rComcom(cObject* obj) {
     object = obj;
     role = "COMCOM";
@@ -46,7 +45,7 @@ rComcom::rComcom(cObject* obj) {
 }
 
 void rComcom::animate(float spf) {
-    cMessage* message = NULL;//cWorld::instance->recvMessage(0, mLastMessage);
+    cMessage* message = NULL; //cWorld::instance->recvMessage(0, mLastMessage);
     if (message != NULL) {
         mLastMessage = message->getTimestamp();
     }
@@ -99,6 +98,7 @@ rTarcom::rTarcom(cObject* obj) {
 void rTarcom::nextTarget() {
     bool found = false;
     OID last = 0;
+
     foreach(i, *near) {
         cObject* o = *i;
         if (last == selected) {
@@ -120,6 +120,7 @@ void rTarcom::nextTarget() {
 void rTarcom::prevTarget() {
     bool found = false;
     OID last = 0;
+
     foreach(i, *near) {
         cObject* o = *i;
         if (o->oid == selected) {
@@ -154,7 +155,7 @@ void rTarcom::animate(float spf) {
     }
 
     unsigned long frame = cWorld::instance->getTiming()->getFrame();
-    unsigned long key = (((unsigned long)this)>>1) * 174763;
+    unsigned long key = (((unsigned long) this) >> 1) * 174763;
     //cout << "RANGING KEY CODE IS " << key << " !!\n";
     //unsigned int m = 3;
     // Find all objects in far range.
@@ -169,7 +170,7 @@ void rTarcom::animate(float spf) {
         enemies = cWorld::instance->filterByTags(object, &inc_enemies, false, -1, near);
         // Filter one nearby.
         nearbyEnemy = 0;
-        for (std::list<cObject*>::iterator i=enemies->begin(); i != enemies->end(); i++) {
+        for (std::list<cObject*>::iterator i = enemies->begin(); i != enemies->end(); i++) {
             cObject* o = *i;
             if (!o->anyTags(&exc_enemies)) {
                 nearbyEnemy = o->oid;
@@ -192,7 +193,7 @@ void rTarcom::animate(float spf) {
         delete enemies;
         enemies = cWorld::instance->filterByTags(object, &inc_enemies, false, -1, near);
     }
-    */
+     */
 }
 
 void rTarcom::drawHUD() {
@@ -225,9 +226,9 @@ void rTarcom::drawHUD() {
         quat ori_;
         quat_cpy(ori_, ori);
         quat_conj(ori_);
-        glRotatef(90, 1,0,0);
+        glRotatef(90, 1, 0, 0);
         SGL::glRotateq(ori_);
-        glRotatef(-90, 1,0,0);
+        glRotatef(-90, 1, 0, 0);
         glPointSize(3);
         glBegin(GL_POINTS);
         {
@@ -245,7 +246,7 @@ void rTarcom::drawHUD() {
                 else if (o->hasTag(cObject::GREEN)) glColor4f(0, 1, 0, 1);
                 else if (o->hasTag(cObject::BLUE)) glColor4f(0, 0, 1, 1);
                 else if (o->hasTag(cObject::YELLOW)) glColor4f(0, 1, 0, 1);
-                if (o->oid == selected) glColor4f(1,0,1,1);
+                if (o->oid == selected) glColor4f(1, 0, 1, 1);
                 float dx = o->pos[0] - pos[0];
                 float dz = o->pos[2] - pos[2];
                 float r = sqrtf(dx * dx + dz * dz);
@@ -658,6 +659,7 @@ void rNavcom::drawHUD() {
 
         // Draw all points of interrest (debug).
         glColor4f(0.6, 0.6, 0.6, 0.7);
+
         loopiv(mPOIs) {
             float u = s * (mPOIs[i][0] - x);
             float v = s * (mPOIs[i][2] - z);
@@ -666,6 +668,7 @@ void rNavcom::drawHUD() {
 
         // Draw Route lines with gradient towards current waypoint.
         glBegin(GL_LINE_STRIP);
+
         loopiv(mRoute) {
             if (i != mWaypoint) glColor4f(0.6, 0.6, 0.6, 0.7);
             else glColor4f(1, 0, 0, 0.7);
@@ -678,6 +681,7 @@ void rNavcom::drawHUD() {
 
         // Mark next waypoint and check if reached.
         glColor4f(1, 0, 0, 0.3);
+
         loopiv(mRoute) {
             if (i != mWaypoint)continue;
             int j = mRoute[i];
@@ -685,11 +689,11 @@ void rNavcom::drawHUD() {
             float v = s * (mPOIs[j][2] - z);
             drawPOI(+u, -v, 0.07);
             // Waypoint reached? Next waypoint.
-            if ((u*u + v*v) < (s*5)*(s*5)) {
+            if ((u * u + v * v) < (s * 5)*(s * 5)) {
                 mWaypoint++;
-                if (mWaypoint == (int)mRoute.size()) {
+                if (mWaypoint == (int) mRoute.size()) {
                     if (mCyclic) mWaypoint = 0;
-                    else  mWaypoint--;
+                    else mWaypoint--;
                 }
             }
         }
@@ -698,9 +702,9 @@ void rNavcom::drawHUD() {
         {
             quat ori_;
             quat_cpy(ori_, ori);
-            glRotatef(90, 1,0,0);
+            glRotatef(90, 1, 0, 0);
             SGL::glRotateq(ori_);
-            glRotatef(-90, 1,0,0);
+            glRotatef(-90, 1, 0, 0);
             glColor4f(0.9, 0.9, 0.9, 0.9);
             glBegin(GL_LINE_STRIP);
             glVertex3f(-0.07, -0.2, 0);

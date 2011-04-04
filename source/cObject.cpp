@@ -27,8 +27,8 @@ unsigned char* warningTexture(const char *fname, int *w, int* h, int* bpp) {
     int i, j;
     for (j = 0; j < *h; j++) {
         for (i = 0; i < *w; i++) {
-            bmp[(j * (*w) + i) * 3 + 0] = ((i+j)&1) * 255;
-            bmp[(j * (*w) + i) * 3 + 1] = ((i+j)&1) * 255;
+            bmp[(j * (*w) + i) * 3 + 0] = ((i + j)&1) * 255;
+            bmp[(j * (*w) + i) * 3 + 1] = ((i + j)&1) * 255;
             bmp[(j * (*w) + i) * 3 + 2] = 255;
         }
     }
@@ -104,7 +104,6 @@ unsigned char* loadTGA(const char *fname, int *w, int* h, int* bpp) {
     return bmp;
 }
 
-
 int saveTGA(const char *fname, int w, int h, int bpp, unsigned char* image) {
     typedef unsigned char BYTE;
 
@@ -135,7 +134,7 @@ int saveTGA(const char *fname, int w, int h, int bpp, unsigned char* image) {
     tgahead.colormapspec[2] = 0;
     tgahead.colormapspec[3] = 0;
     tgahead.colormapspec[4] = 0;
-    
+
     // Only uncompressed true color tga images supported.
     tgahead.imagetype = 2;
 

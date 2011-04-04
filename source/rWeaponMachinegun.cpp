@@ -7,7 +7,6 @@
 
 #include <cassert>
 
-
 rWeaponMachinegun::rWeaponMachinegun(cObject* obj) {
     role = "MACHINEGUN";
     object = obj;
@@ -89,7 +88,7 @@ void rWeaponMachinegun::animate(float spf) {
     triggereded = triggered;
     if (trigger) fire();
     trigger = false;
-    
+
     for (std::list<cParticle*>::iterator i = shrapnelParticles.begin(); i != shrapnelParticles.end();) {
         float damage = 10;
         cParticle* s = *i++;

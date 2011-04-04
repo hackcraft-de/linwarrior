@@ -48,7 +48,6 @@ using std::string;
 int cMech::sInstances = 0;
 std::map<int, long> cMech::sTextures;
 
-
 cMech::cMech(float* pos, float* rot) {
     sInstances++;
     if (sInstances == 1) {
@@ -59,21 +58,26 @@ cMech::cMech(float* pos, float* rot) {
 
             cout << "Generating Camoflage..." << endl;
 
-            const int SIZE = 1<<(7+MECHDETAIL);
+            const int SIZE = 1 << (7 + MECHDETAIL);
             unsigned char* texels = new unsigned char[SIZE * SIZE * SIZE * 3];
 
             for (int l = 0; l < 4; l++) {
                 long t = 0;
+
                 loopijk(SIZE, SIZE, SIZE) {
                     float color[16];
-                    const float f = 0.25f*0.25f * 64.0f / SIZE;
+                    const float f = 0.25f * 0.25f * 64.0f / SIZE;
                     float x = f*i, y = f*j, z = f*k;
-                    switch(l) {
-                        //case TEXTURE_WOOD: cSolid::camo_wood(x, y, z, color); break;
-                        case TEXTURE_WOOD: cSolid::camo_rust(x, y, z, color); break;
-                        case TEXTURE_URBAN: cSolid::camo_urban(x, y, z, color); break;
-                        case TEXTURE_DESERT: cSolid::camo_desert(x, y, z, color); break;
-                        case TEXTURE_SNOW: cSolid::camo_snow(x, y, z, color); break;
+                    switch (l) {
+                            //case TEXTURE_WOOD: cSolid::camo_wood(x, y, z, color); break;
+                        case TEXTURE_WOOD: cSolid::camo_rust(x, y, z, color);
+                            break;
+                        case TEXTURE_URBAN: cSolid::camo_urban(x, y, z, color);
+                            break;
+                        case TEXTURE_DESERT: cSolid::camo_desert(x, y, z, color);
+                            break;
+                        case TEXTURE_SNOW: cSolid::camo_snow(x, y, z, color);
+                            break;
                         default:
                             cSolid::camo_rust(x, y, z, color);
                     }
@@ -89,7 +93,7 @@ cMech::cMech(float* pos, float* rot) {
     }
 
     pad = new cPad;
-    
+
     collider = new rCollider(this);
     rigged = new rRigged(this);
     damageable = new rDamageable(this);
@@ -137,7 +141,7 @@ cMech::cMech(float* pos, float* rot) {
     do_moveFor(NULL);
 
     try {
-        int mod = (9+rand())%8; // fr
+        int mod = (9 + rand()) % 8; // fr
         //int mod = (13+rand())%8; // le
         const char* fns[] = {
             //"/media/44EA-7693/workspaces/mm3d/soldier/soldier.md5mesh",
@@ -212,9 +216,9 @@ void cMech::setAsAudioListener() {
     };
     alListenerfv(AL_POSITION, pos);
     alListenerfv(AL_VELOCITY, vel);
-    vec3 fwd = { 0, 0, +1 };
+    vec3 fwd = {0, 0, +1};
     quat_apply(fwd, rigged->ori, fwd);
-    vec3 uwd = { 0, -1, 0 };
+    vec3 uwd = {0, -1, 0};
     quat_apply(uwd, rigged->ori, uwd);
     float at_and_up[] = {
         fwd[0], fwd[1], fwd[2],
@@ -232,6 +236,7 @@ void cMech::mountWeapon(char* point, rWeapon *weapon, bool add) {
         weapons.push_back(weapon);
 #if 0
         int n = weapons.size();
+
         loopi(n) {
             weapons[i]->triggeren = false;
             weapons[i]->triggered = false;
@@ -245,13 +250,15 @@ void cMech::mountWeapon(char* point, rWeapon *weapon, bool add) {
 }
 
 #if 0
+
 void cMech::fireCycleWeapons() {
     cout << "fireCycleWeapons()\n";
     int n = weapons.size();
+
     loopi(n) {
         cout << "W " << i << ", triggeren = " << weapons[i]->triggeren << ", triggered = " << weapons[i]->triggered << ", triggereded = " << weapons[i]->triggereded << endl;
         bool selfdone = weapons[i]->triggered && weapons[i]->triggereded;
-        bool otherdone = weapons[(i+1)%n]->triggered;
+        bool otherdone = weapons[(i + 1) % n]->triggered;
         weapons[i]->triggeren ^= selfdone;
         weapons[i]->triggeren |= otherdone;
         weapons[i]->triggered ^= selfdone;
@@ -259,11 +266,13 @@ void cMech::fireCycleWeapons() {
         weapons[i]->target = target;
         weapons[i]->trigger = true;
     }
+
     loopi(n) {
         cout << "W'" << i << ", triggeren = " << weapons[i]->triggeren << ", triggered = " << weapons[i]->triggered << ", triggereded = " << weapons[i]->triggereded << endl;
     }
 }
 #else
+
 void cMech::fireCycleWeapons() {
     if (weapons.size() == 0) return;
     currentWeapon %= weapons.size();
@@ -284,7 +293,6 @@ void cMech::fireWeapon(unsigned n) {
     if (n >= weapons.size()) return;
     weapons[n]->trigger = true;
 }
-
 
 void cMech::animate(float spf) {
     // Read in.
@@ -532,17 +540,17 @@ void cMech::animate(float spf) {
             vector_cpy(camera->pos1, rigged->joints[eye].v);
             quat_cpy(camera->ori1, rigged->joints[eye].q);
         }
-        
+
         // from MOBILE
         {
             camera->camerashake = mobile->jetthrottle;
         }
-        
+
         // from CONTROLLED
         {
             camera->cameraswitch = pad->getButton(cPad::MECH_CAMERA_BUTTON);
         }
-        
+
         camera->animate(spf);
     }
 
@@ -559,6 +567,7 @@ void cMech::animate(float spf) {
     }
 
     // WEAPON
+
     loopi(weapons.size()) {
         // from CONTROLLED:
         {
@@ -573,7 +582,7 @@ void cMech::animate(float spf) {
             quat_cpy(weapon->weaponOri1, joint->q);
             vector_cpy(weapon->weaponPos1, joint->v);
         }
-        
+
         weapons[i]->animate(spf);
         weapons[i]->transform();
     }
@@ -594,7 +603,7 @@ void cMech::animate(float spf) {
     }
 
     if (pad) pad->reset();
-    
+
     // Write back.
     vector_cpy(this->pos, traceable->pos);
     quat_cpy(this->ori, traceable->ori);
@@ -615,7 +624,7 @@ void cMech::transform() {
     {
         explosion->transform();
     }
-    */
+     */
 }
 
 void cMech::drawSolid() {
@@ -623,10 +632,10 @@ void cMech::drawSolid() {
     if (hasTag(HUMANPLAYER)) {
         int light = GL_LIGHT1;
         if (mobile->jetthrottle > 0.001f) {
-            float p[] = {traceable->pos[0], traceable->pos[1]+1.2, traceable->pos[2], 1};
+            float p[] = {traceable->pos[0], traceable->pos[1] + 1.2, traceable->pos[2], 1};
             //float zero[] = {0, 0, 0, 1};
             float s = mobile->jetthrottle;
-            float a[] = {0.0,0.0,0.0,1};
+            float a[] = {0.0, 0.0, 0.0, 1};
             float d[] = {0.9 * s, 0.9 * s, 0.4 * s, 1};
             //glPushMatrix();
             {
@@ -653,6 +662,7 @@ void cMech::drawSolid() {
     {
         mobile->drawSolid();
     }
+
     loopi(weapons.size()) {
         weapons[i]->drawSolid();
     }
@@ -671,6 +681,7 @@ void cMech::drawEffect() {
     {
         mobile->drawEffect();
     }
+
     loopi(weapons.size()) {
         weapons[i]->drawEffect();
     }
@@ -703,7 +714,7 @@ void cMech::drawHUD() {
                 float sx = 1.0f / w;
                 float sy = 1.0f / h;
 
-                rComponent* displays[4][5] = {
+                rComponent * displays[4][5] = {
                     { navcom, NULL, NULL, NULL, comcom},
                     { NULL, NULL, NULL, NULL, NULL},
                     { NULL, NULL, NULL, NULL, NULL},
@@ -749,7 +760,7 @@ void cMech::damageByParticle(float* localpos, float damage, cObject* enactor) {
     if (!damageable->alife || damage == 0.0f) return;
 
     int hitzone = rDamageable::BODY;
-    if (localpos[1] < 1.1*rigged->height && damageable->hp[rDamageable::LEGS] > 0) hitzone = rDamageable::LEGS;
+    if (localpos[1] < 1.1 * rigged->height && damageable->hp[rDamageable::LEGS] > 0) hitzone = rDamageable::LEGS;
     else if (localpos[0] < -0.5 && damageable->hp[rDamageable::LEFT] > 0) hitzone = rDamageable::LEFT;
     else if (localpos[0] > +0.5 && damageable->hp[rDamageable::RIGHT] > 0) hitzone = rDamageable::RIGHT;
 

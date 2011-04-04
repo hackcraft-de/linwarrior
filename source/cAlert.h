@@ -41,6 +41,7 @@ struct rNameable;
 class cAlert : public cObject {
 public:
     static bool sDrawzone;
+
     struct rShape {
 
         enum Shapes {

@@ -24,7 +24,7 @@ rWeaponExplosion::rWeaponExplosion(cObject* obj) {
 void rWeaponExplosion::fire() {
     if (!ready()) return;
     triggered = true;
-    
+
     timeReloading = 3.8;
     timeFiring = 3.0f;
     // Shoot several shrapnels around.
@@ -68,7 +68,7 @@ void rWeaponExplosion::animate(float spf) {
     trigger = false;
 
     if (timeFiring != 0.0f) timeFiring -= spf;
-    
+
     if (timeFiring < 0) {
         //timeFiring = 0.0f;
     } else if (timeFiring > 0) {
@@ -77,13 +77,13 @@ void rWeaponExplosion::animate(float spf) {
         cParticle* s = new cParticle();
         assert(s != NULL);
         s->target = 0;
-        s->fuel = 0.5 + 0.3 * 0.01 * (rand()%100);
+        s->fuel = 0.5 + 0.3 * 0.01 * (rand() % 100);
         s->spawn = 0.0f;
         s->timer = 0.0f;
 
-        s->pos[0] = source[12] + (100.0f - (rand()%200)) * 0.01;
-        s->pos[1] = source[13] + (100.0f - (rand()%200)) * 0.01;
-        s->pos[2] = source[14] + (100.0f - (rand()%200)) * 0.01;
+        s->pos[0] = source[12] + (100.0f - (rand() % 200)) * 0.01;
+        s->pos[1] = source[13] + (100.0f - (rand() % 200)) * 0.01;
+        s->pos[2] = source[14] + (100.0f - (rand() % 200)) * 0.01;
 
         float nrm[3];
         float pos2[] = {0, 0, -1};
@@ -100,22 +100,21 @@ void rWeaponExplosion::animate(float spf) {
     }
 
     // Fat smoke production.
-    if (timeFiring < 0.0f)
-    {
+    if (timeFiring < 0.0f) {
         if (timeFiring < -4.0f * 60.0f) timeFiring = 0.0f;
-        
+
         float* source = weaponPosef;
 
         cParticle* s = new cParticle();
         assert(s != NULL);
         s->target = 0;
-        s->fuel = 1.4 + 0.1 * 0.01 * (rand()%100);
+        s->fuel = 1.4 + 0.1 * 0.01 * (rand() % 100);
         s->spawn = 0.0f;
         s->timer = 0.0f;
 
-        s->pos[0] = source[12] + (100.0f - (rand()%200)) * 0.01;
-        s->pos[1] = source[13] + (100.0f - (rand()%200)) * 0.01;
-        s->pos[2] = source[14] + (100.0f - (rand()%200)) * 0.01;
+        s->pos[0] = source[12] + (100.0f - (rand() % 200)) * 0.01;
+        s->pos[1] = source[13] + (100.0f - (rand() % 200)) * 0.01;
+        s->pos[2] = source[14] + (100.0f - (rand() % 200)) * 0.01;
 
         float nrm[3];
         float pos2[] = {0, 0, -1};
@@ -132,9 +131,10 @@ void rWeaponExplosion::animate(float spf) {
     }
 
     // Fat smoke movement.
+
     foreachNoInc(i, castoffParticles) {
         cParticle* s = *i++;
-        
+
         const float alpha = 0.922f;
         const float beta = 0.99f;
         s->vel[0] *= alpha;
@@ -261,7 +261,7 @@ void rWeaponExplosion::drawSolid() {
                 glMultMatrixf(b);
                 //glNormAxis();
                 glBegin(GL_TRIANGLE_FAN);
-                glNormal3f(0,0,1);
+                glNormal3f(0, 0, 1);
                 glVertex3f(0, 0, length);
                 glVertex3f(s1, c1, 0);
                 glVertex3f(s2, c2, 0);
@@ -289,11 +289,11 @@ void rWeaponExplosion::drawEffect() {
         glTexEnvf(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
         glEnable(GL_POINT_SPRITE);
         glPointSize(90.0f);
-        */
+         */
 
         //float quadratic[] =  { 0.0f, 0.0f, 0.01f };
         //float quadratic[] =  { 1.0f, 1.0f, 100.0f };
-        float quadratic[] =  { 1.0f, 0.0f, 0.0f };
+        float quadratic[] = {1.0f, 0.0f, 0.0f};
         glPointParameterfvARB(GL_POINT_DISTANCE_ATTENUATION_ARB, quadratic);
         float maxSize = 0.0f;
         glGetFloatv(GL_POINT_SIZE_MAX_ARB, &maxSize);
@@ -303,14 +303,14 @@ void rWeaponExplosion::drawEffect() {
         glPointParameterfARB(GL_POINT_SIZE_MIN_ARB, 1.0f);
         glPointParameterfARB(GL_POINT_FADE_THRESHOLD_SIZE_ARB, 50.0f);
         glTexEnvf(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE);
-        glEnable(GL_POINT_SPRITE_ARB );
+        glEnable(GL_POINT_SPRITE_ARB);
 
         /*
         glEnable(GL_POINT_SPRITE_NV);
         glTexEnvf(GL_POINT_SPRITE_NV,GL_COORD_REPLACE_NV,GL_TRUE);
         //glPointParameterf(GL_POINT_SPRITE_R_MODE_NV,GL_ZERO);
         glPointSize(100.0);
-        */
+         */
 
         //glPointSize(9.0f);
 
@@ -318,11 +318,12 @@ void rWeaponExplosion::drawEffect() {
             cParticle* s = *i++;
 
             glBegin(GL_POINTS);
+
             foreachNoInc(j, s->trail) {
                 cParticle* smoke = *j++;
                 float m = (0.0f + 0.7 * smoke->fuel);
-                float a = 1.0f;//fmin(1.0f, smoke->fuel);
-                glColor4f(a*m, a*m * 0.8, a*m * 0.6, 0.9);
+                float a = 1.0f; //fmin(1.0f, smoke->fuel);
+                glColor4f(a*m, a * m * 0.8, a * m * 0.6, 0.9);
                 glVertex3f(smoke->pos[0], smoke->pos[1], smoke->pos[2]);
             }
             glEnd();
@@ -354,8 +355,8 @@ void rWeaponExplosion::drawEffect() {
                     glTranslatef(smoke->pos[0], smoke->pos[1], smoke->pos[2]);
                     glMultMatrixf(n);
                     float m = (0.0f + 0.7 * smoke->fuel);
-                    float a = 1.0f;//fmin(1.0f, smoke->fuel);
-                    glColor4f(a*m, a*m * 0.8, a*m * 0.6, 0.1);
+                    float a = 1.0f; //fmin(1.0f, smoke->fuel);
+                    glColor4f(a*m, a * m * 0.8, a * m * 0.6, 0.1);
                     //float size = 0.1 + 0.3 * pow(1.0 + smoke->timer, 3.5);
                     //float size = 5.0f / (1.0f + 1.0f * smoke->fuel);
                     float size = 3.0f + 5.0f / (1.0f + 9.0f * smoke->fuel);
@@ -379,7 +380,7 @@ void rWeaponExplosion::drawEffect() {
                 float alpha = smoke->fuel / total;
                 float beta = 1.0f - alpha;
                 float grey = fmax(alpha, beta) * 0.7;
-                glColor4f(grey,grey,grey,0.5 + cos(0.5 * M_PI * alpha));
+                glColor4f(grey, grey, grey, 0.5 + cos(0.5 * M_PI * alpha));
                 float size = 0.5f + 1.5f * (smoke->timer / total);
                 cPrimitives::glXYCenteredTextureSquare(size);
             }

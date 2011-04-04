@@ -3,7 +3,6 @@
 #include "psi3d/macros.h"
 #include "GL/glew.h"
 
-
 rMobile::rMobile(cObject * obj) : jeten(0), jetthrottle(0), driveen(0), drivethrottle(0), immobile(false), chassis_lr(0), chassis_lr_(0), chassis_ud(0), chassis_ud_(0), tower_lr(0), tower_ud(0), target(0) {
     role = "MOBILE";
     object = obj;
@@ -47,7 +46,7 @@ float rMobile::TowerLR(float radians) {
         return 0.0f;
     } else {
         const float limit = 0.4 * M_PI;
-        float excess = copysign( (fabs(twr[1]) > limit ? fabs(twr[1]) - limit : 0), twr[1]);
+        float excess = copysign((fabs(twr[1]) > limit ? fabs(twr[1]) - limit : 0), twr[1]);
         if (twr[1] > +limit) twr[1] = +limit;
         if (twr[1] < -limit) twr[1] = -limit;
         return excess;
@@ -74,13 +73,14 @@ void rMobile::animate(float spf) {
 
     // Apply turret steering values and get exceeding over limit values.
     float excess_lr = TowerLR((-0.25f * M_PI) * tower_lr * spf);
-    float excess_ud = 0; TowerUD((+0.25f * M_PI) * tower_ud * spf);
+    float excess_ud = 0;
+    TowerUD((+0.25f * M_PI) * tower_ud * spf);
     if (!immobile) {
         // Smoothen steering and throttle values, adds heaviness.
         chassis_lr_ += 0.75f * (excess_lr / spf + (-0.25f * M_PI) * chassis_lr) - chassis_lr_;
         chassis_ud_ += 0.75f * (excess_ud / spf + (+0.25f * M_PI) * chassis_ud) - chassis_ud_;
         drivethrottle += 0.25f * (+fmax(-0.25f, fmin(-driveen, 1.0f)) - drivethrottle);
-        jetthrottle   += 0.05f * (+fmax(-0.00f, fmin(   jeten, 1.0f)) - jetthrottle);
+        jetthrottle += 0.05f * (+fmax(-0.00f, fmin(jeten, 1.0f)) - jetthrottle);
         // Apply steering values.
         ChassisLR(chassis_lr_ * spf);
         ChassisUD(chassis_ud_ * spf);
@@ -142,6 +142,6 @@ void rMobile::drawEffect() {
         glPopMatrix();
     }
     glPopAttrib();
-    */
+     */
 }
 

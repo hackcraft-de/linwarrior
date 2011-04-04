@@ -12,7 +12,9 @@
 #include "rComponent.h"
 #include "psi3d/md5frmt.h"
 
-
+/**
+ * Encapsulates a rigged mesh in md5mesh format.
+ */
 struct rRigged : public rComponent {
     /// Model scale. (1.0f, unused/removed now)
     float scale;
@@ -48,6 +50,7 @@ struct rRigged : public rComponent {
     float radius;
 
     /// Enumeration for indexing joints in animation.
+
     enum Jointpoints {
         EYE, HEADPITCH, HEADYAW,
         CTMOUNT, LAMOUNT, RAMOUNT, LSMOUNT, RSMOUNT, BKMOUNT,
@@ -65,7 +68,7 @@ struct rRigged : public rComponent {
         quat_zero(ori);
     }
 
-    rRigged(rRigged* original) {
+    rRigged(rRigged * original) {
         assert(0);
     }
 
@@ -76,7 +79,7 @@ struct rRigged : public rComponent {
         delete joints;
     }
 
-    virtual rComponent* clone() {
+    virtual rComponent * clone() {
         return new rRigged(this);
     }
 

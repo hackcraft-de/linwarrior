@@ -4,11 +4,10 @@
 
 #include <cassert>
 
-
 rWeaponPlasmagun::rWeaponPlasmagun(cObject* obj) {
     role = "PLASMAGUN";
     object = obj;
-    
+
     clipSize = 19;
     depotSize = 9;
     remainingAmmo = clipSize;
@@ -47,7 +46,7 @@ void rWeaponPlasmagun::fire() {
     float* pos = &source[12];
     vector_cpy(s->pos, pos)
 
-    float nrm[3];
+            float nrm[3];
     float pos2[] = {0, 0, -1};
     matrix_apply2(source, pos2);
     vector_sub(nrm, pos2, s->pos);
@@ -167,7 +166,7 @@ void rWeaponPlasmagun::drawSolid() {
 
 void rWeaponPlasmagun::drawEffect() {
     if (shrapnelParticles.empty()) return;
-    
+
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_ALL_ATTRIB_BITS);
     {
         SGL::glUseProgram_fgaddcolor();

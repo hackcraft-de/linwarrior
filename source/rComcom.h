@@ -20,7 +20,6 @@ struct rNavcom;
 
 #include <list>
 
-
 /** Computer Component
  *  Placeholder base class for computerised components.
  *  Computers have to implement animate and drawHUD methods to be useful.
@@ -28,7 +27,9 @@ struct rNavcom;
  */
 struct rComputer : rComponent {
 public:
-    virtual void message(cMessage* message) {};
+
+    virtual void message(cMessage * message) {
+    };
     virtual void animate(float spf) = 0;
     virtual void drawHUD() = 0;
 };
@@ -128,7 +129,7 @@ public:
     bool reticle;
 public:
     rForcom(cObject* obj = NULL); // FIXME: Must be a cMech.
-    virtual void message(cMessage* message);
+    virtual void message(cMessage * message);
     virtual void animate(float spf);
     virtual void drawHUD();
 };

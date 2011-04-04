@@ -9,7 +9,6 @@
 #ifndef CLANDSCAPE_H
 #define	CLANDSCAPE_H
 
-
 /**
  * ~[0,1] normalized landscape materials.
  */

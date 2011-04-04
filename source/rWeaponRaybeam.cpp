@@ -5,7 +5,7 @@
 rWeaponRaybeam::rWeaponRaybeam(cObject* obj) {
     role = "RAYBEAM";
     object = obj;
-    
+
     clipSize = 12;
     depotSize = 1;
     remainingAmmo = clipSize;
@@ -42,7 +42,7 @@ void rWeaponRaybeam::animate(float spf) {
     triggereded = triggered;
     if (trigger) fire();
     trigger = false;
-    
+
     timeReloading -= spf;
     if (timeReloading < 0) {
         timeReloading = 0.0f;

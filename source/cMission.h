@@ -18,7 +18,6 @@ class cMission;
 
 #include <vector>
 
-
 /**
  * Missions are responsible for initial and midtime spawning of objects
  * (including the player object), tracking mission objectives (frags).
@@ -33,15 +32,17 @@ protected:
     std::vector<cObject*> mDefeat; // May not be destroyed includes player
     int mState;
 public:
-    cMission() :mState(0) {};
-    
+
+    cMission() : mState(0) {
+    };
+
     /**
      * Called with the world which needs to be populated by this mission.
      * So this method should spawn objects into the world and setup
      * other mission critical data of the derived mission.
      */
     virtual cObject* init(cWorld* world);
-    
+
     /**
      * Through this method mission objectives can be traced.
      * Victory (ANDed) and Defeat (ORed) Conditions are checked.
@@ -55,18 +56,17 @@ public:
 
     /// Called when checkConditions() sees the defeat condition(s) fullfilled.
     virtual void onDefeat();
-    
+
     /**
      * Indicates wether this Mission is a success.
      */
     //virtual bool isSuccess() = 0;
-    
+
     /**
      * Indicates wether this Mission is a failure.
      */
     //virtual bool isFailure() = 0;
 };
-
 
 /**
  * Mission for testing new Mission features.
@@ -95,7 +95,7 @@ private:
     void initSpadenixFactory(cWorld* world, cPlanetmap* planetmap);
 private:
     static void battleField(cWorld* world);
-    static void smallArmy(int wx, int wy, int wz, cWorld* world, const char* name, int n, bool blue, int wpn=0);
+    static void smallArmy(int wx, int wy, int wz, cWorld* world, const char* name, int n, bool blue, int wpn = 0);
     static void smallSettling(int wx, int wy, int wz, cWorld* world, int n);
     static void roundForrest(int wx, int wy, int wz, cWorld* world, int r1, int r2, int nmax = 17);
     static void capitalCity(int wx, int wy, int wz, cWorld* world);

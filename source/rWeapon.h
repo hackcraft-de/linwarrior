@@ -31,7 +31,7 @@ public:
     /// Instance counter.
     static int sInstances;
     /// Texture Binds shared between instances.
-    static std::map<int,long> sTextures;
+    static std::map<int, long> sTextures;
 
 public:
     /// Target object id for weapons that need targeting. (hook)

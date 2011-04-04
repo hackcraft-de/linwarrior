@@ -2,7 +2,6 @@
 
 #include "psi3d/noise.h"
 
-
 void cLandscape::land_rockies(float x, float y, float z, float* color, unsigned char seed) {
     float utahcolors[][3] = {
         {0.40f, 0.30f, 0.20f},
@@ -37,7 +36,6 @@ void cLandscape::land_rockies(float x, float y, float z, float* color, unsigned 
     color[BUMP] = h;
 }
 
-
 void cLandscape::land_dunes(float x, float y, float z, float* color, unsigned char seed) {
     // Prime periods => large smallest common multiple.
     const float p1 = 1.0f / 101.0f;
@@ -58,10 +56,10 @@ void cLandscape::land_dunes(float x, float y, float z, float* color, unsigned ch
     float h = (fmin(o1, -o1_)*0.98f + 0.96f);
 
     const float f = 1.0f / 255.0f;
-    float c1[] = { f*0xfc, f*0xd4, f*0x96 };
-    float c0[] = { f*0x6b, f*0x4f, f*0x28 };
-//    float c1[] = {1.00f, 0.96f, 0.79f};
-//    float c0[] = {0.86f, 0.78f, 0.59f};
+    float c1[] = {f * 0xfc, f * 0xd4, f * 0x96};
+    float c0[] = {f * 0x6b, f * 0x4f, f * 0x28};
+    //    float c1[] = {1.00f, 0.96f, 0.79f};
+    //    float c0[] = {0.86f, 0.78f, 0.59f};
     float alpha = h;
     float alpha_ = 1.0f - h;
 
@@ -70,7 +68,6 @@ void cLandscape::land_dunes(float x, float y, float z, float* color, unsigned ch
     color[BLU] = c0[2] * alpha_ + c1[2] * alpha;
     color[BUMP] = h;
 }
-
 
 void cLandscape::land_dunes_red(float x, float y, float z, float* color, unsigned char seed) {
     // Prime periods => large smallest common multiple.
@@ -91,8 +88,8 @@ void cLandscape::land_dunes_red(float x, float y, float z, float* color, unsigne
     // Limit to about [0,1] range.
     float h = (fmin(o1, -o1_)*0.98f + 0.96f);
     const float f = 1.0f / 255.0f;
-    float c1[] = { f*0xe3, f*0x7f, f*0x2a };
-    float c0[] = { f*0xd0, f*0x59, f*0x1f };
+    float c1[] = {f * 0xe3, f * 0x7f, f * 0x2a};
+    float c0[] = {f * 0xd0, f * 0x59, f * 0x1f};
     float alpha = h;
     float alpha_ = 1.0f - h;
 
@@ -101,7 +98,6 @@ void cLandscape::land_dunes_red(float x, float y, float z, float* color, unsigne
     color[BLU] = c0[2] * alpha_ + c1[2] * alpha;
     color[BUMP] = h;
 }
-
 
 void cLandscape::land_lava(float x, float y, float z, float* color, unsigned char seed) {
     float power = 5;
@@ -148,7 +144,6 @@ void cLandscape::land_lava(float x, float y, float z, float* color, unsigned cha
     color[BUMP] = h;
 }
 
-
 void cLandscape::land_grass(float x, float y, float z, float* color, unsigned char seed) {
     const float p1 = 1.0f / 101.0f;
     float o1 = cNoise::simplex3(37 + x*p1, 67 + y*p1, 97 + z*p1, seed + 0);
@@ -165,10 +160,10 @@ void cLandscape::land_grass(float x, float y, float z, float* color, unsigned ch
     //float bottom[] = {0.85f, 0.93f, 0.58f};
     //float splat[] = {0.93f, 0.95f, 0.61f};
     const float f = 1.0f / 256.0f;
-    float top[] = {f*0x94, f*0x9b, f*0x57};
-    float bottom[] = {f*0x20, f*0x39, f*0x1b};
+    float top[] = {f * 0x94, f * 0x9b, f * 0x57};
+    float bottom[] = {f * 0x20, f * 0x39, f * 0x1b};
     //float splat[] = {f*0x75, f*0x8b, f*0x67};
-    float splat[] = {f*0x8d, f*0x98, f*0x49};
+    float splat[] = {f * 0x8d, f * 0x98, f * 0x49};
     float top_alpha = h;
     float bottom_alpha = 1.0f - h;
     float splat_alpha = (exp(o2 * 0.5 + 0.5))*0.1 + (exp(o3 * 0.5 + 0.5))*0.05;
@@ -178,7 +173,6 @@ void cLandscape::land_grass(float x, float y, float z, float* color, unsigned ch
     color[BLU] = top[2] * top_alpha + bottom[2] * bottom_alpha + splat[2] * splat_alpha;
     color[BUMP] = h;
 }
-
 
 void cLandscape::land_snow(float x, float y, float z, float* color, unsigned char seed) {
     const float p1 = 1.0f / 101.0f;
@@ -205,7 +199,6 @@ void cLandscape::land_snow(float x, float y, float z, float* color, unsigned cha
     color[BUMP] = h;
 }
 
-
 void cLandscape::land_dirt(float x, float y, float z, float* color, unsigned char seed) {
     const float p1 = 1.0f / 101.0f;
     float o1 = cNoise::simplex3(37 + x*p1, 67 + y*p1, 97 + z*p1, seed + 0);
@@ -230,7 +223,6 @@ void cLandscape::land_dirt(float x, float y, float z, float* color, unsigned cha
     color[BLU] = top[2] * top_alpha + bottom[2] * bottom_alpha + splat[2] * splat_alpha;
     color[BUMP] = h;
 }
-
 
 void cLandscape::decoration_spikes(float x, float y, float z, float* color, unsigned char seed) {
     const int n = 4;
@@ -258,7 +250,6 @@ void cLandscape::decoration_spikes(float x, float y, float z, float* color, unsi
     color[BLU] = h;
     color[BUMP] = h;
 }
-
 
 void cLandscape::decoration_stones(float x, float y, float z, float* color, unsigned char seed) {
     const int n = 4;
@@ -289,7 +280,6 @@ void cLandscape::decoration_stones(float x, float y, float z, float* color, unsi
     color[BLU] = h;
     color[BUMP] = h;
 }
-
 
 void cLandscape::mashup_lava(float x, float y, float z, float* color, unsigned char seed) {
     const float p1 = 1.0f / 301.0f;
@@ -339,7 +329,6 @@ void cLandscape::mashup_lava(float x, float y, float z, float* color, unsigned c
     color[BUMP] = h;
 }
 
-
 void cLandscape::experimental_continents(float x, float y, float z, float* color, unsigned char seed) {
     const int n = 8;
     float o = 0;
@@ -351,6 +340,7 @@ void cLandscape::experimental_continents(float x, float y, float z, float* color
     z *= 0.1f;
 
     float scale = 128;
+
     loopi(n) {
         o += factor * cNoise::simplex3(sx[i] + x * p[i] * scale, sx[i] + y * p[i] * scale, sx[i] + z * p[i] * scale, seed);
         factor *= 0.8;
@@ -371,7 +361,7 @@ void cLandscape::experimental_continents(float x, float y, float z, float* color
 
     loopi(3) {
         //color[i] = sea[i] * sea_alpha + beach[i] * beach_alpha + peak[i] * peak_alpha;
-        color[i] = cDistortion::exposure(5*(sea[i] * sea_alpha + beach[i] * beach_alpha + peak[i] * peak_alpha));
+        color[i] = cDistortion::exposure(5 * (sea[i] * sea_alpha + beach[i] * beach_alpha + peak[i] * peak_alpha));
     }
     color[BUMP] = h;
 }

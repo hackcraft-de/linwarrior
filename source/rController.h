@@ -29,6 +29,7 @@ struct rController;
 struct rController : public rComponent {
 public:
     /// Available opcodes of stack-machine.
+
     enum Opcodes {
         /// Play idle until something happens.
         WAIT,
@@ -69,12 +70,16 @@ public:
     /// Destructor.
     virtual ~rController();
     /// Clone this.
-    virtual rComponent* clone() { return NULL; }
+
+    virtual rComponent * clone() {
+        return NULL;
+    }
 
     /// Do a single Instruction step as the top frame on the stack says.
     virtual void animate(float spf = 1.0f);
 
     /// Currently there is no hud.
+
     virtual void drawHUD() {
     };
 

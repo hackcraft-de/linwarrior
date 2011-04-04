@@ -133,7 +133,7 @@ void rWeaponSparkgun::drawSolid() {
 
 void rWeaponSparkgun::drawEffect() {
     if (shrapnelParticles.empty()) return;
-    
+
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
         SGL::glUseProgram_fgaddcolor();

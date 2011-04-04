@@ -29,9 +29,11 @@ struct rCollider : public rComponent {
     /// Constructor
     rCollider(cObject * obj);
     /// Destructor
-    ~rCollider() { }
 
-    virtual float constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor);
+    ~rCollider() {
+    }
+
+    virtual float constrainParticle(float* worldpos, float radius, float* localpos, cObject * enactor);
     virtual void animate(float spf);
     virtual void drawEffect();
 };

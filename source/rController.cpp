@@ -93,7 +93,7 @@ unsigned int rController::getFrameSizeOf(int opcode) {
         case ATTACK: return 2;
         case FOLLOW: return 3;
         case GOTO: return 5;
-        case REPEAT : return 2;
+        case REPEAT: return 2;
         default: return 2;
     }
 }
@@ -167,7 +167,7 @@ void rController::waitEvent() {
     //OID opcode = getParameter(0);
     long mseconds = getParameter(1);
     bool patrol = getParameter(2);
-    
+
     {
         this->doit(0, NULL, false);
     }
@@ -199,7 +199,7 @@ void rController::waitEvent() {
     }
 
     if (mseconds > 0) {
-        mseconds -= 1000/40;
+        mseconds -= 1000 / 40;
         setParameter(1, mseconds);
         if (mseconds <= 0) {
             pop();
@@ -221,7 +221,7 @@ void rController::pushAttackEnemy(OID entity) {
     push(entity);
     push(ATTACK);
 }
- 
+
 void rController::attackEnemy() {
     //OID opcode = getParameter(0);
     OID entity = getParameter(1);
@@ -274,7 +274,7 @@ void rController::followLeader() {
     }
 
     if (patrol) {
-        OID nearby = enemyNearby;//controlledDevice->enemyNearby();
+        OID nearby = enemyNearby; //controlledDevice->enemyNearby();
         if (nearby) {
             pushAttackEnemy(nearby);
             return;
@@ -321,7 +321,7 @@ void rController::gotoDestination() {
     }
 
     if (patrol) {
-        OID nearby = enemyNearby;//controlledDevice->enemyNearby();
+        OID nearby = enemyNearby; //controlledDevice->enemyNearby();
         if (nearby) {
             pushAttackEnemy(nearby);
             return;
@@ -350,6 +350,7 @@ void rController::repeatInstructions() {
     unsigned int first = getFrameSize();
     if (debug_state) cout << "first " << first << " -> opcode " << opcode << endl;
     unsigned int last = first;
+
     loopi(n) {
         int opcode = getParameter(last);
         last += getFrameSizeOf(opcode);

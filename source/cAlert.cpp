@@ -13,7 +13,6 @@ using std::endl;
 
 bool cAlert::sDrawzone = !true;
 
-
 cAlert::cAlert(float* center, float* range, int shapetype, std::string msgtype, std::string msgtext, OID receiver, std::set<OID>* include, std::set<OID>* exclude, bool positive, bool posedge, bool once, OID fusedelay) {
     vector_cpy(shape.center, center);
     vector_cpy(shape.range, range);
@@ -25,7 +24,7 @@ cAlert::cAlert(float* center, float* range, int shapetype, std::string msgtype, 
     } else {
         vector_cpy(pos, center);
     }
-    
+
     nameable = new rNameable(this);
 
     this->positive = positive;
@@ -42,13 +41,12 @@ cAlert::cAlert(float* center, float* range, int shapetype, std::string msgtype, 
     fusedelay = 0;
 }
 
-
 float cAlert::constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor) {
     //std::cout << "called" << std::endl;
     // Don't react on scanning and shooting.
     if (enactor == NULL) return 0;
     if (once && fired) return 0;
-    if (! enactor->anyTags(&inc_sense) || enactor->anyTags(&exc_sense) ) return 0;
+    if (!enactor->anyTags(&inc_sense) || enactor->anyTags(&exc_sense)) return 0;
 
     rShape* s = &shape;
     float depth = 0;
@@ -56,7 +54,7 @@ float cAlert::constrainParticle(float* worldpos, float radius, float* localpos, 
     switch (s->type) {
         case rShape::CYLINDER:
         {
-            float base[] = { shape.center[0], shape.center[1]-shape.range[1], shape.center[2] };
+            float base[] = {shape.center[0], shape.center[1] - shape.range[1], shape.center[2]};
             float radius = fmax(shape.range[0], shape.range[2]);
             float height = 2.0f * shape.range[1];
             depth = cParticle::constraintParticleByCylinder(worldpos, base, radius, height, projection);
@@ -78,7 +76,7 @@ float cAlert::constrainParticle(float* worldpos, float radius, float* localpos, 
         }
         case rShape::CONE:
         {
-            float base[] = { shape.center[0], shape.center[1]-shape.range[1], shape.center[2] };
+            float base[] = {shape.center[0], shape.center[1] - shape.range[1], shape.center[2]};
             float radius = fmax(shape.range[0], shape.range[2]);
             float height = 2.0f * shape.range[1];
             depth = cParticle::constraintParticleByCone(worldpos, base, radius, height, projection);
@@ -99,7 +97,7 @@ float cAlert::constrainParticle(float* worldpos, float radius, float* localpos, 
                 cWorld::instance->sendMessage(fusedelay, oid, receiver, msgtype, msgtext, NULL);
             }
         }
-    } else  {
+    } else {
         // The intruder was inside and now the intruder left the zone.
         if ((depth == 0) == positive) {
             intruders.erase(enactor->oid);
@@ -114,22 +112,21 @@ float cAlert::constrainParticle(float* worldpos, float radius, float* localpos, 
     return 0.0f;
 }
 
-
 void cAlert::drawEffect() {
     if (!sDrawzone) return;
-    
+
     float edge = posedge ? 1.0f : 0.0f;
-    float c_pos[] = { 0,1,edge, 1 };
-    float c_neg[] = { 1,0,edge, 1 };
+    float c_pos[] = {0, 1, edge, 1};
+    float c_neg[] = {1, 0, edge, 1};
     float* c1 = positive ? c_pos : c_neg;
-    float c2[] = { c1[0]*0.66f, c1[1]*0.66f, c1[2]*0.66f, c1[3] };
-    float c3[] = { c1[0]*0.33f, c1[1]*0.33f, c1[2]*0.33f, c1[3] };
-    
+    float c2[] = {c1[0]*0.66f, c1[1]*0.66f, c1[2]*0.66f, c1[3]};
+    float c3[] = {c1[0]*0.33f, c1[1]*0.33f, c1[2]*0.33f, c1[3]};
+
     rShape* s = &shape;
     float* center = s->center;
     float* range = s->range;
 
-    glPushName((GLuint)(this->oid & 0xFFFF));
+    glPushName((GLuint) (this->oid & 0xFFFF));
 
     if (nameable) {
         vector_cpy(nameable->pos0, center);
@@ -138,7 +135,7 @@ void cAlert::drawEffect() {
         nameable->color[2] = 0.20f;
         nameable->drawEffect();
     }
-    
+
     //if (!sDrawzone) return;
 
     glPushMatrix();
@@ -150,7 +147,7 @@ void cAlert::drawEffect() {
             glDisable(GL_LIGHTING);
             glDisable(GL_FOG);
             glDisable(GL_CULL_FACE);
-            */
+             */
 
             glLineWidth(3);
             glLineStipple(0.01, 0xFC);
@@ -160,39 +157,42 @@ void cAlert::drawEffect() {
                 {
                     float a = 0;
                     const int n = 12;
-                    const float a_inc = M_PI * 2.0 / (double)n;
+                    const float a_inc = M_PI * 2.0 / (double) n;
                     // XZ-Bottom-Plane
                     glColor4fv(c1);
                     a = 0;
                     glBegin(GL_LINE_STRIP);
-                    loopi(n+1) {
-                        float rx = sin(a)*range[0];
-                        float rz = cos(a)*range[2];
+
+                    loopi(n + 1) {
+                        float rx = sin(a) * range[0];
+                        float rz = cos(a) * range[2];
                         a += a_inc;
-                        glVertex3f(center[0]+rx,center[1]-range[1],center[2]+rz);
+                        glVertex3f(center[0] + rx, center[1] - range[1], center[2] + rz);
                     }
                     glEnd();
                     // XZ-Top-Plane
                     glColor4fv(c1);
                     a = 0;
                     glBegin(GL_LINE_STRIP);
-                    loopi(n+1) {
-                        float rx = sin(a)*range[0];
-                        float rz = cos(a)*range[2];
+
+                    loopi(n + 1) {
+                        float rx = sin(a) * range[0];
+                        float rz = cos(a) * range[2];
                         a += a_inc;
-                        glVertex3f(center[0]+rx,center[1]+range[1],center[2]+rz);
+                        glVertex3f(center[0] + rx, center[1] + range[1], center[2] + rz);
                     }
                     glEnd();
                     // Sides
                     glColor4fv(c2);
                     a = 0;
                     glBegin(GL_LINES);
+
                     loopi(n) {
-                        float rx = sin(a)*range[0];
-                        float rz = cos(a)*range[2];
+                        float rx = sin(a) * range[0];
+                        float rz = cos(a) * range[2];
                         a += a_inc;
-                        glVertex3f(center[0]+rx,center[1]-range[1],center[2]+rz);
-                        glVertex3f(center[0]+rx,center[1]+range[1],center[2]+rz);
+                        glVertex3f(center[0] + rx, center[1] - range[1], center[2] + rz);
+                        glVertex3f(center[0] + rx, center[1] + range[1], center[2] + rz);
                     }
                     glEnd();
                     break;
@@ -203,39 +203,39 @@ void cAlert::drawEffect() {
                     glColor4fv(c1);
                     glBegin(GL_LINE_STRIP);
                     {
-                        glVertex3f(center[0]-range[0],center[1]-range[1],center[2]-range[2]);
-                        glVertex3f(center[0]+range[0],center[1]-range[1],center[2]-range[2]);
-                        glVertex3f(center[0]+range[0],center[1]+range[1],center[2]-range[2]);
-                        glVertex3f(center[0]-range[0],center[1]+range[1],center[2]-range[2]);
-                        glVertex3f(center[0]-range[0],center[1]-range[1],center[2]-range[2]);
+                        glVertex3f(center[0] - range[0], center[1] - range[1], center[2] - range[2]);
+                        glVertex3f(center[0] + range[0], center[1] - range[1], center[2] - range[2]);
+                        glVertex3f(center[0] + range[0], center[1] + range[1], center[2] - range[2]);
+                        glVertex3f(center[0] - range[0], center[1] + range[1], center[2] - range[2]);
+                        glVertex3f(center[0] - range[0], center[1] - range[1], center[2] - range[2]);
                     }
                     glEnd();
                     // Back-XY-Plane
                     glColor4fv(c1);
                     glBegin(GL_LINE_STRIP);
                     {
-                        glVertex3f(center[0]-range[0],center[1]-range[1],center[2]+range[2]);
-                        glVertex3f(center[0]+range[0],center[1]-range[1],center[2]+range[2]);
-                        glVertex3f(center[0]+range[0],center[1]+range[1],center[2]+range[2]);
-                        glVertex3f(center[0]-range[0],center[1]+range[1],center[2]+range[2]);
-                        glVertex3f(center[0]-range[0],center[1]-range[1],center[2]+range[2]);
+                        glVertex3f(center[0] - range[0], center[1] - range[1], center[2] + range[2]);
+                        glVertex3f(center[0] + range[0], center[1] - range[1], center[2] + range[2]);
+                        glVertex3f(center[0] + range[0], center[1] + range[1], center[2] + range[2]);
+                        glVertex3f(center[0] - range[0], center[1] + range[1], center[2] + range[2]);
+                        glVertex3f(center[0] - range[0], center[1] - range[1], center[2] + range[2]);
                     }
                     glEnd();
                     // Front-Back-Lines
                     glColor4fv(c2);
                     glBegin(GL_LINES);
                     {
-                        glVertex3f(center[0]-range[0],center[1]-range[1],center[2]-range[2]);
-                        glVertex3f(center[0]-range[0],center[1]-range[1],center[2]+range[2]);
+                        glVertex3f(center[0] - range[0], center[1] - range[1], center[2] - range[2]);
+                        glVertex3f(center[0] - range[0], center[1] - range[1], center[2] + range[2]);
 
-                        glVertex3f(center[0]+range[0],center[1]-range[1],center[2]-range[2]);
-                        glVertex3f(center[0]+range[0],center[1]-range[1],center[2]+range[2]);
+                        glVertex3f(center[0] + range[0], center[1] - range[1], center[2] - range[2]);
+                        glVertex3f(center[0] + range[0], center[1] - range[1], center[2] + range[2]);
 
-                        glVertex3f(center[0]+range[0],center[1]+range[1],center[2]-range[2]);
-                        glVertex3f(center[0]+range[0],center[1]+range[1],center[2]+range[2]);
+                        glVertex3f(center[0] + range[0], center[1] + range[1], center[2] - range[2]);
+                        glVertex3f(center[0] + range[0], center[1] + range[1], center[2] + range[2]);
 
-                        glVertex3f(center[0]-range[0],center[1]+range[1],center[2]-range[2]);
-                        glVertex3f(center[0]-range[0],center[1]+range[1],center[2]+range[2]);
+                        glVertex3f(center[0] - range[0], center[1] + range[1], center[2] - range[2]);
+                        glVertex3f(center[0] - range[0], center[1] + range[1], center[2] + range[2]);
                     }
                     glEnd();
                     break;
@@ -244,38 +244,41 @@ void cAlert::drawEffect() {
                 {
                     float a = 0;
                     const int n = 12;
-                    const float a_inc = M_PI * 2.0 / (double)n;
+                    const float a_inc = M_PI * 2.0 / (double) n;
                     // XZ-Plane
                     glColor4fv(c2);
                     a = 0;
                     glBegin(GL_LINE_STRIP);
-                    loopi(n+1) {
-                        float rx = sin(a)*range[0];
-                        float rz = cos(a)*range[2];
+
+                    loopi(n + 1) {
+                        float rx = sin(a) * range[0];
+                        float rz = cos(a) * range[2];
                         a += a_inc;
-                        glVertex3f(center[0]+rx,center[1],center[2]+rz);
+                        glVertex3f(center[0] + rx, center[1], center[2] + rz);
                     }
                     glEnd();
                     // XY-Plane
                     glColor4fv(c3);
                     a = 0;
                     glBegin(GL_LINE_STRIP);
-                    loopi(n+1) {
-                        float rx = sin(a)*range[0];
-                        float ry = cos(a)*range[1];
+
+                    loopi(n + 1) {
+                        float rx = sin(a) * range[0];
+                        float ry = cos(a) * range[1];
                         a += a_inc;
-                        glVertex3f(center[0]+rx,center[1]+ry,center[2]);
+                        glVertex3f(center[0] + rx, center[1] + ry, center[2]);
                     }
                     glEnd();
                     // YZ-Plane
                     glColor4fv(c1);
                     a = 0;
                     glBegin(GL_LINE_STRIP);
-                    loopi(n+1) {
-                        float rz = sin(a)*range[2];
-                        float ry = cos(a)*range[1];
+
+                    loopi(n + 1) {
+                        float rz = sin(a) * range[2];
+                        float ry = cos(a) * range[1];
                         a += a_inc;
-                        glVertex3f(center[0],center[1]+ry,center[2]+rz);
+                        glVertex3f(center[0], center[1] + ry, center[2] + rz);
                     }
                     glEnd();
                     break;
@@ -284,28 +287,30 @@ void cAlert::drawEffect() {
                 {
                     float a = 0;
                     const int n = 12;
-                    const float a_inc = M_PI * 2.0 / (double)n;
+                    const float a_inc = M_PI * 2.0 / (double) n;
                     // XZ-Bottom-Plane
                     glColor4fv(c1);
                     a = 0;
                     glBegin(GL_LINE_STRIP);
-                    loopi(n+1) {
-                        float rx = sin(a)*range[0];
-                        float rz = cos(a)*range[2];
+
+                    loopi(n + 1) {
+                        float rx = sin(a) * range[0];
+                        float rz = cos(a) * range[2];
                         a += a_inc;
-                        glVertex3f(center[0]+rx,center[1]-range[1],center[2]+rz);
+                        glVertex3f(center[0] + rx, center[1] - range[1], center[2] + rz);
                     }
                     glEnd();
                     // Sides
                     glColor4fv(c2);
                     a = 0;
                     glBegin(GL_LINES);
+
                     loopi(n) {
-                        float rx = sin(a)*range[0];
-                        float rz = cos(a)*range[2];
+                        float rx = sin(a) * range[0];
+                        float rz = cos(a) * range[2];
                         a += a_inc;
-                        glVertex3f(center[0]+rx,center[1]-range[1],center[2]+rz);
-                        glVertex3f(center[0],center[1]+range[1],center[2]);
+                        glVertex3f(center[0] + rx, center[1] - range[1], center[2] + rz);
+                        glVertex3f(center[0], center[1] + range[1], center[2]);
                     }
                     glEnd();
                     break;

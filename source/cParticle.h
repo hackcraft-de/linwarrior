@@ -345,17 +345,17 @@ struct cParticle {
 
         // Normalised Tangent vector of base circle below particle.
         float inv_len = 1.0f / rdist;
-        float tangent[] = { -dist[2] * inv_len, 0, dist[0] * inv_len };
+        float tangent[] = {-dist[2] * inv_len, 0, dist[0] * inv_len};
         //std::cout << "tangent: " << tangent[0] << " " << tangent[1] << " " << tangent[2] << std::endl;
 
         // Tangent point.
-        float tp[] = { radius * dist[0] * inv_len, base3fv[1], radius * dist[2] * inv_len };
+        float tp[] = {radius * dist[0] * inv_len, base3fv[1], radius * dist[2] * inv_len};
         //std::cout << "tp: " << tp[0] << " " << tp[1] << " " << tp[2] << std::endl;
 
         // Normalised Vector from tangent point to cone top tip.
         //float inv_up = 1.0f / sqrtf(radius*radius + height*height);
-        float inv_up = 1.0f / sqrtf(tp[0]*tp[0] + tp[2]*tp[2] + height*height);
-        float up[] = { -tp[0] * inv_up, height * inv_up, -tp[2] * inv_up };
+        float inv_up = 1.0f / sqrtf(tp[0] * tp[0] + tp[2] * tp[2] + height * height);
+        float up[] = {-tp[0] * inv_up, height * inv_up, -tp[2] * inv_up};
         //std::cout << "up: " << up[0] << " " << up[1] << " " << up[2] << std::endl;
 
         // Normalised projection normal vector.
@@ -457,6 +457,7 @@ struct cParticle {
 public:
 
     /// Utility function to compute nearest rotation direction and intensity.
+
     static void rotationTo(float* result2f, float* own_pos, float* tgt_pos, float* base_ori, float*tower_ori = NULL) {
         float dir_global[3];
         vector_sub(dir_global, tgt_pos, own_pos);

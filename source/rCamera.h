@@ -18,7 +18,10 @@
  */
 struct rCamera : public rComponent {
     /// # of camera modes: ISO C++ forbids const int with initialization >:(
-    enum { MAX_CAMERAMODES = 6 };
+
+    enum {
+        MAX_CAMERAMODES = 6
+    };
     /// Current Camera mode, negative number is indicating transition.
     int camerastate;
     /// Switch camera state one step when greater zero. (hook i)

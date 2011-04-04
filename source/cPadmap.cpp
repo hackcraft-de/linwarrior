@@ -2,7 +2,6 @@
 
 #include "psi3d/snippetsgl.h"
 
-
 static void stepSpiral(int& x, int& y, int& i, int& length, bool& horizontal, int& increment) {
     if (i >= length) {
         i = 0;
@@ -106,7 +105,6 @@ cPadmap::cPadmap(float x, float y, float z) {
     mapscale[2] = mapscale[0];
 }
 
-
 float cPadmap::getHeight(float x, float z) {
     int a = dims[0];
     int b = dims[1];
@@ -138,7 +136,6 @@ float cPadmap::getHeight(float x, float z) {
 
     return h;
 }
-
 
 void cPadmap::drawSolid() {
     //return; // !!
@@ -265,7 +262,6 @@ void cPadmap::drawSolid() {
     glPopAttrib();
 }
 
-
 float cPadmap::constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor) {
     //return 0.0f; // !!!!!!!!!!
 
@@ -273,7 +269,7 @@ float cPadmap::constrainParticle(float* worldpos, float radius, float* localpos,
     float localpos_[3];
     vector_cpy(localpos_, worldpos);
     vector_sub(localpos_, localpos_, this->pos);
-    
+
     localpos_[0] /= mapscale[0];
     localpos_[1] /= mapscale[1];
     localpos_[2] /= mapscale[2];
@@ -289,6 +285,7 @@ float cPadmap::constrainParticle(float* worldpos, float radius, float* localpos,
     float maxdelta = 0;
     //float color3f[3];
     int runs = 0;
+
     loopj(iterations) {
         runs++;
         //relax = 0.05 + 0.1 * (iterations - j) / (float)(iterations);
@@ -307,8 +304,8 @@ float cPadmap::constrainParticle(float* worldpos, float radius, float* localpos,
             if (i != 0) {
                 //alpha = i * a;
                 //beta = i * b;
-                alpha = (rand()%62831)*0.0001f; // 2PI 0-360
-                beta =  (rand()%15707)*0.0001f; // 0.5PI 0-90
+                alpha = (rand() % 62831)*0.0001f; // 2PI 0-360
+                beta = (rand() % 15707)*0.0001f; // 0.5PI 0-90
             }
             x_ += sin(alpha) * sin(beta) * radius_;
             y_ += -cos(beta) * radius_;
@@ -333,7 +330,7 @@ float cPadmap::constrainParticle(float* worldpos, float radius, float* localpos,
             //vector_print(near);
             //cout << radius << " " << nearest << " " << delta << endl;
 
-            vector_scale(near, near, 1.0f / (nearest+0.000001f));
+            vector_scale(near, near, 1.0f / (nearest + 0.000001f));
             vector_scale(near, near, delta * relax);
             vector_add(localpos_, localpos_, near);
         } else if (j > 2) {
