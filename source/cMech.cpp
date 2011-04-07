@@ -305,7 +305,7 @@ void cMech::animate(float spf) {
      * COLLIDER
      * DAMAGEABLE
      * COMPUTERs
-     * CONTROLLED
+     * CONTROLLER
      * MOBILE
      * TRACEABLE
      * RIGGED
@@ -418,7 +418,7 @@ void cMech::animate(float spf) {
 
     // <-- end COMPUTERs
 
-    // CONTROLLED
+    // CONTROLLER
     {
         // from Damageable
         {
@@ -433,12 +433,18 @@ void cMech::animate(float spf) {
             controller->enemyNearby = tarcom->nearbyEnemy;
         }
 
+        // from Mobile
+        {
+            controller->aimrange = mobile->aimrange;
+            controller->walkrange = mobile->walkrange;
+        }
+
         controller->animate(spf);
     }
 
     // MOBILE
     {
-        // from CONTROLLED
+        // from CONTROLLER
         {
             mobile->tower_lr = pad->getAxis(cPad::MECH_TURRET_LR_AXIS);
             mobile->tower_ud = pad->getAxis(cPad::MECH_TURRET_UD_AXIS);
@@ -571,7 +577,7 @@ void cMech::animate(float spf) {
     loopi(weapons.size()) {
         // from CONTROLLED:
         {
-            weapons[i]->target = mobile->target;
+            weapons[i]->target = mobile->aimtarget;
         }
         // from RIGGED:
         {
@@ -788,63 +794,20 @@ float cMech::constrainParticle(float* worldpos, float radius, float* localpos, c
     return maxdepth;
 }
 
-float cMech::inDestinationRange() {
-    float a = 0;
-    float b = 6;
-    float d = vector_distance(mobile->pos, mobile->destination);
-    if (d < a) return 1.0f;
-    if (d > b) return 0.0f;
-    return (1.0f - (d - a) / (b - a));
-}
-
-float cMech::inMeeleRange() {
-    cObject* target = cWorld::instance->getObject(mobile->target);
-    if (target == NULL) return 0.0f;
-    float a = 16;
-    float b = 24;
-    float d = vector_distance(mobile->pos, target->pos);
-    if (d < a) return 1.0f;
-    if (d > b) return 0.0f;
-    return (1.0f - (d - a) / (b - a));
-}
-
-float cMech::inWeaponRange() {
-    // TODO inWeaponRange should depend on ready to fire weapons properties.
-    cObject* target = cWorld::instance->getObject(mobile->target);
-    if (target == NULL) return 0.0f;
-    float a = 36 + 10;
-    float b = 44 + 10;
-    float d = vector_distance(mobile->pos, target->pos);
-    if (d < a) return 1.0f;
-    if (d > b) return 0.0f;
-    return (1.0f - (d - a) / (b - a));
-}
-
-float cMech::inTargetRange() {
-    cObject* target = cWorld::instance->getObject(mobile->target);
-    if (target == NULL) return 0.0f;
-    float a = 56;
-    float b = 124;
-    float d = vector_distance(mobile->pos, target->pos);
-    if (d < a) return 1.0f;
-    if (d > b) return 0.0f;
-    return (1.0f - (d - a) / (b - a));
-}
-
 void cMech::do_moveTowards() {
     //cout << "do_moveTowards():\n";
     if (pad == NULL) return;
 
     // Determine Target (ie. Move- or Aim-Target if former is not available).
     float* target_pos = NULL;
-    if (finitef(mobile->destination[0])) {
-        target_pos = mobile->destination;
-    } else if (mobile->target != 0) {
-        cObject* target = cWorld::instance->getObject(mobile->target);
+    if (finitef(mobile->walktarget[0])) {
+        target_pos = mobile->walktarget;
+    } else if (mobile->aimtarget != 0) {
+        cObject* target = cWorld::instance->getObject(mobile->aimtarget);
         if (target != NULL) {
             target_pos = target->pos;
         } else {
-            mobile->target = 0;
+            mobile->aimtarget = 0;
             return;
         }
     } else return;
@@ -868,14 +831,14 @@ void cMech::do_moveNear() {
 
     // Determine Target (ie. Move- or Aim-Target if former is not available).
     float* target_pos = NULL;
-    if (finitef(mobile->destination[0])) {
-        target_pos = mobile->destination;
-    } else if (mobile->target != 0) {
-        cObject* target = cWorld::instance->getObject(mobile->target);
+    if (finitef(mobile->walktarget[0])) {
+        target_pos = mobile->walktarget;
+    } else if (mobile->aimtarget != 0) {
+        cObject* target = cWorld::instance->getObject(mobile->aimtarget);
         if (target != NULL) {
             target_pos = target->pos;
         } else {
-            mobile->target = 0;
+            mobile->aimtarget = 0;
             return;
         }
     } else return;
@@ -904,8 +867,8 @@ void cMech::do_aimAt() {
 
     // Get aim-target position.
     float* target_pos = NULL;
-    if (mobile->target != 0) {
-        cObject* target = cWorld::instance->getObject(mobile->target);
+    if (mobile->aimtarget != 0) {
+        cObject* target = cWorld::instance->getObject(mobile->aimtarget);
         if (target != NULL) target_pos = target->pos;
         else return;
     } else return;
@@ -926,8 +889,8 @@ void cMech::do_fireAt() {
 
     // Get aim-target position.
     float* target_pos = NULL;
-    if (mobile->target != 0) {
-        cObject* target = cWorld::instance->getObject(mobile->target);
+    if (mobile->aimtarget != 0) {
+        cObject* target = cWorld::instance->getObject(mobile->aimtarget);
         if (target != NULL) target_pos = target->pos;
         else return;
     } else return;
@@ -949,18 +912,18 @@ void cMech::do_idle() {
 }
 
 void cMech::do_aimFor(OID target) {
-    mobile->target = target;
+    mobile->aimtarget = target;
 }
 
 void cMech::do_moveFor(float* dest) {
     if (dest != NULL) {
-        vector_cpy(mobile->destination, dest);
+        vector_cpy(mobile->walktarget, dest);
     } else {
         // Set XYZ to Not-A-Number (NaN) for no location.
         // Note that NaN-ity can only be tested either by
         // isnanf(x), !finite(x) or by x!=x as NaN always != NaN.
-        vector_set(mobile->destination, float_NAN, float_NAN, float_NAN);
-        assert(mobile->destination[0] != mobile->destination[0]);
+        vector_set(mobile->walktarget, float_NAN, float_NAN, float_NAN);
+        assert(mobile->walktarget[0] != mobile->walktarget[0]);
         //cout << "Destination is " << ((finitef(mDestination[0])) ? "finite" : "infinite" ) << "\n";
     }
 }

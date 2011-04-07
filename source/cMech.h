@@ -125,12 +125,6 @@ public:
     virtual void damageByParticle(float* localpos, float damage, cObject* enactor = NULL);
     virtual float constrainParticle(float* worldpos, float radius = 0.0f, float* localpos = NULL, cObject* enactor = NULL);
 public:
-    // Fuzzy Predicates [0,1]
-    virtual float inDestinationRange();
-    virtual float inMeeleRange();
-    virtual float inWeaponRange();
-    virtual float inTargetRange();
-
     // Output Actions
     virtual void do_moveTowards();
     virtual void do_moveNear();

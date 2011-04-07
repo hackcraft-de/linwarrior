@@ -64,6 +64,10 @@ public: // Output hooks.
     vec3 targetGoto;
     bool targetGotoActive;
     bool idling;
+    /// Indicator of distance to aim-target, see Mobile.
+    float aimrange;
+    /// Indicator of distance to walk-target, see Mobile.
+    float walkrange;
 public:
     /// Initialises a en-/disabled controller for the given entity->
     rController(cObject* entity = NULL, bool enable = true);

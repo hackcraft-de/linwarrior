@@ -1,9 +1,16 @@
 #include "rMobile.h"
 
+#include "cWorld.h"
+
 #include "psi3d/macros.h"
 #include "GL/glew.h"
 
-rMobile::rMobile(cObject * obj) : jeten(0), jetthrottle(0), driveen(0), drivethrottle(0), immobile(false), chassis_lr(0), chassis_lr_(0), chassis_ud(0), chassis_ud_(0), tower_lr(0), tower_ud(0), target(0) {
+#include <iostream>
+using std::cout;
+using std::endl;
+
+
+rMobile::rMobile(cObject * obj) : jeten(0), jetthrottle(0), driveen(0), drivethrottle(0), drive_tgt(0), immobile(false), chassis_lr(0), chassis_lr_(0), chassis_lr_tgt(0), chassis_ud(0), chassis_ud_(0), chassis_ud_tgt(0), tower_lr(0), tower_lr_tgt(0), tower_ud(0), tower_ud_tgt(0), aimtarget(0), aimrange(0), walkrange(0) {
     role = "MOBILE";
     object = obj;
     vector_zero(pos);
@@ -11,7 +18,7 @@ rMobile::rMobile(cObject * obj) : jeten(0), jetthrottle(0), driveen(0), drivethr
     vector_zero(bse);
     quat_zero(ori);
     quat_zero(ori1);
-    vector_set(destination, float_NAN, float_NAN, float_NAN);
+    vector_set(walktarget, float_NAN, float_NAN, float_NAN);
 }
 
 void rMobile::ChassisLR(float radians) {
@@ -71,6 +78,33 @@ void rMobile::animate(float spf) {
         return;
     }
 
+    // Determine Aim-Range
+    {
+        cObject* tgt = cWorld::instance->getObject(aimtarget);
+        if (tgt == NULL) {
+            aimrange = 10000.0f;
+        } else {
+            float d = vector_distance(pos, tgt->pos);
+            aimrange = d;//log(1.0f+d) / log(4);
+        }
+        aimrange = fmin(aimrange, 10000.0f);
+    }
+
+    // Determine Walk-Range
+    {
+        float d = vector_distance(pos, walktarget);
+        if (d != d) {
+            walkrange = 10000.0f;
+        } else {
+            walkrange = d;//log(1.0f+d) / log(4);
+        }
+        walkrange = fmin(walkrange, 10000.0f);
+    }
+
+    if ((walkrange < 200.0f) || (aimrange < 200.0f)) {
+        //cout << "aimrange " << aimrange << " \t walkrange " << walkrange << endl;
+    }
+
     // Apply turret steering values and get exceeding over limit values.
     float excess_lr = TowerLR((-0.25f * M_PI) * tower_lr * spf);
     float excess_ud = 0;
@@ -108,6 +142,63 @@ void rMobile::animate(float spf) {
     quat_set(tower_ori_v, sin(0.5 * twr[0]), 0, 0, cos(0.5 * twr[0]));
     // combined pitch and yaw
     quat_mul(ori1, tower_ori, tower_ori_v);
+
+    // Determine nearest rotation direction for aim-target and tower
+    {
+        cObject* tgt = NULL;
+        float* target_pos = NULL;
+        if (aimtarget != 0) {
+            tgt = cWorld::instance->getObject(aimtarget);
+            if (tgt != NULL) target_pos = tgt->pos;
+        }
+        if (target_pos == NULL) {
+            tower_lr_tgt = 0;
+            tower_ud_tgt = 0;
+        } else {
+            vec2 rd;
+            cParticle::rotationTo(rd, pos, target_pos, ori, ori1);
+            float lr = rd[0];// * 2;
+            float ud = rd[1];
+            tower_lr_tgt = lr;
+            tower_ud_tgt = ud;
+        }
+    }
+
+    // Determine nearest rotation direction and throttle for walk-target and base
+    {
+        cObject* tgt = NULL;
+        float* target_pos = NULL;
+        if (finitef(walktarget[0])) {
+            target_pos = walktarget;
+        } else if (aimtarget != 0) {
+            tgt = cWorld::instance->getObject(aimtarget);
+            if (tgt != NULL) target_pos = tgt->pos;
+        }
+        if (target_pos == NULL) {
+            chassis_lr_tgt = 0;
+            chassis_ud_tgt = 0;
+            drive_tgt = 0;
+        } else {
+            vec2 rd;
+            cParticle::rotationTo(rd, pos, target_pos, ori);
+            float lr = rd[0];// * 2;
+            float ud = rd[1];
+            chassis_lr_tgt = lr;
+            chassis_ud_tgt = ud;
+            {
+                // Determine distance.
+                float d = vector_distance(pos, target_pos);
+                // Throttle according to angle and distance.
+                float towards = 1.0f * (1.0f - 0.7 * fabs(rd[0]));
+                // FIXME: Need to parameterise target distance.
+                const float target_distance = 23;
+                float relative = (d - target_distance);
+                float relative_clipped = fmin(+1.0f, fmax(-1.0f, relative));
+                float throttle = -(relative_clipped * towards);
+                drive_tgt = throttle;
+            }
+        }
+    }
 }
 
 void rMobile::transform() {

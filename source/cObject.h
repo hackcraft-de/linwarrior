@@ -321,32 +321,6 @@ public:
 
     // Related to States:
 
-    // Fuzzy Predicates [0,1]
-
-    /// Has this object reached it's destination position? Fuzzyvalue in [0,1].
-
-    virtual float inDestinationRange() {
-        return 0.0f;
-    }
-
-    /// Is this object in "hand-to-hand"-combat range? Fuzzyvalue in [0,1].
-
-    virtual float inMeeleRange() {
-        return 0.0f;
-    }
-
-    /// Is this object in firing range. Fuzzyvalue in [0,1].
-
-    virtual float inWeaponRange() {
-        return 0.0f;
-    }
-
-    /// Is this object in targeting/visual distance? Fuzzyvalue in [0,1].
-
-    virtual float inTargetRange() {
-        return 0.0f;
-    }
-
     /*
     virtual float blockedAhead() {
         return 0.0f;

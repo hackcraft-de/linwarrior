@@ -36,6 +36,9 @@ rController::rController(cObject* entity, bool enable) {
     targetGotoActive = false;
     targetGotoAim = false;
     idling = false;
+
+    aimrange = 0;
+    walkrange = 0;
 }
 
 rController::~rController() {
@@ -194,6 +197,7 @@ void rController::waitEvent() {
                 s << self << ": Intruder!\n";
                 cWorld::instance->sendMessage(0, self, 0, "DEBUG", s.str());
             }
+            this->doit(enemy, NULL, false);
             pushAttackEnemy(enemy);
         }
     }
@@ -228,7 +232,7 @@ void rController::attackEnemy() {
 
     {
         //((cMech*)mDevice)->Pattern(tf, "nrnlln");
-        this->doit(entity, NULL, (object->inWeaponRange() > 0.5));
+        this->doit(entity, NULL, aimrange < 50.0f);
     }
 
     // FIXME: Depends on Mech/tarcom.
@@ -237,17 +241,17 @@ void rController::attackEnemy() {
     cObject* target = cWorld::instance->getObject(entity);
     if (target == NULL) {
         // Target disappeared (removed from world: fragged).
-        this->doit(entity, NULL, false);
+        this->doit(0, NULL, false);
         pop();
         return;
     } else if (!mech->tarcom->isEnemy(&target->tags)) {
         // Not an enemy anymore (maybe dead or not interesting anymore).
-        this->doit(entity, NULL, false);
+        this->doit(0, NULL, false);
         pop();
         return;
-    } else if (object->inTargetRange() < 0.001f) {
+    } else if (aimrange > 60.0f) {
         // Target is out of targeting range.
-        this->doit(entity, NULL, false);
+        this->doit(0, NULL, false);
         pop();
         return;
     }
@@ -276,6 +280,7 @@ void rController::followLeader() {
     if (patrol) {
         OID nearby = enemyNearby; //controlledDevice->enemyNearby();
         if (nearby) {
+            this->doit(nearby, NULL, false);
             pushAttackEnemy(nearby);
             return;
         }
@@ -312,17 +317,19 @@ void rController::gotoDestination() {
         if (debug_state) cout << "going " << ((patrol > 0) ? "patrolling" : "directly") << " to <" << v[0] << "," << v[1] << "," << v[2] << " >\n";
         this->doit(0, v, false);
     }
-
-    float range = object->inDestinationRange();
+    
+    float range = walkrange;
     if (debug_state) cout << "DestinationRange " << range << endl;
-    if (range > 0.0f) {
+    if (range < 8.0f) {
+        this->doit(0, NULL, false);
         pop();
         return;
     }
 
     if (patrol) {
-        OID nearby = enemyNearby; //controlledDevice->enemyNearby();
+        OID nearby = enemyNearby;
         if (nearby) {
+            this->doit(nearby, NULL, false);
             pushAttackEnemy(nearby);
             return;
         }

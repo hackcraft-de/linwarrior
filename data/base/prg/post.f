@@ -203,7 +203,7 @@ void main()
 	vec4 result = vec4(100.0*abs(vec3(depthn - depth0)), 1.0);
 #elif 0
 	vec4 result = vec4((100.0*abs(vec3(depthy - depth0))), 1.0);
-#elif 1
+#eli0 1
 	vec4 result;
 	if (gl_TexCoord[0].x < 1.5) {
 		result = vec4(vec3(pow(1.4*ao_, 3.5)), 1.0);
