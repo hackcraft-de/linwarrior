@@ -52,21 +52,24 @@ public:
     /// Who disturbed me the last time - ignore now.
     OID lastDisturbedBy;
 public: // Input hooks.
+    /// Set to any offending/attacking object if any. (hook i)
     OID disturbedBy;
+    /// Set to nearby enemy object if any. (hook i)
     OID enemyNearby;
 public: // Output hooks.
-    OID targetAim;
-    //vec3 targetAim;
-    bool targetAimActive;
-    bool targetAimFire;
-    bool targetGotoAim;
-    //OID targetGoto;
-    vec3 targetGoto;
-    bool targetGotoActive;
+    /// Target for aiming or zero. (hook o)
+    OID aimtarget;
+    /// Enable firing onto target. (hook o)
+    bool firetarget;
+    /// Walk target. (hook o)
+    vec3 walktarget;
+    /// Desired distance to walk-target. (hook o)
+    float walktargetdist;
+    /// Disable any action. (hook o)
     bool idling;
-    /// Indicator of distance to aim-target, see Mobile.
+    /// Indicator of distance to aim-target, see Mobile. (hook i)
     float aimrange;
-    /// Indicator of distance to walk-target, see Mobile.
+    /// Indicator of distance to walk-target, see Mobile. (hook i)
     float walkrange;
 public:
     /// Initialises a en-/disabled controller for the given entity->
@@ -92,7 +95,7 @@ public:
 
 protected:
     /// Set output impulses.
-    void doit(OID aim, float* go, bool fire);
+    void doit(OID aim, float* go, bool fire, float distance = 0.25f);
 
     /// Get the name of the current stack/command frame.
     std::string getFrameName();

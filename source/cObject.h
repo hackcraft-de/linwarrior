@@ -317,61 +317,7 @@ public:
     virtual float constrainParticle(float* worldpos, float radius = 0.0f, float* localpos = NULL, cObject* enactor = NULL) {
         return 0;
     }
-
-
-    // Related to States:
-
-    /*
-    virtual float blockedAhead() {
-        return 0.0f;
-    }
     
-    virtual float blockedLeft() {
-        return 0.0f;
-    }
-
-    virtual float blockedRight() {
-        return 0.0f;
-    }
-
-     */
-
-    // Output Actions for Entities
-
-    /// Move towards move-target as fast as possible.
-
-    virtual void do_moveTowards() {
-    }
-
-    /// Move to move-target throttling down as target comes near.
-
-    virtual void do_moveNear() {
-    }
-
-    /// Aim at aim-target.
-
-    virtual void do_aimAt() {
-    }
-
-    /// Fire at aim-target - ie. just fire where object is aiming at right now.
-
-    virtual void do_fireAt() {
-    }
-
-    /// Nothing to do for object - possibly idle animation.
-
-    virtual void do_idle() {
-    }
-
-    /// Set aim towards given object - ie. set aim-target.
-
-    virtual void do_aimFor(OID target) {
-    }
-
-    /// Set movement towards given location. if aim target NULL then same.
-
-    virtual void do_moveFor(float* dest) {
-    }
 };
 
 #endif

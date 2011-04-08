@@ -10,7 +10,7 @@ using std::cout;
 using std::endl;
 
 
-rMobile::rMobile(cObject * obj) : jeten(0), jetthrottle(0), driveen(0), drivethrottle(0), drive_tgt(0), immobile(false), chassis_lr(0), chassis_lr_(0), chassis_lr_tgt(0), chassis_ud(0), chassis_ud_(0), chassis_ud_tgt(0), tower_lr(0), tower_lr_tgt(0), tower_ud(0), tower_ud_tgt(0), aimtarget(0), aimrange(0), walkrange(0) {
+rMobile::rMobile(cObject * obj) : jeten(0), jetthrottle(0), driveen(0), drivethrottle(0), drive_tgt(0), immobile(false), chassis_lr(0), chassis_lr_(0), chassis_lr_tgt(0), chassis_ud(0), chassis_ud_(0), chassis_ud_tgt(0), tower_lr(0), tower_lr_tgt(0), tower_ud(0), tower_ud_tgt(0), aimtarget(0), firetarget(false), firetarget_tgt(false), walktargetdist(0), aimrange(0), walkrange(0) {
     role = "MOBILE";
     object = obj;
     vector_zero(pos);
@@ -145,6 +145,7 @@ void rMobile::animate(float spf) {
 
     // Determine nearest rotation direction for aim-target and tower
     {
+        bool fire = false;
         cObject* tgt = NULL;
         float* target_pos = NULL;
         if (aimtarget != 0) {
@@ -152,6 +153,7 @@ void rMobile::animate(float spf) {
             if (tgt != NULL) target_pos = tgt->pos;
         }
         if (target_pos == NULL) {
+            // TODO: determind rotation to level head forward.
             tower_lr_tgt = 0;
             tower_ud_tgt = 0;
         } else {
@@ -161,18 +163,17 @@ void rMobile::animate(float spf) {
             float ud = rd[1];
             tower_lr_tgt = lr;
             tower_ud_tgt = ud;
+            //fire = (rand() % 100 <= 40 && fabs(rd[0]) < 0.5);
+            fire = (fabs(rd[0]) < 0.5);
         }
+        firetarget_tgt = fire && firetarget;
     }
 
     // Determine nearest rotation direction and throttle for walk-target and base
     {
-        cObject* tgt = NULL;
         float* target_pos = NULL;
         if (finitef(walktarget[0])) {
             target_pos = walktarget;
-        } else if (aimtarget != 0) {
-            tgt = cWorld::instance->getObject(aimtarget);
-            if (tgt != NULL) target_pos = tgt->pos;
         }
         if (target_pos == NULL) {
             chassis_lr_tgt = 0;
@@ -191,7 +192,8 @@ void rMobile::animate(float spf) {
                 // Throttle according to angle and distance.
                 float towards = 1.0f * (1.0f - 0.7 * fabs(rd[0]));
                 // FIXME: Need to parameterise target distance.
-                const float target_distance = 23;
+                //const float target_distance = 23;
+                float target_distance = walktargetdist;
                 float relative = (d - target_distance);
                 float relative_clipped = fmin(+1.0f, fmax(-1.0f, relative));
                 float throttle = -(relative_clipped * towards);

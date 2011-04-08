@@ -68,11 +68,17 @@ struct rMobile : public rComponent {
     float tower_ud_tgt;
     /// Aim target. (hook i)
     OID aimtarget;
+    /// Fire at aim target if appropriate. (hook i)
+    bool firetarget;
+    /// Firing at aim target is appropriate. (hook o)
+    bool firetarget_tgt;
     /// Movement target, set Not-a-Number for non-validity. (hook i)
     vec3 walktarget;
-    /// Distance to aim-target. (hook i)
+    /// Desired distance to walk-target. (hook i)
+    float walktargetdist;
+    /// Distance to aim-target. (hook o)
     float aimrange;
-    /// Distance to walk-target. (hook i)
+    /// Distance to walk-target. (hook o)
     float walkrange;
 
     /// Constructor

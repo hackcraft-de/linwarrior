@@ -5,6 +5,7 @@ Enhanced Sky Model
 - Night is darker
 - Fog adjustments
 Enhanced Models
+- Adjusted collider to actual animated model size.
 - Added Scorpion mech model
 - Added Flopsy mech model
 - Added tank models
@@ -16,6 +17,8 @@ Enhanced Landscape Rendering
 - Added crater-modification
 - Added Sprite based particle Trees
 - Added Tree-clusters frustum culling for speedup and quality
+- Adjusted texture grain
+- Woodland in this release
 Enhanced Immersion
 - Adjusted field of view
 - Added acceleration heaviness
@@ -24,12 +27,26 @@ Enhanced Immersion
 Enhanced Usability
 - Camera mode can still be changed when wrecked
 Enhanced Internals
-- Lessened object-role interdependencies, more component like, next logical step
-- Role'ified Weapons, they are components now
+- Object-role interdependencies split into decoupled bound-components
+- Glued component-attributes through bindings in objects
+- Component'ified Weapons and other functional structures
 - Replaced weapon mount matrix with quaternion+position for effective binding
-- Glued role/attributes through bindings in objects
-- Refactoring is still going on
 - Cleaned up model scaling
+
+This release has some visual highlights like the trees, smoke and new terrain.
+But there are major changes under the hood which came as the next step coming
+from the object-with-roles concept: It's a step towards the highly acclaimed
+Object-with-components concept. But there is more to the new internals than just
+"hey, objects are built of components" (as if that would be new). No, it is how
+components are coupled or rather decoupled. A solution to this dilemma are
+chip-like components which only act on their own state without any method-calls
+to any other component. Interaction is achieved by binding input and output variables
+(ie. instance member variables) of two components at the object level. Like
+soldering chips to a printed circuit board. The idea itself isn't new.
+This concept of binding components is precedented by hardware-description-language's
+Entities+Portmap and by Beans+BeansBinding.
+Finally an object will consist of a list of self-contained components and a list of component-bindings.
+Who profits? The once monolithic code becomes more maintainable and mod'able framework in the long run.
 
 
 2010_12_31 r18

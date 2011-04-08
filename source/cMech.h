@@ -124,15 +124,6 @@ public:
     // Particle constraining
     virtual void damageByParticle(float* localpos, float damage, cObject* enactor = NULL);
     virtual float constrainParticle(float* worldpos, float radius = 0.0f, float* localpos = NULL, cObject* enactor = NULL);
-public:
-    // Output Actions
-    virtual void do_moveTowards();
-    virtual void do_moveNear();
-    virtual void do_aimAt();
-    virtual void do_fireAt();
-    virtual void do_idle();
-    virtual void do_aimFor(OID target);
-    virtual void do_moveFor(float* dest);
 };
 
 

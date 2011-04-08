@@ -138,8 +138,6 @@ cMech::cMech(float* pos, float* rot) {
         }
     }
 
-    do_moveFor(NULL);
-
     try {
         int mod = (9 + rand()) % 8; // fr
         //int mod = (13+rand())%8; // le
@@ -313,6 +311,7 @@ void cMech::animate(float spf) {
      * CAMERA
      * WEAPON
      * EXPLOSION
+     * Pad
      */
 
     // COLLIDER
@@ -355,7 +354,7 @@ void cMech::animate(float spf) {
 
     // TARCOM
     {
-        // from CONTROLLED
+        // from Pad
         {
             tarcom->switchnext = pad->getButton(cPad::MECH_NEXT_BUTTON);
             tarcom->switchprev = pad->getButton(cPad::MECH_PREV_BUTTON);
@@ -427,9 +426,8 @@ void cMech::animate(float spf) {
             //controlled->controller->disturbedBy = this->disturbedBy();
         }
 
-        // FIXME: from anywhere
+        // from tarcom
         {
-            //controlled->controller->enemyNearby = this->enemyNearby();
             controller->enemyNearby = tarcom->nearbyEnemy;
         }
 
@@ -444,13 +442,20 @@ void cMech::animate(float spf) {
 
     // MOBILE
     {
-        // from CONTROLLER
+        // from Pad
         {
             mobile->tower_lr = pad->getAxis(cPad::MECH_TURRET_LR_AXIS);
             mobile->tower_ud = pad->getAxis(cPad::MECH_TURRET_UD_AXIS);
             mobile->chassis_lr = pad->getAxis(cPad::MECH_CHASSIS_LR_AXIS);
             mobile->driveen = pad->getAxis(cPad::MECH_THROTTLE_AXIS);
             mobile->jeten = (pad->getButton(cPad::MECH_JET_BUTTON1) + pad->getButton(cPad::MECH_JET_BUTTON2));
+        }
+        // from CONTROLLER
+        {
+            mobile->aimtarget = controller->aimtarget;
+            vector_cpy(mobile->walktarget, controller->walktarget);
+            mobile->walktargetdist = controller->walktargetdist;
+            mobile->firetarget = controller->firetarget;
         }
         // from DAMAGEABLE
         {
@@ -608,7 +613,18 @@ void cMech::animate(float spf) {
         explosion->transform();
     }
 
-    if (pad) pad->reset();
+    // Pad
+    if (pad) {
+        // from MOBILE
+        {
+            pad->setAxis(cPad::MECH_CHASSIS_LR_AXIS, mobile->chassis_lr_tgt);
+            pad->setAxis(cPad::MECH_THROTTLE_AXIS, mobile->drive_tgt);
+            pad->setAxis(cPad::MECH_TURRET_LR_AXIS, mobile->tower_lr_tgt);
+            pad->setAxis(cPad::MECH_TURRET_UD_AXIS, mobile->tower_ud_tgt);
+            pad->setButton(cPad::MECH_FIRE_BUTTON1, mobile->firetarget_tgt);
+        }
+        if (!controller->enabled) pad->reset();
+    }
 
     // Write back.
     vector_cpy(this->pos, traceable->pos);
@@ -792,139 +808,5 @@ float cMech::constrainParticle(float* worldpos, float radius, float* localpos, c
         }
     }
     return maxdepth;
-}
-
-void cMech::do_moveTowards() {
-    //cout << "do_moveTowards():\n";
-    if (pad == NULL) return;
-
-    // Determine Target (ie. Move- or Aim-Target if former is not available).
-    float* target_pos = NULL;
-    if (finitef(mobile->walktarget[0])) {
-        target_pos = mobile->walktarget;
-    } else if (mobile->aimtarget != 0) {
-        cObject* target = cWorld::instance->getObject(mobile->aimtarget);
-        if (target != NULL) {
-            target_pos = target->pos;
-        } else {
-            mobile->aimtarget = 0;
-            return;
-        }
-    } else return;
-
-    // Determine nearest rotation direction
-    vec2 rd;
-    cParticle::rotationTo(rd, mobile->pos, target_pos, mobile->ori);
-    float lr = rd[0];
-    // Determine throttling according to angle.
-    float thr = 1.0f * (1.0f - 0.6 * fabs(rd[0]));
-    float throttle = -thr;
-    //cout << "Throttle: " << throttle << "\n";
-
-    pad->setAxis(cPad::MECH_CHASSIS_LR_AXIS, lr);
-    pad->setAxis(cPad::MECH_THROTTLE_AXIS, throttle);
-}
-
-void cMech::do_moveNear() {
-    //cout << "do_moveNear():\n";
-    if (pad == NULL) return;
-
-    // Determine Target (ie. Move- or Aim-Target if former is not available).
-    float* target_pos = NULL;
-    if (finitef(mobile->walktarget[0])) {
-        target_pos = mobile->walktarget;
-    } else if (mobile->aimtarget != 0) {
-        cObject* target = cWorld::instance->getObject(mobile->aimtarget);
-        if (target != NULL) {
-            target_pos = target->pos;
-        } else {
-            mobile->aimtarget = 0;
-            return;
-        }
-    } else return;
-
-    // Determine nearest rotation direction.
-    vec2 rd;
-    cParticle::rotationTo(rd, mobile->pos, target_pos, mobile->ori);
-    float lr = 2 * rd[0];
-    // Determine distance.
-    float d = vector_distance(mobile->pos, target_pos);
-    // Throttle according to angle and distance.
-    float thr = 1.0f * (1.0f - 0.7 * fabs(rd[0]));
-    float f = (d - 23);
-    f = fmin(+1.0f, fmax(-1.0f, f));
-    f *= thr;
-    float throttle = -f;
-    //cout << "Throttle: " << throttle << "\n";
-
-    pad->setAxis(cPad::MECH_CHASSIS_LR_AXIS, lr);
-    pad->setAxis(cPad::MECH_THROTTLE_AXIS, throttle);
-}
-
-void cMech::do_aimAt() {
-    //cout "do_aimAt():\n";
-    if (pad == NULL) return;
-
-    // Get aim-target position.
-    float* target_pos = NULL;
-    if (mobile->aimtarget != 0) {
-        cObject* target = cWorld::instance->getObject(mobile->aimtarget);
-        if (target != NULL) target_pos = target->pos;
-        else return;
-    } else return;
-
-    // Determine nearest rotation direction
-    vec2 rd;
-    cParticle::rotationTo(rd, mobile->pos, target_pos, mobile->ori, mobile->ori1);
-    float lr = 2 * rd[0];
-    float ud = rd[1];
-
-    pad->setAxis(cPad::MECH_TURRET_LR_AXIS, lr);
-    pad->setAxis(cPad::MECH_TURRET_UD_AXIS, ud);
-}
-
-void cMech::do_fireAt() {
-    //cout << "do_fireAt():\n";
-    if (pad == NULL) return;
-
-    // Get aim-target position.
-    float* target_pos = NULL;
-    if (mobile->aimtarget != 0) {
-        cObject* target = cWorld::instance->getObject(mobile->aimtarget);
-        if (target != NULL) target_pos = target->pos;
-        else return;
-    } else return;
-
-    // Determine nearest rotation direction
-    vec2 rd;
-    cParticle::rotationTo(rd, mobile->pos, target_pos, mobile->ori, mobile->ori1);
-    //  Fire at random and only if angle small enough.
-    bool fire = (rand() % 100 <= 40 && fabs(rd[0]) < 0.5);
-    //cout "Fire: " << fire << " \n";
-
-    pad->setButton(cPad::MECH_FIRE_BUTTON1, fire);
-}
-
-void cMech::do_idle() {
-    if (pad == NULL) return;
-    mobile->drivethrottle = 0;
-    pad->reset();
-}
-
-void cMech::do_aimFor(OID target) {
-    mobile->aimtarget = target;
-}
-
-void cMech::do_moveFor(float* dest) {
-    if (dest != NULL) {
-        vector_cpy(mobile->walktarget, dest);
-    } else {
-        // Set XYZ to Not-A-Number (NaN) for no location.
-        // Note that NaN-ity can only be tested either by
-        // isnanf(x), !finite(x) or by x!=x as NaN always != NaN.
-        vector_set(mobile->walktarget, float_NAN, float_NAN, float_NAN);
-        assert(mobile->walktarget[0] != mobile->walktarget[0]);
-        //cout << "Destination is " << ((finitef(mDestination[0])) ? "finite" : "infinite" ) << "\n";
-    }
 }
 

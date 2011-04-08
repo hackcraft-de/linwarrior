@@ -20,6 +20,8 @@ using std::string;
 
 // -------------------------------------------------------------
 
+#define NEARTO 23
+
 rController::rController(cObject* entity, bool enable) {
     object = entity;
     enabled = enable;
@@ -29,12 +31,10 @@ rController::rController(cObject* entity, bool enable) {
     disturbedBy = 0;
     enemyNearby = 0;
 
-    targetAim = 0;
-    targetAimActive = false;
-    targetAimFire = false;
-    vector_zero(targetGoto);
-    targetGotoActive = false;
-    targetGotoAim = false;
+    aimtarget = 0;
+    firetarget = false;
+    walktargetdist = 0.0f;
+    vector_zero(walktarget);
     idling = false;
 
     aimrange = 0;
@@ -45,22 +45,28 @@ rController::~rController() {
     while (!commandStack.empty()) commandStack.pop_back();
 }
 
-void rController::doit(OID aim, float* go, bool fire) {
-    targetAim = aim;
-    targetAimActive = (aim != 0);
-    targetAimFire = fire;
+void rController::doit(OID aim, float* go, bool fire, float distance) {
+    aimtarget = aim;
+    firetarget = fire;
     if (go != NULL) {
-        vector_cpy(targetGoto, go);
-        targetGotoActive = true;
+        vector_cpy(walktarget, go);
+    } else if (aimtarget == 0) {
+        vector_set(walktarget, float_NAN, float_NAN, float_NAN);
     } else {
-        targetGotoActive = false;
+        cObject* tgt = cWorld::instance->getObject(aimtarget);
+        if (tgt != NULL) {
+            vector_cpy(walktarget, tgt->pos);
+        } else {
+            vector_set(walktarget, float_NAN, float_NAN, float_NAN);
+        }
     }
-    targetGotoAim = (aim != 0) && (go == NULL);
-    idling = !targetAimFire && !targetAimActive && !targetGotoActive;
+    walktargetdist = distance;
+    idling = !firetarget && (aimtarget == 0) && (go == NULL);
 
-    if (true) {
-        object->do_moveFor(go);
-        object->do_aimFor(aim);
+    /*
+    if (!true) {
+        //object->do_moveFor(go);
+        //object->do_aimFor(aim);
         object->do_aimAt();
         if (go) {
             object->do_moveTowards();
@@ -70,6 +76,7 @@ void rController::doit(OID aim, float* go, bool fire) {
         if (fire) object->do_fireAt();
         if (idling) object->do_idle();
     }
+    */
 }
 
 void rController::printState() {
@@ -197,7 +204,7 @@ void rController::waitEvent() {
                 s << self << ": Intruder!\n";
                 cWorld::instance->sendMessage(0, self, 0, "DEBUG", s.str());
             }
-            this->doit(enemy, NULL, false);
+            this->doit(enemy, NULL, false, NEARTO);
             pushAttackEnemy(enemy);
         }
     }
@@ -232,7 +239,7 @@ void rController::attackEnemy() {
 
     {
         //((cMech*)mDevice)->Pattern(tf, "nrnlln");
-        this->doit(entity, NULL, aimrange < 50.0f);
+        this->doit(entity, NULL, aimrange < 50.0f, NEARTO);
     }
 
     // FIXME: Depends on Mech/tarcom.
@@ -274,13 +281,13 @@ void rController::followLeader() {
     OID patrol = getParameter(2);
 
     {
-        this->doit(entity, NULL, false);
+        this->doit(entity, NULL, false, NEARTO);
     }
 
     if (patrol) {
         OID nearby = enemyNearby; //controlledDevice->enemyNearby();
         if (nearby) {
-            this->doit(nearby, NULL, false);
+            this->doit(nearby, NULL, false, NEARTO);
             pushAttackEnemy(nearby);
             return;
         }
@@ -329,7 +336,7 @@ void rController::gotoDestination() {
     if (patrol) {
         OID nearby = enemyNearby;
         if (nearby) {
-            this->doit(nearby, NULL, false);
+            this->doit(nearby, NULL, false, NEARTO);
             pushAttackEnemy(nearby);
             return;
         }

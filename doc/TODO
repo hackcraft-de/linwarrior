@@ -1,20 +1,23 @@
+- Order TODO items into groups like "cleanup", "gameplay", "ai", "graphics", ...
+
+- Player's jumpjet light shall be moved to a component.
+
+- rGrouping shall be handled like other object components (use message method).
+
 - Remove components from base Object.
 
 - Convert visual/model objects (tree, planetmap, building, etc.) to components?
 
-- Add target and destination attributes to Mobile and bind them.
-
-- Move object's do_*() functionality to Mobile and add bindings to Controller?
-
-- Move object's in_*() functionality to Mobile and add bindings to Controller?
-
 - Object's damageByParticle() shall be represented in components, too.
+
+- Think about blocked-left/-front/-right detectors for collision avoidance.
 
 - Resolve HUD dependency on cMech-Class's weapons.
 
 - Make weapon chaining work with weapon-bindings.
 
 - Wingmen shall maintain minimum distance to each other (collision avoidance).
+  [solvable by just avoiding the nearest unit at a time]
 
 - Take slope into account for Planetmap erosion and material within second pass.
 
@@ -63,5 +66,7 @@
 - Someday with shaders: Shadowmapping for global sun/moon lightsource.
 
 - Someday with shaders: Environment-Ambient-lighting according to the dome.
+
+- Someday with shaders: Deferred lighting, necessary for multiple effect lights.
 
 - Maybe someday: Outsource Tools and generating from Simulator?
