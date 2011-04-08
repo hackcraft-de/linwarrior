@@ -42,10 +42,10 @@ CFLAGS += -Wall
 CFLAGS += $(INCLUDES)
 
 # Optimizations.
-CFLAGS += -O1 -funroll-loops
+#CFLAGS += -O1 -funroll-loops
 
 # More Optimizations.
-#CFLAGS += -O3 -funroll-loops
+CFLAGS += -O3 -funroll-loops
 
 # Even More optimizations (architecture depending).
 #CFLAGS += -O3 -funroll-loops -msse3 -ftree-vectorizer-verbose=0 -ftree-vectorize

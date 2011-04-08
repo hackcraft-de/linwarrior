@@ -322,7 +322,10 @@ void rController::gotoDestination() {
 
     {
         if (debug_state) cout << "going " << ((patrol > 0) ? "patrolling" : "directly") << " to <" << v[0] << "," << v[1] << "," << v[2] << " >\n";
-        this->doit(0, v, false);
+        float* u = new float[3];
+        vector_set(u, v[0],v[1],v[2]);
+        this->doit(0, u, false);
+        delete u;
     }
     
     float range = walkrange;
