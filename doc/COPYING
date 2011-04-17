@@ -13,10 +13,6 @@ Source-Code License
     governed under that license - but that what you have received is a
     version (re-)licensed under that very license.
 
-    As a side note: The author is currently targeting towards mature
-    users who understand that this software is under development -
-    than in mass distribution to complaining users.
-
     The main author retains the right to publish other versions of the
     code-base under different licenses. These are basic rights
     expressed explicitly for those in doubt.
@@ -24,15 +20,21 @@ Source-Code License
     In case you would like to use a fractional part of the source
     for your own project just rip it and use it - one can talk about how big
     fractional can get - a notification or reference would be appreciated.
+    If you want to fork the whole project for non-commercial purposes
+    (ie. start development in your own decentral repository) - so be it.
+    Fair use is allowed but no license-loophole will be given for those who
+    want to make a profit without donating anything back. Expect licensing terms
+    to change eventually to be more free/open.
 
-    If you would like submit a patch a copyright-transfer would be necessary.
-
-    This source is under benevolent dictatorship.
+    This source is under benevolent dictatorship. If you would like
+    submit a patch a non-exclusive copyright-transfer would be necessary.
     If there are any questions, problems, suggestions
     please get into direct contact.
 
     Copyright by Benjamin Pickhardt, 1999-today
     hackcraft.de
+
+    eMail: devteam (*at*) hackcraft.de
 
 
 Data-File License

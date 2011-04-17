@@ -1,6 +1,8 @@
 RELEASE NOTES
 
-????_??_?? r19
+2011_04_17 r19
+Radiant Nature release:
+
 Enhanced Sky Model
 - Night is darker
 - Fog adjustments
@@ -9,6 +11,7 @@ Enhanced Models
 - Added Scorpion mech model
 - Added Flopsy mech model
 - Added tank models
+- Added cockpit frame to basic mech model
 - Disabled weapon rendering in favor of model rendering
 - Selection of models randomized so far
 - Made walkcycle more natural
@@ -34,9 +37,8 @@ Enhanced Internals
 - Cleaned up model scaling
 
 This release has some visual highlights like the trees, smoke and new terrain.
-But there are major changes under the hood which came as the next step coming
-from the object-with-roles concept: It's a step towards the highly acclaimed
-Object-with-components concept. But there is more to the new internals than just
+But there are major changes under the hood stepping beyond the object-with-roles concept:
+Object-with-components. But there is more to the new internals than just
 "hey, objects are built of components" (as if that would be new). No, it is how
 components are coupled or rather decoupled. A solution to this dilemma are
 chip-like components which only act on their own state without any method-calls
@@ -44,12 +46,11 @@ to any other component. Interaction is achieved by binding input and output vari
 (ie. instance member variables) of two components at the object level. Like
 soldering chips to a printed circuit board. The idea itself isn't new.
 This concept of binding components is precedented by hardware-description-language's
-Entities+Portmap and by Beans+BeansBinding.
-Finally an object will consist of a list of self-contained components and a list of component-bindings.
-Who profits? The once monolithic code becomes more maintainable and mod'able framework in the long run.
+Entity+Portmap and by Bean+BeansBinding.
 
 
 2010_12_31 r18
+Hazy Blur release:
 
 Enhanced Landscape Rendering
 - Crude geoclipmapping

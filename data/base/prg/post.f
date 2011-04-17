@@ -195,15 +195,22 @@ void main()
 	float lum0 = (color0.r + color0.g + color0.b);
 	float lumn = (colorn.r + colorn.g + colorn.b);
 	float bloom = 1.0*(sig((max(0,lumn - lum0) - 0.00045) * 9) - 0.1);
-	vec4 composite = color0 * (0.80 + 0.80 * bloom) + 0.1 * (blur * bluryness);
+	vec4 composite = color0 * (0.80 + 0.99 * bloom) + 0.1 * (blur * bluryness);
 
 #if 1
 	vec4 result = (1.0+0.0*nois) * composite;// + d0 * pow(max(0.0,-voxel.y)*10.0,2.0) * vec4(0.0,1.0,0.0,1.0) + pow(1.0*d0, 0.9) * max(0.0,voxel.y) * vec4(1.0,0.9,0.5,1.0);
 #elif 0
+	float io = 0.0;
+	if (d0 < 0.86) {
+		io = 1.0;
+	}
+	//vec4 result = (1.0+0.0*nois) * composite + io * vec4(1.0,0.9,0.5,1.0);
+	vec4 result = (1.0+0.0*nois) * composite + io * pow(1.0*d0, 0.9) * max(0.0,voxel.y) * vec4(1.0,0.9,0.5,1.0);
+#elif 0
 	vec4 result = vec4(100.0*abs(vec3(depthn - depth0)), 1.0);
 #elif 0
 	vec4 result = vec4((100.0*abs(vec3(depthy - depth0))), 1.0);
-#eli0 1
+#elif 0
 	vec4 result;
 	if (gl_TexCoord[0].x < 1.5) {
 		result = vec4(vec3(pow(1.4*ao_, 3.5)), 1.0);

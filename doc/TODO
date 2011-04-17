@@ -1,4 +1,12 @@
-- Order TODO items into groups like "cleanup", "gameplay", "ai", "graphics", ...
+- Implement Target ahead selection in tarcom?
+
+- Fix reaction to ai being fired at (state transitions in controller).
+
+- Reintroduce some random walking pattern when in close range combat (or in line of sight).
+
+- Remove reliance on NaN for no destination (portability and fast-math problems).
+
+- Order TODO items into groups like "cleanup", "gameplay", "ai", "landscape", ...
 
 - Player's jumpjet light shall be moved to a component.
 
