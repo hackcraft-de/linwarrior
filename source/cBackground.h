@@ -31,6 +31,7 @@ public:
     int rainstrength;
     int seed;
     float heightshift;
+    vec3 light;
 public:
     cBackground();
     void drawBackground(float h = 12.00f); // Calls other draw*()

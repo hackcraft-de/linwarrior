@@ -457,6 +457,7 @@ cBackground::cBackground() {
 
     heightshift = -3;
     rainstrength = 0;
+    vector_set(light, 0.7, 0.9, -0.3);
 }
 
 void cBackground::drawBackground(float h) {
@@ -513,7 +514,8 @@ void cBackground::drawBackground(float h) {
 
     // Directional sun and moonlight.
     if (1) {
-        float p[] = {0.7, 0.9, -0.3, 0};
+        //float p[] = {0.7, 0.9, -0.3, 0};
+        float* p = light;
         //float p[] = {70, 90, -30, 0};
         float t = ((hour / 24.0f * 2 * M_PI) - 0.5f * M_PI); // = [-0.5pi,+1.5pi]
         float s = sin(t) * 0.5f + 0.5f;
@@ -1045,6 +1047,32 @@ void cBackground::drawSun() {
             cPrimitives::glXYCenteredTextureSquare(sun);
         }
         glPopMatrix();
+
+        glPushMatrix();
+        {
+            glLoadIdentity();
+            const float scale = 0.1 * 2400.0f;
+            static float angle = 0;
+            angle -= 1;
+            angle = 180 - ((360 / 24.00f) * hour + 90);
+            glRotatef(-90, 0, 1, 0);
+            glRotatef(55, 0, 0, 1);
+            glRotatef(0, 0, 0, 1); // Aquator.
+            glRotatef(angle, 1, 0, 0);
+            glTranslatef(0, 0, scale);
+            // Calculate sun/moon direction vector and set as light when above horizon.
+            {
+                mat4 m;
+                vec3 v = { 0, 0, 0 };
+                glGetFloatv(GL_MODELVIEW_MATRIX, m);
+                matrix_apply2(m, v);
+                vector_norm(v, v);
+                if (v[1] < 0.0f) vector_scale(v, v, -1.0f);
+                //vector_print(v);
+                vector_cpy(light, v);
+            }
+        }
+        glPopMatrix();
     }
     glPopAttrib();
 }
@@ -1096,7 +1124,6 @@ void cBackground::drawOrbit() {
             glColor4f(0.8, 0.8, 0.8, 0.99);
             glBindTexture(GL_TEXTURE_2D, textures[T_EARTH]);
             cPrimitives::glXYCenteredTextureSquare(moon);
-
         }
         glPopMatrix();
     }
