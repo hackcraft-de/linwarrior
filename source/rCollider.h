@@ -17,15 +17,20 @@
  * Currently only for cylinder collisions.
  */
 struct rCollider : public rComponent {
-    quat ori;
-    vec3 pos;
+public: // INPUT
+    /// Base orientation (hook i).
+    vec3 pos0;
+    /// Base position (hook i).
+    quat ori0;
     /// Radius for cylinder or sphere.
     float radius;
     /// Ratio of radius to height (height = ratio * radius) if not zero.
     float ratio;
     /// Height of cylinder if ratio not zero.
     float height;
-
+public: // OUTPUT
+protected: // INTERNALS
+public:
     /// Constructor
     rCollider(cObject * obj);
     /// Destructor

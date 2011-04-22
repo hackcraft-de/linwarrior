@@ -33,33 +33,34 @@ public:
     /// Texture Binds shared between instances.
     static std::map<int, long> sTextures;
 
-public:
-    /// Target object id for weapons that need targeting. (hook)
-    OID target;
-    /// Set to true to enable triggering (default true). (hook)
-    bool triggeren;
-    /// Triggering firing of weapon (once). (hook)
-    bool trigger;
-    /// True when firing was just really triggered last animation cycle. (hook)
-    bool triggered;
-    /// True when firing was just really triggered second last animation cycle. (hook)
-    bool triggereded;
-    /// Points To Current Vehicle Base Matrix of owner (optional).
-    float* weaponBasefv;
-    /// Base position (hook).
-    quat weaponOri0;
-    /// Base orientation (hook).
-    vec3 weaponPos0;
-    /// Position relative to base position and orientation (hook).
-    quat weaponOri1;
-    /// Orientation relative to base position and orientation (hook).
-    vec3 weaponPos1;
+public: // INPUT
+    /// Base position (hook i).
+    quat ori0;
+    /// Base orientation (hook i).
+    vec3 pos0;
+    /// Position relative to base position and orientation (hook i).
+    quat ori1;
+    /// Orientation relative to base position and orientation (hook i).
+    vec3 pos1;
     /// Mountpoint-index of the weapon.
     int weaponMount;
-    /// Current Matrix indicating world pos & orientation (pose) of this weapon.
-    float weaponPosef[16];
+    /// Target object id for weapons that need targeting. (hook i)
+    OID target;
+    /// Set to true to enable triggering (default true). (hook i)
+    bool triggeren;
+    /// Triggering firing of weapon (once). (hook i)
+    bool trigger;
+    /// Enable drawing of the weapon itself.
+    bool drawWeapon;
     /// Relative size and power of the weapon, 1.0 default mechscale weapon.
     float weaponScale;
+public: // OUTPUT
+    /// True when firing was just really triggered last animation cycle. (hook o)
+    bool triggered;
+    /// True when firing was just really triggered second last animation cycle. (hook o)
+    bool triggereded;
+    /// Current Matrix indicating world pos & orientation (pose) of this weapon.
+    float weaponPosef[16];
     /// Remaining reload time until next firing is possible.
     float timeReloading;
     /// Remaining readying time for bringing up the weapon (unused).
@@ -76,8 +77,7 @@ public:
     short depotSize;
     /// OpenAL sound source for this weapon's sounds.
     unsigned soundSource;
-    /// Enable drawing of the weapon itself.
-    bool drawWeapon;
+protected: // INTERNALS
     /// Particle container with variable meaning.
     std::list<cParticle*> shrapnelParticles;
     /// Particle container with variable meaning.

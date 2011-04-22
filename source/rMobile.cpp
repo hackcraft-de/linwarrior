@@ -10,13 +10,36 @@ using std::cout;
 using std::endl;
 
 
-rMobile::rMobile(cObject * obj) : jeten(0), jetthrottle(0), driveen(0), drivethrottle(0), drive_tgt(0), immobile(false), chassis_lr(0), chassis_lr_(0), chassis_lr_tgt(0), chassis_ud(0), chassis_ud_(0), chassis_ud_tgt(0), tower_lr(0), tower_lr_tgt(0), tower_ud(0), tower_ud_tgt(0), aimtarget(0), firetarget(false), firetarget_tgt(false), walktargetdist(0), aimrange(0), walkrange(0) {
+rMobile::rMobile(cObject * obj) :
+        jeten(0),
+        driveen(0),
+        immobile(false),
+        chassis_lr(0),
+        chassis_ud(0),
+        tower_lr(0),
+        tower_ud(0),
+        aimtarget(0),
+        firetarget(false),
+        walktargetdist(0),
+        jetthrottle(0),
+        drivethrottle(0),
+        drive_tgt(0),
+        chassis_lr_(0),
+        chassis_lr_tgt(0),
+        chassis_ud_(0),
+        chassis_ud_tgt(0),
+        tower_lr_tgt(0),
+        tower_ud_tgt(0),
+        firetarget_tgt(false),
+        aimrange(0),
+        walkrange(0)
+{
     role = "MOBILE";
     object = obj;
-    vector_zero(pos);
+    vector_zero(pos0);
     vector_zero(twr);
     vector_zero(bse);
-    quat_zero(ori);
+    quat_zero(ori0);
     quat_zero(ori1);
     vector_set(walktarget, float_NAN, float_NAN, float_NAN);
 }
@@ -84,7 +107,7 @@ void rMobile::animate(float spf) {
         if (tgt == NULL) {
             aimrange = 10000.0f;
         } else {
-            float d = vector_distance(pos, tgt->pos);
+            float d = vector_distance(pos0, tgt->pos);
             aimrange = d;//log(1.0f+d) / log(4);
         }
         aimrange = fmin(aimrange, 10000.0f);
@@ -92,7 +115,7 @@ void rMobile::animate(float spf) {
 
     // Determine Walk-Range
     {
-        float d = vector_distance(pos, walktarget);
+        float d = vector_distance(pos0, walktarget);
         if (d != d) {
             walkrange = 10000.0f;
         } else {
@@ -132,7 +155,7 @@ void rMobile::animate(float spf) {
     quat pitch_ori;
     quat_rotaxis(pitch_ori, bse[0], pitch);
     // combine pitch, yaw
-    quat_mul(ori, yaw_ori, pitch_ori);
+    quat_mul(ori0, yaw_ori, pitch_ori);
 
     // yaw
     quat tower_ori;
@@ -158,7 +181,7 @@ void rMobile::animate(float spf) {
             tower_ud_tgt = 0;
         } else {
             vec2 rd;
-            cParticle::rotationTo(rd, pos, target_pos, ori, ori1);
+            cParticle::rotationTo(rd, pos0, target_pos, ori0, ori1);
             float lr = rd[0];// * 2;
             float ud = rd[1];
             tower_lr_tgt = lr;
@@ -181,14 +204,14 @@ void rMobile::animate(float spf) {
             drive_tgt = 0;
         } else {
             vec2 rd;
-            cParticle::rotationTo(rd, pos, target_pos, ori);
+            cParticle::rotationTo(rd, pos0, target_pos, ori0);
             float lr = rd[0];// * 2;
             float ud = rd[1];
             chassis_lr_tgt = lr;
             chassis_ud_tgt = ud;
             {
                 // Determine distance.
-                float d = vector_distance(pos, target_pos);
+                float d = vector_distance(pos0, target_pos);
                 // Throttle according to angle and distance.
                 float towards = 1.0f * (1.0f - 0.7 * fabs(rd[0]));
                 // FIXME: Need to parameterise target distance.

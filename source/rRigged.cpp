@@ -146,9 +146,9 @@ void rRigged::poseJumping(float spf) {
 void rRigged::poseRunning(float spf) {
     // Animate legs according to real forward velocity.
     vec3 v;
-    if (vel != NULL && ori != NULL) {
+    if (vel != NULL && ori0 != NULL) {
         quat ori_inv;
-        quat_cpy(ori_inv, ori);
+        quat_cpy(ori_inv, ori0);
         quat_conj(ori_inv);
         quat_apply(v, ori_inv, vel);
     } else if (vel != NULL) {
@@ -394,8 +394,8 @@ void rRigged::drawSolid() {
     if (model == NULL) return;
     glPushMatrix();
     {
-        glTranslatef(pos[0], pos[1], pos[2]);
-        SGL::glRotateq(ori);
+        glTranslatef(pos0[0], pos0[1], pos0[2]);
+        SGL::glRotateq(ori0);
         //cPrimitives::glAxis(3.0f);
         if (basetexture3d > 0) {
             glBindTexture(GL_TEXTURE_3D, basetexture3d);
@@ -411,8 +411,8 @@ void rRigged::drawEffect() {
     if (DRAWJOINTS) {
         glPushMatrix();
         {
-            glTranslatef(pos[0], pos[1], pos[2]);
-            SGL::glRotateq(ori);
+            glTranslatef(pos0[0], pos0[1], pos0[2]);
+            SGL::glRotateq(ori0);
             drawBones();
         }
         glPopMatrix();
@@ -438,8 +438,8 @@ void rRigged::drawEffect() {
                     {
                         float f = jetting * 0.5f;
 
-                        glTranslatef(pos[0], pos[1], pos[2]);
-                        SGL::glRotateq(ori);
+                        glTranslatef(pos0[0], pos0[1], pos0[2]);
+                        SGL::glRotateq(ori0);
                         glTranslatef(v[0], v[1], v[2]);
 
                         float n[16];

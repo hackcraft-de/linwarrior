@@ -5,7 +5,7 @@
 
 #define grand() ((rand()%100 + rand()%100 + rand()%100 + rand()%100 + rand()%100) * 0.01f * 0.2f - 0.5f)
 
-rCamera::rCamera(cObject * obj) : camerastate(1), cameraswitch(0), camerashake(0), firstperson(true) {
+rCamera::rCamera(cObject * obj) : cameraswitch(0), camerashake(0), firstperson(true), camerastate(1) {
     object = obj;
     role = "CAMERA";
 

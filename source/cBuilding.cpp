@@ -407,25 +407,15 @@ void cBuilding::onSpawn() {
 }
 
 void cBuilding::animate(float spf) {
-    explosionObject.animate(spf);
+    {
+        float* p = this->pos;
+        float* w = buildingRooms;
+        vector_set(explosionObject.pos0, p[0], p[1]+0.125f * 3.5f * w[1], p[2]);
+        explosionObject.animate(spf);
+    }
 }
 
 void cBuilding::transform() {
-    if (dirtyBase) {
-        dirtyBase = false;
-        glPushMatrix();
-        {
-            float* p = this->pos;
-            float r[] = {0, 0, 0};
-            float* w = buildingRooms;
-            glTranslatef(p[0], p[1], p[2]);
-            if (r[1] < -0.00001f || r[1] > 0.00001f) glRotatef(r[1] * 0.017453f, 0, 1, 0);
-            glTranslatef(0, 0.125f * 3.5f * w[1], 0);
-            glGetFloatv(GL_MODELVIEW_MATRIX, baseMatrix);
-            explosionObject.weaponBasefv = baseMatrix;
-        }
-        glPopMatrix();
-    }
     explosionObject.transform();
 }
 

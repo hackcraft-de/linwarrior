@@ -60,13 +60,12 @@ rWeapon::rWeapon(cObject* obj) {
     triggered = false;
     triggereded = false;
 
-    quat_zero(weaponOri1);
-    vector_zero(weaponPos1);
-    quat_zero(weaponOri0);
-    vector_zero(weaponPos0);
+    quat_zero(ori1);
+    vector_zero(pos1);
+    quat_zero(ori0);
+    vector_zero(pos0);
     weaponMount = 0;
 
-    weaponBasefv = NULL;
     weaponScale = 1.0f;
     timeReloading = 0.0f;
     timeReadying = 0.0f;
@@ -100,16 +99,12 @@ void rWeapon::transform() {
         glPushMatrix();
         {
             glLoadIdentity();
-            if (weaponBasefv != NULL) {
-                glMultMatrixf(weaponBasefv);
-            } else {
-                glTranslatef(weaponPos0[0], weaponPos0[1], weaponPos0[2]);
-                SGL::glRotateq(weaponOri0);
-                glTranslatef(weaponPos1[0], weaponPos1[1], weaponPos1[2]);
-                SGL::glRotateq(weaponOri1);
-                // FIXME: All weapon's forward are inverted, therefore rotate.
-                glRotatef(180, 0, 1, 0);
-            }
+            glTranslatef(pos0[0], pos0[1], pos0[2]);
+            SGL::glRotateq(ori0);
+            glTranslatef(pos1[0], pos1[1], pos1[2]);
+            SGL::glRotateq(ori1);
+            // FIXME: All weapon's forward are inverted, therefore rotate.
+            glRotatef(180, 0, 1, 0);
             glGetFloatv(GL_MODELVIEW_MATRIX, weaponPosef);
         }
         glPopMatrix();

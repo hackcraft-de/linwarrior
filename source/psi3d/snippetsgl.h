@@ -61,8 +61,8 @@ struct cPrimitives {
 
                     float inv0 = 1.0f / (float) sqrtf(a*a+b0*b0+1.0f);
                     float inv1 = 1.0f / (float) sqrtf(a*a+b1*b1+1.0f);
-                    float v0[] = { a*inv0, b0*inv0, dir*inv0 };
-                    float v1[] = { a*inv1, b1*inv1, dir*inv1 };
+                    float v0[] = { (float) a*inv0, (float) b0*inv0, (float) dir*inv0 };
+                    float v1[] = { (float) a*inv1, (float) b1*inv1, (float) dir*inv1 };
 
 
                     glNormal3fv(v0);
@@ -98,8 +98,8 @@ struct cPrimitives {
 
                     float inv0 = 1.0f / (float) sqrtf(a*a+b0*b0+1.0f);
                     float inv1 = 1.0f / (float) sqrtf(a*a+b1*b1+1.0f);
-                    float v0[] = { a*inv0, dir*inv0, b0*inv0 };
-                    float v1[] = { a*inv1, dir*inv1, b1*inv1 };
+                    float v0[] = { (float) a*inv0, (float) dir*inv0, (float) b0*inv0 };
+                    float v1[] = { (float) a*inv1, (float) dir*inv1, (float) b1*inv1 };
 
                     glNormal3fv(v0);
                     //transformV3(v0,c);
@@ -135,8 +135,8 @@ struct cPrimitives {
                     //a = fma(a,1,0);
                     float inv0 = 1.0f / (float) sqrtf(a*a+b0*b0+1.0f);
                     float inv1 = 1.0f / (float) sqrtf(a*a+b1*b1+1.0f);
-                    float v0[] = { dir*inv0, a*inv0, b0*inv0 };
-                    float v1[] = { dir*inv1, a*inv1, b1*inv1 };
+                    float v0[] = { (float) dir*inv0, (float) a*inv0, (float) b0*inv0 };
+                    float v1[] = { (float) dir*inv1, (float) a*inv1, (float) b1*inv1 };
 
                     glNormal3fv(v0);
                     //transformV3(v0,c);

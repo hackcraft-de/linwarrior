@@ -9,8 +9,8 @@ rCollider::rCollider(cObject * obj) {
     object = obj;
     role = "COLLIDER";
 
-    quat_zero(ori);
-    vector_zero(pos);
+    quat_zero(ori0);
+    vector_zero(pos0);
     radius = 0.1f;
     ratio = 0.0f;
     height = 0.1f;
@@ -20,11 +20,11 @@ float rCollider::constrainParticle(float* worldpos, float radius, float* localpo
     float localpos_[3];
     { // Transform to local.
         quat ori_inv;
-        quat_cpy(ori_inv, this->ori);
+        quat_cpy(ori_inv, this->ori0);
         quat_conj(ori_inv);
 
         vector_cpy(localpos_, worldpos);
-        vector_sub(localpos_, localpos_, this->pos);
+        vector_sub(localpos_, localpos_, this->pos0);
         quat_apply(localpos_, ori_inv, localpos_);
     }
 
@@ -42,8 +42,8 @@ float rCollider::constrainParticle(float* worldpos, float radius, float* localpo
     if (localpos != NULL) vector_cpy(localpos, localprj);
 
     { // Transform to global.
-        quat_apply(worldpos, this->ori, localprj);
-        vector_add(worldpos, worldpos, this->pos);
+        quat_apply(worldpos, this->ori0, localprj);
+        vector_add(worldpos, worldpos, this->pos0);
     }
 
     return depth;
@@ -58,8 +58,8 @@ void rCollider::drawEffect() {
 
     glPushMatrix();
     {
-        glTranslatef(pos[0], pos[1], pos[2]);
-        SGL::glRotateq(ori);
+        glTranslatef(pos0[0], pos0[1], pos0[2]);
+        SGL::glRotateq(ori0);
 
         glPushAttrib(GL_ALL_ATTRIB_BITS);
         {

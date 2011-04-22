@@ -17,28 +17,30 @@
  * Camera component.
  */
 struct rCamera : public rComponent {
+public: // INPUT
+    /// Base position (hook i).
+    quat ori0;
+    /// Base orientation (hook i).
+    vec3 pos0;
+    /// Position relative to base position and orientation (hook i).
+    quat ori1;
+    /// Orientation relative to base position and orientation (hook i).
+    vec3 pos1;
+    /// Switch camera state one step when greater zero. (hook i)
+    float cameraswitch;
+    /// Strenght of camera shaking [0,1], scaled internally. (hook i)
+    float camerashake;
+public: // OUTPUT
+    /// True when camerastate is in first perspective mode. (hook o)
+    bool firstperson;
+protected: // INTERNALS
     /// # of camera modes: ISO C++ forbids const int with initialization >:(
-
     enum {
         MAX_CAMERAMODES = 6
     };
     /// Current Camera mode, negative number is indicating transition.
     int camerastate;
-    /// Switch camera state one step when greater zero. (hook i)
-    float cameraswitch;
-    /// Strenght of camera shaking [0,1], scaled internally. (hook i)
-    float camerashake;
-    /// True when camerastate is in first perspective mode. (hook o)
-    bool firstperson;
-    /// Base position (hook i).
-    quat ori0;
-    /// Base orientation (hook i).
-    vec3 pos0;
-    /// Position relative to base position and orientation (hook o).
-    quat ori1;
-    /// Orientation relative to base position and orientation (hook o).
-    vec3 pos1;
-
+public:
     /// Constructor
     rCamera(cObject * obj);
     /// Mult in camera matrix.

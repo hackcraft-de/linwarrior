@@ -16,39 +16,42 @@
  * Encapsulates a rigged mesh in md5mesh format.
  */
 struct rRigged : public rComponent {
+public: // INPUT
     /// Model scale. (1.0f, unused/removed now)
     float scale;
     /// Animation time counter in seconds.
     float seconds;
     /// Position. (hook i)
-    vec3 pos;
+    vec3 pos0;
     /// Orientation. (hook i)
-    quat ori;
+    quat ori0;
     /// Velocity. (hook i)
     vec3 vel;
     /// Grounded. (hook i)
     float grounded;
     /// Jetting. (hook i)
     float jetting;
-    /// The "static" model just as it is loaded.
-    MD5Format::model* model;
+    /// Basic 3d texture bind when greater 0. (still a hook i)
+    int basetexture3d;
+public: // OUTPUT
     /// Actual local-(model-)space joints for this instance.
     MD5Format::joint* joints;
     /// Maps jointpoint identifier to actual joint index of the model (-1 ~ NULL).
     std::map<int, int> jointpoints;
     /// Joint angles for animation.
     std::map<int, std::map<int, float> > rotators;
-    // Untransformed vertices for mesh i.
-    std::map<int, float*> baseverts;
-    /// Untransformed normals for mesh i.
-    std::map<int, float*> basenorms;
-    /// Basic 3d texture bind when greater 0.
-    int basetexture3d;
     /// Current model height - only messured above ground ie. > 0. (hook o)
     float height;
     /// Current model radius as seen from above. (hook o)
     float radius;
-
+protected: // INTERNALS
+    /// The "static" model just as it is loaded.
+    MD5Format::model* model;
+    // Untransformed vertices for mesh i.
+    std::map<int, float*> baseverts;
+    /// Untransformed normals for mesh i.
+    std::map<int, float*> basenorms;
+public:
     /// Enumeration for indexing joints in animation.
 
     enum Jointpoints {
@@ -60,12 +63,12 @@ struct rRigged : public rComponent {
 
     /// Constructor
 
-    rRigged(cObject* obj = NULL) : scale(1.0f), seconds(0.0f), grounded(0.0f), jetting(0.0f), model(NULL), joints(NULL), height(0.1f), radius(0.1f) {
+    rRigged(cObject* obj = NULL) : scale(1.0f), seconds(0.0f), grounded(0.0f), jetting(0.0f), joints(NULL), height(0.1f), radius(0.1f), model(NULL) {
         role = "RIGGED";
         object = obj;
-        vector_zero(pos);
+        vector_zero(pos0);
         vector_zero(vel);
-        quat_zero(ori);
+        quat_zero(ori0);
     }
 
     rRigged(rRigged * original) {

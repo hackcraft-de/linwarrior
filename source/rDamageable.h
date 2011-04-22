@@ -16,6 +16,8 @@
  * Encapsulates attributes related to body damage and armor state.
  */
 struct rDamageable : public rComponent {
+public: // INPUT
+public: // OUTPUT
     /// Marks object as still alife.
     bool alife;
     /// Enumeration of entity body part units: Body, Legs, Left, Right.
@@ -37,7 +39,8 @@ struct rDamageable : public rComponent {
     // float sinks[MAX_PARTS];
     /// Some object that dealt some damage to the object. (hook o) [(oid, damage)]?
     OID disturber;
-
+protected: // INTERNALS
+public:
     /// Constructor.
     rDamageable(cObject* obj = NULL);
     /// Copy Constructor.

@@ -27,7 +27,29 @@ struct rController;
  * and plan execution.
  */
 struct rController : public rComponent {
-public:
+public: // INPUT
+    /// Whether control is enabled (autopilot/ai enabled/disabled).
+    bool enabled;
+    /// Set to any offending/attacking object if any. (hook i)
+    OID disturbedBy;
+    /// Set to nearby enemy object if any. (hook i)
+    OID enemyNearby;
+public: // OUTPUT
+    /// Target for aiming or zero. (hook o)
+    OID aimtarget;
+    /// Enable firing onto target. (hook o)
+    bool firetarget;
+    /// Walk target. (hook o)
+    vec3 walktarget;
+    /// Desired distance to walk-target. (hook o)
+    float walktargetdist;
+    /// Disable any action. (hook o)
+    bool idling;
+    /// Indicator of distance to aim-target, see Mobile. (hook i)
+    float aimrange;
+    /// Indicator of distance to walk-target, see Mobile. (hook i)
+    float walkrange;
+protected: // INTERNALS
     /// Available opcodes of stack-machine.
 
     enum Opcodes {
@@ -45,32 +67,10 @@ public:
         OPCODE_MAX
     };
 
-    /// Whether control is enabled (autopilot/ai enabled/disabled).
-    bool enabled;
     /// The command stack: n Values may form a command frame (command+arguments).
     std::vector<OID> commandStack;
     /// Who disturbed me the last time - ignore now.
     OID lastDisturbedBy;
-public: // Input hooks.
-    /// Set to any offending/attacking object if any. (hook i)
-    OID disturbedBy;
-    /// Set to nearby enemy object if any. (hook i)
-    OID enemyNearby;
-public: // Output hooks.
-    /// Target for aiming or zero. (hook o)
-    OID aimtarget;
-    /// Enable firing onto target. (hook o)
-    bool firetarget;
-    /// Walk target. (hook o)
-    vec3 walktarget;
-    /// Desired distance to walk-target. (hook o)
-    float walktargetdist;
-    /// Disable any action. (hook o)
-    bool idling;
-    /// Indicator of distance to aim-target, see Mobile. (hook i)
-    float aimrange;
-    /// Indicator of distance to walk-target, see Mobile. (hook i)
-    float walkrange;
 public:
     /// Initialises a en-/disabled controller for the given entity->
     rController(cObject* entity = NULL, bool enable = true);
@@ -152,11 +152,6 @@ public:
     // pushSendWave(OID entity, float radius, int mseconds, int attributes);
 
     // pushForValue(int n, int offset, int start, int end, int step);
-
-    // Use these from controlled Object (controlledDevice):
-    // Queries - ask for objects
-    // Fuzzy Predicates [0,1] - ask for fulfillment
-    // Output Actions - ask for taking action
 };
 
 

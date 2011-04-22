@@ -35,6 +35,12 @@ endif
 # Creation of dependency information when compiling.
 CFLAGS += -Wp,-M,-MP,-MT,$@,-MF,dep/$(subst /,-,$@).d
 
+# Enable c++0x standard which gives extended initializer lists
+# THIS BREAKS THE CODE: narrowing conversion, typeof
+#CFLAGS += -std=c++0x
+# THIS BREAKS THE CODE: narrowing conversion
+#CFLAGS += -std=gnu++0x
+
 # Print warnings when compiling.
 CFLAGS += -Wall
 

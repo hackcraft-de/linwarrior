@@ -168,8 +168,8 @@ cMech::cMech(float* pos, float* rot) {
     quat_cpy(this->ori, traceable->ori);
     this->radius = traceable->radius;
 
-    vector_cpy(collider->pos, this->pos);
-    quat_cpy(collider->ori, this->ori);
+    vector_cpy(collider->pos0, this->pos);
+    quat_cpy(collider->ori0, this->ori);
     collider->radius = this->radius;
 
     explosion = new rWeaponExplosion(this);
@@ -215,9 +215,9 @@ void cMech::setAsAudioListener() {
     alListenerfv(AL_POSITION, pos);
     alListenerfv(AL_VELOCITY, vel);
     vec3 fwd = {0, 0, +1};
-    quat_apply(fwd, rigged->ori, fwd);
+    quat_apply(fwd, rigged->ori0, fwd);
     vec3 uwd = {0, -1, 0};
-    quat_apply(uwd, rigged->ori, uwd);
+    quat_apply(uwd, rigged->ori0, uwd);
     float at_and_up[] = {
         fwd[0], fwd[1], fwd[2],
         uwd[0], uwd[1], uwd[2]
@@ -318,8 +318,8 @@ void cMech::animate(float spf) {
     {
         // from SELF:
         {
-            vector_cpy(collider->pos, this->pos);
-            quat_cpy(collider->ori, this->ori);
+            vector_cpy(collider->pos0, this->pos);
+            quat_cpy(collider->ori0, this->ori);
             collider->radius = this->radius;
         }
         // from RIGGED:
@@ -463,7 +463,7 @@ void cMech::animate(float spf) {
         }
         // from traceable
         {
-            vector_cpy(mobile->pos, traceable->pos);
+            vector_cpy(mobile->pos0, traceable->pos);
         }
         mobile->animate(spf);
     }
@@ -472,7 +472,7 @@ void cMech::animate(float spf) {
     {
         // from MOBILE:
         {
-            quat_cpy(traceable->ori, mobile->ori);
+            quat_cpy(traceable->ori, mobile->ori0);
             traceable->jetthrottle = mobile->jetthrottle;
             traceable->throttle = mobile->drivethrottle;
         }
@@ -499,8 +499,8 @@ void cMech::animate(float spf) {
 
         // from TRACEABLE: Physical movement state.
         {
-            vector_cpy(rigged->pos, traceable->pos);
-            quat_cpy(rigged->ori, traceable->ori);
+            vector_cpy(rigged->pos0, traceable->pos);
+            quat_cpy(rigged->ori0, traceable->ori);
             vector_cpy(rigged->vel, traceable->vel);
             rigged->grounded = traceable->grounded;
         }
@@ -530,8 +530,8 @@ void cMech::animate(float spf) {
         }
         // from RIGGED
         {
-            vector_cpy(nameable->pos0, rigged->pos);
-            quat_cpy(nameable->ori0, rigged->ori);
+            vector_cpy(nameable->pos0, rigged->pos0);
+            quat_cpy(nameable->ori0, rigged->ori0);
             int eye = rigged->jointpoints[rRigged::EYE];
             vector_cpy(nameable->pos1, rigged->joints[eye].v);
             nameable->pos1[1] += 2.0f;
@@ -546,8 +546,8 @@ void cMech::animate(float spf) {
         // from RIGGED
         {
             int eye = rigged->jointpoints[rRigged::EYE];
-            vector_cpy(camera->pos0, rigged->pos);
-            quat_cpy(camera->ori0, rigged->ori);
+            vector_cpy(camera->pos0, rigged->pos0);
+            quat_cpy(camera->ori0, rigged->ori0);
             vector_cpy(camera->pos1, rigged->joints[eye].v);
             quat_cpy(camera->ori1, rigged->joints[eye].q);
         }
@@ -588,10 +588,10 @@ void cMech::animate(float spf) {
         {
             rWeapon* weapon = weapons[i];
             MD5Format::joint* joint = &rigged->joints[weapon->weaponMount];
-            quat_cpy(weapon->weaponOri0, traceable->ori);
-            vector_cpy(weapon->weaponPos0, traceable->pos);
-            quat_cpy(weapon->weaponOri1, joint->q);
-            vector_cpy(weapon->weaponPos1, joint->v);
+            quat_cpy(weapon->ori0, traceable->ori);
+            vector_cpy(weapon->pos0, traceable->pos);
+            quat_cpy(weapon->ori1, joint->q);
+            vector_cpy(weapon->pos1, joint->v);
         }
 
         weapons[i]->animate(spf);
@@ -604,10 +604,10 @@ void cMech::animate(float spf) {
         {
             rWeapon* weapon = explosion;
             MD5Format::joint* joint = &rigged->joints[weapon->weaponMount];
-            quat_cpy(weapon->weaponOri0, traceable->ori);
-            vector_cpy(weapon->weaponPos0, traceable->pos);
-            quat_cpy(weapon->weaponOri1, joint->q);
-            vector_cpy(weapon->weaponPos1, joint->v);
+            quat_cpy(weapon->ori0, traceable->ori);
+            vector_cpy(weapon->pos0, traceable->pos);
+            quat_cpy(weapon->ori1, joint->q);
+            vector_cpy(weapon->pos1, joint->v);
         }
         explosion->animate(spf);
         explosion->transform();
