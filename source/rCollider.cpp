@@ -28,7 +28,7 @@ float rCollider::constrainParticle(float* worldpos, float radius, float* localpo
         quat_apply(localpos_, ori_inv, localpos_);
     }
 
-    float base[3] = {0, -0.0 - radius, 0};
+    float base[3] = {0, -0.0f - radius, 0};
     float radius_ = this->radius + radius;
     float height = this->height + 2 * radius;
     float localprj[3] = {0, 0, 0};

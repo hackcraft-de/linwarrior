@@ -4,15 +4,15 @@
         <file>
             <url>source/cBackground.cpp</url>
             <line>64</line>
-            <line>826</line>
-        </file>
-        <file>
-            <url>source/cMech.cpp</url>
-            <line>665</line>
+            <line>827</line>
         </file>
         <file>
             <url>source/cPlanetmap.cpp</url>
             <line>519</line>
+        </file>
+        <file>
+            <url>source/cMech.cpp</url>
+            <line>665</line>
         </file>
     </editor-bookmarks>
 </project-private>

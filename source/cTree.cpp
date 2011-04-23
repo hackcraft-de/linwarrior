@@ -144,7 +144,7 @@ void cTree::drawEffect() {
 }
 
 float cTree::constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor) {
-    float base[] = {this->pos[0], this->pos[1] - 0.0 - radius, this->pos[2]};
+    float base[] = {this->pos[0], this->pos[1] - 0.0f - radius, this->pos[2]};
     float radius_ = 0.1 + radius;
     float height = 3 + 2 * radius;
     float depth = cParticle::constraintParticleByCylinder(worldpos, base, radius_, height, worldpos);

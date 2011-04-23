@@ -809,7 +809,7 @@ void cOpenMission::battleField(cWorld* world) {
     }
 
     loopi(20) {
-        float pos[3] = {(i % 6) * 10 - 50, 0, -20 + (i / 6)*10 + (i / 6 % 2)*5};
+        float pos[3] = {(i % 6) * 10 - 50.0f, 0.0f, -20.0f + (i / 6)*10 + (i / 6 % 2)*5};
         cMech* mech = new cMech(pos);
         if (mech == NULL) throw "No memory for cMech in battleField.";
 
@@ -839,7 +839,7 @@ void cOpenMission::smallArmy(int wx, int wy, int wz, cWorld* world, const char* 
         float z = r * cos(a) + wz;
 
         float pos[3] = {x, y, z};
-        float rot[3] = {0, rand() % 360, 0};
+        float rot[3] = {0, float(rand() % 360), 0};
         cMech* mech = new cMech(pos, rot);
         if (mech == NULL) throw "No memory for cMech in smallArmy.";
         mech->name = name;
@@ -904,8 +904,8 @@ void cOpenMission::roundForrest(int wx, int wy, int wz, cWorld* world, int r1, i
         loopi(pp[j].n) {
             float a = (rand() % 360) * 0.017453f;
             float b = r1 + (rand() % r2);
-            float pos[3] = {wx + sin(a) * b, 0 + wy, wz + cos(a) * b};
-            float rot[3] = {0, 10 * (rand() % 36), 0};
+            float pos[3] = {float(wx + sin(a) * b), float(0 + wy), float(wz + cos(a) * b)};
+            float rot[3] = {0, 10.0f * (rand() % 36), 0};
             world->spawnObject(new cTree(pos, rot, pp[j].seed, pp[j].type, pp[j].age));
         };
     }

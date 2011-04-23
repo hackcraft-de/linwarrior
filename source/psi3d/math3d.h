@@ -430,7 +430,7 @@ typedef vec4 quat;
 
 #define quat_scale(q_, q0, scale) \
 { \
-    typeof((q_)[0]) _sf_ = scale; \
+    auto _sf_ = scale; \
     (q_)[0] = (q0)[0] * (_sf_); \
     (q_)[1] = (q0)[1] * (_sf_); \
     (q_)[2] = (q0)[2] * (_sf_); \
@@ -486,7 +486,7 @@ typedef vec4 quat;
 
 #define vector_set3i(result, fun_of_i)  { loop3i(result[i] = fun_of_i;) }
 
-#define vector_norm(result, A)          { typeof((A)[0]) inv = ((typeof((A)[0]))1)/vector_mag((A)); vector_scale( (result), (A), inv); }
+#define vector_norm(result, A)          { auto inv = 1/vector_mag((A)); vector_scale( (result), (A), inv); }
 
 #define vector_mag(A)                   ( sqrtf( (A)[0]*(A)[0] + (A)[1]*(A)[1] + (A)[2]*(A)[2] ) )
 
@@ -500,9 +500,9 @@ typedef vec4 quat;
 
 #define vector_sub(result, A, B)        { (result)[0] = (A)[0] - (B)[0]; (result)[1] = (A)[1] - (B)[1]; (result)[2] = (A)[2] - (B)[2]; }
 
-#define vector_scale(result, A, B)      { typeof((result)[0]) _sf_ = (B); (result)[0] = (A)[0] * _sf_; (result)[1] = (A)[1] * _sf_; (result)[2] = (A)[2] * _sf_; }
+#define vector_scale(result, A, B)      { auto _sf_ = (B); (result)[0] = (A)[0] * _sf_; (result)[1] = (A)[1] * _sf_; (result)[2] = (A)[2] * _sf_; }
 
-#define vector_muladd(result, A, B, C)  { typeof((result)[0]) _sf_ = (C); (result)[0] = (A)[0] + (B)[0] * _sf_; (result)[1] = (A)[1] + (B)[1] * _sf_; (result)[2] = (A)[2] + (B)[2] * _sf_; }
+#define vector_muladd(result, A, B, C)  { auto _sf_ = (C); (result)[0] = (A)[0] + (B)[0] * _sf_; (result)[1] = (A)[1] + (B)[1] * _sf_; (result)[2] = (A)[2] + (B)[2] * _sf_; }
 
 #define vector_sqrdist(A, B)            ( ((A)[0]-(B)[0]) * ((A)[0]-(B)[0]) + ((A)[1]-(B)[1]) * ((A)[1]-(B)[1]) + ((A)[2]-(B)[2]) * ((A)[2]-(B)[2]) )
 

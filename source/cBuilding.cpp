@@ -316,7 +316,7 @@ cBuilding::cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
 
                 if (0) {
                     try {
-                        char numb[3] = {'0' + (k / 10), '0' + (k % 10), '\0'};
+                        char numb[3] = { char('0' + (k / 10)), char('0' + (k % 10)), '\0' };
                         std::string fname = std::string("data/urban/scraper2/facade") + std::string(numb) + std::string(".tga");
                         if (saveTGA(fname.c_str(), w, h, bpp, texels)) {
                             cout << "Could not save image" << endl;
@@ -376,8 +376,8 @@ float cBuilding::constrainParticle(float* worldpos, float radius, float* localpo
     }
 
     float* w = this->buildingRooms;
-    float mins[3] = {-w[0]*0.5 - radius, -0.0 - radius, -w[2]*0.5 - radius};
-    float maxs[3] = {+w[0]*0.5 + radius, +w[1] + radius, +w[2]*0.5 + radius};
+    float mins[3] = {-w[0]*0.5f - radius, -0.0f - radius, -w[2]*0.5f - radius};
+    float maxs[3] = {+w[0]*0.5f + radius, +w[1] + radius, +w[2]*0.5f + radius};
     float localprj[3];
 
     //cout << endl;

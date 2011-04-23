@@ -39,7 +39,7 @@ CFLAGS += -Wp,-M,-MP,-MT,$@,-MF,dep/$(subst /,-,$@).d
 # THIS BREAKS THE CODE: narrowing conversion, typeof
 #CFLAGS += -std=c++0x
 # THIS BREAKS THE CODE: narrowing conversion
-#CFLAGS += -std=gnu++0x
+CFLAGS += -std=gnu++0x
 
 # Print warnings when compiling.
 CFLAGS += -Wall

@@ -27,10 +27,14 @@
 for (std::list<itemtype>::iterator loopvar = (listvar).begin(); loopvar != (listvar).end(); loopvar++)
 
 #define foreach(loopvar, collection) \
-for (typeof((collection).begin()) loopvar = (collection).begin(); loopvar != (collection).end(); loopvar++)
+for (auto loopvar = (collection).begin(); loopvar != (collection).end(); loopvar++)
+
+//for (typeof((collection).begin()) loopvar = (collection).begin(); loopvar != (collection).end(); loopvar++)
 
 #define foreachNoInc(loopvar, collection) \
-for (typeof((collection).begin()) loopvar = (collection).begin(); loopvar != (collection).end();)
+for (auto loopvar = (collection).begin(); loopvar != (collection).end();)
+
+//for (typeof((collection).begin()) loopvar = (collection).begin(); loopvar != (collection).end();)
 
 // Shortcut for a simple integer loop with counter i
 // through the size of a STL-vector.
@@ -41,13 +45,15 @@ for (typeof((collection).begin()) loopvar = (collection).begin(); loopvar != (co
 // varname = 0 (+) listvector[0] (+) ... (+) listvector[n-1]
 #define foldl(first, listvector, binaryfunc) \
 ({ \
-    typeof(first) result = first; \
+    auto result = first; \
     foreach(i, listvector) { \
         if (i == listvector.begin()) result = binaryfunc(first, (*i)); \
         else result = binaryfunc(result, (*i)); \
     } \
     result; \
 })
+
+//    typeof(first) result = first; \
 
 #define setbit(var, bit) var |= (1UL << (unsigned long) bit)
 #define rstbit(var, bit) var &= ~(1UL << (unsigned long) bit)

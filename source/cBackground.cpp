@@ -62,44 +62,45 @@ void ambient_clouds(float x, float y, float z, float* color) {
 
 void ambient_sky(float x, float y, float z, float* color, float hour = 24.00f) {
     // Remember 2pi ~ 360°
-    float t = ((hour / 24.0f * 2 * M_PI) - 0.5f * M_PI); // = [-0.5pi,+1.5pi]
+    double t = ((hour / 24.0 * 2 * M_PI) - 0.5 * M_PI); // = [-0.5pi,+1.5pi]
 
-    float light = 0.1 + 0.8 * cos((hour - 12.0f) / 12.00f * 0.5f * M_PI);
+    double light = 0.1 + 0.8 * cos((hour - 12.0) / 12.00 * 0.5 * M_PI);
 
     // Daylight gradient.
     // hour = [0,24]
     // => [-90,   0, 90, 180, 270]
     // => [ -1,   0,  1,   0,  -1] = sin
     // => [  0, 0.5,  1, 0.5,   0] = s daylight sine-wave.
-    float s = sin(t) * 0.5f + 0.5f; // = [0,1]
-    float topColor[] = {s * 0.2 + 0.1, s * 0.2 + 0.1, s * 0.8 + 0.2, light};
-    float middleColor[] = {s * 0.95 + 0.05, s * 0.95 + 0.05, s * 0.95 + 0.05, 1};
-    float bottomColor[] = {s * 0.55 + 0.05, s * 0.55 + 0.05, s * 0.55 + 0.05, 1};
+    double s = sin(t) * 0.5 + 0.5; // = [0,1]
+    double topColor[] = {s * 0.2 + 0.1, s * 0.2 + 0.1, s * 0.8 + 0.2, light};
+    double middleColor[] = {s * 0.95 + 0.05, s * 0.95 + 0.05, s * 0.95 + 0.05, 1};
+    double bottomColor[] = {s * 0.55 + 0.05, s * 0.55 + 0.05, s * 0.55 + 0.05, 1};
 
     // Dusk and dawn gradient.
     // => [ 0,    1,  0,   1,   0] = c
-    float c = pow(fabs(cos(t)) * 0.5f + 0.5f, 4); // = [0,1]
-    float top_[] = {c * 0.25, c * 0.25, c * 0.0, light};
-    float mid_[] = {c * 0.55, c * 0.25, c * 0.0, 1};
-    float bot_[] = {c * 0.25, c * 0.11, c * 0.0, 1};
+    double c = pow(fabs(cos(t)) * 0.5 + 0.5, 4); // = [0,1]
+    double top_[] = {c * 0.25, c * 0.25, c * 0.0, light};
+    double mid_[] = {c * 0.55, c * 0.25, c * 0.0, 1};
+    double bot_[] = {c * 0.25, c * 0.11, c * 0.0, 1};
     vector_add(topColor, topColor, top_);
     vector_add(middleColor, middleColor, mid_);
     vector_add(bottomColor, bottomColor, bot_);
 
     // Normalise direction vector.
-    float oolen = 1.0f / sqrtf(x * x + y * y + z * z);
-    float yd = y * oolen;
+    double oolen = 1.0 / sqrtf(x * x + y * y + z * z);
+    double yd = y * oolen;
 
     // top = 1 when yd > 0, top = 0 otherwise.
-    float top = 0.5f + copysign(0.5f, yd);
-    float alpha = fabs(yd);
+    double top = 0.5 + copysign(0.5, yd);
+    double alpha = fabs(yd);
 
     // middleColor could be factored out but it may change.
 
     loopi(4) {
-        color[i] =
+        color[i] = float(
                 top * (alpha * topColor[i] + (1.0f - alpha) * middleColor[i]) +
-                (1.0f - top) * (alpha * bottomColor[i] + (1.0f - alpha) * middleColor[i]);
+                (1.0f - top) * (alpha * bottomColor[i] + (1.0f - alpha) * middleColor[i])
+                );
     }
 }
 
@@ -492,11 +493,11 @@ void cBackground::drawBackground(float h) {
 
         loopi(samples) {
             s = cNoise::LFSR8(s);
-            float alpha = s / 256.0f * 2 * M_PI;
+            float alpha = s / 256.0f * 2.0f * M_PI;
             s = cNoise::LFSR8(s);
             float beta = s / 256.0f * 1.0f * M_PI;
             float color[16];
-            vec3 n = {sin(alpha) * sin(beta), 0.99f * cos(beta), sin(beta) * cos(alpha)};
+            vec3 n = { float(sin(alpha) * sin(beta)), float(0.99 * cos(beta)), float(sin(beta) * cos(alpha)) };
             //vector_print(n);
             ambient_sky(n[0], n[1], n[2], color, hour);
             //quat_print(color);
@@ -519,8 +520,8 @@ void cBackground::drawBackground(float h) {
         //float p[] = {70, 90, -30, 0};
         float t = ((hour / 24.0f * 2 * M_PI) - 0.5f * M_PI); // = [-0.5pi,+1.5pi]
         float s = sin(t) * 0.5f + 0.5f;
-        float a[] = {0.25 * s * haze[0], 0.25 * s * haze[1], 0.25 * s * s * haze[2], 1};
-        float d[] = {0.9 * s + (1 - s)*0.0, 0.9 * s + (1 - s)*0.0, 0.4 * s + (1 - s)*0.2, 1};
+        float a[] = {0.25f * s * haze[0], 0.25f * s * haze[1], 0.25f * s * s * haze[2], 1.00f};
+        float d[] = {0.90f * s + (1 - s)*0.00f, 0.90f * s + (1 - s)*0.00f, 0.40f * s + (1.00f - s)*0.20f, 1.00f};
         glLightfv(GL_LIGHT0, GL_POSITION, p);
         glLightfv(GL_LIGHT0, GL_AMBIENT, a);
         glLightfv(GL_LIGHT0, GL_DIFFUSE, d);

@@ -316,7 +316,7 @@ void rController::gotoDestination() {
     OID v2 = getParameter(3);
     OID patrol = getParameter(4);
     unsigned long p[] = {
-        v0, v1, v2
+        (unsigned long)v0, (unsigned long)v1, (unsigned long)v2
     };
     float* v = (float*) p;
 

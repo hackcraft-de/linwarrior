@@ -654,11 +654,11 @@ void cMech::drawSolid() {
     if (hasTag(HUMANPLAYER)) {
         int light = GL_LIGHT1;
         if (mobile->jetthrottle > 0.001f) {
-            float p[] = {traceable->pos[0], traceable->pos[1] + 1.2, traceable->pos[2], 1};
+            float p[] = {traceable->pos[0], traceable->pos[1] + 1.2f, traceable->pos[2], 1.0f};
             //float zero[] = {0, 0, 0, 1};
             float s = mobile->jetthrottle;
-            float a[] = {0.0, 0.0, 0.0, 1};
-            float d[] = {0.9 * s, 0.9 * s, 0.4 * s, 1};
+            float a[] = {0.0f, 0.0f, 0.0f, 1.0f};
+            float d[] = {0.9f * s, 0.9f * s, 0.4f * s, 1.0f};
             //glPushMatrix();
             {
                 //glLoadIdentity();

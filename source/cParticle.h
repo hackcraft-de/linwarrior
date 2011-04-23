@@ -115,6 +115,9 @@ struct cParticle {
         foreach(i, original->trail) {
             trail.push_back(new cParticle(*i));
         }
+        //for (cParticle* i: original->trail) {
+            //trail.push_back(new cParticle(*i));
+        //}
     }
 
     /// Apply gravity to the particle's force, eg with float g[] = {0,-9.8f,0}.
