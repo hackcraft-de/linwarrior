@@ -43,7 +43,7 @@ public:
     virtual void drawSolid();
     virtual void drawEffect();
 
-    virtual float constrainParticle(float* worldpos, float radius = 0.0f, float* localpos = NULL, cObject* enactor = NULL);
+    virtual float constrain(float* worldpos, float radius = 0.0f, float* localpos = NULL, cObject* enactor = NULL);
 private:
     /// Instance counter for init only.
     static int sInstances;

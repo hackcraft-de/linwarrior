@@ -107,7 +107,7 @@ void cWorld::spawnObject(cObject *object) {
     mTiming.advanceDelta();
 
     mObjects.push_back(object);
-    object->onSpawn();
+    object->spawn();
     // cout << serid << " spawn complete.\n";
 }
 
@@ -116,7 +116,7 @@ void cWorld::fragObject(cObject *object) {
     mObjects.remove(object);
     mCorpses.push_back(object);
     mIndex.erase(object->oid);
-    object->onFrag();
+    object->frag();
     object->oid = 0;
 }
 
@@ -147,8 +147,8 @@ void cWorld::clusterObjects() {
 
         foreach(i, mObjects) {
             cObject* o = *i;
-            float px = o->pos[0];
-            float pz = o->pos[2];
+            float px = o->pos0[0];
+            float pz = o->pos0[2];
             if (!finitef(px) || !finitef(pz)) {
                 mUncluster.push_back(o);
             } else {
@@ -228,7 +228,7 @@ void cWorld::drawBack() {
 
 void cWorld::drawSolid(cObject* camera, std::list<cObject*>* objects) {
     //cout << "drawSolid()\n";
-    float* origin = camera->pos;
+    float* origin = camera->pos0;
     if (objects == NULL) objects = &mObjects;
 
     float maxrange = mViewdistance;
@@ -236,8 +236,8 @@ void cWorld::drawSolid(cObject* camera, std::list<cObject*>* objects) {
 
     foreachNoInc(i, *objects) {
         cObject* object = *i++;
-        float x = object->pos[0] - origin[0];
-        float z = object->pos[2] - origin[2];
+        float x = object->pos0[0] - origin[0];
+        float z = object->pos0[2] - origin[2];
         float d2 = x * x + z * z;
         if (d2 > maxrange2) continue;
         glPushMatrix();
@@ -250,15 +250,15 @@ void cWorld::drawSolid(cObject* camera, std::list<cObject*>* objects) {
 
 void cWorld::drawEffect(cObject* camera, std::list<cObject*>* objects) {
     //cout << "drawEffect()\n";
-    float* origin = camera->pos;
+    float* origin = camera->pos0;
     if (objects == NULL) objects = &mObjects;
 
     float maxrange2 = mViewdistance * mViewdistance;
 
     foreachNoInc(i, *objects) {
         cObject* object = *i++;
-        float x = object->pos[0] - origin[0];
-        float z = object->pos[2] - origin[2];
+        float x = object->pos0[0] - origin[0];
+        float z = object->pos0[2] - origin[2];
         float d2 = x * x + z*z;
         if (d2 > maxrange2) continue;
         glPushMatrix();
@@ -397,7 +397,7 @@ std::list<cObject*>* cWorld::filterByRange(cObject* ex, float* origin, float min
         if (object->oid == 0) continue;
         // Filter Condition
         float diff[3];
-        vector_sub(diff, origin, object->pos);
+        vector_sub(diff, origin, object->pos0);
         float d2 = vector_dot(diff, diff);
         //float d = vector_distance(origin, object->mPos);
         float r1 = fmax(0.0f, minrange - object->radius);
@@ -449,7 +449,7 @@ std::list<cObject*>* cWorld::filterByBeam(cObject* ex, float* pointa, float* poi
         if (object->oid == 0) continue;
         // Filter Condition
 
-        float* x0 = object->pos;
+        float* x0 = object->pos0;
         float u[] = {x0[0] - x1[0], x0[1] - x1[1], x0[2] - x1[2]};
         float v[] = {x2[0] - x1[0], x2[1] - x1[1], x2[2] - x1[2]};
         float a = u[0] * v[0] + u[1] * v[1] + u[2] * v[2];
@@ -498,7 +498,7 @@ float cWorld::constrainParticle(cObject* ex, float* worldpos, float radius) {
 
         foreach(i, *range) {
             cObject* object = *i;
-            depth += object->constrainParticle(worldpos, radius, NULL, ex);
+            depth += object->constrain(worldpos, radius, NULL, ex);
         }
     }
     delete range;

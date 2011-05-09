@@ -399,12 +399,12 @@ void cMain::drawFrame(int elapsed_msec) {
         // Setup camera.
         glLoadIdentity();
         if (game.camera) {
-            game.camera->multEyeMatrix();
-            game.camera->setAsAudioListener();
+            game.camera->camera();
+            game.camera->listener();
         }
 
         // Find objects in visible range.
-        float* origin = game.camera->pos;
+        float* origin = game.camera->pos0;
         float maxrange = game.world->getViewdistance();
         float min[] = {origin[0] - maxrange, origin[2] - maxrange};
         float max[] = {origin[0] + maxrange, origin[2] + maxrange};

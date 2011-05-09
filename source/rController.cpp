@@ -55,7 +55,7 @@ void rController::doit(OID aim, float* go, bool fire, float distance) {
     } else {
         cObject* tgt = cWorld::instance->getObject(aimtarget);
         if (tgt != NULL) {
-            vector_cpy(walktarget, tgt->pos);
+            vector_cpy(walktarget, tgt->pos0);
         } else {
             vector_set(walktarget, float_NAN, float_NAN, float_NAN);
         }

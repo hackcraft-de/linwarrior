@@ -100,7 +100,7 @@ cMech::cMech(float* pos, float* rot) {
     controller = new rController(this);
     nameable = new rNameable(this);
     traceable = new rTraceable(this);
-    camera = new rCamera(this);
+    camra = new rCamera(this);
     mobile = new rMobile(this);
 
     comcom = new rComcom(this);
@@ -164,12 +164,12 @@ cMech::cMech(float* pos, float* rot) {
     traceable->mass = 11000.0f; // TODO mass is qubic to size.
     traceable->mass_inv = 1.0f / traceable->mass;
 
-    vector_cpy(this->pos, traceable->pos);
-    quat_cpy(this->ori, traceable->ori);
+    vector_cpy(this->pos0, traceable->pos);
+    quat_cpy(this->ori0, traceable->ori);
     this->radius = traceable->radius;
 
-    vector_cpy(collider->pos0, this->pos);
-    quat_cpy(collider->ori0, this->ori);
+    vector_cpy(collider->pos0, this->pos0);
+    quat_cpy(collider->ori0, this->ori0);
     collider->radius = this->radius;
 
     explosion = new rWeaponExplosion(this);
@@ -190,18 +190,18 @@ void cMech::message(cMessage* message) {
     forcom->message(message);
 }
 
-void cMech::onSpawn() {
+void cMech::spawn() {
     //cout << "cMech::onSpawn()\n";
     ALuint soundsource = traceable->sound;
     if (hasTag(HUMANPLAYER) && alIsSource(soundsource)) alSourcePlay(soundsource);
     //cout << "Mech spawned " << oid << "\n";
 }
 
-void cMech::multEyeMatrix() {
-    camera->camera();
+void cMech::camera() {
+    camra->camera();
 }
 
-void cMech::setAsAudioListener() {
+void cMech::listener() {
     float s = -0.1;
     float step = s * cWorld::instance->getTiming()->getSPF();
     float vel[] = {
@@ -294,8 +294,8 @@ void cMech::fireWeapon(unsigned n) {
 
 void cMech::animate(float spf) {
     // Read in.
-    vector_cpy(this->pos, traceable->pos);
-    quat_cpy(this->ori, traceable->ori);
+    vector_cpy(this->pos0, traceable->pos);
+    quat_cpy(this->ori0, traceable->ori);
     this->radius = traceable->radius;
 
     /* Index of Component order
@@ -318,8 +318,8 @@ void cMech::animate(float spf) {
     {
         // from SELF:
         {
-            vector_cpy(collider->pos0, this->pos);
-            quat_cpy(collider->ori0, this->ori);
+            vector_cpy(collider->pos0, this->pos0);
+            quat_cpy(collider->ori0, this->ori0);
             collider->radius = this->radius;
         }
         // from RIGGED:
@@ -337,6 +337,11 @@ void cMech::animate(float spf) {
         // from DAMAGEABLE
         {
             damageable->active = damageable->alife;
+        }
+        // from RIGGED
+        {
+            damageable->radius = rigged->radius;
+            damageable->height = rigged->height;
         }
         damageable->animate(spf);
     }
@@ -396,7 +401,7 @@ void cMech::animate(float spf) {
         }
         // from CAMERA
         {
-            forcom->reticle = camera->firstperson;
+            forcom->reticle = camra->firstperson;
         }
         forcom->animate(spf);
     }
@@ -546,23 +551,23 @@ void cMech::animate(float spf) {
         // from RIGGED
         {
             int eye = rigged->jointpoints[rRigged::EYE];
-            vector_cpy(camera->pos0, rigged->pos0);
-            quat_cpy(camera->ori0, rigged->ori0);
-            vector_cpy(camera->pos1, rigged->joints[eye].v);
-            quat_cpy(camera->ori1, rigged->joints[eye].q);
+            vector_cpy(camra->pos0, rigged->pos0);
+            quat_cpy(camra->ori0, rigged->ori0);
+            vector_cpy(camra->pos1, rigged->joints[eye].v);
+            quat_cpy(camra->ori1, rigged->joints[eye].q);
         }
 
         // from MOBILE
         {
-            camera->camerashake = mobile->jetthrottle;
+            camra->camerashake = mobile->jetthrottle;
         }
 
         // from CONTROLLED
         {
-            camera->cameraswitch = pad->getButton(cPad::MECH_CAMERA_BUTTON);
+            camra->cameraswitch = pad->getButton(cPad::MECH_CAMERA_BUTTON);
         }
 
-        camera->animate(spf);
+        camra->animate(spf);
     }
 
     // FIXME: This block needs to be factored out to fit the used component pattern.
@@ -627,8 +632,8 @@ void cMech::animate(float spf) {
     }
 
     // Write back.
-    vector_cpy(this->pos, traceable->pos);
-    quat_cpy(this->ori, traceable->ori);
+    vector_cpy(this->pos0, traceable->pos);
+    quat_cpy(this->ori0, traceable->ori);
     this->radius = traceable->radius;
 }
 
@@ -778,15 +783,18 @@ void cMech::drawHUD() {
     glPopAttrib();
 }
 
-void cMech::damageByParticle(float* localpos, float damage, cObject* enactor) {
+void cMech::damage(float* localpos, float damage, cObject* enactor) {
     if (!damageable->alife || damage == 0.0f) return;
 
+    /*
     int hitzone = rDamageable::BODY;
-    if (localpos[1] < 1.1 * rigged->height && damageable->hp[rDamageable::LEGS] > 0) hitzone = rDamageable::LEGS;
-    else if (localpos[0] < -0.5 && damageable->hp[rDamageable::LEFT] > 0) hitzone = rDamageable::LEFT;
-    else if (localpos[0] > +0.5 && damageable->hp[rDamageable::RIGHT] > 0) hitzone = rDamageable::RIGHT;
-
+    if (localpos[1] < 0.66 * rigged->height && damageable->hp[rDamageable::LEGS] > 0) hitzone = rDamageable::LEGS;
+    else if (localpos[0] < -0.33 * rigged->radius && damageable->hp[rDamageable::LEFT] > 0) hitzone = rDamageable::LEFT;
+    else if (localpos[0] > +0.33 * rigged->radius && damageable->hp[rDamageable::RIGHT] > 0) hitzone = rDamageable::RIGHT;
     if (!damageable->damage(hitzone, damage, enactor)) {
+    */
+
+    if (!damageable->damage(localpos, damage, enactor)) {
         cout << "cMech::damageByParticle(): DEAD\n";
         //explosion->fire();
         explosion->triggeren = true;
@@ -799,10 +807,10 @@ void cMech::damageByParticle(float* localpos, float damage, cObject* enactor) {
     if (damageable->hp[body] <= 0) addTag(DEAD);
 }
 
-float cMech::constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor) {
+float cMech::constrain(float* worldpos, float radius, float* localpos, cObject* enactor) {
     float maxdepth = 0.0f;
     {
-        float depth = collider->constrainParticle(worldpos, radius, localpos, enactor);
+        float depth = collider->constrain(worldpos, radius, localpos, enactor);
         if (depth > maxdepth) {
             maxdepth = depth;
         }

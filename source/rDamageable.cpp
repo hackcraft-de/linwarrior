@@ -11,7 +11,11 @@ DEFINE_glprintf
 rDamageable::rDamageable(cObject* obj) {
     role = "DAMAGEABLE";
     object = obj;
+
+    radius = 0.25;
+    height = 1.80;
     alife = true;
+    dead = !alife;
     loopi(MAX_PARTS) hp[i] = 100.0f;
     disturber = 0;
 }
@@ -22,7 +26,10 @@ rDamageable::rDamageable(rDamageable * original) {
         rDamageable();
     } else {
         object = original->object;
+        radius = original->radius;
+        height = original->height;
         alife = original->alife;
+        dead = original->dead;
         loopi(MAX_PARTS) hp[i] = original->hp[i];
         disturber = original->disturber;
     }
@@ -32,11 +39,17 @@ rComponent* rDamageable::clone() {
     return new rDamageable(this);
 }
 
-bool rDamageable::damage(int hitzone, float damage, cObject* enactor) {
+bool rDamageable::damage(float* localpos, float damage, cObject* enactor) {
+    int hitzone = rDamageable::BODY;
+    if (localpos[1] < 0.66 * height && hp[rDamageable::LEGS] > 0) hitzone = rDamageable::LEGS;
+    else if (localpos[0] < -0.33 * radius && hp[rDamageable::LEFT] > 0) hitzone = rDamageable::LEFT;
+    else if (localpos[0] > +0.33 * radius && hp[rDamageable::RIGHT] > 0) hitzone = rDamageable::RIGHT;
+
     hp[hitzone] -= damage;
     if (hp[hitzone] < 0.0f) hp[hitzone] = 0.0f;
     if (hp[BODY] <= 0.0f) {
         alife = false;
+        dead = !alife;
     }
     if (enactor != NULL && damage > 0.0001f) {
         disturber = enactor->oid;

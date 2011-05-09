@@ -169,7 +169,7 @@ cPlanetmap::cPlanetmap() {
     }
 
     this->radius = 10;
-    vector_set(this->pos, float_NAN, float_NAN, float_NAN);
+    vector_set(this->pos0, float_NAN, float_NAN, float_NAN);
 
     name = "PLANETMAP";
     tree = new cTree();
@@ -451,7 +451,7 @@ void cPlanetmap::getCachedHeight(float x, float z, float* const color) {
 #endif
 } // getCachedHeight
 
-float cPlanetmap::constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor) {
+float cPlanetmap::constrain(float* worldpos, float radius, float* localpos, cObject* enactor) {
     //if (enactor == NULL) return 0.0;
     float localpos_[3];
     vector_cpy(localpos_, worldpos);
@@ -1270,8 +1270,8 @@ void cPlanetmap::drawEffect() {
                         int type = (b * b + (a >> 1))&7;
 
                         tree->tree = cTree::getCompiledTree(1230 + (b & 6), type, 2 + age);
-                        vector_set(tree->pos, x__, h - 0.2, z__);
-                        tree->ori[1] = a + b;
+                        vector_set(tree->pos0, x__, h - 0.2, z__);
+                        tree->ori0[1] = a + b;
                         glColor4f(0.15f, 0.09f, 0.03f, opacity);
                         tree->drawSolid();
                         glColor4f(1, 1, 1, opacity);

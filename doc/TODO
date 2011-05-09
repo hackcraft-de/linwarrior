@@ -1,3 +1,5 @@
+- Move code from damageByParticle(.) to rDamageable.damage(.) and bind in cMech->animate(.).
+
 - Implement Target ahead selection in tarcom?
 
 - Fix reaction to ai being fired at (state transitions in controller).

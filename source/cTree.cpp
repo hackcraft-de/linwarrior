@@ -45,8 +45,8 @@ cTree::cTree(float* pos, float* rot, int seed, int type, int age) {
         }
     }
 
-    if (pos) vector_cpy(this->pos, pos);
-    if (rot) vector_cpy(this->ori, rot);
+    if (pos) vector_cpy(this->pos0, pos);
+    if (rot) vector_cpy(this->ori0, rot);
     if (age == 0) {
         tree = NULL;
     } else {
@@ -66,8 +66,8 @@ void cTree::drawSolid() {
 
         glPushMatrix();
         {
-            glTranslatef(this->pos[0], this->pos[1], this->pos[2]);
-            glRotatef(this->ori[1], 0, 1, 0);
+            glTranslatef(this->pos0[0], this->pos0[1], this->pos0[2]);
+            glRotatef(this->ori0[1], 0, 1, 0);
             glCallList(tree->list);
         }
         glPopMatrix();
@@ -78,8 +78,8 @@ void cTree::drawSolid() {
 void cTree::drawEffect() {
     glPushMatrix();
     {
-        glTranslatef(this->pos[0], this->pos[1], this->pos[2]);
-        glRotatef(this->ori[1], 0, 1, 0);
+        glTranslatef(this->pos0[0], this->pos0[1], this->pos0[2]);
+        glRotatef(this->ori0[1], 0, 1, 0);
 
         // Construct Billboarding Matrix.
         float n[16];
@@ -143,13 +143,13 @@ void cTree::drawEffect() {
     glPopMatrix();
 }
 
-float cTree::constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor) {
-    float base[] = {this->pos[0], this->pos[1] - 0.0f - radius, this->pos[2]};
+float cTree::constrain(float* worldpos, float radius, float* localpos, cObject* enactor) {
+    float base[] = {this->pos0[0], this->pos0[1] - 0.0f - radius, this->pos0[2]};
     float radius_ = 0.1 + radius;
     float height = 3 + 2 * radius;
     float depth = cParticle::constraintParticleByCylinder(worldpos, base, radius_, height, worldpos);
     if (depth > 0 && localpos != NULL) {
-        vector_sub(localpos, worldpos, this->pos);
+        vector_sub(localpos, worldpos, this->pos0);
     }
     return depth;
 }

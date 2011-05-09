@@ -107,7 +107,7 @@ void rMobile::animate(float spf) {
         if (tgt == NULL) {
             aimrange = 10000.0f;
         } else {
-            float d = vector_distance(pos0, tgt->pos);
+            float d = vector_distance(pos0, tgt->pos0);
             aimrange = d;//log(1.0f+d) / log(4);
         }
         aimrange = fmin(aimrange, 10000.0f);
@@ -173,7 +173,7 @@ void rMobile::animate(float spf) {
         float* target_pos = NULL;
         if (aimtarget != 0) {
             tgt = cWorld::instance->getObject(aimtarget);
-            if (tgt != NULL) target_pos = tgt->pos;
+            if (tgt != NULL) target_pos = tgt->pos0;
         }
         if (target_pos == NULL) {
             // TODO: determind rotation to level head forward.

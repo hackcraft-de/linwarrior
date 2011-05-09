@@ -82,7 +82,7 @@ public:
     /// Retrieves Height and Color of the xz position and calculates on demand.
     void getCachedHeight(float x, float z, float* const color);
     /// Re-adjust particle position by making multiple downward-hemispherical checks.
-    virtual float constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor);
+    virtual float constrain(float* worldpos, float radius, float* localpos, cObject* enactor);
     /// Animate foliage.
     virtual void animate(float spf);
     /// Draw Landscape surrounding the current camera position.

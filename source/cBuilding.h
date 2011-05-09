@@ -36,10 +36,10 @@ protected:
 public:
     cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z);
 
-    virtual void damageByParticle(float* localpos, float damage, cObject* enactor = NULL);
-    virtual float constrainParticle(float* worldpos, float radius = 0.0f, float* localpos = NULL, cObject* enactor = NULL);
+    virtual void damage(float* localpos, float damage, cObject* enactor = NULL);
+    virtual float constrain(float* worldpos, float radius = 0.0f, float* localpos = NULL, cObject* enactor = NULL);
 
-    virtual void onSpawn();
+    virtual void spawn();
 
     virtual void animate(float spf);
     virtual void transform();

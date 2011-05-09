@@ -132,11 +132,11 @@ int rWeapon::damageByParticle(float* worldpos, float radius, int roles, float da
         foreach(i, *range) {
             cObject* object = *i;
             float localpos_[3];
-            float depth = object->constrainParticle(worldpos_, radius, localpos_, NULL);
+            float depth = object->constrain(worldpos_, radius, localpos_, NULL);
             //cout << object->nameable->name << " depth: " << depth << endl;
             if (depth == 0) continue;
             damaged++;
-            object->damageByParticle(localpos_, scaled_damage, object);
+            object->damage(localpos_, scaled_damage, object);
             break;
         }
     }

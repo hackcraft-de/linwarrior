@@ -48,27 +48,43 @@ struct rComponent {
         return new rComponent(this);
     }
 
-    virtual float constrainParticle(float* worldpos, float radius, float* localpos, cObject * enactor) {
+    virtual void spawn() {
+    }
+
+    virtual void frag() {
+    }
+
+    virtual void camera() {
+    }
+
+    virtual void listener() {
+    }
+
+    virtual float constrain(float* worldpos, float radius, float* localpos = NULL, cObject * enactor = NULL) {
         return 0.0f;
-    };
+    }
+
+    virtual bool damage(float* localpos, float damage, cObject * enactor = NULL) {
+        return true;
+    }
 
     virtual void message(cMessage * message) {
-    };
+    }
 
     virtual void animate(float spf) {
-    };
+    }
 
     virtual void transform() {
-    };
+    }
 
     virtual void drawSolid() {
-    };
+    }
 
     virtual void drawEffect() {
-    };
+    }
 
     virtual void drawHUD() {
-    };
+    }
 };
 
 /*

@@ -62,8 +62,8 @@ cPadmap::cPadmap(float x, float y, float z) {
         }
     }
 
-    vector_set(this->pos, x, y, z);
-    quat_set(this->ori, 0, 0, 0, 1);
+    vector_set(this->pos0, x, y, z);
+    quat_set(this->ori0, 0, 0, 0, 1);
 
     float h[16 * 16] = {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -149,7 +149,7 @@ void cPadmap::drawSolid() {
 
         glPushMatrix();
         {
-            glTranslatef(this->pos[0], this->pos[1], this->pos[2]);
+            glTranslatef(this->pos0[0], this->pos0[1], this->pos0[2]);
             glScalef(mapscale[0], mapscale[1], mapscale[2]);
 
             int a = dims[0];
@@ -262,13 +262,13 @@ void cPadmap::drawSolid() {
     glPopAttrib();
 }
 
-float cPadmap::constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor) {
+float cPadmap::constrain(float* worldpos, float radius, float* localpos, cObject* enactor) {
     //return 0.0f; // !!!!!!!!!!
 
     //if (enactor == NULL) return 0.0;
     float localpos_[3];
     vector_cpy(localpos_, worldpos);
-    vector_sub(localpos_, localpos_, this->pos);
+    vector_sub(localpos_, localpos_, this->pos0);
 
     localpos_[0] /= mapscale[0];
     localpos_[1] /= mapscale[1];
@@ -344,7 +344,7 @@ float cPadmap::constrainParticle(float* worldpos, float radius, float* localpos,
         localpos_[0] *= mapscale[0];
         localpos_[1] *= mapscale[1];
         localpos_[2] *= mapscale[2];
-        vector_add(localpos_, localpos_, this->pos);
+        vector_add(localpos_, localpos_, this->pos0);
         vector_cpy(worldpos, localpos_);
         if (localpos != NULL) vector_cpy(localpos, localpos_);
     }

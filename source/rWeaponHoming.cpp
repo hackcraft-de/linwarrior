@@ -107,7 +107,7 @@ void rWeaponHoming::animate(float spf) {
             cObject *targetobject = cWorld::instance->getObject(s->target);
             if (targetobject && true) {
                 float tgt[] = {0, 0, 0};
-                vector_cpy(tgt, targetobject->pos);
+                vector_cpy(tgt, targetobject->pos0);
                 float dir[] = {tgt[0] - s->pos[0], tgt[1] - s->pos[1], tgt[2] - s->pos[2]};
                 vector_norm(dir, dir);
                 vector_norm(s->vel, s->vel);

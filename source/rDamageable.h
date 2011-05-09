@@ -17,9 +17,15 @@
  */
 struct rDamageable : public rComponent {
 public: // INPUT
+    /// Radius for hitzone calculation.
+    float radius;
+    /// Height for hitzone calculation.
+    float height;
 public: // OUTPUT
     /// Marks object as still alife.
     bool alife;
+    /// Marks object as dead.
+    bool dead;
     /// Enumeration of entity body part units: Body, Legs, Left, Right.
 
     enum Parts {
@@ -48,7 +54,7 @@ public:
     /// Clone this.
     virtual rComponent * clone();
     /// Apply damage to a hitzone, and return alife.
-    virtual bool damage(int hitzone, float damage, cObject * enactor);
+    virtual bool damage(float* localpos, float damage, cObject * enactor);
     /// Display damaging.
     virtual void drawHUD();
 };

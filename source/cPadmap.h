@@ -38,7 +38,7 @@ public:
     cPadmap(float x, float y, float z);
     /// Calculate Height of the xz position.
     inline float getHeight(float x, float z);
-    virtual float constrainParticle(float* worldpos, float radius = 0.0f, float* localpos = NULL, cObject* enactor = NULL);
+    virtual float constrain(float* worldpos, float radius = 0.0f, float* localpos = NULL, cObject* enactor = NULL);
     virtual void drawSolid();
 };
 

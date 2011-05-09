@@ -20,9 +20,9 @@ cAlert::cAlert(float* center, float* range, int shapetype, std::string msgtype, 
     this->radius = 1 + fmax(fabs(shape.range[0]), fmax(fabs(shape.range[1]), fabs(shape.range[2])));
     if (this->radius >= 25) {
         // Make global "position".
-        vector_set(pos, float_NAN, float_NAN, float_NAN);
+        vector_set(pos0, float_NAN, float_NAN, float_NAN);
     } else {
-        vector_cpy(pos, center);
+        vector_cpy(pos0, center);
     }
 
     nameable = new rNameable(this);
@@ -41,7 +41,7 @@ cAlert::cAlert(float* center, float* range, int shapetype, std::string msgtype, 
     fusedelay = 0;
 }
 
-float cAlert::constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor) {
+float cAlert::constrain(float* worldpos, float radius, float* localpos, cObject* enactor) {
     //std::cout << "called" << std::endl;
     // Don't react on scanning and shooting.
     if (enactor == NULL) return 0;

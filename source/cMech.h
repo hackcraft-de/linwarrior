@@ -82,7 +82,7 @@ public:
     rDamageable* damageable;
     rTraceable* traceable;
     rController* controller;
-    rCamera* camera;
+    rCamera* camra;
     rMobile* mobile;
     rRigged* rigged;
     rCollider* collider;
@@ -101,11 +101,11 @@ public:
     ~cMech();
 
     // Events
-    virtual void onSpawn();
+    virtual void spawn();
 
     // Camera and Headphone
-    void multEyeMatrix();
-    void setAsAudioListener();
+    void camera();
+    void listener();
 
     // Weapons
     void mountWeapon(char* point, rWeapon *weapon, bool add = true);
@@ -122,8 +122,8 @@ public:
     virtual void drawHUD();
 
     // Particle constraining
-    virtual void damageByParticle(float* localpos, float damage, cObject* enactor = NULL);
-    virtual float constrainParticle(float* worldpos, float radius = 0.0f, float* localpos = NULL, cObject* enactor = NULL);
+    virtual void damage(float* localpos, float damage, cObject* enactor = NULL);
+    virtual float constrain(float* worldpos, float radius = 0.0f, float* localpos = NULL, cObject* enactor = NULL);
 };
 
 

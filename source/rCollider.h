@@ -38,7 +38,7 @@ public:
     ~rCollider() {
     }
 
-    virtual float constrainParticle(float* worldpos, float radius, float* localpos, cObject * enactor);
+    virtual float constrain(float* worldpos, float radius, float* localpos, cObject * enactor);
     virtual void animate(float spf);
     virtual void drawEffect();
 };

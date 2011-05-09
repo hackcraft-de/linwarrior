@@ -82,11 +82,11 @@ public: // Basic Object attributes for managing.
     /// Unique Object ID, simulation date:time:deltacycle of spawn.
     OID oid;
     /// Position for clustering, targeting and placing.
-    vec3 pos;
+    vec3 pos0;
     /// Radius for clustering and visibility.
     float radius;
     /// Basic object orientation.
-    quat ori;
+    quat ori0;
     /// Age in seconds since spawn, updated by world before animate() call.
     double seconds;
     /// Internal qualified name of the object.
@@ -94,14 +94,18 @@ public: // Basic Object attributes for managing.
     /// Input to the object through common input device if not null.
     cPad* pad;
 
+public: // Components
+
+    std::vector<rComponent*> components;
+
 public: // FIXME: Predefined Components, to be removed from cObject
 
     rGrouping* grouping;
 
 public: // Experimental Component "Managing"
 
-    static std::map<std::string, rComponent*> roleprotos;
-    static std::map<std::string, OID> roleoffsets;
+    //static std::map<std::string, rComponent*> roleprotos;
+    //static std::map<std::string, OID> roleoffsets;
     //static std::map<std::string, OID> roleids;
     //static std::map<OID, rRole*> roletypes;
     //std::map<OID, rRole*> roles;
@@ -135,18 +139,18 @@ public:
 
     cObject() {
         oid = 0;
-        pos[0] = pos[1] = pos[2] = 0.0f;
-        ori[0] = ori[1] = ori[2] = 0.0f;
-        ori[3] = 1.0f;
+        pos0[0] = pos0[1] = pos0[2] = 0.0f;
+        ori0[0] = ori0[1] = ori0[2] = 0.0f;
+        ori0[3] = 1.0f;
         seconds = 0;
         name = "";
-        if (roleprotos.empty()) {
+        //if (roleprotos.empty()) {
             //registerRole(new rNameable, FIELDOFS(nameable), ROLEPTR(cObject::nameable));
             //registerRole(new rTraceable, FIELDOFS(traceable), ROLEPTR(cObject::traceable));
             //registerRole(new rDamageable, FIELDOFS(damageable), ROLEPTR(cObject::damageable));
             //registerRole(new rControlled, FIELDOFS(controlled), ROLEPTR(cObject::controlled));
             //registerRole(new rGrouping, FIELDOFS(grouping), ROLEPTR(cObject::grouping));
-        }
+        //}
         grouping = NULL;
         pad = NULL;
         //rRole* r = GETROLE(FIELDOFS(nameable));
@@ -161,13 +165,13 @@ public:
         delete this->grouping;
     }
 
+    /*
     static void registerRole(rComponent* prototype, OID attribute_offset, rComponent* cObject::* ptr = NULL) {
         roleprotos[prototype->role] = prototype;
         roleoffsets[prototype->role] = attribute_offset;
         std::cout << "NEW ROLE " << prototype->role << " @ " << attribute_offset << " # " << ptr << "\n";
     }
 
-    /*
     bool anyRoles(std::set<OID>* test) {
         std::set<OID> result;
         std::set_intersection(roleset.begin(), roleset.end(), test->begin(), test->end(), std::inserter(result, result.begin()));
@@ -238,73 +242,96 @@ public:
 
     /// Called right after object was spawned into the world.
 
-    virtual void onSpawn() {
+    virtual void spawn() {
+        for (auto i = components.begin(); i != components.end(); i++) {
+            (*i)->spawn();
+        }
     }
 
     /// Called right after object has been removed from object list and index.
 
-    virtual void onFrag() {
+    virtual void frag() {
+        for (auto i = components.begin(); i != components.end(); i++) {
+            (*i)->frag();
+        }
     }
 
-    /// glMultiplies in the Object's camera matrix.
+    /// Called to glMultiply in the Object's camera matrix.
 
-    virtual void multEyeMatrix() {
+    virtual void camera() {
+        for (auto i = components.begin(); i != components.end(); i++) {
+            (*i)->camera();
+        }
     }
 
-    /// Sets this Object's location, orientation and vel. as Audio listener.
+    /// Called to set Object's location, orientation and vel. as audio listener.
 
-    virtual void setAsAudioListener() {
+    virtual void listener() {
+        for (auto i = components.begin(); i != components.end(); i++) {
+            (*i)->listener();
+        }
     }
 
     /// Called for each message sent to this object.
 
     virtual void message(cMessage* message) {
+        for (auto i = components.begin(); i != components.end(); i++) {
+            (*i)->message(message);
+        }
     }
 
-    /// Advance internal timers,animation state and pose, check gamepad.
+    /// Called to advance internal timers,animation state and pose, check gamepad.
 
     virtual void animate(float dt) {
+        for (auto i = components.begin(); i != components.end(); i++) {
+            (*i)->animate(dt);
+        }
     }
 
-    /// Precalculate neccessary transformations - matrices, mountpoints, pos ..
+    /// Deprecated, use animate? Called to precalculate neccessary transformations - matrices, mountpoints, pos ..
 
     virtual void transform() {
+        for (auto i = components.begin(); i != components.end(); i++) {
+            (*i)->transform();
+        }
     }
 
-    /// Render solid non-translucent parts of the object.
+    /// Called to render solid non-translucent parts of the object.
 
     virtual void drawSolid() {
+        for (auto i = components.begin(); i != components.end(); i++) {
+            (*i)->drawSolid();
+        }
     }
 
-    /// Render translucent object-parts and visual effects.
+    /// Called to render translucent object-parts and visual effects.
 
     virtual void drawEffect() {
+        for (auto i = components.begin(); i != components.end(); i++) {
+            (*i)->drawEffect();
+        }
     }
 
-    /// Render HUD-contents as seen when looking through the objects-eyes.
+    /// Called to render HUD-contents as seen when looking through the objects-eyes.
 
     virtual void drawHUD() {
     }
 
-
-    // Receiving damage:
-
     /**
-     * Deal damage to the object with the damage arriving at or from
-     * the given local position ie. relative to the object itself.
+     * Called to deal damage to the object with the damage arriving at or
+     * from the given local position ie. relative to the object itself.
      * @localpos input location vector relative to the object.
      * @damage amount of damage to deal to the object.
      * @enactor the object dealing the damage to this object.
      */
-    virtual void damageByParticle(float* localpos, float damage, cObject* enactor = NULL) {
-
+    virtual void damage(float* localpos, float damage, cObject* enactor = NULL) {
+        for (auto i = components.begin(); i != components.end(); i++) {
+            (*i)->damage(localpos, damage, enactor);
+        }
     }
 
-
-    // Physics for Traceable:
-
     /**
-     * Constrain the given world position particle (with radius) to
+     * Called to constrain the given world position particle (with radius) to
      * the object boundary hull ie. place the worldpos to the nearest
      * boundary hull position if the worldpos is inside the object's hull.
      * localpos delivers in case of impact the local position relative
@@ -314,10 +341,15 @@ public:
      * @localpos output adjusted location vector.
      * @return the intrusion depth.
      */
-    virtual float constrainParticle(float* worldpos, float radius = 0.0f, float* localpos = NULL, cObject* enactor = NULL) {
-        return 0;
+    virtual float constrain(float* worldpos, float radius = 0.0f, float* localpos = NULL, cObject* enactor = NULL) {
+        double maxdepth = 0.0f;
+        for (auto i = components.begin(); i != components.end(); i++) {
+            double depth = (*i)->constrain(worldpos, radius, localpos, enactor);
+            maxdepth = fmax(maxdepth, depth);
+        }
+        return float(maxdepth);
     }
-    
+
 };
 
 #endif

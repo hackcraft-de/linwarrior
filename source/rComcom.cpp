@@ -247,8 +247,8 @@ void rTarcom::drawHUD() {
                 else if (o->hasTag(cObject::BLUE)) glColor4f(0, 0, 1, 1);
                 else if (o->hasTag(cObject::YELLOW)) glColor4f(0, 1, 0, 1);
                 if (o->oid == selected) glColor4f(1, 0, 1, 1);
-                float dx = o->pos[0] - pos[0];
-                float dz = o->pos[2] - pos[2];
+                float dx = o->pos0[0] - pos[0];
+                float dz = o->pos0[2] - pos[2];
                 float r = sqrtf(dx * dx + dz * dz);
                 dx /= r;
                 dz /= r;

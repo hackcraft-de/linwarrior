@@ -16,7 +16,7 @@ rCollider::rCollider(cObject * obj) {
     height = 0.1f;
 }
 
-float rCollider::constrainParticle(float* worldpos, float radius, float* localpos, cObject* enactor) {
+float rCollider::constrain(float* worldpos, float radius, float* localpos, cObject* enactor) {
     float localpos_[3];
     { // Transform to local.
         quat ori_inv;
