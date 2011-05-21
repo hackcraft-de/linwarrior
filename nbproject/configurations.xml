@@ -34,6 +34,7 @@
         <itemPath>source/cTree.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f4" displayName="utils" projectFiles="true">
+        <itemPath>source/util/GapBuffer.h</itemPath>
         <itemPath>source/psi3d/ctrl.h</itemPath>
         <itemPath>source/psi3d/instfont.h</itemPath>
         <itemPath>source/psi3d/kdtree.h</itemPath>

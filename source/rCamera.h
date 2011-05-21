@@ -34,10 +34,6 @@ public: // OUTPUT
     /// True when camerastate is in first perspective mode. (hook o)
     bool firstperson;
 protected: // INTERNALS
-    /// # of camera modes: ISO C++ forbids const int with initialization >:(
-    enum {
-        MAX_CAMERAMODES = 6
-    };
     /// Current Camera mode, negative number is indicating transition.
     int camerastate;
 public:

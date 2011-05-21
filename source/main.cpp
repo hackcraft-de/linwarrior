@@ -28,6 +28,22 @@ unsigned int* gInstantfont = NULL;
 
 DEFINE_glprintf
 
+
+#include "util/GapBuffer.h"
+
+GapBuffer console;
+
+/*
+ * Models an all-in-one widget:
+ * Button, Toggle-Button, Label, TextArea, TextField, Console, Panel
+ * Basically a clickable and editable text.
+ * Should render to a texture/screen.
+ */
+class Widget {
+    GapBuffer text;
+};
+
+
 cGame::cGame()
 : pad1(NULL),
 map1(map_zedwise),
@@ -688,6 +704,7 @@ int job_output(void* data) {
     while (true) {
         //cout << "Redirecting text output.\n";
         if (!oss.str().empty()) {
+            console.write(oss.str().c_str());
             printf("%s", oss.str().c_str());
             oss.clear();
             oss.str("");
@@ -697,12 +714,18 @@ int job_output(void* data) {
     }
     return 0;
 }
-
+//#include <fstream>
+//#include <iostream>
 int cMain::sdlmain(int argc, char** args) {
     //jobs.push(job_bgm);
-    //jobs.push(job_output);
     //jobs.push(job_render);
-    //std::cout.rdbuf( oss.rdbuf() );
+
+    std::streambuf* stdout_ = std::cout.rdbuf();
+    bool redirectOutput = !true;
+    if (redirectOutput) {
+        jobs.push(job_output);
+        std::cout.rdbuf( oss.rdbuf() );
+    }
 
     std::cout << "LinWarrior 3D  (Build " __DATE__ ") by hackcraft.de" << std::endl << std::endl;
 
@@ -950,8 +973,11 @@ int cMain::sdlmain(int argc, char** args) {
     // Better set global signal and SDL_WaitThread.
 
     loopi(maxminions) {
-        //SDL_KillThread(minions[i]);
+        SDL_KillThread(minions[i]);
     }
+    
+    std::cout.rdbuf( stdout_ );
+    //console.print();
 
     return 0;
 }
@@ -970,6 +996,11 @@ extern "C" int __stdcall WinMain(void* hInstance, void* hPrevInstance, char* lpC
 
 int main(int argc, char **args) {
 #endif
+
+    //console.test0();
+    //console.test1();
+    //return 0;
+    
     try {
         return cMain::sdlmain(argc, args);
     } catch (char* s) {

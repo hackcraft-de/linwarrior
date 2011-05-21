@@ -78,6 +78,7 @@ void rCamera::camera() {
 }
 
 void rCamera::animate(float spf) {
+    const int MAX_CAMERAMODES = 6;
     if (cameraswitch) {
         // Only if Camera State is not transitional
         // then switch to next perspective on button press.
