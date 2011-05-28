@@ -162,7 +162,54 @@ public: // Gap buffer operations
     void writeOver(char c) {
         //bufferData[bufferPre] = c;
     }
-    
+public: // Output
+
+    void printConsole(char* buffer, int width, int height) {
+        if (buffer == NULL) return;
+        for (unsigned long i = 0; i < width*height; i++) {
+            buffer[i] = ' ';
+        }
+        //cout << "printConsole\n";
+        char* rows[height];
+        long long pos = this->bufferSize-1;
+        // Find rows in gap-buffer
+        for (int i = height-1; i >= 0; i--) {
+            if (pos < 0) {
+                rows[i] = NULL;
+                continue;
+            }
+            do {
+                pos--;
+            } while (pos > 0 && bufferData[pos] != nl);
+            rows[i] = &bufferData[pos] + ((pos==0)?0:1);
+            //cout << "Row " << i << ": " << pos << endl;
+            pos--;
+        }
+
+        // Copy rows from gap-buffer to console-buffer.
+        for (int i = 0; i < height; i++) {
+            int r = i;
+            if (rows[r] == NULL) continue;
+            //cout << "[";
+            char* pre = &bufferData[bufferPre];
+            char* post = &bufferData[bufferPost];
+            char* end = &bufferData[bufferSize-1];
+            char* src = rows[r];
+            char* dst = &buffer[r * width];
+            int cnt = 0;
+            while (cnt < width && src <= end && *src != nl) {
+                if (src < pre || src >= post) {
+                    cnt++;
+                    *dst = *src;
+                    //cout << (*src);
+                    dst++;
+                }
+                src++;
+            }
+            //cout << "]" << endl;
+        }
+    }
+
     void printState(bool full = true) {
         std::cout << "pre: " << bufferPre << "(" << bufferData[bufferPre] << ")" << " post: " << bufferPost << " size: " << bufferSize;
         //std::cout << "pre: " << bufferPre << " (" << bufferData[bufferPre] << ") post: " << bufferPost << " (" << bufferData[bufferPost] << ") size: " << bufferSize;
@@ -194,7 +241,7 @@ public: // Gap buffer operations
         std::cout << std::endl;
     }
 
-public:
+public: // Testing
     void test0() {
         std::cout << "Testing Text class\n";
         write("Hello_World!*");
@@ -302,6 +349,12 @@ public:
 
         stepDown();
         printState(true);
+        
+        if (1) {
+            char* buffer = new char [80*50];
+            printConsole(buffer, 22, 5);
+            delete buffer;
+        }
     }
 
 private:
