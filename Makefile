@@ -2,7 +2,7 @@
 # Makefile with auto-dependency generation
 
 # Add Include directories here.
-INCLUDES = -I . 
+INCLUDES = -I source
 
 # Automatic searching for source files.
 # Objects to compile are all sources (cpp) and put the .o below build-dir.

@@ -1,63 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="69">
   <logicalFolder name="root" displayName="root" projectFiles="true">
-    <logicalFolder name="HeaderFiles"
-                   displayName="Header Files"
-                   projectFiles="true">
-      <logicalFolder name="f2" displayName="components" projectFiles="true">
-        <itemPath>source/rCamera.h</itemPath>
-        <itemPath>source/rCollider.h</itemPath>
-        <itemPath>source/rComcom.h</itemPath>
-        <itemPath>source/rComponent.h</itemPath>
-        <itemPath>source/rController.h</itemPath>
-        <itemPath>source/rDamageable.h</itemPath>
-        <itemPath>source/rGrouping.h</itemPath>
-        <itemPath>source/rMobile.h</itemPath>
-        <itemPath>source/rNameable.h</itemPath>
-        <itemPath>source/rRigged.h</itemPath>
-        <itemPath>source/rTraceable.h</itemPath>
-        <itemPath>source/rWeapon.h</itemPath>
-        <itemPath>source/rWeaponExplosion.h</itemPath>
-        <itemPath>source/rWeaponHoming.h</itemPath>
-        <itemPath>source/rWeaponMachinegun.h</itemPath>
-        <itemPath>source/rWeaponPlasmagun.h</itemPath>
-        <itemPath>source/rWeaponRaybeam.h</itemPath>
-        <itemPath>source/rWeaponSparkgun.h</itemPath>
-      </logicalFolder>
-      <logicalFolder name="f3" displayName="objects" projectFiles="true">
-        <itemPath>source/cAlert.h</itemPath>
-        <itemPath>source/cBuilding.h</itemPath>
-        <itemPath>source/cMech.h</itemPath>
-        <itemPath>source/cObject.h</itemPath>
-        <itemPath>source/cPadmap.h</itemPath>
-        <itemPath>source/cPlanetmap.h</itemPath>
-        <itemPath>source/cTree.h</itemPath>
-      </logicalFolder>
-      <logicalFolder name="f4" displayName="utils" projectFiles="true">
-        <itemPath>source/util/GapBuffer.h</itemPath>
-        <itemPath>source/psi3d/ctrl.h</itemPath>
-        <itemPath>source/psi3d/instfont.h</itemPath>
-        <itemPath>source/psi3d/kdtree.h</itemPath>
-        <itemPath>source/psi3d/macros.h</itemPath>
-        <itemPath>source/psi3d/math3d.h</itemPath>
-        <itemPath>source/psi3d/md5frmt.h</itemPath>
-        <itemPath>source/psi3d/noise.h</itemPath>
-        <itemPath>source/psi3d/snippetsgl.h</itemPath>
-      </logicalFolder>
-      <itemPath>source/OID.h</itemPath>
-      <itemPath>source/cBackground.h</itemPath>
-      <itemPath>source/cLandscape.h</itemPath>
-      <itemPath>/media/44EA-7693/linux_workspaces/netbeans_workspace/linwarrior/source/cMessage.h</itemPath>
-      <itemPath>source/cMission.h</itemPath>
-      <itemPath>source/cPad.h</itemPath>
-      <itemPath>source/cParticle.h</itemPath>
-      <itemPath>source/cSolid.h</itemPath>
-      <itemPath>source/cSurface.h</itemPath>
-      <itemPath>source/cTiming.h</itemPath>
-      <itemPath>source/cWorld.h</itemPath>
-      <itemPath>source/main.h</itemPath>
-      <itemPath>source/userkeys.h</itemPath>
-    </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
                    projectFiles="true">
@@ -65,40 +8,124 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <itemPath>source/cAlert.cpp</itemPath>
-      <itemPath>source/cBackground.cpp</itemPath>
-      <itemPath>source/cBuilding.cpp</itemPath>
-      <itemPath>source/cLandscape.cpp</itemPath>
-      <itemPath>source/cMech.cpp</itemPath>
-      <itemPath>/media/44EA-7693/linux_workspaces/netbeans_workspace/linwarrior/source/cMessage.cpp</itemPath>
-      <itemPath>source/cMission.cpp</itemPath>
-      <itemPath>source/cObject.cpp</itemPath>
-      <itemPath>source/cPadmap.cpp</itemPath>
-      <itemPath>source/cPlanetmap.cpp</itemPath>
-      <itemPath>source/cSolid.cpp</itemPath>
-      <itemPath>source/cSurface.cpp</itemPath>
-      <itemPath>source/cTiming.cpp</itemPath>
-      <itemPath>source/cTree.cpp</itemPath>
-      <itemPath>source/cWorld.cpp</itemPath>
-      <itemPath>source/main.cpp</itemPath>
-      <itemPath>source/rCamera.cpp</itemPath>
-      <itemPath>source/rCollider.cpp</itemPath>
-      <itemPath>source/rComcom.cpp</itemPath>
-      <itemPath>source/rComponent.cpp</itemPath>
-      <itemPath>source/rController.cpp</itemPath>
-      <itemPath>source/rDamageable.cpp</itemPath>
-      <itemPath>source/rGrouping.cpp</itemPath>
-      <itemPath>source/rMobile.cpp</itemPath>
-      <itemPath>source/rNameable.cpp</itemPath>
-      <itemPath>source/rRigged.cpp</itemPath>
-      <itemPath>source/rTraceable.cpp</itemPath>
-      <itemPath>source/rWeapon.cpp</itemPath>
-      <itemPath>source/rWeaponExplosion.cpp</itemPath>
-      <itemPath>source/rWeaponHoming.cpp</itemPath>
-      <itemPath>source/rWeaponMachinegun.cpp</itemPath>
-      <itemPath>source/rWeaponPlasmagun.cpp</itemPath>
-      <itemPath>source/rWeaponRaybeam.cpp</itemPath>
-      <itemPath>source/rWeaponSparkgun.cpp</itemPath>
+      <logicalFolder name="de" displayName="de" projectFiles="true">
+        <logicalFolder name="hackcraft"
+                       displayName="hackcraft"
+                       projectFiles="true"
+                       kind="SOURCE_LOGICAL_FOLDER">
+          <logicalFolder name="comp"
+                         displayName="comp"
+                         projectFiles="true"
+                         kind="SOURCE_LOGICAL_FOLDER">
+            <itemPath>source/de/hackcraft/comp/rCamera.cpp</itemPath>
+            <itemPath>source/de/hackcraft/comp/rCamera.h</itemPath>
+            <itemPath>source/de/hackcraft/comp/rCollider.cpp</itemPath>
+            <itemPath>source/de/hackcraft/comp/rCollider.h</itemPath>
+            <itemPath>source/de/hackcraft/comp/rComcom.cpp</itemPath>
+            <itemPath>source/de/hackcraft/comp/rComcom.h</itemPath>
+            <itemPath>source/de/hackcraft/comp/rComponent.cpp</itemPath>
+            <itemPath>source/de/hackcraft/comp/rComponent.h</itemPath>
+            <itemPath>source/de/hackcraft/comp/rController.cpp</itemPath>
+            <itemPath>source/de/hackcraft/comp/rController.h</itemPath>
+            <itemPath>source/de/hackcraft/comp/rDamageable.cpp</itemPath>
+            <itemPath>source/de/hackcraft/comp/rDamageable.h</itemPath>
+            <itemPath>source/de/hackcraft/comp/rGrouping.cpp</itemPath>
+            <itemPath>source/de/hackcraft/comp/rGrouping.h</itemPath>
+            <itemPath>source/de/hackcraft/comp/rMobile.cpp</itemPath>
+            <itemPath>source/de/hackcraft/comp/rMobile.h</itemPath>
+            <itemPath>source/de/hackcraft/comp/rNameable.cpp</itemPath>
+            <itemPath>source/de/hackcraft/comp/rNameable.h</itemPath>
+            <itemPath>source/de/hackcraft/comp/rRigged.cpp</itemPath>
+            <itemPath>source/de/hackcraft/comp/rRigged.h</itemPath>
+            <itemPath>source/de/hackcraft/comp/rTraceable.cpp</itemPath>
+            <itemPath>source/de/hackcraft/comp/rTraceable.h</itemPath>
+            <itemPath>source/de/hackcraft/comp/rWeapon.cpp</itemPath>
+            <itemPath>source/de/hackcraft/comp/rWeapon.h</itemPath>
+            <itemPath>source/de/hackcraft/comp/rWeaponExplosion.cpp</itemPath>
+            <itemPath>source/de/hackcraft/comp/rWeaponExplosion.h</itemPath>
+            <itemPath>source/de/hackcraft/comp/rWeaponHoming.cpp</itemPath>
+            <itemPath>source/de/hackcraft/comp/rWeaponHoming.h</itemPath>
+            <itemPath>source/de/hackcraft/comp/rWeaponMachinegun.cpp</itemPath>
+            <itemPath>source/de/hackcraft/comp/rWeaponMachinegun.h</itemPath>
+            <itemPath>source/de/hackcraft/comp/rWeaponPlasmagun.cpp</itemPath>
+            <itemPath>source/de/hackcraft/comp/rWeaponPlasmagun.h</itemPath>
+            <itemPath>source/de/hackcraft/comp/rWeaponRaybeam.cpp</itemPath>
+            <itemPath>source/de/hackcraft/comp/rWeaponRaybeam.h</itemPath>
+            <itemPath>source/de/hackcraft/comp/rWeaponSparkgun.cpp</itemPath>
+            <itemPath>source/de/hackcraft/comp/rWeaponSparkgun.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="object"
+                         displayName="object"
+                         projectFiles="true"
+                         kind="SOURCE_LOGICAL_FOLDER">
+            <itemPath>source/de/hackcraft/object/cAlert.cpp</itemPath>
+            <itemPath>source/de/hackcraft/object/cAlert.h</itemPath>
+            <itemPath>source/de/hackcraft/object/cBuilding.cpp</itemPath>
+            <itemPath>source/de/hackcraft/object/cBuilding.h</itemPath>
+            <itemPath>source/de/hackcraft/object/cMech.cpp</itemPath>
+            <itemPath>source/de/hackcraft/object/cMech.h</itemPath>
+            <itemPath>source/de/hackcraft/object/cObject.cpp</itemPath>
+            <itemPath>source/de/hackcraft/object/cObject.h</itemPath>
+            <itemPath>source/de/hackcraft/object/cPadmap.cpp</itemPath>
+            <itemPath>source/de/hackcraft/object/cPadmap.h</itemPath>
+            <itemPath>source/de/hackcraft/object/cPlanetmap.cpp</itemPath>
+            <itemPath>source/de/hackcraft/object/cPlanetmap.h</itemPath>
+            <itemPath>source/de/hackcraft/object/cTree.cpp</itemPath>
+            <itemPath>source/de/hackcraft/object/cTree.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="proc"
+                         displayName="proc"
+                         projectFiles="true"
+                         kind="SOURCE_LOGICAL_FOLDER">
+            <itemPath>source/de/hackcraft/proc/cLandscape.cpp</itemPath>
+            <itemPath>source/de/hackcraft/proc/cLandscape.h</itemPath>
+            <itemPath>source/de/hackcraft/proc/cSolid.cpp</itemPath>
+            <itemPath>source/de/hackcraft/proc/cSolid.h</itemPath>
+            <itemPath>source/de/hackcraft/proc/cSurface.cpp</itemPath>
+            <itemPath>source/de/hackcraft/proc/cSurface.h</itemPath>
+            <itemPath>source/de/hackcraft/proc/noise.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="psi3d"
+                         displayName="psi3d"
+                         projectFiles="true"
+                         kind="SOURCE_LOGICAL_FOLDER">
+            <itemPath>source/de/hackcraft/psi3d/MD5Format.h</itemPath>
+            <itemPath>source/de/hackcraft/psi3d/Particle.h</itemPath>
+            <itemPath>source/de/hackcraft/psi3d/ctrl.h</itemPath>
+            <itemPath>source/de/hackcraft/psi3d/instfont.h</itemPath>
+            <itemPath>source/de/hackcraft/psi3d/macros.h</itemPath>
+            <itemPath>source/de/hackcraft/psi3d/math3d.h</itemPath>
+            <itemPath>source/de/hackcraft/psi3d/snippetsgl.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="util"
+                         displayName="util"
+                         projectFiles="true"
+                         kind="SOURCE_LOGICAL_FOLDER">
+            <itemPath>source/de/hackcraft/util/GapBuffer.h</itemPath>
+            <itemPath>source/de/hackcraft/util/KDTree.h</itemPath>
+            <itemPath>source/de/hackcraft/util/Message.cpp</itemPath>
+            <itemPath>source/de/hackcraft/util/Message.h</itemPath>
+            <itemPath>source/de/hackcraft/util/OID.h</itemPath>
+            <itemPath>source/de/hackcraft/util/Pad.h</itemPath>
+            <itemPath>source/de/hackcraft/util/Timing.cpp</itemPath>
+            <itemPath>source/de/hackcraft/util/Timing.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="world"
+                         displayName="world"
+                         projectFiles="true"
+                         kind="SOURCE_LOGICAL_FOLDER">
+            <itemPath>source/de/hackcraft/world/cBackground.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/cBackground.h</itemPath>
+            <itemPath>source/de/hackcraft/world/cMission.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/cMission.h</itemPath>
+            <itemPath>source/de/hackcraft/world/cWorld.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/cWorld.h</itemPath>
+          </logicalFolder>
+          <itemPath>source/de/hackcraft/main.cpp</itemPath>
+          <itemPath>source/de/hackcraft/main.h</itemPath>
+          <itemPath>source/de/hackcraft/userkeys.h</itemPath>
+        </logicalFolder>
+      </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -106,6 +133,13 @@
       <itemPath>Makefile</itemPath>
     </logicalFolder>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>source/proc</Elem>
+    <Elem>source/psi3d</Elem>
+    <Elem>source/util</Elem>
+    <Elem>source/comp</Elem>
+    <Elem>/home/benben/Desktop/linux_workspaces/netbeans_workspace/linwarrior/source/de</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="Debug" type="0">
@@ -122,71 +156,17 @@
           <executablePath>dist/linwarrior</executablePath>
           <cTool>
             <incDir>
-              <pElem>.</pElem>
               <pElem>source</pElem>
-              <pElem>psi3d</pElem>
             </incDir>
           </cTool>
           <ccTool>
             <incDir>
-              <pElem>.</pElem>
               <pElem>source</pElem>
-              <pElem>psi3d</pElem>
             </incDir>
             <commandLine>-O1 -funroll-loops</commandLine>
           </ccTool>
         </makeTool>
       </makefileType>
-      <item path="source/cBackground.cpp" ex="false" tool="1">
-        <ccTool>
-          <additionalDep>source/cBackground.h</additionalDep>
-        </ccTool>
-      </item>
-      <item path="source/cBuilding.cpp" ex="false" tool="1">
-        <ccTool>
-          <additionalDep>source/cBuilding.h</additionalDep>
-        </ccTool>
-      </item>
-      <item path="source/cMech.cpp" ex="false" tool="1">
-        <ccTool>
-          <additionalDep>source/cMech.h</additionalDep>
-        </ccTool>
-      </item>
-      <item path="source/cMission.cpp" ex="false" tool="1">
-        <ccTool>
-          <additionalDep>source/cMission.h</additionalDep>
-        </ccTool>
-      </item>
-      <item path="source/cObject.cpp" ex="false" tool="1">
-        <ccTool>
-          <additionalDep>source/cObject.h</additionalDep>
-        </ccTool>
-      </item>
-      <item path="source/cTree.cpp" ex="false" tool="1">
-        <ccTool>
-          <additionalDep>source/cTree.h</additionalDep>
-        </ccTool>
-      </item>
-      <item path="source/cWorld.cpp" ex="false" tool="1">
-        <ccTool>
-          <additionalDep>source/cWorld.h</additionalDep>
-        </ccTool>
-      </item>
-      <item path="source/main.cpp" ex="false" tool="1">
-        <ccTool>
-          <additionalDep>source/main.h</additionalDep>
-        </ccTool>
-      </item>
-      <item path="source/rController.cpp" ex="false" tool="1">
-        <ccTool>
-          <additionalDep>source/cController.h</additionalDep>
-        </ccTool>
-      </item>
-      <item path="source/rWeapon.cpp" ex="false" tool="1">
-        <ccTool>
-          <additionalDep>source/cWeapon.h</additionalDep>
-        </ccTool>
-      </item>
     </conf>
     <conf name="Release" type="1">
       <toolsSet>

@@ -3,16 +3,16 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1">
         <file>
             <url>source/cBackground.cpp</url>
-            <line>64</line>
-            <line>827</line>
+            <line>65</line>
+            <line>828</line>
+        </file>
+        <file>
+            <url>source/cPlanetmap.cpp</url>
+            <line>520</line>
         </file>
         <file>
             <url>source/cMech.cpp</url>
             <line>670</line>
-        </file>
-        <file>
-            <url>source/cPlanetmap.cpp</url>
-            <line>519</line>
         </file>
     </editor-bookmarks>
 </project-private>
