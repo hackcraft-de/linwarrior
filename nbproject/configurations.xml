@@ -89,13 +89,14 @@
                          displayName="psi3d"
                          projectFiles="true"
                          kind="SOURCE_LOGICAL_FOLDER">
+            <itemPath>source/de/hackcraft/psi3d/GLS.h</itemPath>
             <itemPath>source/de/hackcraft/psi3d/MD5Format.h</itemPath>
             <itemPath>source/de/hackcraft/psi3d/Particle.h</itemPath>
+            <itemPath>/home/benben/Desktop/linux_workspaces/netbeans_workspace/linwarrior/source/de/hackcraft/psi3d/Primitive.h</itemPath>
             <itemPath>source/de/hackcraft/psi3d/ctrl.h</itemPath>
             <itemPath>source/de/hackcraft/psi3d/instfont.h</itemPath>
             <itemPath>source/de/hackcraft/psi3d/macros.h</itemPath>
             <itemPath>source/de/hackcraft/psi3d/math3d.h</itemPath>
-            <itemPath>source/de/hackcraft/psi3d/snippetsgl.h</itemPath>
           </logicalFolder>
           <logicalFolder name="util"
                          displayName="util"

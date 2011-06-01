@@ -1,6 +1,7 @@
 #include "rWeaponRaybeam.h"
 
-#include "de/hackcraft/psi3d/snippetsgl.h"
+#include "de/hackcraft/psi3d/GLS.h"
+#include "de/hackcraft/psi3d/Primitive.h"
 
 rWeaponRaybeam::rWeaponRaybeam(cObject* obj) {
     role = "RAYBEAM";
@@ -93,7 +94,7 @@ void rWeaponRaybeam::drawSolid() {
     if (drawWeapon) {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
-            SGL::glUseProgram_fglitcolor();
+            GLS::glUseProgram_fglitcolor();
 
             glPushMatrix();
             {
@@ -111,7 +112,7 @@ void rWeaponRaybeam::drawSolid() {
                 glPushMatrix();
                 {
                     glScalef(0.1, 0.14, 0.12);
-                    cPrimitives::glCenterUnitBlock();
+                    Primitive::glCenterUnitBlock();
                 }
                 glPopMatrix();
 
@@ -120,11 +121,11 @@ void rWeaponRaybeam::drawSolid() {
                 {
                     glTranslatef(0.0, 0.7, 0);
                     glScalef(0.03, 0.7, 0.03);
-                    cPrimitives::glCenterUnitCylinder(7);
+                    Primitive::glCenterUnitCylinder(7);
                     glTranslatef(0.0, 1.0, 0);
                     glScalef(2.0, 0.1, 2.0);
                     glColor4f(0.4, 0.4, 0.4, 1.0);
-                    cPrimitives::glCenterUnitCylinder(7);
+                    Primitive::glCenterUnitCylinder(7);
                 }
                 glPopMatrix();
             }
@@ -187,7 +188,7 @@ void rWeaponRaybeam::drawEffect() {
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
-        SGL::glUseProgram_fgaddcolor();
+        GLS::glUseProgram_fgaddcolor();
 
         glPushMatrix();
         {

@@ -1,7 +1,8 @@
 #include "cPlanetmap.h"
 
 #include "de/hackcraft/psi3d/macros.h"
-#include "de/hackcraft/psi3d/snippetsgl.h"
+#include "de/hackcraft/psi3d/GLS.h"
+#include "de/hackcraft/psi3d/Primitive.h"
 
 #include "de/hackcraft/proc/noise.h"
 #include "de/hackcraft/proc/cSolid.h"
@@ -127,7 +128,7 @@ cPlanetmap::cPlanetmap() {
                     }
                 }
             }
-            unsigned int texname = SGL::glBindTexture3D(0, true, true, true, true, true, size, size, size, texels);
+            unsigned int texname = GLS::glBindTexture3D(0, true, true, true, true, true, size, size, size, texels);
             sTextures.push_back(texname);
             delete texels;
         }
@@ -160,7 +161,7 @@ cPlanetmap::cPlanetmap() {
             unsigned int texname;
             int w, h, bpp;
             unsigned char* texels = loadTGA(name.c_str(), &w, &h, &bpp);
-            texname = SGL::glBindTexture2D(0, true, true, false, false, w, h, bpp, texels);
+            texname = GLS::glBindTexture2D(0, true, true, false, false, w, h, bpp, texels);
             delete texels;
             sTextures.push_back(texname);
             sSizes.push_back(2.0f * sizes[i]);
@@ -1110,7 +1111,7 @@ void cPlanetmap::drawEffect() {
 
     // Construct Billboarding Matrix.
     float n[16];
-    SGL::glGetTransposeInverseRotationMatrix(n);
+    GLS::glGetTransposeInverseRotationMatrix(n);
     vector_set(&n[4], 0, 1, 0);
     vector_cross(&n[0], &n[4], &n[8]);
     vector_norm(&n[0], &n[0]);
@@ -1229,7 +1230,7 @@ void cPlanetmap::drawEffect() {
                         float s = plantscale * sSizes[tex] * (0.35f + 0.65f * sizef + 0.005f * plantdensity);
                         glScalef(1 * s, 0.65 * s, 1 * s);
                         //glAxis(0.9);
-                        cPrimitives::glXCenteredTextureSquare();
+                        Primitive::glXCenteredTextureSquare();
                         //glRotatef(90, 0, 1, 0);
                         //glXCenteredTextureSquare(sTextures[tex + 1]);
 #else

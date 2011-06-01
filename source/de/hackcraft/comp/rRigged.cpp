@@ -5,7 +5,8 @@ using std::cout;
 using std::endl;
 
 #include <GL/glew.h>
-#include "de/hackcraft/psi3d/snippetsgl.h"
+#include "de/hackcraft/psi3d/GLS.h"
+#include "de/hackcraft/psi3d/Primitive.h"
 #include "de/hackcraft/psi3d/instfont.h"
 
 #define DRAWJOINTS !true
@@ -13,14 +14,14 @@ using std::endl;
 void rRigged::drawBones() {
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
-        SGL::glUseProgram_fgplaincolor();
+        GLS::glUseProgram_fgplaincolor();
 
         loopi(model->numJoints) {
             glPushMatrix();
             {
                 glTranslatef(joints[i].v[0], joints[i].v[1], joints[i].v[2]);
-                SGL::glRotateq(joints[i].q);
-                cPrimitives::glAxis(0.7);
+                GLS::glRotateq(joints[i].q);
+                Primitive::glAxis(0.7);
             }
             glPopMatrix();
             glColor3f(0.5, 0.5, 0.5);
@@ -41,7 +42,7 @@ void rRigged::drawBones() {
 void rRigged::drawMeshes() {
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
-        SGL::glUseProgram_fglittexture3d();
+        GLS::glUseProgram_fglittexture3d();
         glColor4f(1, 1, 1, 1);
         glFrontFace(GL_CW);
 
@@ -395,7 +396,7 @@ void rRigged::drawSolid() {
     glPushMatrix();
     {
         glTranslatef(pos0[0], pos0[1], pos0[2]);
-        SGL::glRotateq(ori0);
+        GLS::glRotateq(ori0);
         //cPrimitives::glAxis(3.0f);
         if (basetexture3d > 0) {
             glBindTexture(GL_TEXTURE_3D, basetexture3d);
@@ -412,7 +413,7 @@ void rRigged::drawEffect() {
         glPushMatrix();
         {
             glTranslatef(pos0[0], pos0[1], pos0[2]);
-            SGL::glRotateq(ori0);
+            GLS::glRotateq(ori0);
             drawBones();
         }
         glPopMatrix();
@@ -421,7 +422,7 @@ void rRigged::drawEffect() {
     if (jetting > 0.3f) {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
-            SGL::glUseProgram_fgaddcolor();
+            GLS::glUseProgram_fgaddcolor();
 
             //std::map<int, int>& jointpoints = rigged->jointpoints;
             int jet[5];
@@ -439,19 +440,19 @@ void rRigged::drawEffect() {
                         float f = jetting * 0.5f;
 
                         glTranslatef(pos0[0], pos0[1], pos0[2]);
-                        SGL::glRotateq(ori0);
+                        GLS::glRotateq(ori0);
                         glTranslatef(v[0], v[1], v[2]);
 
                         float n[16];
-                        SGL::glGetTransposeInverseRotationMatrix(n);
+                        GLS::glGetTransposeInverseRotationMatrix(n);
                         glMultMatrixf(n);
 
                         glColor4f(1, 1, 0.3, 0.6);
-                        cPrimitives::glDisk(7, f + 0.0003 * (rand() % 100));
+                        Primitive::glDisk(7, f + 0.0003 * (rand() % 100));
                         glColor4f(1, 0.5, 0.3, 0.7);
-                        cPrimitives::glDisk(7, f * 0.6 + 0.001 * (rand() % 100));
+                        Primitive::glDisk(7, f * 0.6 + 0.001 * (rand() % 100));
                         glColor4f(1, 1, 1, 0.8);
-                        cPrimitives::glDisk(7, f * 0.3 + 0.001 * (rand() % 100));
+                        Primitive::glDisk(7, f * 0.3 + 0.001 * (rand() % 100));
                     }
                     glPopMatrix();
                 } // if

@@ -17,7 +17,8 @@ using std::endl;
 #include "de/hackcraft/proc/cSolid.h"
 
 #include "de/hackcraft/psi3d/macros.h"
-#include "de/hackcraft/psi3d/snippetsgl.h"
+#include "de/hackcraft/psi3d/GLS.h"
+#include "de/hackcraft/psi3d/Primitive.h"
 
 #define BKGDETAIL +1
 
@@ -153,7 +154,7 @@ cBackground::cBackground() {
         bool soft = false;
         bool repeat = true;
         unsigned int texname;
-        texname = SGL::glBindTexture2D(0, false, soft, repeat, repeat, w, h, bpp, texels);
+        texname = GLS::glBindTexture2D(0, false, soft, repeat, repeat, w, h, bpp, texels);
         gPermutationTexture256 = texname;
         //saveTGA("permutation256.tga", w, h, bpp, texels);
         delete texels;
@@ -183,7 +184,7 @@ cBackground::cBackground() {
         bool soft = false;
         bool repeat = true;
         unsigned int texname;
-        texname = SGL::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
+        texname = GLS::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
         textures[T_ICE] = texname;
         delete texels;
     }
@@ -224,7 +225,7 @@ cBackground::cBackground() {
         bool soft = true;
         bool repeat = false;
         unsigned int texname;
-        texname = SGL::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
+        texname = GLS::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
         textures[T_SUN] = texname;
         delete texels;
     }
@@ -267,7 +268,7 @@ cBackground::cBackground() {
         bool soft = true;
         bool repeat = false;
         unsigned int texname;
-        texname = SGL::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
+        texname = GLS::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
         textures[T_EARTH] = texname;
         //saveTGA("earth.tga", w, h, bpp, texels);
         delete texels;
@@ -312,7 +313,7 @@ cBackground::cBackground() {
         bool soft = true;
         bool repeat = false;
         unsigned int texname;
-        texname = SGL::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
+        texname = GLS::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
         textures[T_LAVOS] = texname;
         //saveTGA("lavos.tga", w, h, bpp, texels);
         delete texels;
@@ -357,7 +358,7 @@ cBackground::cBackground() {
         bool soft = true;
         bool repeat = false;
         unsigned int texname;
-        texname = SGL::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
+        texname = GLS::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
         textures[T_MOON] = texname;
         delete texels;
     }
@@ -391,7 +392,7 @@ cBackground::cBackground() {
         bool soft = true;
         bool repeat = true;
         unsigned int texname;
-        texname = SGL::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
+        texname = GLS::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
         textures[T_CLOUDS] = texname;
         delete texels;
     }
@@ -440,7 +441,7 @@ cBackground::cBackground() {
             const bool soft = true;
             const bool repeat = false;
             unsigned int texname;
-            texname = SGL::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
+            texname = GLS::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
             textures[T_GALAXY_NEGX + k] = texname;
 
             if (0) {
@@ -573,7 +574,7 @@ void cBackground::drawBackground(float h) {
 void cBackground::drawGalaxy() {
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_TEXTURE_BIT);
     {
-        SGL::glUseProgram_bkplaintexture();
+        GLS::glUseProgram_bkplaintexture();
 
         glColor4f(1, 1, 1, 1);
 
@@ -687,7 +688,7 @@ void cBackground::drawGalaxy() {
 void cBackground::drawUpperDome() {
     glPushAttrib(GL_ALL_ATTRIB_BITS | GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
-        SGL::glUseProgram_bkplaincolor();
+        GLS::glUseProgram_bkplaincolor();
 
         // Load current Camera Matrix and
         // set Position (4th Column) = 0.
@@ -746,7 +747,7 @@ void cBackground::drawUpperDome() {
 void cBackground::drawLowerDome() {
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
-        SGL::glUseProgram_bkplaincolor();
+        GLS::glUseProgram_bkplaincolor();
 
         // Load current Camera Matrix and
         // set Position (4th Column) = 0.
@@ -804,7 +805,7 @@ void cBackground::drawLowerDome() {
 void cBackground::drawGround() {
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_TEXTURE_BIT);
     {
-        SGL::glUseProgram_bkplaintexture();
+        GLS::glUseProgram_bkplaintexture();
 
         glBindTexture(GL_TEXTURE_2D, textures[T_ICE]);
 
@@ -867,7 +868,7 @@ void cBackground::drawGround() {
 void cBackground::drawClouds() {
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
-        SGL::glUseProgram_bkplaintexture();
+        GLS::glUseProgram_bkplaintexture();
         //SGL::glUseProgram_2();
 
         glBindTexture(GL_TEXTURE_2D, textures[T_CLOUDS]);
@@ -935,7 +936,7 @@ void cBackground::drawClouds() {
                     glRotatef(xrad / PI_OVER_180, 1, 0, 0);
                     glTranslatef(0, 0, 1.7);
                     glColor4f(light, light, light, density);
-                    cPrimitives::glXYCenteredTextureSquare(1);
+                    Primitive::glXYCenteredTextureSquare(1);
                 }
                 glPopMatrix();
             }
@@ -1016,7 +1017,7 @@ void cBackground::drawSun() {
 
     glPushAttrib(GL_ALL_ATTRIB_BITS | GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
-        SGL::glUseProgram_bkaddtexture();
+        GLS::glUseProgram_bkaddtexture();
 
         glPushMatrix();
         {
@@ -1046,7 +1047,7 @@ void cBackground::drawSun() {
             glTranslatef(0, 0, scale);
             glColor4f(1, 0.95, 0.8, 1);
             glBindTexture(GL_TEXTURE_2D, textures[T_SUN]);
-            cPrimitives::glXYCenteredTextureSquare(sun);
+            Primitive::glXYCenteredTextureSquare(sun);
         }
         glPopMatrix();
 
@@ -1094,7 +1095,7 @@ void cBackground::drawOrbit() {
 
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
-        SGL::glUseProgram_bkplaintexture();
+        GLS::glUseProgram_bkplaintexture();
 
         glPushMatrix();
         {
@@ -1125,7 +1126,7 @@ void cBackground::drawOrbit() {
             glTranslatef(0, 0, scale);
             glColor4f(0.8, 0.8, 0.8, 0.99);
             glBindTexture(GL_TEXTURE_2D, textures[T_EARTH]);
-            cPrimitives::glXYCenteredTextureSquare(moon);
+            Primitive::glXYCenteredTextureSquare(moon);
         }
         glPopMatrix();
     }
@@ -1156,7 +1157,7 @@ void cBackground::drawRain() {
 
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
-        SGL::glUseProgram_fgplaincolor();
+        GLS::glUseProgram_fgplaincolor();
         glLineWidth(1.25);
 
         glPushMatrix();

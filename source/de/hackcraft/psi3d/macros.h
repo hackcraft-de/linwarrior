@@ -11,7 +11,7 @@
 
 #include "ctrl.h"
 #include "math3d.h"
-//#include "snippetsgl.h"
+//#include "GLS.h"
 //#include "instfont.h"
 
 // Not a number: NaN

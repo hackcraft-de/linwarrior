@@ -1,8 +1,8 @@
 #include "cTree.h"
 
 #include "de/hackcraft/psi3d/macros.h"
-#include "de/hackcraft/psi3d/snippetsgl.h"
-
+#include "de/hackcraft/psi3d/GLS.h"
+#include "de/hackcraft/psi3d/Primitive.h"
 #include "de/hackcraft/psi3d/Particle.h"
 
 #include <cmath>
@@ -41,7 +41,7 @@ cTree::cTree(float* pos, float* rot, int seed, int type, int age) {
             unsigned int texname;
             int w, h, bpp;
             unsigned char* texels = loadTGA(name.c_str(), &w, &h, &bpp);
-            texname = SGL::glBindTexture2D(0, true, true, false, false, w, h, bpp, texels);
+            texname = GLS::glBindTexture2D(0, true, true, false, false, w, h, bpp, texels);
             delete texels;
             sTextures.push_back(texname);
         }
@@ -62,7 +62,7 @@ void cTree::animate(float spf) {
 void cTree::drawSolid() {
     glPushAttrib(GL_ENABLE_BIT);
     {
-        SGL::glUseProgram_fglitcolor();
+        GLS::glUseProgram_fglitcolor();
         glDisable(GL_CULL_FACE);
         glDisable(GL_LIGHTING);
 
@@ -85,7 +85,7 @@ void cTree::drawEffect() {
 
         // Construct Billboarding Matrix.
         float n[16];
-        SGL::glGetTransposeInverseRotationMatrix(n);
+        GLS::glGetTransposeInverseRotationMatrix(n);
         //vector_set(&n[4], 0,1,0);
         vector_cross(&n[0], &n[4], &n[8]);
         vector_norm(&n[0], &n[0]);
@@ -97,7 +97,7 @@ void cTree::drawEffect() {
 
         glPushAttrib(GL_ENABLE_BIT);
         {
-            SGL::glUseProgram_fglittexture();
+            GLS::glUseProgram_fglittexture();
             glDisable(GL_CULL_FACE);
             glEnable(GL_ALPHA_TEST);
             glAlphaFunc(GL_GREATER, 0.58f);
@@ -133,7 +133,7 @@ void cTree::drawEffect() {
                     //glColor4f(1,0,0,1);
                     glMultMatrixf(n);
                     glRotatef(sin(seconds * 0.5f + i * 0.3f) * swirl, 0, 0, 1);
-                    cPrimitives::glXYCenteredTextureSquare(size);
+                    Primitive::glXYCenteredTextureSquare(size);
                     //cPrimitives::glDisk();
                     //cPrimitives::glAxis(1.1f);
                 }
@@ -193,7 +193,7 @@ cTree::rTree* cTree::getCompiledTree(int seed, int type, int age) {
         trunk_displaylist = glGenLists(1);
         glNewList(trunk_displaylist, GL_COMPILE);
         glColor3f(0.1f, 0.1f, 0.0f);
-        cPrimitives::glCenterUnitBlock();
+        Primitive::glCenterUnitBlock();
         glEndList();
     }
 
@@ -206,7 +206,7 @@ cTree::rTree* cTree::getCompiledTree(int seed, int type, int age) {
     t->height = log(age);
     glPushAttrib(GL_ENABLE_BIT);
     {
-        SGL::glUseProgram_fglitcolor();
+        GLS::glUseProgram_fglitcolor();
         glColor4f(0.3f, 0.3f, 0.1f, 1.0f);
         glPushMatrix();
         {

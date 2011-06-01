@@ -2,7 +2,7 @@
 
 #include <GL/glew.h>
 
-#include "de/hackcraft/psi3d/snippetsgl.h"
+#include "de/hackcraft/psi3d/GLS.h"
 
 #define grand() ((rand()%100 + rand()%100 + rand()%100 + rand()%100 + rand()%100) * 0.01f * 0.2f - 0.5f)
 
@@ -30,14 +30,14 @@ void rCamera::camera() {
         // Get inverse components of head pos and ori.
         glLoadIdentity();
         glTranslatef(pos0[0], pos0[1], pos0[2]);
-        SGL::glRotateq(ori0);
+        GLS::glRotateq(ori0);
         glTranslatef(pos1[0], pos1[1], pos1[2]);
-        SGL::glRotateq(ori1);
+        GLS::glRotateq(ori1);
         // FIXME: Camera forward is inverted, therefore rotate.
         glRotatef(180, 0, 1, 0);
 
-        SGL::glGetTransposeInverseRotationMatrix(rot_inv);
-        SGL::glGetInverseTranslationMatrix(pos_inv);
+        GLS::glGetTransposeInverseRotationMatrix(rot_inv);
+        GLS::glGetInverseTranslationMatrix(pos_inv);
         // Compose Camera Matrix from inverse components
         glLoadIdentity();
         glMultMatrixf(rot_inv);

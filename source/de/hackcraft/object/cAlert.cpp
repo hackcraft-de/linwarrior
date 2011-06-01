@@ -4,7 +4,7 @@
 
 #include "de/hackcraft/comp/rNameable.h"
 
-#include "de/hackcraft/psi3d/snippetsgl.h"
+#include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Particle.h"
 
 #include <ostream>
@@ -143,7 +143,7 @@ void cAlert::drawEffect() {
     {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
-            SGL::glUseProgram_fgplaincolor();
+            GLS::glUseProgram_fgplaincolor();
             /*
             glDisable(GL_LIGHTING);
             glDisable(GL_FOG);

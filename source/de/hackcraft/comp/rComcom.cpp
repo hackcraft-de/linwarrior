@@ -2,9 +2,10 @@
 
 #include "de/hackcraft/world/cWorld.h"
 
-#include "de/hackcraft/psi3d/snippetsgl.h"
+#include "de/hackcraft/psi3d/GLS.h"
 // for Console and glprintf
 #include "de/hackcraft/psi3d/instfont.h"
+#include "de/hackcraft/psi3d/Primitive.h"
 
 DEFINE_Console_printf
 DEFINE_glprintf
@@ -216,17 +217,17 @@ void rTarcom::drawHUD() {
         glVertex3f(+0.7, +0.7, 0);
         glEnd();
         glColor4f(0.0, 0.4, 0.0, 0.5);
-        cPrimitives::glDisk(16, 1.0f);
+        Primitive::glDisk(16, 1.0f);
         const float r2 = 0.7;
         glColor4f(0.0, 0.6, 0.0, 0.5);
         glScalef(r2, r2, 1);
-        cPrimitives::glDisk(16, 1.0f);
+        Primitive::glDisk(16, 1.0f);
         glScalef(1.0 / r2, 1.0 / r2, 1);
         quat ori_;
         quat_cpy(ori_, ori);
         quat_conj(ori_);
         glRotatef(90, 1, 0, 0);
-        SGL::glRotateq(ori_);
+        GLS::glRotateq(ori_);
         glRotatef(-90, 1, 0, 0);
         glPointSize(3);
         glBegin(GL_POINTS);
@@ -345,10 +346,10 @@ void rWepcom::drawHUD() {
             glLineWidth(5);
             if (mech->weapons[i]->ready()) glColor4f(0.4f, 1.0f, 0.4f, 0.2f);
             else glColor4f(0.8f, 0.0f, 0.0f, 0.2f);
-            cPrimitives::glLineSquare(0.1f);
+            Primitive::glLineSquare(0.1f);
             glLineWidth(1);
             glColor4f(1.0f, 1.0f, 1.0f, 0.9f);
-            cPrimitives::glLineSquare(0.1f);
+            Primitive::glLineSquare(0.1f);
             glPushMatrix();
             {
                 mech->weapons[i]->drawHUD();
@@ -702,7 +703,7 @@ void rNavcom::drawHUD() {
             quat ori_;
             quat_cpy(ori_, ori);
             glRotatef(90, 1, 0, 0);
-            SGL::glRotateq(ori_);
+            GLS::glRotateq(ori_);
             glRotatef(-90, 1, 0, 0);
             glColor4f(0.9, 0.9, 0.9, 0.9);
             glBegin(GL_LINE_STRIP);

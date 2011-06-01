@@ -1,6 +1,7 @@
 #include "rWeaponPlasmagun.h"
 
-#include "de/hackcraft/psi3d/snippetsgl.h"
+#include "de/hackcraft/psi3d/GLS.h"
+#include "de/hackcraft/psi3d/Primitive.h"
 
 #include <cassert>
 
@@ -95,7 +96,7 @@ void rWeaponPlasmagun::drawSolid() {
     if (drawWeapon) {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
-            SGL::glUseProgram_fglitcolor();
+            GLS::glUseProgram_fglitcolor();
 
             glPushMatrix();
             {
@@ -115,7 +116,7 @@ void rWeaponPlasmagun::drawSolid() {
                         glScalef(0.02, 0.02, 0.02);
                         glTranslatef(0, (0.5 + 0.5 * sin(seconds * 2 * M_PI))* 1.7 / 0.02, 0);
                         glRotatef(seconds * 2 * 360, 1, 3, 7);
-                        cPrimitives::glUnitBlock();
+                        Primitive::glUnitBlock();
                     }
                     glPopMatrix();
                     glColor4f(0.2, 0.3, 0.2, 1);
@@ -124,7 +125,7 @@ void rWeaponPlasmagun::drawSolid() {
                         glScalef(0.02, 0.02, 0.02);
                         glTranslatef(0, (0.5 + 0.5 * cos(seconds * 2 * M_PI))* 1.7 / 0.02, 0);
                         glRotatef(seconds * 2 * 360, 1, 3, 7);
-                        cPrimitives::glUnitBlock();
+                        Primitive::glUnitBlock();
                     }
                     glPopMatrix();
                     glColor4f(0.3, 0.2, 0.2, 1);
@@ -133,7 +134,7 @@ void rWeaponPlasmagun::drawSolid() {
                         glScalef(0.02, 0.02, 0.02);
                         glTranslatef(0, (0.5 - 0.5 * sin(seconds * 2 * M_PI))* 1.7 / 0.02, 0);
                         glRotatef(seconds * 2 * 360, 1, 3, 7);
-                        cPrimitives::glUnitBlock();
+                        Primitive::glUnitBlock();
                     }
                     glPopMatrix();
                 }
@@ -142,7 +143,7 @@ void rWeaponPlasmagun::drawSolid() {
                 glPushMatrix();
                 {
                     glScalef(0.1, 0.14, 0.12);
-                    cPrimitives::glCenterUnitBlock();
+                    Primitive::glCenterUnitBlock();
                 }
                 glPopMatrix();
 
@@ -152,9 +153,9 @@ void rWeaponPlasmagun::drawSolid() {
                     glTranslatef(0.0, 0.8, 0);
                     glScalef(0.03, 0.8, 0.03);
                     glTranslatef(2.0, 0, 0);
-                    cPrimitives::glCenterUnitCylinder(7);
+                    Primitive::glCenterUnitCylinder(7);
                     glTranslatef(-4.0, 0, 0);
-                    cPrimitives::glCenterUnitCylinder(7);
+                    Primitive::glCenterUnitCylinder(7);
                 }
                 glPopMatrix();
             }
@@ -169,10 +170,10 @@ void rWeaponPlasmagun::drawEffect() {
 
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_ALL_ATTRIB_BITS);
     {
-        SGL::glUseProgram_fgaddcolor();
+        GLS::glUseProgram_fgaddcolor();
 
         float n[16];
-        SGL::glGetTransposeInverseRotationMatrix(n);
+        GLS::glGetTransposeInverseRotationMatrix(n);
 
         foreachNoInc(i, shrapnelParticles) {
             Particle* s = *i++;
@@ -181,9 +182,9 @@ void rWeaponPlasmagun::drawEffect() {
                 glTranslatef(s->pos[0], s->pos[1], s->pos[2]);
                 glMultMatrixf(n);
                 glColor4f(0.1, 0.1, 0.6, 0.99f);
-                cPrimitives::glDisk(9, 1.9 * 0.1f);
+                Primitive::glDisk(9, 1.9 * 0.1f);
                 glColor4f(0.8, 0.8, 0.1, 0.6f);
-                cPrimitives::glDisk(7, 1.9 * 0.07f);
+                Primitive::glDisk(7, 1.9 * 0.07f);
             }
             glPopMatrix();
         }

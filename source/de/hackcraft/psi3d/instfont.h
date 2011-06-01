@@ -13,6 +13,8 @@
 #ifndef _INSTFONT_H
 #define	_INSTFONT_H
 
+#include <GL/glew.h>
+
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -289,7 +291,7 @@
     int u = (int) (x); \
     int v = (int) (y); \
     unsigned char result = 0; \
-    if (((unsigned char*) font)[((unsigned int)ascii) * 16 + v] & (1UL << u)) result = 255; \
+    if (((unsigned char*) font)[(((unsigned int)(ascii))&0xFF) * 16 + v] & (1UL << u)) result = 255; \
     result; \
 })
 

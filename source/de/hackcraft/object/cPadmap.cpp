@@ -1,6 +1,6 @@
 #include "cPadmap.h"
 
-#include "de/hackcraft/psi3d/snippetsgl.h"
+#include "de/hackcraft/psi3d/GLS.h"
 
 static void stepSpiral(int& x, int& y, int& i, int& length, bool& horizontal, int& increment) {
     if (i >= length) {
@@ -31,15 +31,15 @@ cPadmap::cPadmap(float x, float y, float z) {
         int w, h, bpp;
 
         texels = loadTGA("data/urban/street/junction.tga", &w, &h, &bpp);
-        texname = SGL::glBindTexture2D(0, true, false, true, true, w, h, bpp, texels);
+        texname = GLS::glBindTexture2D(0, true, false, true, true, w, h, bpp, texels);
         sTextures[KIND_ROAD_JUNKTION] = texname;
 
         texels = loadTGA("data/urban/street/ns_road.tga", &w, &h, &bpp);
-        texname = SGL::glBindTexture2D(0, true, false, true, true, w, h, bpp, texels);
+        texname = GLS::glBindTexture2D(0, true, false, true, true, w, h, bpp, texels);
         sTextures[KIND_ROAD_NORTHSOUTH] = texname;
 
         texels = loadTGA("data/urban/street/we_road.tga", &w, &h, &bpp);
-        texname = SGL::glBindTexture2D(0, true, false, true, true, w, h, bpp, texels);
+        texname = GLS::glBindTexture2D(0, true, false, true, true, w, h, bpp, texels);
         sTextures[KIND_ROAD_EASTWEST] = texname;
 
         // Generate a spiral path outwards from the neutral center (0,0).

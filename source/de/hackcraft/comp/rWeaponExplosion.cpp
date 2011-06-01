@@ -1,6 +1,7 @@
 #include "rWeaponExplosion.h"
 
-#include "de/hackcraft/psi3d/snippetsgl.h"
+#include "de/hackcraft/psi3d/GLS.h"
+#include "de/hackcraft/psi3d/Primitive.h"
 
 #include <cassert>
 
@@ -220,7 +221,7 @@ void rWeaponExplosion::drawSolid() {
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
-        SGL::glUseProgram_fglitcolor();
+        GLS::glUseProgram_fglitcolor();
 
         glColor4f(0.7, 0.7, 0.7, 1.0);
 
@@ -283,7 +284,7 @@ void rWeaponExplosion::drawEffect() {
     // Experiment with hardware Point-Sprites
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
-        SGL::glUseProgram_fgaddtexture();
+        GLS::glUseProgram_fgaddtexture();
         glBindTexture(GL_TEXTURE_2D, sTextures[0]);
         /*
         glTexEnvf(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
@@ -336,10 +337,10 @@ void rWeaponExplosion::drawEffect() {
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
-        SGL::glUseProgram_fgaddtexture();
+        GLS::glUseProgram_fgaddtexture();
 
         float n[16];
-        SGL::glGetTransposeInverseRotationMatrix(n);
+        GLS::glGetTransposeInverseRotationMatrix(n);
 
         // Draw Missile's trails.
 
@@ -360,13 +361,13 @@ void rWeaponExplosion::drawEffect() {
                     //float size = 0.1 + 0.3 * pow(1.0 + smoke->timer, 3.5);
                     //float size = 5.0f / (1.0f + 1.0f * smoke->fuel);
                     float size = 3.0f + 5.0f / (1.0f + 9.0f * smoke->fuel);
-                    cPrimitives::glXYCenteredTextureSquare(size);
+                    Primitive::glXYCenteredTextureSquare(size);
                 }
                 glPopMatrix();
             }
         }
 
-        SGL::glUseProgram_fgplaintexture();
+        GLS::glUseProgram_fgplaintexture();
         glDisable(GL_CULL_FACE);
         //glEnable(GL_ALPHA_TEST);
 
@@ -382,7 +383,7 @@ void rWeaponExplosion::drawEffect() {
                 float grey = fmax(alpha, beta) * 0.7;
                 glColor4f(grey, grey, grey, 0.5 + cos(0.5 * M_PI * alpha));
                 float size = 0.5f + 1.5f * (smoke->timer / total);
-                cPrimitives::glXYCenteredTextureSquare(size);
+                Primitive::glXYCenteredTextureSquare(size);
             }
             glPopMatrix();
         }

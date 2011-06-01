@@ -1,6 +1,7 @@
 #include "rWeaponSparkgun.h"
 
-#include "de/hackcraft/psi3d/snippetsgl.h"
+#include "de/hackcraft/psi3d/GLS.h"
+#include "de/hackcraft/psi3d/Primitive.h"
 
 #include <cassert>
 
@@ -94,7 +95,7 @@ void rWeaponSparkgun::drawSolid() {
     if (drawWeapon) {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
-            SGL::glUseProgram_fglitcolor();
+            GLS::glUseProgram_fglitcolor();
 
             glPushMatrix();
             {
@@ -112,7 +113,7 @@ void rWeaponSparkgun::drawSolid() {
                 glPushMatrix();
                 {
                     glScalef(0.1, 0.14, 0.12);
-                    cPrimitives::glCenterUnitBlock();
+                    Primitive::glCenterUnitBlock();
                 }
                 glPopMatrix();
 
@@ -121,7 +122,7 @@ void rWeaponSparkgun::drawSolid() {
                 {
                     glTranslatef(0.0, 0.7, 0);
                     glScalef(0.1, 0.7, 0.1);
-                    cPrimitives::glCenterUnitCylinder(7);
+                    Primitive::glCenterUnitCylinder(7);
                 }
                 glPopMatrix();
             }
@@ -136,10 +137,10 @@ void rWeaponSparkgun::drawEffect() {
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
-        SGL::glUseProgram_fgaddcolor();
+        GLS::glUseProgram_fgaddcolor();
 
         float n[16];
-        SGL::glGetTransposeInverseRotationMatrix(n);
+        GLS::glGetTransposeInverseRotationMatrix(n);
 
         foreachNoInc(i, shrapnelParticles) {
             Particle* s = *i++;
@@ -148,9 +149,9 @@ void rWeaponSparkgun::drawEffect() {
                 glTranslatef(s->pos[0], s->pos[1], s->pos[2]);
                 glMultMatrixf(n);
                 glColor4f(0.6, 0.1, 0.1, 0.99f);
-                cPrimitives::glDisk(9 + WEAPONDETAIL, 5 * 0.1f + 0.006 * (rand() % 100));
+                Primitive::glDisk(9 + WEAPONDETAIL, 5 * 0.1f + 0.006 * (rand() % 100));
                 glColor4f(0.9, 0.9, 0.4, 0.99f);
-                cPrimitives::glDisk(7 + WEAPONDETAIL, 5 * 0.07f + 0.006 * (rand() % 100));
+                Primitive::glDisk(7 + WEAPONDETAIL, 5 * 0.07f + 0.006 * (rand() % 100));
             }
             glPopMatrix();
         }

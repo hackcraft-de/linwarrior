@@ -5,7 +5,8 @@
 #include "de/hackcraft/comp/rDamageable.h"
 
 #include "de/hackcraft/psi3d/macros.h"
-#include "de/hackcraft/psi3d/snippetsgl.h"
+#include "de/hackcraft/psi3d/GLS.h"
+#include "de/hackcraft/psi3d/Primitive.h"
 
 #include "de/hackcraft/proc/noise.h"
 
@@ -279,7 +280,7 @@ cBuilding::cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
                     *p++ = c4f[0] * 255;
                 }
             }
-            texname = SGL::glBindTexture2D(0, true, false, true, true, w, h, bpp, texels);
+            texname = GLS::glBindTexture2D(0, true, false, true, true, w, h, bpp, texels);
             delete texels;
             sTextures[0] = texname;
         }
@@ -312,7 +313,7 @@ cBuilding::cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
                     }
                 }
 
-                texname = SGL::glBindTextureMipmap2D(0, true, true, true, true, w, h, texels);
+                texname = GLS::glBindTextureMipmap2D(0, true, true, true, true, w, h, texels);
                 //texname = SGL::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
                 sTextures[k + 1] = texname;
 
@@ -430,7 +431,7 @@ void cBuilding::drawSolid() {
 
     glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_TEXTURE_BIT);
     {
-        SGL::glUseProgram_fglittexture();
+        GLS::glUseProgram_fglittexture();
 
         long roof = sTextures[0];
         long wall = 0;
@@ -532,7 +533,7 @@ void cBuilding::drawSolid() {
             }
             glEnd();
 
-            if (!true) cPrimitives::glAxis();
+            if (!true) Primitive::glAxis();
         }
         glPopMatrix();
     }
@@ -560,7 +561,7 @@ cScatterfield::cScatterfield(float x, float y, float z, float radius, float dens
             unsigned int texname;
             int w, h, bpp;
             unsigned char* texels = loadTGA("data/base/decals/desertplant.tga", &w, &h, &bpp);
-            texname = SGL::glBindTexture2D(0, true, true, false, false, w, h, bpp, texels);
+            texname = GLS::glBindTexture2D(0, true, true, false, false, w, h, bpp, texels);
             delete texels;
             sTextures[0] = texname;
         }
@@ -597,7 +598,7 @@ void cScatterfield::drawEffect() {
                 glTranslatef(p->pos[0], p->pos[1], p->pos[2]);
                 glRotatef(p->spawn, 0, 1, 0);
                 //glAxis(0.9);
-                cPrimitives::glXYCenteredTextureSquare();
+                Primitive::glXYCenteredTextureSquare();
             }
             glPopMatrix();
         }
@@ -876,7 +877,7 @@ cTile::cTile(int x, int y, int z, int kind) {
                 }
             }
             //texname = SGL::glBindTextureMipmap2D(0, true, true, true, true, w, h, bpp, texels);
-            texname = SGL::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
+            texname = GLS::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
             std::string fname = basepath + std::string("roadNEWS.tga");
             if (save) {
                 if (saveTGA(fname.c_str(), w, h, bpp, texels)) {
@@ -905,7 +906,7 @@ cTile::cTile(int x, int y, int z, int kind) {
                 }
             }
             //texname = SGL::glBindTextureMipmap2D(0, true, true, true, true, w, h, bpp, texels);
-            texname = SGL::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
+            texname = GLS::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
             std::string fname = basepath + std::string("roadTN.tga");
             if (save) {
                 if (saveTGA(fname.c_str(), w, h, bpp, texels)) {
@@ -934,7 +935,7 @@ cTile::cTile(int x, int y, int z, int kind) {
                 }
             }
             //texname = SGL::glBindTextureMipmap2D(0, true, true, true, true, w, h, bpp, texels);
-            texname = SGL::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
+            texname = GLS::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
             std::string fname = basepath + std::string("roadTS.tga");
             if (save) {
                 if (saveTGA(fname.c_str(), w, h, bpp, texels)) {
@@ -963,7 +964,7 @@ cTile::cTile(int x, int y, int z, int kind) {
                 }
             }
             //texname = SGL::glBindTextureMipmap2D(0, true, true, true, true, w, h, bpp, texels);
-            texname = SGL::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
+            texname = GLS::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
             std::string fname = basepath + std::string("roadTE.tga");
             if (save) {
                 if (saveTGA(fname.c_str(), w, h, bpp, texels)) {
@@ -992,7 +993,7 @@ cTile::cTile(int x, int y, int z, int kind) {
                 }
             }
             //texname = SGL::glBindTextureMipmap2D(0, true, true, true, true, w, h, bpp, texels);
-            texname = SGL::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
+            texname = GLS::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
             std::string fname = basepath + std::string("roadTW.tga");
             if (save) {
                 if (saveTGA(fname.c_str(), w, h, bpp, texels)) {
@@ -1021,7 +1022,7 @@ cTile::cTile(int x, int y, int z, int kind) {
                 }
             }
             //texname = SGL::glBindTextureMipmap2D(0, true, true, true, true, w, h, bpp, texels);
-            texname = SGL::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
+            texname = GLS::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
             std::string fname = basepath + std::string("roadNS.tga");
             if (save) {
                 if (saveTGA(fname.c_str(), w, h, bpp, texels)) {
@@ -1050,7 +1051,7 @@ cTile::cTile(int x, int y, int z, int kind) {
                 }
             }
             //texname = SGL::glBindTextureMipmap2D(0, true, true, true, true, w, h, bpp, texels);
-            texname = SGL::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
+            texname = GLS::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
             std::string fname = basepath + std::string("roadEW.tga");
             if (save) {
                 if (saveTGA(fname.c_str(), w, h, bpp, texels)) {
@@ -1079,7 +1080,7 @@ cTile::cTile(int x, int y, int z, int kind) {
                 }
             }
             //texname = SGL::glBindTextureMipmap2D(0, true, true, true, true, w, h, bpp, texels);
-            texname = SGL::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
+            texname = GLS::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
             std::string fname = basepath + std::string("roadNE.tga");
             if (save) {
                 if (saveTGA(fname.c_str(), w, h, bpp, texels)) {
@@ -1108,7 +1109,7 @@ cTile::cTile(int x, int y, int z, int kind) {
                 }
             }
             //texname = SGL::glBindTextureMipmap2D(0, true, true, true, true, w, h, bpp, texels);
-            texname = SGL::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
+            texname = GLS::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
             std::string fname = basepath + std::string("roadSE.tga");
             if (save) {
                 if (saveTGA(fname.c_str(), w, h, bpp, texels)) {
@@ -1137,7 +1138,7 @@ cTile::cTile(int x, int y, int z, int kind) {
                 }
             }
             //texname = SGL::glBindTextureMipmap2D(0, true, true, true, true, w, h, bpp, texels);
-            texname = SGL::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
+            texname = GLS::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
             std::string fname = basepath + std::string("roadSW.tga");
             if (save) {
                 if (saveTGA(fname.c_str(), w, h, bpp, texels)) {
@@ -1166,7 +1167,7 @@ cTile::cTile(int x, int y, int z, int kind) {
                 }
             }
             //texname = SGL::glBindTextureMipmap2D(0, true, true, true, true, w, h, bpp, texels);
-            texname = SGL::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
+            texname = GLS::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
             std::string fname = basepath + std::string("roadNW.tga");
             if (save) {
                 if (saveTGA(fname.c_str(), w, h, bpp, texels)) {
@@ -1195,7 +1196,7 @@ cTile::cTile(int x, int y, int z, int kind) {
                 }
             }
             //texname = SGL::glBindTextureMipmap2D(0, true, true, true, true, w, h, bpp, texels);
-            texname = SGL::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
+            texname = GLS::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
             std::string fname = basepath + std::string("roadPLAZA.tga");
             if (save) {
                 if (saveTGA(fname.c_str(), w, h, bpp, texels)) {
@@ -1220,7 +1221,7 @@ void cTile::drawSolid() {
 
     glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_TEXTURE_BIT);
     {
-        SGL::glUseProgram_fglittexture();
+        GLS::glUseProgram_fglittexture();
 
         long ground = sTextures[tileKind];
         glColor4f(1, 1, 1, 1);
@@ -1249,10 +1250,10 @@ void cTile::drawSolid() {
             };
             glBegin(GL_QUADS);
             glNormal3f(0, 1, 0);
-            cPrimitives::glVertex3fv2fv(p[1], t[0]);
-            cPrimitives::glVertex3fv2fv(p[0], t[1]);
-            cPrimitives::glVertex3fv2fv(p[2], t[2]);
-            cPrimitives::glVertex3fv2fv(p[3], t[3]);
+            Primitive::glVertex3fv2fv(p[1], t[0]);
+            Primitive::glVertex3fv2fv(p[0], t[1]);
+            Primitive::glVertex3fv2fv(p[2], t[2]);
+            Primitive::glVertex3fv2fv(p[3], t[3]);
             glEnd();
         }
         glPopMatrix();

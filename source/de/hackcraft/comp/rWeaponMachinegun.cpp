@@ -3,7 +3,8 @@
 #include "de/hackcraft/world/cWorld.h"
 
 #include "de/hackcraft/psi3d/instfont.h"
-#include "de/hackcraft/psi3d/snippetsgl.h"
+#include "de/hackcraft/psi3d/GLS.h"
+#include "de/hackcraft/psi3d/Primitive.h"
 
 #include <cassert>
 
@@ -142,7 +143,7 @@ void rWeaponMachinegun::drawSolid() {
     if (drawWeapon) {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
-            SGL::glUseProgram_fglitcolor();
+            GLS::glUseProgram_fglitcolor();
 
             glPushMatrix();
             {
@@ -157,7 +158,7 @@ void rWeaponMachinegun::drawSolid() {
                 glPushMatrix();
                 {
                     glScalef(0.1, 0.14, 0.12);
-                    cPrimitives::glCenterUnitBlock();
+                    Primitive::glCenterUnitBlock();
                 }
                 glPopMatrix();
 
@@ -170,7 +171,7 @@ void rWeaponMachinegun::drawSolid() {
                 {
                     glTranslatef(0, 0.75, 0);
                     glScalef(0.065, 0.75, 0.065);
-                    cPrimitives::glCenterUnitCylinder(7);
+                    Primitive::glCenterUnitCylinder(7);
 
                 }
                 glPopMatrix();
@@ -184,7 +185,7 @@ void rWeaponMachinegun::drawSolid() {
                         glRotatef(i * 360 / n, 0, 1, 0);
                         glTranslatef(0.075, 0.8, 0);
                         glScalef(0.03, 0.8, 0.03);
-                        cPrimitives::glCenterUnitCylinder(7);
+                        Primitive::glCenterUnitCylinder(7);
                     }
                     glPopMatrix();
                 }
@@ -200,7 +201,7 @@ void rWeaponMachinegun::drawEffect() {
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
-        SGL::glUseProgram_fgaddcolor();
+        GLS::glUseProgram_fgaddcolor();
 
         glLineWidth(2);
 
@@ -232,7 +233,7 @@ void rWeaponMachinegun::drawEffect() {
         }
 
         float n[16];
-        SGL::glGetTransposeInverseRotationMatrix(n);
+        GLS::glGetTransposeInverseRotationMatrix(n);
 
         foreachNoInc(i, damageParticles) {
             Particle* s = *i++;

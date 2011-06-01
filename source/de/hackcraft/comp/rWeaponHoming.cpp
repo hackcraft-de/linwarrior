@@ -2,7 +2,8 @@
 
 #include "de/hackcraft/world/cWorld.h"
 
-#include "de/hackcraft/psi3d/snippetsgl.h"
+#include "de/hackcraft/psi3d/GLS.h"
+#include "de/hackcraft/psi3d/Primitive.h"
 
 #include <cassert>
 
@@ -158,7 +159,7 @@ void rWeaponHoming::drawSolid() {
     if (drawWeapon) {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
-            SGL::glUseProgram_fglitcolor();
+            GLS::glUseProgram_fglitcolor();
 
             glPushMatrix();
             {
@@ -174,7 +175,7 @@ void rWeaponHoming::drawSolid() {
                 {
                     glTranslatef(0, 0.75, 0);
                     glScalef(0.065, 0.75, 0.065);
-                    cPrimitives::glCenterUnitCylinder(7);
+                    Primitive::glCenterUnitCylinder(7);
 
                 }
                 glPopMatrix();
@@ -183,7 +184,7 @@ void rWeaponHoming::drawSolid() {
                 glPushMatrix();
                 {
                     glScalef(0.1, 0.14, 0.12);
-                    cPrimitives::glCenterUnitBlock();
+                    Primitive::glCenterUnitBlock();
                 }
                 glPopMatrix();
 
@@ -199,7 +200,7 @@ void rWeaponHoming::drawSolid() {
                         glRotatef(i * 360 / n, 0, 1, 0);
                         glTranslatef(0.075, 0.8, 0);
                         glScalef(0.06, 0.8, 0.06);
-                        cPrimitives::glCenterUnitCylinder(7);
+                        Primitive::glCenterUnitCylinder(7);
                     }
                     glPopMatrix();
                 }
@@ -212,7 +213,7 @@ void rWeaponHoming::drawSolid() {
     // Missiles themselves:
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
-        SGL::glUseProgram_fglitcolor();
+        GLS::glUseProgram_fglitcolor();
 
         const float size = 0.8;
         const float length = size * 1.4;
@@ -272,10 +273,10 @@ void rWeaponHoming::drawEffect() {
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
-        SGL::glUseProgram_fgaddcolor();
+        GLS::glUseProgram_fgaddcolor();
 
         float n[16];
-        SGL::glGetTransposeInverseRotationMatrix(n);
+        GLS::glGetTransposeInverseRotationMatrix(n);
 
         // Draw Missile's flare.
 
@@ -288,16 +289,16 @@ void rWeaponHoming::drawEffect() {
                 glMultMatrixf(n);
                 float size = 2.5 + 2.5 * 0.01f * (rand() % 100);
                 glColor4f(0.8, 0.5, 0.1, 0.99f);
-                cPrimitives::glDisk(9 + WEAPONDETAIL, size * 0.1f);
+                Primitive::glDisk(9 + WEAPONDETAIL, size * 0.1f);
                 size = 2.5 + 2.5 * 0.01f * (rand() % 100);
                 glColor4f(0.9, 0.9, 0.9, 0.99f);
-                cPrimitives::glDisk(7 + WEAPONDETAIL, size * 0.07f);
+                Primitive::glDisk(7 + WEAPONDETAIL, size * 0.07f);
             }
             glPopMatrix();
         } // missiles
 
         // Draw Missile's trails.
-        SGL::glUseProgram_fgaddtexture();
+        GLS::glUseProgram_fgaddtexture();
 
         glBindTexture(GL_TEXTURE_2D, sTextures[0]);
 
@@ -313,7 +314,7 @@ void rWeaponHoming::drawEffect() {
                     float m = 2 * smoke->fuel;
                     glColor4f(m, m * 0.8, m * 0.6, 0.05 + smoke->fuel);
                     float size = 0.1 + 0.2 * pow(1.0 + smoke->timer, 2.0);
-                    cPrimitives::glDisk(5 + WEAPONDETAIL, size);
+                    Primitive::glDisk(5 + WEAPONDETAIL, size);
                 }
                 glPopMatrix();
             } // trails

@@ -3,7 +3,7 @@
 #include "de/hackcraft/world/cWorld.h"
 
 #include "de/hackcraft/psi3d/macros.h"
-#include "de/hackcraft/psi3d/snippetsgl.h"
+#include "de/hackcraft/psi3d/GLS.h"
 
 #include "de/hackcraft/proc/noise.h"
 
@@ -50,7 +50,7 @@ rWeapon::rWeapon(cObject* obj) {
             bool soft = true;
             bool repeat = true;
             unsigned int texname;
-            texname = SGL::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
+            texname = GLS::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
             sTextures[0] = texname;
             delete texels;
         }
@@ -102,9 +102,9 @@ void rWeapon::transform() {
         {
             glLoadIdentity();
             glTranslatef(pos0[0], pos0[1], pos0[2]);
-            SGL::glRotateq(ori0);
+            GLS::glRotateq(ori0);
             glTranslatef(pos1[0], pos1[1], pos1[2]);
-            SGL::glRotateq(ori1);
+            GLS::glRotateq(ori1);
             // FIXME: All weapon's forward are inverted, therefore rotate.
             glRotatef(180, 0, 1, 0);
             glGetFloatv(GL_MODELVIEW_MATRIX, weaponPosef);

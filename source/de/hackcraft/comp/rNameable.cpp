@@ -1,7 +1,7 @@
 #include "rNameable.h"
 
 #include <GL/glew.h>
-#include "de/hackcraft/psi3d/snippetsgl.h"
+#include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/instfont.h"
 
 DEFINE_glprintf
@@ -39,20 +39,20 @@ void rNameable::drawEffect() {
     {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
-            SGL::glUseProgram_fgplaintexture();
+            GLS::glUseProgram_fgplaintexture();
             glColor4fv(color);
 
             float s = 0.75;
             //glTranslatef(pos[0], pos[1] + 0.5f*s, pos[2]);
             glTranslatef(pos0[0], pos0[1], pos0[2]);
-            SGL::glRotateq(ori0);
+            GLS::glRotateq(ori0);
             glTranslatef(pos1[0], pos1[1], pos1[2]);
             bool billboard = true;
-            if (!billboard) SGL::glRotateq(ori1);
+            if (!billboard) GLS::glRotateq(ori1);
             glScalef(s, s, s);
             if (billboard) {
                 float n[16];
-                SGL::glGetTransposeInverseRotationMatrix(n);
+                GLS::glGetTransposeInverseRotationMatrix(n);
                 glMultMatrixf(n);
             }
             int l = name.length();

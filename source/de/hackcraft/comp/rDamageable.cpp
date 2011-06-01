@@ -3,8 +3,9 @@
 #include "de/hackcraft/object/cObject.h"
 
 #include <GL/glew.h>
-#include "de/hackcraft/psi3d/snippetsgl.h"
+#include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/instfont.h"
+#include "de/hackcraft/psi3d/Primitive.h"
 
 DEFINE_glprintf
 
@@ -82,25 +83,25 @@ void rDamageable::drawHUD() {
             // Left Arm
             int left = rDamageable::LEFT;
             if (i != 1) glColor4f(1 - hp[left]*0.01, hp[left]*0.01, 0.4, 0.2);
-            cPrimitives::glLineSquare(0.1f);
+            Primitive::glLineSquare(0.1f);
             // Torsor&Head
             glTranslatef(1, 0, 0);
             glScalef(1, 1.5, 1);
             int body = rDamageable::BODY;
             if (i != 1) glColor4f(1 - hp[body]*0.01, hp[body]*0.01, 0.4, 0.2);
-            cPrimitives::glLineSquare(0.1f);
+            Primitive::glLineSquare(0.1f);
             // Right Arm&Shoulder
             glTranslatef(1, 0, 0);
             glScalef(1, 1.0f / 1.5f, 1);
             int right = rDamageable::RIGHT;
             if (i != 1) glColor4f(1 - hp[right]*0.01, hp[right]*0.01, 0.4, 0.2);
-            cPrimitives::glLineSquare(0.1f);
+            Primitive::glLineSquare(0.1f);
             // Legs
             glTranslatef(-1.6, -1, 0);
             glScalef(2.2, 1, 1);
             int legs = rDamageable::LEGS;
             if (i != 1) glColor4f(1 - hp[legs]*0.01, hp[legs]*0.01, 0.4, 0.2);
-            cPrimitives::glLineSquare(0.1f);
+            Primitive::glLineSquare(0.1f);
         }
         glPopMatrix();
     }

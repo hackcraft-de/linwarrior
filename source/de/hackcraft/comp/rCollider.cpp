@@ -4,8 +4,8 @@
 
 #include <GL/glew.h>
 
-#include "de/hackcraft/psi3d/snippetsgl.h"
-
+#include "de/hackcraft/psi3d/GLS.h"
+#include "de/hackcraft/psi3d/Primitive.h"
 #include "de/hackcraft/psi3d/Particle.h"
 
 
@@ -63,13 +63,13 @@ void rCollider::drawEffect() {
     glPushMatrix();
     {
         glTranslatef(pos0[0], pos0[1], pos0[2]);
-        SGL::glRotateq(ori0);
+        GLS::glRotateq(ori0);
 
         glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
-            SGL::glUseProgram_fgplaincolor();
+            GLS::glUseProgram_fgplaincolor();
 
-            cPrimitives::glAxis(1.0f);
+            Primitive::glAxis(1.0f);
 
             float c1[] = {1.0f, 0.0f, 0.0f, 1.0f};
             float c2[] = {0.5f, 0.0f, 0.0f, 1.0f};

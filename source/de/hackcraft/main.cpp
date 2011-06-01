@@ -2,7 +2,7 @@
 
 #include "main.h"
 
-#include "de/hackcraft/psi3d/snippetsgl.h"
+#include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/instfont.h"
 
 // To dis-/enable zone drawing.
@@ -279,7 +279,7 @@ void cMain::applyFilter(int width, int height) {
         if (fgm) cout << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
         fail = (vtx[0] == 0 && fgm[0] == 0);
         if (!fail) {
-            postprocess = SGL::glCompileProgram(vtx, fgm, cout);
+            postprocess = GLS::glCompileProgram(vtx, fgm, cout);
         }
         delete vtx;
         delete fgm;
@@ -302,7 +302,7 @@ void cMain::applyFilter(int width, int height) {
         {
             // Capture Color.
             static long screencolor = 0;
-            if (screencolor == 0) screencolor = SGL::glBindTextureMipmap2D(0, true, true, false, false, width, height, NULL);
+            if (screencolor == 0) screencolor = GLS::glBindTextureMipmap2D(0, true, true, false, false, width, height, NULL);
             glUniform1i(glGetUniformLocation(postprocess, "tex"), 0);
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, screencolor);
@@ -310,7 +310,7 @@ void cMain::applyFilter(int width, int height) {
 
             // Capture Depth.
             static long screendepth = 0;
-            if (screendepth == 0) screendepth = SGL::glBindTextureMipmap2D(0, true, true, false, false, width, height, NULL, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT);
+            if (screendepth == 0) screendepth = GLS::glBindTextureMipmap2D(0, true, true, false, false, width, height, NULL, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT);
             glUniform1i(glGetUniformLocation(postprocess, "dep"), 1);
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, screendepth);
@@ -413,7 +413,7 @@ void cMain::drawFrame() {
     }
 
 
-    SGL::glPushPerspectiveProjection(game.fov, 0.07, 300);
+    GLS::glPushPerspectiveProjection(game.fov, 0.07, 300);
     {
         // Setup camera.
         glLoadIdentity();
@@ -449,16 +449,16 @@ void cMain::drawFrame() {
         // Draw the Head-Up-Display of the currently spectating Object.
         game.camera->drawHUD();
     }
-    SGL::glPopProjection();
+    GLS::glPopProjection();
 
 
     float motionblur = 0.0f;
     if (game.nightvision > 0.0001f) {
         glFlush();
-        SGL::glAccumBlurInverse(0.83f);
+        GLS::glAccumBlurInverse(0.83f);
     } else if (motionblur > 0.0001) {
         glFlush();
-        SGL::glAccumBlur(motionblur);
+        GLS::glAccumBlur(motionblur);
     }
 
     if (picking) {
@@ -836,7 +836,7 @@ int cMain::run(int argc, char** args) {
             glDisable(GL_DEPTH_TEST);
             glDisable(GL_CULL_FACE);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            SGL::glPushOrthoProjection();
+            GLS::glPushOrthoProjection();
             {
                 glPushMatrix();
                 {
@@ -861,7 +861,7 @@ int cMain::run(int argc, char** args) {
                 }
                 glPopMatrix();
             }
-            SGL::glPopProjection();
+            GLS::glPopProjection();
         }
         glPopAttrib();
         SDL_GL_SwapBuffers();

@@ -19,7 +19,7 @@
 #include "de/hackcraft/comp/rMobile.h"
 
 #include "de/hackcraft/psi3d/macros.h"
-#include "de/hackcraft/psi3d/snippetsgl.h"
+#include "de/hackcraft/psi3d/GLS.h"
 
 #include "de/hackcraft/proc/cSolid.h"
 
@@ -86,7 +86,7 @@ cMech::cMech(float* pos, float* rot) {
                     texels[t++] = 255.0f * color[1];
                     texels[t++] = 255.0f * color[2];
                 }
-                unsigned int texname = SGL::glBindTexture3D(0, true, true, true, true, true, SIZE, SIZE, SIZE, texels);
+                unsigned int texname = GLS::glBindTexture3D(0, true, true, true, true, true, SIZE, SIZE, SIZE, texels);
                 sTextures[l] = texname;
             }
             delete texels;
@@ -725,11 +725,11 @@ void cMech::drawHUD() {
     //computerised->drawHUD();
     glPushAttrib(GL_ALL_ATTRIB_BITS /* more secure */);
     {
-        SGL::glUseProgram_bkplaincolor();
+        GLS::glUseProgram_bkplaincolor();
         glDisable(GL_CULL_FACE);
         glLineWidth(2);
 
-        SGL::glPushOrthoProjection();
+        GLS::glPushOrthoProjection();
         {
             glPushMatrix();
             {
@@ -779,7 +779,7 @@ void cMech::drawHUD() {
             }
             glPopMatrix();
         }
-        SGL::glPopProjection();
+        GLS::glPopProjection();
     }
     glPopAttrib();
 }
