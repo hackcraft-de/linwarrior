@@ -37,9 +37,6 @@ using std::string;
 
 #define MECHDETAIL -1
 
-//#include "psi3d/instfont.h"
-//DEFINE_glprintf
-
 #define EXPERIMENT true
 
 
@@ -639,20 +636,7 @@ void cMech::animate(float spf) {
 }
 
 void cMech::transform() {
-    /*
-    {
-        rigged->transform();
-    }
-    {
-        mobile->transform();
-    }
-    loopi(weapons.size()) {
-        weapons[i]->transform();
-    }
-    {
-        explosion->transform();
-    }
-     */
+    // Everything in animation ?!
 }
 
 void cMech::drawSolid() {
@@ -722,7 +706,6 @@ void cMech::drawEffect() {
 }
 
 void cMech::drawHUD() {
-    //computerised->drawHUD();
     glPushAttrib(GL_ALL_ATTRIB_BITS /* more secure */);
     {
         GLS::glUseProgram_bkplaincolor();
@@ -786,14 +769,6 @@ void cMech::drawHUD() {
 
 void cMech::damage(float* localpos, float damage, cObject* enactor) {
     if (!damageable->alife || damage == 0.0f) return;
-
-    /*
-    int hitzone = rDamageable::BODY;
-    if (localpos[1] < 0.66 * rigged->height && damageable->hp[rDamageable::LEGS] > 0) hitzone = rDamageable::LEGS;
-    else if (localpos[0] < -0.33 * rigged->radius && damageable->hp[rDamageable::LEFT] > 0) hitzone = rDamageable::LEFT;
-    else if (localpos[0] > +0.33 * rigged->radius && damageable->hp[rDamageable::RIGHT] > 0) hitzone = rDamageable::RIGHT;
-    if (!damageable->damage(hitzone, damage, enactor)) {
-    */
 
     if (!damageable->damage(localpos, damage, enactor)) {
         cout << "cMech::damageByParticle(): DEAD\n";
