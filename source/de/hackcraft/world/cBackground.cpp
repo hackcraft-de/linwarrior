@@ -13,6 +13,7 @@ using std::endl;
 #include "cWorld.h"
 
 #include "de/hackcraft/proc/noise.h"
+#include "de/hackcraft/proc/cDistortion.h"
 #include "de/hackcraft/proc/cLandscape.h"
 #include "de/hackcraft/proc/cSolid.h"
 

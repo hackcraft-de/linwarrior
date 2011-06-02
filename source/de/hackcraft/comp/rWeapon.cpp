@@ -6,6 +6,7 @@
 #include "de/hackcraft/psi3d/GLS.h"
 
 #include "de/hackcraft/proc/noise.h"
+#include "de/hackcraft/proc/cDistortion.h"
 
 #include <iostream>
 using std::cout;

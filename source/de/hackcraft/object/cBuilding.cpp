@@ -9,6 +9,7 @@
 #include "de/hackcraft/psi3d/Primitive.h"
 
 #include "de/hackcraft/proc/noise.h"
+#include "de/hackcraft/proc/cDistortion.h"
 
 #include <cassert>
 

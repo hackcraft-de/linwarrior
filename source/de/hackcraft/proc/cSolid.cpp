@@ -3,6 +3,7 @@
 #include "../psi3d/math3d.h"
 
 #include "noise.h"
+#include "cDistortion.h"
 
 #include <cmath>
 

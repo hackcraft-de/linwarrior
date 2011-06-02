@@ -1,6 +1,7 @@
 #include "cSurface.h"
 
 #include "noise.h"
+#include "cDistortion.h"
 #include "cSolid.h"
 
 void cSurface::stone_plates(float x, float y, float z, float* color, unsigned char seed) {
