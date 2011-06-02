@@ -8,8 +8,8 @@
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Primitive.h"
 
-#include "de/hackcraft/proc/noise.h"
-#include "de/hackcraft/proc/cDistortion.h"
+#include "de/hackcraft/proc/Noise.h"
+#include "de/hackcraft/proc/Distortion.h"
 
 #include <cassert>
 
@@ -610,8 +610,8 @@ void cScatterfield::drawEffect() {
 
 // ###############################################
 
-#include "de/hackcraft/proc/cSolid.h"
-#include "de/hackcraft/proc/cSurface.h"
+#include "de/hackcraft/proc/Solid.h"
+#include "de/hackcraft/proc/Surface.h"
 
 static void getBasicRoad(float x, float y, float z, float* color, unsigned char seed = 131) {
     cSolid::concrete_cracked(x, y, z, color, seed);

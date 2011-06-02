@@ -4,9 +4,9 @@
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Primitive.h"
 
-#include "de/hackcraft/proc/noise.h"
-#include "de/hackcraft/proc/cDistortion.h"
-#include "de/hackcraft/proc/cSolid.h"
+#include "de/hackcraft/proc/Noise.h"
+#include "de/hackcraft/proc/Distortion.h"
+#include "de/hackcraft/proc/Solid.h"
 
 #include <cassert>
 

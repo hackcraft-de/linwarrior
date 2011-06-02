@@ -1,9 +1,9 @@
-#include "cSolid.h"
+#include "Solid.h"
 
-#include "../psi3d/math3d.h"
+#include "de/hackcraft/psi3d/math3d.h"
 
-#include "noise.h"
-#include "cDistortion.h"
+#include "Noise.h"
+#include "Distortion.h"
 
 #include <cmath>
 

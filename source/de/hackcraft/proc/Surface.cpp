@@ -1,8 +1,8 @@
-#include "cSurface.h"
+#include "Surface.h"
 
-#include "noise.h"
-#include "cDistortion.h"
-#include "cSolid.h"
+#include "Noise.h"
+#include "Distortion.h"
+#include "Solid.h"
 
 void cSurface::stone_plates(float x, float y, float z, float* color, unsigned char seed) {
     float grain = 0.2f + 0.1f * (0.5f + 0.5f * cNoise::simplex3(x * 128, y * 128, z * 128, seed));

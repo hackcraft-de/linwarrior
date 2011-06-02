@@ -1,5 +1,5 @@
 /* 
- * File:     cSurface.h
+ * File:     Surface.h
  * Project:  LinWarrior 3D
  * Home:     hackcraft.de
  *

@@ -43,10 +43,10 @@ OBJECTFILES= \
 	${OBJECTDIR}/source/de/hackcraft/proc/cLandscape.o \
 	${OBJECTDIR}/source/de/hackcraft/util/Message.o \
 	${OBJECTDIR}/source/de/hackcraft/object/cTree.o \
-	${OBJECTDIR}/source/de/hackcraft/comp/rComponent.o \
 	${OBJECTDIR}/source/de/hackcraft/object/cPlanetmap.o \
 	${OBJECTDIR}/source/de/hackcraft/comp/rCollider.o \
 	${OBJECTDIR}/source/de/hackcraft/world/cWorld.o \
+	${OBJECTDIR}/source/de/hackcraft/comp/rComponent.o \
 	${OBJECTDIR}/source/de/hackcraft/comp/rCamera.o \
 	${OBJECTDIR}/source/de/hackcraft/comp/rWeaponMachinegun.o \
 	${OBJECTDIR}/source/de/hackcraft/object/cBuilding.o \
@@ -143,11 +143,6 @@ ${OBJECTDIR}/source/de/hackcraft/object/cTree.o: source/de/hackcraft/object/cTre
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/object/cTree.o source/de/hackcraft/object/cTree.cpp
 
-${OBJECTDIR}/source/de/hackcraft/comp/rComponent.o: source/de/hackcraft/comp/rComponent.cpp 
-	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/comp
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/comp/rComponent.o source/de/hackcraft/comp/rComponent.cpp
-
 ${OBJECTDIR}/source/de/hackcraft/object/cPlanetmap.o: source/de/hackcraft/object/cPlanetmap.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/object
 	${RM} $@.d
@@ -162,6 +157,11 @@ ${OBJECTDIR}/source/de/hackcraft/world/cWorld.o: source/de/hackcraft/world/cWorl
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/world
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/world/cWorld.o source/de/hackcraft/world/cWorld.cpp
+
+${OBJECTDIR}/source/de/hackcraft/comp/rComponent.o: source/de/hackcraft/comp/rComponent.cpp 
+	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/comp
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/comp/rComponent.o source/de/hackcraft/comp/rComponent.cpp
 
 ${OBJECTDIR}/source/de/hackcraft/comp/rCamera.o: source/de/hackcraft/comp/rCamera.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/comp

@@ -77,6 +77,7 @@
                          displayName="proc"
                          projectFiles="true"
                          kind="SOURCE_LOGICAL_FOLDER">
+            <itemPath>source/de/hackcraft/proc/Noise.h</itemPath>
             <itemPath>/home/benben/Desktop/linux_workspaces/netbeans_workspace/linwarrior/source/de/hackcraft/proc/cDistortion.h</itemPath>
             <itemPath>source/de/hackcraft/proc/cLandscape.cpp</itemPath>
             <itemPath>source/de/hackcraft/proc/cLandscape.h</itemPath>
@@ -84,7 +85,6 @@
             <itemPath>source/de/hackcraft/proc/cSolid.h</itemPath>
             <itemPath>source/de/hackcraft/proc/cSurface.cpp</itemPath>
             <itemPath>source/de/hackcraft/proc/cSurface.h</itemPath>
-            <itemPath>source/de/hackcraft/proc/noise.h</itemPath>
           </logicalFolder>
           <logicalFolder name="psi3d"
                          displayName="psi3d"

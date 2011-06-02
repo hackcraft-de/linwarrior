@@ -1,5 +1,5 @@
 /* 
- * File:   noise.h
+ * File:   Noise.h
  * Author: Benjamin Pickhardt
  * Home:   hackcraft.de
  *

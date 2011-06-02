@@ -21,7 +21,7 @@
 #include "de/hackcraft/psi3d/macros.h"
 #include "de/hackcraft/psi3d/GLS.h"
 
-#include "de/hackcraft/proc/cSolid.h"
+#include "de/hackcraft/proc/Solid.h"
 
 #include <cassert>
 

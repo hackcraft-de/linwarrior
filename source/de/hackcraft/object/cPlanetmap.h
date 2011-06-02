@@ -13,7 +13,7 @@ class cPlanetmap;
 
 #include "cObject.h"
 
-#include "de/hackcraft/proc/cLandscape.h"
+#include "de/hackcraft/proc/Landscape.h"
 
 #include "cTree.h"
 

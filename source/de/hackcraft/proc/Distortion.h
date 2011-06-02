@@ -1,5 +1,5 @@
 /* 
- * File:   cDistortion.h
+ * File:   Distortion.h
  * Author: benben
  *
  * Created on June 2, 2011, 4:52 PM

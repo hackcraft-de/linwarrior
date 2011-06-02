@@ -5,8 +5,8 @@
 #include "de/hackcraft/psi3d/macros.h"
 #include "de/hackcraft/psi3d/GLS.h"
 
-#include "de/hackcraft/proc/noise.h"
-#include "de/hackcraft/proc/cDistortion.h"
+#include "de/hackcraft/proc/Noise.h"
+#include "de/hackcraft/proc/Distortion.h"
 
 #include <iostream>
 using std::cout;

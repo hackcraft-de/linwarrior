@@ -12,10 +12,10 @@ using std::endl;
 
 #include "cWorld.h"
 
-#include "de/hackcraft/proc/noise.h"
-#include "de/hackcraft/proc/cDistortion.h"
-#include "de/hackcraft/proc/cLandscape.h"
-#include "de/hackcraft/proc/cSolid.h"
+#include "de/hackcraft/proc/Noise.h"
+#include "de/hackcraft/proc/Distortion.h"
+#include "de/hackcraft/proc/Landscape.h"
+#include "de/hackcraft/proc/Solid.h"
 
 #include "de/hackcraft/psi3d/macros.h"
 #include "de/hackcraft/psi3d/GLS.h"

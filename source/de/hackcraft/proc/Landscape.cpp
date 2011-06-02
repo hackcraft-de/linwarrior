@@ -1,7 +1,7 @@
-#include "cLandscape.h"
+#include "Landscape.h"
 
-#include "noise.h"
-#include "cDistortion.h"
+#include "Noise.h"
+#include "Distortion.h"
 
 void cLandscape::land_rockies(float x, float y, float z, float* color, unsigned char seed) {
     float utahcolors[][3] = {

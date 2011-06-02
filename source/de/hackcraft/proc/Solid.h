@@ -1,5 +1,5 @@
 /* 
- * File:     cSolid.h
+ * File:     Solid.h
  * Project:  LinWarrior 3D
  * Home:     hackcraft.de
  *
