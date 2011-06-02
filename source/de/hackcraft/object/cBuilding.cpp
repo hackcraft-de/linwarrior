@@ -21,38 +21,38 @@ using std::endl;
 
 static void getVStrings(float x, float y, float* color4f, unsigned char seed = 131) {
     float x_ = fmod(x, 1.0f);
-    float sinx = cNoise::simplex3(((x_ < 0.5f) ? (x_) : (1.0f - x_))*16.0, 0, 0, seed);
+    float sinx = Noise::simplex3(((x_ < 0.5f) ? (x_) : (1.0f - x_))*16.0, 0, 0, seed);
     float sx = 0.8 + 0.2 * sinx;
-    float grain = 0.9f + 0.1f * (0.5f + 0.5f * cNoise::simplex3(x * 256.0f, y * 256.0f, 0, seed));
+    float grain = 0.9f + 0.1f * (0.5f + 0.5f * Noise::simplex3(x * 256.0f, y * 256.0f, 0, seed));
     color4f[0] = color4f[1] = color4f[2] = grain * sx;
     color4f[3] = 1.0f;
 }
 
 static void getHStrings(float x, float y, float* color4f, unsigned char seed = 131) {
     float y_ = fmod(y, 1.0f);
-    float siny = cNoise::simplex3(0, y_ * 8.0f, 0, seed);
+    float siny = Noise::simplex3(0, y_ * 8.0f, 0, seed);
     float sy = 0.8 + 0.2 * siny;
-    float grain = 0.9f + 0.1f * (0.5f + 0.5f * cNoise::simplex3(x * 256.0f, y * 256.0f, 0, seed));
+    float grain = 0.9f + 0.1f * (0.5f + 0.5f * Noise::simplex3(x * 256.0f, y * 256.0f, 0, seed));
     color4f[0] = color4f[1] = color4f[2] = grain * sy;
     color4f[3] = 1.0f;
 }
 
 static void getInterrior(float x, float y, float* color4fv, unsigned char seed = 131) {
-    float alpha = 0.3f + 0.7f * (0.5f + 0.5f * cNoise::samplex3(x * 63, y * 63, 0, seed));
+    float alpha = 0.3f + 0.7f * (0.5f + 0.5f * Noise::samplex3(x * 63, y * 63, 0, seed));
     float dark[] = {0.2f, 0.2f, 0.2f, 1.0f};
     float lite[] = {0.99f, 0.99f, 0.7f, 1.0f};
-    cDistortion::fade4(alpha, dark, lite, color4fv);
+    Distortion::fade4(alpha, dark, lite, color4fv);
 }
 
 static void getExterrior(float x, float y, float* color4fv, unsigned char seed = 131) {
-    float alpha = 0.3f + 0.7f * (0.5f + 0.5f * cNoise::simplex3(x, y, 0, seed));
+    float alpha = 0.3f + 0.7f * (0.5f + 0.5f * Noise::simplex3(x, y, 0, seed));
     float dark[] = {0.30f, 0.30f, 0.40f, 1.0f};
     float lite[] = {0.50f, 0.50f, 0.70f, 1.0f};
-    cDistortion::fade4(alpha, dark, lite, color4fv);
+    Distortion::fade4(alpha, dark, lite, color4fv);
 }
 
 static void getConcrete(float x, float y, float z, float* color4fv, unsigned char seed = 131) {
-    float grain = 0.15f + 0.15f * (0.5f + 0.5f * cNoise::simplex3(x, y, z, seed));
+    float grain = 0.15f + 0.15f * (0.5f + 0.5f * Noise::simplex3(x, y, z, seed));
     color4fv[0] = color4fv[1] = color4fv[2] = grain;
     color4fv[3] = 1.0f;
 }
@@ -67,25 +67,25 @@ static inline void getFacade(float x, float y, int gx, int gy, float age, float*
 
     float dims[4 * MAX_LEVELS];
 
-    unsigned char r = cNoise::LFSR8(seed);
-    r = cNoise::LFSR8(r);
-    r = cNoise::LFSR8(r);
-    r = cNoise::LFSR8(r);
-    r = cNoise::LFSR8(r);
+    unsigned char r = Noise::LFSR8(seed);
+    r = Noise::LFSR8(r);
+    r = Noise::LFSR8(r);
+    r = Noise::LFSR8(r);
+    r = Noise::LFSR8(r);
     const float inv256 = 0.003906f;
 
-    r = cNoise::LFSR8(r);
+    r = Noise::LFSR8(r);
     bool rowmajor = (r & 1) == 0;
 
     float* margin = &dims[0];
     {
-        r = cNoise::LFSR8(r);
+        r = Noise::LFSR8(r);
         margin[0] = 0.20f * r * inv256 + 0.006f;
         margin[2] = margin[0];
-        r = cNoise::LFSR8(r);
+        r = Noise::LFSR8(r);
         margin[1] = 0.14f * r * inv256 + 0.006f;
         // should be related
-        r = cNoise::LFSR8(r);
+        r = Noise::LFSR8(r);
         margin[3] = 0.36f * r * inv256 + 0.006f;
     }
 
@@ -93,10 +93,10 @@ static inline void getFacade(float x, float y, int gx, int gy, float age, float*
     {
         float w = 1.0f - (margin[2] + margin[0]);
         float h = 1.0f - (margin[3] + margin[1]);
-        r = cNoise::LFSR8(r);
+        r = Noise::LFSR8(r);
         border[0] = r * 0.0002f * w + 0.0002f * w;
         border[2] = border[0];
-        r = cNoise::LFSR8(r);
+        r = Noise::LFSR8(r);
         border[1] = r * 0.0002f * h + 0.0002f * h;
         border[3] = border[1];
     }
@@ -105,10 +105,10 @@ static inline void getFacade(float x, float y, int gx, int gy, float age, float*
     {
         float w = 1.0f - (margin[2] + border[2] + margin[0] + border[0]);
         float h = 1.0f - (margin[3] + border[3] + margin[1] + border[1]);
-        r = cNoise::LFSR8(r);
+        r = Noise::LFSR8(r);
         padding[0] = r * 0.0002f * w + 0.0002f * w;
         padding[2] = padding[0];
-        r = cNoise::LFSR8(r);
+        r = Noise::LFSR8(r);
         padding[1] = r * 0.0002f * h + 0.0002f * h;
         padding[3] = padding[1];
     }
@@ -117,12 +117,12 @@ static inline void getFacade(float x, float y, int gx, int gy, float age, float*
     {
         float w = 1.0f - (margin[2] + border[2] + padding[2] + margin[0] + border[0] + padding[0]);
         float h = 1.0f - (margin[3] + border[3] + padding[3] + margin[1] + border[1] + padding[1]);
-        r = cNoise::LFSR8(r);
+        r = Noise::LFSR8(r);
         content[0] = r * 0.0002f * w + 0.0002f * w;
         content[2] = content[0];
-        r = cNoise::LFSR8(r);
+        r = Noise::LFSR8(r);
         content[1] = r * 0.0001f * h + 0.0001f * h;
-        r = cNoise::LFSR8(r);
+        r = Noise::LFSR8(r);
         content[3] = r * 0.0001f * h + 0.0001f * h;
     }
 
@@ -140,7 +140,7 @@ static inline void getFacade(float x, float y, int gx, int gy, float age, float*
     float pyr[MAX_LEVELS + 1];
 
     loopi(MAX_LEVELS + 1) {
-        pyr[i] = cDistortion::rampPyramid(sum[i][0], sum[i][1], 1.0f - sum[i][2], 1.0f - sum[i][3], x, y);
+        pyr[i] = Distortion::rampPyramid(sum[i][0], sum[i][1], 1.0f - sum[i][2], 1.0f - sum[i][3], x, y);
     }
 
     float inside[MAX_LEVELS + 1];
@@ -166,20 +166,20 @@ static inline void getFacade(float x, float y, int gx, int gy, float age, float*
     }
 
     float chma = 2.0f * 0.1f;
-    float cr = r = cNoise::LFSR8(r);
-    float cg = r = cNoise::LFSR8(r);
-    float cb = r = cNoise::LFSR8(r);
-    float cl = r = cNoise::LFSR8(r);
+    float cr = r = Noise::LFSR8(r);
+    float cg = r = Noise::LFSR8(r);
+    float cb = r = Noise::LFSR8(r);
+    float cl = r = Noise::LFSR8(r);
     cl = 0.6f + 0.4f * inv256*cl;
     cl *= (1.0f - chma);
     chma *= inv256;
     float c0[] = {cl + chma*cr, cl + chma*cg, cl + chma*cb, 1.0f};
 
     chma = 2.0f * 0.1f;
-    cr = r = cNoise::LFSR8(r);
-    cg = r = cNoise::LFSR8(r);
-    cb = r = cNoise::LFSR8(r);
-    cl = r = cNoise::LFSR8(r);
+    cr = r = Noise::LFSR8(r);
+    cg = r = Noise::LFSR8(r);
+    cb = r = Noise::LFSR8(r);
+    cl = r = Noise::LFSR8(r);
     cl = 0.6f + 0.4f * inv256*cl;
     cl *= (1.0f - chma);
     chma *= inv256;
@@ -205,13 +205,13 @@ static inline void getFacade(float x, float y, int gx, int gy, float age, float*
     }
 
     // Glass distortion
-    float dx = 0.01f * cNoise::simplex3((gx + x)*63, (gy + y)*63, 0, seed + 43);
-    float dy = 0.01f * cNoise::simplex3((gx + x)*63, (gy + y)*63, 0, seed + 31);
+    float dx = 0.01f * Noise::simplex3((gx + x)*63, (gy + y)*63, 0, seed + 43);
+    float dy = 0.01f * Noise::simplex3((gx + x)*63, (gy + y)*63, 0, seed + 31);
 
     // Interrior Room Pattern.
     float interrior[4];
     getInterrior(gx + x + dx, gy + y + dy, interrior);
-    float innerwalls = 0.6f + fmin(0.4, fmax(0.0f, cDistortion::rampPyramid(0, 0.1, 1, 0.9, x + dx, y + dy)));
+    float innerwalls = 0.6f + fmin(0.4, fmax(0.0f, Distortion::rampPyramid(0, 0.1, 1, 0.9, x + dx, y + dy)));
 
     loopi(4) {
         interrior[i] *= innerwalls;
@@ -222,7 +222,7 @@ static inline void getFacade(float x, float y, int gx, int gy, float age, float*
     getExterrior(gx + x + 2 * dx, gy + y + 2 * dy, exterrior);
 
     // Light smearing
-    float smear = 0.8 + 0.2f * cNoise::simplex3((gx + x)*8 + (gy + y)*8, (gx + x)*1 - (gy + y)*1, 0, seed + 41);
+    float smear = 0.8 + 0.2f * Noise::simplex3((gx + x)*8 + (gy + y)*8, (gx + x)*1 - (gy + y)*1, 0, seed + 41);
 
 
     //float glass[] = { 0.90f, 0.90f, 0.99f, 1.0f };
@@ -238,11 +238,11 @@ static inline void getFacade(float x, float y, int gx, int gy, float age, float*
     mirror *= smear;
 
     float shade[4];
-    cDistortion::fade4(mirror, interrior, exterrior, shade);
-    cDistortion::mix3(0.56f * colpart, col, 0.60f * rowpart, row, c3f);
+    Distortion::fade4(mirror, interrior, exterrior, shade);
+    Distortion::mix3(0.56f * colpart, col, 0.60f * rowpart, row, c3f);
 
     int winpart = inside[BORDER + 1];
-    cDistortion::mix3(1.0f - winpart, c3f, winpart, shade, c3f);
+    Distortion::mix3(1.0f - winpart, c3f, winpart, shade, c3f);
 
     return;
 
@@ -250,7 +250,7 @@ static inline void getFacade(float x, float y, int gx, int gy, float age, float*
     float dirtf = 1.0f + pyr[BORDER + 1];
     dirtf = (dirtf > 1.0f) ? 0.0f : dirtf;
     dirtf *= 0.99f;
-    cDistortion::mix3(1.0f - dirtf, c3f, dirtf, dirt, c3f);
+    Distortion::mix3(1.0f - dirtf, c3f, dirtf, dirt, c3f);
 }
 
 
@@ -614,7 +614,7 @@ void cScatterfield::drawEffect() {
 #include "de/hackcraft/proc/Surface.h"
 
 static void getBasicRoad(float x, float y, float z, float* color, unsigned char seed = 131) {
-    cSolid::concrete_cracked(x, y, z, color, seed);
+    Solid::concrete_cracked(x, y, z, color, seed);
 
     float marks = 0.6f + 0.05f * cos(2.0f * 4.0f * x * 2.0f * M_PI);
     color[0] *= marks;
@@ -622,7 +622,7 @@ static void getBasicRoad(float x, float y, float z, float* color, unsigned char 
     color[2] *= marks;
 
     float walk4fv[4];
-    cSurface::stone_plates(x, y, z, walk4fv, seed);
+    Surface::stone_plates(x, y, z, walk4fv, seed);
 
     unsigned short pattern = 0x6666;
     int bitshift = (int) (y * 7.999999f * 2.0f);
@@ -1190,7 +1190,7 @@ cTile::cTile(int x, int y, int z, int kind) {
 
                 loopi(w) {
                     float color[16];
-                    cSurface::stone_plates(1 * (float) i / (float) h, 1 * (float) j / (float) w, 0, color);
+                    Surface::stone_plates(1 * (float) i / (float) h, 1 * (float) j / (float) w, 0, color);
                     *p++ = color[2] * 255;
                     *p++ = color[1] * 255;
                     *p++ = color[0] * 255;

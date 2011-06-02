@@ -12,7 +12,7 @@
 /**
  * ~[0,1] normalized solid materials.
  */
-struct cSolid {
+struct Solid {
 
     enum {
         RED, GREEN, BLUE, ALPHA, BUMPMAP, SHININESS

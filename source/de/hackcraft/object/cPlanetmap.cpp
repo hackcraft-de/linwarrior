@@ -53,7 +53,7 @@ inline float cPlanetmap::sMod::getModifiedHeight(float x, float z, float h) {
                 float dz = fabs(z_);
                 float d = fmax(dx, dz) / range;
                 //float alpha = 1.0f - pow(d, 8);
-                float alpha = 1.0f - fmin(cDistortion::sig((d - 0.8f) * 20.0f) * 1.05f, 1.0f);
+                float alpha = 1.0f - fmin(Distortion::sig((d - 0.8f) * 20.0f) * 1.05f, 1.0f);
                 h += alpha * (height - h);
             }
             return h;
@@ -67,7 +67,7 @@ inline float cPlanetmap::sMod::getModifiedHeight(float x, float z, float h) {
             float d2 = x_ * x_ + z_*z_;
             if (d2 < range * range) {
                 float d = sqrt(d2) / range;
-                float alpha = 1.0f - fmin(cDistortion::sig((d - 0.8f) * 20.0f) * 1.05f, 1.0f);
+                float alpha = 1.0f - fmin(Distortion::sig((d - 0.8f) * 20.0f) * 1.05f, 1.0f);
                 h += alpha * (height - h);
             }
             return h;
@@ -82,7 +82,7 @@ inline float cPlanetmap::sMod::getModifiedHeight(float x, float z, float h) {
             if (d2 < range * range) {
                 float d = sqrt(d2) / range;
                 float dy = height + 0.2f * range * sin(pow(d, 8.0) * M_PI);
-                float alpha = 1.0f - fmin(cDistortion::sig((d - 0.85f) * 30.0f) * 1.05f, 1.0f);
+                float alpha = 1.0f - fmin(Distortion::sig((d - 0.85f) * 30.0f) * 1.05f, 1.0f);
                 h += alpha * (dy - h);
             }
             return h;
@@ -114,7 +114,7 @@ cPlanetmap::cPlanetmap() {
                     float color[16];
                     //cSolid::planet_grain((i+i_), (j+j_)*f,(k+k_)*f, color, seed);
                     //cSolid::camo_desert((i+i_), (j+j_)*f,(k+k_)*f, color, seed);
-                    cSolid::camo_snow((i + i_) * f, (j + j_) * f, (k + k_) * f, color, seed);
+                    Solid::camo_snow((i + i_) * f, (j + j_) * f, (k + k_) * f, color, seed);
 
                     const float a = 0.475f;
                     const float b = 1.0f - a;
@@ -202,61 +202,61 @@ void cPlanetmap::getHeight(float x, float z, float* const color) {
         // Blending between types.
         const int seed1 = 121;
         const float p1 = 1.0f / 301.0f;
-        float o1 = cNoise::simplex3(7 + x*p1, 15 + y*p1, 19 + z*p1, seed1);
-        o1 = cDistortion::sig(o1 * 28.0f);
+        float o1 = Noise::simplex3(7 + x*p1, 15 + y*p1, 19 + z*p1, seed1);
+        o1 = Distortion::sig(o1 * 28.0f);
 
         float h1 = 0;
         float h0 = 0;
 #if 0
         // Snowset
         if (o1 > 0.005f) {
-            cLandscape::land_snow(x, y, z, snow);
-            h1 = 1 * snow[cLandscape::BUMP];
+            Landscape::land_snow(x, y, z, snow);
+            h1 = 1 * snow[Landscape::BUMP];
         }
         if (o1 < 0.995f) {
-            cLandscape::land_snow(x, y, z, grass);
-            h0 = 10 * grass[cLandscape::BUMP];
+            Landscape::land_snow(x, y, z, grass);
+            h0 = 10 * grass[Landscape::BUMP];
         }
 #elif 0
         // Lavaset
         if (o1 > 0.005f) {
-            cLandscape::mashup_lava(x, y, z, snow);
-            h1 = 1 * snow[cLandscape::BUMP];
+            Landscape::mashup_lava(x, y, z, snow);
+            h1 = 1 * snow[Landscape::BUMP];
         }
         if (o1 < 0.995f) {
-            cLandscape::land_lava(x, y, z, grass);
-            h0 = 10 * grass[cLandscape::BUMP];
+            Landscape::land_lava(x, y, z, grass);
+            h0 = 10 * grass[Landscape::BUMP];
         }
 #elif 0
         // Duneset Red
         if (o1 > 0.005f) {
-            cLandscape::land_dunes_red(x, y, z, snow);
-            h1 = 1 * snow[cLandscape::BUMP];
+            Landscape::land_dunes_red(x, y, z, snow);
+            h1 = 1 * snow[Landscape::BUMP];
         }
         if (o1 < 0.995f) {
-            cLandscape::land_rockies(x * 0.5f, y * 0.5f, z * 0.5f, grass);
-            h0 = 25 * grass[cLandscape::BUMP];
+            Landscape::land_rockies(x * 0.5f, y * 0.5f, z * 0.5f, grass);
+            h0 = 25 * grass[Landscape::BUMP];
         }
 #elif 0
         // Duneset
         if (o1 > 0.005f) {
-            cLandscape::land_dunes(x, y, z, snow);
-            h1 = 5.0f * snow[cLandscape::BUMP];
+            Landscape::land_dunes(x, y, z, snow);
+            h1 = 5.0f * snow[Landscape::BUMP];
         }
         if (o1 < 0.995f) {
-            cLandscape::land_dunes(x * 0.5f, y * 0.5f, z * 0.5f, grass);
-            h0 = 18.0f * grass[cLandscape::BUMP];
+            Landscape::land_dunes(x * 0.5f, y * 0.5f, z * 0.5f, grass);
+            h0 = 18.0f * grass[Landscape::BUMP];
         }
 #else
         // Grassset
         if (o1 > 0.005f) {
-            cLandscape::land_grass(x, y, z, snow);
-            h1 = 5.0f * snow[cLandscape::BUMP];
+            Landscape::land_grass(x, y, z, snow);
+            h1 = 5.0f * snow[Landscape::BUMP];
         }
         if (o1 < 0.995f) {
-            cLandscape::land_grass(x, y, z, grass);
+            Landscape::land_grass(x, y, z, grass);
             //cLandscape::land_snow(x, y, z, grass);
-            h0 = 40 * grass[cLandscape::BUMP];
+            h0 = 40 * grass[Landscape::BUMP];
         }
 #endif
 
@@ -270,8 +270,8 @@ void cPlanetmap::getHeight(float x, float z, float* const color) {
         float g = (1.0f - o1) * grass[1] + o1 * snow[1];
         float b = (1.0f - o1) * grass[2] + o1 * snow[2];
 
-        cLandscape::decoration_stones(x, y, z, stone);
-        float hs = 7.0f * stone[cLandscape::BUMP];
+        Landscape::decoration_stones(x, y, z, stone);
+        float hs = 7.0f * stone[Landscape::BUMP];
 
         if (hs > 0.01) {
             r = 1.0f - stone[0];
@@ -287,15 +287,15 @@ void cPlanetmap::getHeight(float x, float z, float* const color) {
         // Large Scale Hills.
         const int seed2 = 97;
         const float p2 = 1.0f / 1001.0f;
-        float o2 = cNoise::simplex3(73 + x*p2, 21 + y*p2, 39 + z*p2, seed2);
-        h += cDistortion::sig(o2 * 4 - 1.4f) * 30;
+        float o2 = Noise::simplex3(73 + x*p2, 21 + y*p2, 39 + z*p2, seed2);
+        h += Distortion::sig(o2 * 4 - 1.4f) * 30;
     }
 
     if (0) {
         float f = 0.5;
         float cont[16];
-        cLandscape::experimental_continents(x*f, y*f, z*f, cont);
-        float hx = 15.0f / f * (cont[cLandscape::BUMP] - 0.5f);
+        Landscape::experimental_continents(x*f, y*f, z*f, cont);
+        float hx = 15.0f / f * (cont[Landscape::BUMP] - 0.5f);
         //if (hx > 0.0) h += 2.0f*hx;
         //else h = hx;
         //h = hx+h;
@@ -329,7 +329,7 @@ void cPlanetmap::getHeight(float x, float z, float* const color) {
          */
     }
 
-    color[cLandscape::BUMP] = h;
+    color[Landscape::BUMP] = h;
 } // getHeight
 
 void cPlanetmap::getCachedHeight(float x, float z, float* const color) {
@@ -342,7 +342,7 @@ void cPlanetmap::getCachedHeight(float x, float z, float* const color) {
     }
 #if 0
     getHeight(x, z, color);
-    return color[cLandscape::BUMP];
+    return color[Landscape::BUMP];
 #else
     const unsigned CACHESIZE = PLANETMAP_CACHESIZE;
     const long TILESIZE = PLANETMAP_TILESIZE;
@@ -496,7 +496,7 @@ float cPlanetmap::constrain(float* worldpos, float radius, float* localpos, cObj
             // TODO: When already deep in ground there needs to be special handling.
 
             getCachedHeight(x_, z_, color);
-            float h00 = color[cLandscape::BUMP];
+            float h00 = color[Landscape::BUMP];
             float delta = y_ - h00;
             if (delta > 0) continue;
             if (h00 > localpos_[1]) {
@@ -577,7 +577,7 @@ void cPlanetmap::drawSolid() {
 
     float color[16];
     getCachedHeight(-p[0], -p[2], color);
-    float relheight = p[1] + color[cLandscape::BUMP];
+    float relheight = p[1] + color[Landscape::BUMP];
 
     int hscale = -relheight * 0.05f;
     hscale = (hscale < 2) ? hscale : 1;
@@ -672,7 +672,7 @@ void cPlanetmap::drawSolid() {
                         }
 
                         getCachedHeight(i + step, j, color);
-                        float h0 = color[cLandscape::BUMP] + 0.005f * k;
+                        float h0 = color[Landscape::BUMP] + 0.005f * k;
 
                         //const float dext = s*s*0.9;//318*318;
                         //float d2 = ((j + p[2])*(j + p[2]) + (i + step + p[0])*(i + step + p[0]));
@@ -688,7 +688,7 @@ void cPlanetmap::drawSolid() {
                         //
 
                         getCachedHeight(i + 0, j, color);
-                        float h1 = color[cLandscape::BUMP] + 0.005f * k;
+                        float h1 = color[Landscape::BUMP] + 0.005f * k;
 
                         alpha_o_z = fmin(1, 0.16f * xmax(0, s - abs(j + p[2])));
                         alpha_o_x = fmin(1, 0.16f * xmax(0, s - abs(i + p[0])));
@@ -755,7 +755,7 @@ void cPlanetmap::drawSolid() {
 
     float color[16];
     getCachedHeight(-p[0], -p[2], color);
-    float relheight = p[1] + color[cLandscape::BUMP];
+    float relheight = p[1] + color[Landscape::BUMP];
 
     int hscale = -relheight * 0.05f;
     hscale = (hscale < 2) ? hscale : 1;
@@ -819,7 +819,7 @@ void cPlanetmap::drawSolid() {
 
                     getCachedHeight(i + step, j, color);
                     //getHeight(i + step, j, color);
-                    float h0 = color[cLandscape::BUMP] - 0.1f;
+                    float h0 = color[Landscape::BUMP] - 0.1f;
 
                     const float dext = 218 * 218;
                     float d2 = ((j + p[2])*(j + p[2]) + (i + step + p[0])*(i + step + p[0]));
@@ -833,7 +833,7 @@ void cPlanetmap::drawSolid() {
 
                     getCachedHeight(i + 0, j, color);
                     //getHeight(i + 0, j, color);
-                    float h1 = color[cLandscape::BUMP] - 0.1f;
+                    float h1 = color[Landscape::BUMP] - 0.1f;
 
                     d2 = ((j + p[2])*(j + p[2]) + (i + p[0])*(i + p[0]));
                     alpha = (d2 < dext) ? 1 : 1.0f / (1.0f + 0.002f * (d2 - dext));
@@ -875,7 +875,7 @@ void cPlanetmap::drawSolid() {
                     }
 
                     getCachedHeight(i + step, j, color);
-                    float h0 = color[cLandscape::BUMP] - 0.1f;
+                    float h0 = color[Landscape::BUMP] - 0.1f;
 
                     const float dext = 288 * 288;
                     float d2 = ((j + p[2])*(j + p[2]) + (i + step + p[0])*(i + step + p[0]));
@@ -888,7 +888,7 @@ void cPlanetmap::drawSolid() {
                     glVertex3f(i + step, h0, j);
 
                     getCachedHeight(i + 0, j, color);
-                    float h1 = color[cLandscape::BUMP] - 0.1f;
+                    float h1 = color[Landscape::BUMP] - 0.1f;
 
                     d2 = ((j + p[2])*(j + p[2]) + (i + p[0])*(i + p[0]));
                     alpha = (d2 < dext) ? 1 : 1.0f / (1.0f + 0.002f * (d2 - dext));
@@ -916,7 +916,7 @@ void cPlanetmap::drawSolid() {
                 for (float j = z - s; j < z + s; j += step) {
 
                     getCachedHeight(i + step, j, color);
-                    float h0 = color[cLandscape::BUMP];
+                    float h0 = color[Landscape::BUMP];
 
                     //const float dext = 200*200;//110*110;//158*158;
                     //float d2 = ((j + p[2])*(j + p[2]) + (i + step + p[0])*(i + step + p[0]));
@@ -929,7 +929,7 @@ void cPlanetmap::drawSolid() {
                     glVertex3f(i + step, h0, j);
 
                     getCachedHeight(i + 0, j, color);
-                    float h1 = color[cLandscape::BUMP];
+                    float h1 = color[Landscape::BUMP];
 
                     //d2 = ((j + p[2])*(j + p[2]) + (i + p[0])*(i + p[0]));
                     //alpha = (d2 < dext) ? 1 : 1.0f/(1.0f + 0.002f*(d2-dext));
@@ -1088,7 +1088,7 @@ void cPlanetmap::drawEffect() {
             if ((i & 255) == 255) {
                 perms[i] = 255;
             } else {
-                perms[i] = b = cNoise::LFSR8(b);
+                perms[i] = b = Noise::LFSR8(b);
             }
         }
     }
@@ -1179,7 +1179,7 @@ void cPlanetmap::drawEffect() {
                 // Field index key
                 unsigned char a = (char) x_;
                 unsigned char b = (char) z_;
-                unsigned char key = cNoise::permutation2d(perms, a, b);
+                unsigned char key = Noise::permutation2d(perms, a, b);
 
                 const float b2f = 1.0f / 256.0f;
 
@@ -1187,7 +1187,7 @@ void cPlanetmap::drawEffect() {
                 float plantdensity = (totaldensity * 10.00f * key) * b2f;
                 int visibleplants = plantdensity * opacity;
 
-                key = cNoise::LFSR16(key);
+                key = Noise::LFSR16(key);
                 float treedensity = (totaldensity * 2.00f * key) * b2f;
                 float visibletrees = treedensity;
 
@@ -1203,16 +1203,16 @@ void cPlanetmap::drawEffect() {
                 loopi(visibleplants) {
                     glPushMatrix();
                     {
-                        lfsr16 = cNoise::LFSR16(lfsr16);
+                        lfsr16 = Noise::LFSR16(lfsr16);
                         a = lfsr16;
                         b = lfsr16 >> 8;
 
                         float x__ = x_ + step * 0.003906f * a;
                         float z__ = z_ + step * 0.003906f * b;
                         getCachedHeight(x__, z__, color);
-                        float h = color[cLandscape::BUMP];
+                        float h = color[Landscape::BUMP];
 
-                        lfsr16 = cNoise::LFSR16(lfsr16);
+                        lfsr16 = Noise::LFSR16(lfsr16);
                         //unsigned char kind = lfsr16;
                         unsigned char rot = lfsr16 >> 8;
 
@@ -1250,14 +1250,14 @@ void cPlanetmap::drawEffect() {
                 loopi(visibletrees) {
                     glPushMatrix();
                     {
-                        lfsr16 = cNoise::LFSR16(lfsr16);
+                        lfsr16 = Noise::LFSR16(lfsr16);
                         a = lfsr16;
                         b = lfsr16 >> 8;
 
                         float x__ = x_ + step * 0.003906f * a;
                         float z__ = z_ + step * 0.003906f * b;
                         getCachedHeight(x__, z__, color);
-                        float h = color[cLandscape::BUMP];
+                        float h = color[Landscape::BUMP];
 
                         //lfsr16 = cNoise::LFSR16(lfsr16);
                         //unsigned char kind = lfsr16;

@@ -77,14 +77,14 @@
                          displayName="proc"
                          projectFiles="true"
                          kind="SOURCE_LOGICAL_FOLDER">
+            <itemPath>/home/benben/Desktop/linux_workspaces/netbeans_workspace/linwarrior/source/de/hackcraft/proc/Distortion.h</itemPath>
+            <itemPath>source/de/hackcraft/proc/Landscape.cpp</itemPath>
+            <itemPath>source/de/hackcraft/proc/Landscape.h</itemPath>
             <itemPath>source/de/hackcraft/proc/Noise.h</itemPath>
-            <itemPath>/home/benben/Desktop/linux_workspaces/netbeans_workspace/linwarrior/source/de/hackcraft/proc/cDistortion.h</itemPath>
-            <itemPath>source/de/hackcraft/proc/cLandscape.cpp</itemPath>
-            <itemPath>source/de/hackcraft/proc/cLandscape.h</itemPath>
-            <itemPath>source/de/hackcraft/proc/cSolid.cpp</itemPath>
-            <itemPath>source/de/hackcraft/proc/cSolid.h</itemPath>
-            <itemPath>source/de/hackcraft/proc/cSurface.cpp</itemPath>
-            <itemPath>source/de/hackcraft/proc/cSurface.h</itemPath>
+            <itemPath>source/de/hackcraft/proc/Solid.cpp</itemPath>
+            <itemPath>source/de/hackcraft/proc/Solid.h</itemPath>
+            <itemPath>source/de/hackcraft/proc/Surface.cpp</itemPath>
+            <itemPath>source/de/hackcraft/proc/Surface.h</itemPath>
           </logicalFolder>
           <logicalFolder name="psi3d"
                          displayName="psi3d"

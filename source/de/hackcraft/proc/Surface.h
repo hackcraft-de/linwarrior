@@ -12,7 +12,7 @@
 /**
  * ~[0,1] normalized surface materials.
  */
-struct cSurface {
+struct Surface {
     static void stone_plates(float x, float y, float z, float* color, unsigned char seed = 131);
 
 };

@@ -41,7 +41,7 @@ rWeapon::rWeapon(cObject* obj) {
 
                 const float f = 2 * 2.0f;
                 float v3f[] = {f * (float) j / (float) w, 0, f * (float) i / (float) h};
-                float c = cDistortion::sig(cNoise::simplex3(43 + v3f[0], 23 + v3f[1], 11 + v3f[2])*4);
+                float c = Distortion::sig(Noise::simplex3(43 + v3f[0], 23 + v3f[1], 11 + v3f[2])*4);
                 rgba c4f = {c, c, c, c};
                 *p++ = 255 * c4f[2];
                 *p++ = 255 * c4f[1];

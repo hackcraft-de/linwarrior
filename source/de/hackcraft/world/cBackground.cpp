@@ -53,14 +53,14 @@ void ambient_galaxy(float x, float y, float z, float* color, float scale) {
         0.0f + z * oolen
     };
     //cSolid::star_nebula(v[0], v[1], v[2], color);
-    cSolid::star_fastnebula(v[0], v[1], v[2], color);
+    Solid::star_fastnebula(v[0], v[1], v[2], color);
 }
 
 void ambient_clouds(float x, float y, float z, float* color) {
     // Normalise direction vector.
     float oolen = 1.0f / sqrtf(x * x + y * y + z * z);
     float v[3] = {x * oolen, y * oolen, z * oolen};
-    cSolid::planet_cloud(v[0], v[1], v[2], color);
+    Solid::planet_cloud(v[0], v[1], v[2], color);
 }
 
 void ambient_sky(float x, float y, float z, float* color, float hour = 24.00f) {
@@ -146,7 +146,7 @@ cBackground::cBackground() {
                 *p++ = 255;
                 *p++ = 255;
             } else {
-                b = cNoise::LFSR8(b);
+                b = Noise::LFSR8(b);
                 *p++ = b;
                 *p++ = b;
                 *p++ = b;
@@ -175,7 +175,7 @@ cBackground::cBackground() {
             float dx = ((float) j / (float) w);
             float dz = ((float) i / (float) h);
 
-            float c = cDistortion::sig(cNoise::voronoi3_16(dx * 16, 0, dz * 16) * 8 + 4);
+            float c = Distortion::sig(Noise::voronoi3_16(dx * 16, 0, dz * 16) * 8 + 4);
             rgba c4f = {c, c, c, 1};
 
             *p++ = 255 * c4f[2];
@@ -208,13 +208,13 @@ cBackground::cBackground() {
             float a = 1.0f - pow(r_, 0.6);
             float rad = atan2(dx, dy);
 
-            float c = 0.5f + 0.5f * cNoise::simplex3(rad / (2 * M_PI)*256, 0, 0, 21);
-            float d = 0.5f + 0.5f * cNoise::simplex3(r * 31, 0, 0, 21);
+            float c = 0.5f + 0.5f * Noise::simplex3(rad / (2 * M_PI)*256, 0, 0, 21);
+            float d = 0.5f + 0.5f * Noise::simplex3(r * 31, 0, 0, 21);
 
             rgba c4f = {
-                cDistortion::exposure(3 * a + 3 * c * a + 3 * d * d * d * a),
-                cDistortion::exposure(3 * a),
-                cDistortion::exposure(1 * a),
+                Distortion::exposure(3 * a + 3 * c * a + 3 * d * d * d * a),
+                Distortion::exposure(3 * a),
+                Distortion::exposure(1 * a),
                 a * a
             };
 
@@ -255,11 +255,11 @@ cBackground::cBackground() {
             float v3f[] = {f * dx, f * dy, f * dz};
 
             float color0[16];
-            cSolid::planet_cloud(v3f[0], v3f[1], v3f[2], color0);
+            Solid::planet_cloud(v3f[0], v3f[1], v3f[2], color0);
 
             float color1[16];
             //getContinental(v3f, color1);
-            cLandscape::experimental_continents(v3f[0], v3f[1], v3f[2], color1);
+            Landscape::experimental_continents(v3f[0], v3f[1], v3f[2], color1);
 
             *p++ = 255 * fmin(1.0f, +0.2 * color0[2] + 0.99 * color1[2]) * a;
             *p++ = 255 * fmin(1.0f, +0.2 * color0[1] + 0.99 * color1[1]) * a;
@@ -300,11 +300,11 @@ cBackground::cBackground() {
 
             //v3f[0] *= 0.1f;
             float color0[16];
-            cSolid::planet_cloud(v3f[0], v3f[1], v3f[2], color0);
+            Solid::planet_cloud(v3f[0], v3f[1], v3f[2], color0);
             //v3f[0] *= 10.0;
 
             float color1[16];
-            cSolid::stone_lava(v3f[0], v3f[1], v3f[2], color1);
+            Solid::stone_lava(v3f[0], v3f[1], v3f[2], color1);
 
             *p++ = 255 * fmax(0.0f, -0.2f * color0[2] + 0.99f * color1[2]) * a;
             *p++ = 255 * fmax(0.0f, -0.2f * color0[1] + 0.99f * color1[1]) * a;
@@ -345,11 +345,11 @@ cBackground::cBackground() {
 
             v3f[0] *= 0.1f;
             float color0[16];
-            cSolid::planet_cloud(v3f[0], v3f[1], v3f[2], color0);
+            Solid::planet_cloud(v3f[0], v3f[1], v3f[2], color0);
             v3f[0] *= 10.0;
 
             float color1[16];
-            cSolid::planet_ground(v3f[0], v3f[1], v3f[2], color1);
+            Solid::planet_ground(v3f[0], v3f[1], v3f[2], color1);
 
             *p++ = 255 * fmax(0.8f * color0[2], 0.8f * color1[2]);
             *p++ = 255 * fmax(0.8f * color0[1], 0.8f * color1[1]);
@@ -384,7 +384,7 @@ cBackground::cBackground() {
             const float f = 2.0f;
             float v3f[] = {f * (float) j / (float) w, 0, f * (float) i / (float) h};
             float color[16];
-            cSolid::planet_cloud(v3f[0], v3f[1], v3f[2], color);
+            Solid::planet_cloud(v3f[0], v3f[1], v3f[2], color);
             *p++ = 255 * color[2];
             *p++ = 255 * color[1];
             *p++ = 255 * color[0];
@@ -495,9 +495,9 @@ void cBackground::drawBackground(float h) {
         int samples = 23;
 
         loopi(samples) {
-            s = cNoise::LFSR8(s);
+            s = Noise::LFSR8(s);
             float alpha = s / 256.0f * 2.0f * M_PI;
-            s = cNoise::LFSR8(s);
+            s = Noise::LFSR8(s);
             float beta = s / 256.0f * 1.0f * M_PI;
             float color[16];
             vec3 n = { float(sin(alpha) * sin(beta)), float(0.99 * cos(beta)), float(sin(beta) * cos(alpha)) };

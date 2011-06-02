@@ -68,16 +68,16 @@ cMech::cMech(float* pos, float* rot) {
                     float x = f*i, y = f*j, z = f*k;
                     switch (l) {
                             //case TEXTURE_WOOD: cSolid::camo_wood(x, y, z, color); break;
-                        case TEXTURE_WOOD: cSolid::camo_rust(x, y, z, color);
+                        case TEXTURE_WOOD: Solid::camo_rust(x, y, z, color);
                             break;
-                        case TEXTURE_URBAN: cSolid::camo_urban(x, y, z, color);
+                        case TEXTURE_URBAN: Solid::camo_urban(x, y, z, color);
                             break;
-                        case TEXTURE_DESERT: cSolid::camo_desert(x, y, z, color);
+                        case TEXTURE_DESERT: Solid::camo_desert(x, y, z, color);
                             break;
-                        case TEXTURE_SNOW: cSolid::camo_snow(x, y, z, color);
+                        case TEXTURE_SNOW: Solid::camo_snow(x, y, z, color);
                             break;
                         default:
-                            cSolid::camo_rust(x, y, z, color);
+                            Solid::camo_rust(x, y, z, color);
                     }
                     texels[t++] = 255.0f * color[0];
                     texels[t++] = 255.0f * color[1];

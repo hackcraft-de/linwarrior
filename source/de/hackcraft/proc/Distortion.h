@@ -13,7 +13,7 @@
  * Encapsulates functions and algorithms for
  * noise transformation and distortion.
  */
-struct cDistortion {
+struct Distortion {
     /// [-inf,+inf] => [0,+1]
     static inline float sig(float x) {
         return (1.0f / (1.0f + (float) exp(-x)));

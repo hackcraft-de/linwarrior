@@ -12,7 +12,7 @@
 /**
  * ~[0,1] normalized landscape materials.
  */
-struct cLandscape {
+struct Landscape {
 
     enum {
         RED, GRN, BLU, BUMP

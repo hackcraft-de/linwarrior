@@ -40,15 +40,16 @@ OBJECTFILES= \
 	${OBJECTDIR}/source/de/hackcraft/comp/rRigged.o \
 	${OBJECTDIR}/source/de/hackcraft/comp/rNameable.o \
 	${OBJECTDIR}/source/de/hackcraft/comp/rTraceable.o \
-	${OBJECTDIR}/source/de/hackcraft/proc/cLandscape.o \
 	${OBJECTDIR}/source/de/hackcraft/util/Message.o \
 	${OBJECTDIR}/source/de/hackcraft/object/cTree.o \
 	${OBJECTDIR}/source/de/hackcraft/object/cPlanetmap.o \
 	${OBJECTDIR}/source/de/hackcraft/comp/rCollider.o \
+	${OBJECTDIR}/source/de/hackcraft/proc/Solid.o \
 	${OBJECTDIR}/source/de/hackcraft/world/cWorld.o \
 	${OBJECTDIR}/source/de/hackcraft/comp/rComponent.o \
 	${OBJECTDIR}/source/de/hackcraft/comp/rCamera.o \
 	${OBJECTDIR}/source/de/hackcraft/comp/rWeaponMachinegun.o \
+	${OBJECTDIR}/source/de/hackcraft/proc/Landscape.o \
 	${OBJECTDIR}/source/de/hackcraft/object/cBuilding.o \
 	${OBJECTDIR}/source/de/hackcraft/main.o \
 	${OBJECTDIR}/source/de/hackcraft/object/cAlert.o \
@@ -57,13 +58,12 @@ OBJECTFILES= \
 	${OBJECTDIR}/source/de/hackcraft/util/Timing.o \
 	${OBJECTDIR}/source/de/hackcraft/comp/rComcom.o \
 	${OBJECTDIR}/source/de/hackcraft/world/cMission.o \
-	${OBJECTDIR}/source/de/hackcraft/proc/cSurface.o \
-	${OBJECTDIR}/source/de/hackcraft/proc/cSolid.o \
 	${OBJECTDIR}/source/de/hackcraft/comp/rWeaponSparkgun.o \
 	${OBJECTDIR}/source/de/hackcraft/comp/rWeaponExplosion.o \
 	${OBJECTDIR}/source/de/hackcraft/comp/rWeaponPlasmagun.o \
 	${OBJECTDIR}/source/de/hackcraft/comp/rDamageable.o \
 	${OBJECTDIR}/source/de/hackcraft/comp/rWeaponHoming.o \
+	${OBJECTDIR}/source/de/hackcraft/proc/Surface.o \
 	${OBJECTDIR}/source/de/hackcraft/object/cObject.o \
 	${OBJECTDIR}/source/de/hackcraft/comp/rWeaponRaybeam.o \
 	${OBJECTDIR}/source/de/hackcraft/object/cMech.o
@@ -128,11 +128,6 @@ ${OBJECTDIR}/source/de/hackcraft/comp/rTraceable.o: source/de/hackcraft/comp/rTr
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/comp/rTraceable.o source/de/hackcraft/comp/rTraceable.cpp
 
-${OBJECTDIR}/source/de/hackcraft/proc/cLandscape.o: source/de/hackcraft/proc/cLandscape.cpp 
-	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/proc
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/proc/cLandscape.o source/de/hackcraft/proc/cLandscape.cpp
-
 ${OBJECTDIR}/source/de/hackcraft/util/Message.o: source/de/hackcraft/util/Message.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/util
 	${RM} $@.d
@@ -153,6 +148,11 @@ ${OBJECTDIR}/source/de/hackcraft/comp/rCollider.o: source/de/hackcraft/comp/rCol
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/comp/rCollider.o source/de/hackcraft/comp/rCollider.cpp
 
+${OBJECTDIR}/source/de/hackcraft/proc/Solid.o: source/de/hackcraft/proc/Solid.cpp 
+	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/proc
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/proc/Solid.o source/de/hackcraft/proc/Solid.cpp
+
 ${OBJECTDIR}/source/de/hackcraft/world/cWorld.o: source/de/hackcraft/world/cWorld.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/world
 	${RM} $@.d
@@ -172,6 +172,11 @@ ${OBJECTDIR}/source/de/hackcraft/comp/rWeaponMachinegun.o: source/de/hackcraft/c
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/comp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/comp/rWeaponMachinegun.o source/de/hackcraft/comp/rWeaponMachinegun.cpp
+
+${OBJECTDIR}/source/de/hackcraft/proc/Landscape.o: source/de/hackcraft/proc/Landscape.cpp 
+	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/proc
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/proc/Landscape.o source/de/hackcraft/proc/Landscape.cpp
 
 ${OBJECTDIR}/source/de/hackcraft/object/cBuilding.o: source/de/hackcraft/object/cBuilding.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/object
@@ -213,16 +218,6 @@ ${OBJECTDIR}/source/de/hackcraft/world/cMission.o: source/de/hackcraft/world/cMi
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/world/cMission.o source/de/hackcraft/world/cMission.cpp
 
-${OBJECTDIR}/source/de/hackcraft/proc/cSurface.o: source/de/hackcraft/proc/cSurface.cpp 
-	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/proc
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/proc/cSurface.o source/de/hackcraft/proc/cSurface.cpp
-
-${OBJECTDIR}/source/de/hackcraft/proc/cSolid.o: source/de/hackcraft/proc/cSolid.cpp 
-	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/proc
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/proc/cSolid.o source/de/hackcraft/proc/cSolid.cpp
-
 ${OBJECTDIR}/source/de/hackcraft/comp/rWeaponSparkgun.o: source/de/hackcraft/comp/rWeaponSparkgun.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/comp
 	${RM} $@.d
@@ -247,6 +242,11 @@ ${OBJECTDIR}/source/de/hackcraft/comp/rWeaponHoming.o: source/de/hackcraft/comp/
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/comp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/comp/rWeaponHoming.o source/de/hackcraft/comp/rWeaponHoming.cpp
+
+${OBJECTDIR}/source/de/hackcraft/proc/Surface.o: source/de/hackcraft/proc/Surface.cpp 
+	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/proc
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/proc/Surface.o source/de/hackcraft/proc/Surface.cpp
 
 ${OBJECTDIR}/source/de/hackcraft/object/cObject.o: source/de/hackcraft/object/cObject.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/object
