@@ -37,7 +37,10 @@ OBJECTFILES= \
 	${OBJECTDIR}/source/de/hackcraft/comp/rController.o \
 	${OBJECTDIR}/source/de/hackcraft/world/cBackground.o \
 	${OBJECTDIR}/source/de/hackcraft/object/cPadmap.o \
+	${OBJECTDIR}/source/de/hackcraft/io/Texfile.o \
+	${OBJECTDIR}/source/de/hackcraft/proc/Road.o \
 	${OBJECTDIR}/source/de/hackcraft/comp/rRigged.o \
+	${OBJECTDIR}/source/de/hackcraft/proc/Facade.o \
 	${OBJECTDIR}/source/de/hackcraft/comp/rNameable.o \
 	${OBJECTDIR}/source/de/hackcraft/comp/rTraceable.o \
 	${OBJECTDIR}/source/de/hackcraft/util/Message.o \
@@ -113,10 +116,25 @@ ${OBJECTDIR}/source/de/hackcraft/object/cPadmap.o: source/de/hackcraft/object/cP
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/object/cPadmap.o source/de/hackcraft/object/cPadmap.cpp
 
+${OBJECTDIR}/source/de/hackcraft/io/Texfile.o: source/de/hackcraft/io/Texfile.cpp 
+	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/io
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/io/Texfile.o source/de/hackcraft/io/Texfile.cpp
+
+${OBJECTDIR}/source/de/hackcraft/proc/Road.o: source/de/hackcraft/proc/Road.cpp 
+	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/proc
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/proc/Road.o source/de/hackcraft/proc/Road.cpp
+
 ${OBJECTDIR}/source/de/hackcraft/comp/rRigged.o: source/de/hackcraft/comp/rRigged.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/comp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/comp/rRigged.o source/de/hackcraft/comp/rRigged.cpp
+
+${OBJECTDIR}/source/de/hackcraft/proc/Facade.o: source/de/hackcraft/proc/Facade.cpp 
+	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/proc
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/proc/Facade.o source/de/hackcraft/proc/Facade.cpp
 
 ${OBJECTDIR}/source/de/hackcraft/comp/rNameable.o: source/de/hackcraft/comp/rNameable.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/comp

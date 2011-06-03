@@ -113,6 +113,7 @@ struct Particle {
         type = original->type;
         data = original->data;
 
+
         foreach(i, original->trail) {
             trail.push_back(new Particle(*i));
         }

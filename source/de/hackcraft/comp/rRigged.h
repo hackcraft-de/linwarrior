@@ -11,7 +11,7 @@
 
 #include "rComponent.h"
 
-#include "de/hackcraft/psi3d/MD5Format.h"
+#include "de/hackcraft/io/MD5Format.h"
 
 /**
  * Encapsulates a rigged mesh in md5mesh format.

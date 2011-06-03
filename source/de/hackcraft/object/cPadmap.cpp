@@ -2,6 +2,8 @@
 
 #include "de/hackcraft/psi3d/GLS.h"
 
+#include "de/hackcraft/io/Texfile.h"
+
 static void stepSpiral(int& x, int& y, int& i, int& length, bool& horizontal, int& increment) {
     if (i >= length) {
         i = 0;
@@ -30,15 +32,15 @@ cPadmap::cPadmap(float x, float y, float z) {
         unsigned int texname;
         int w, h, bpp;
 
-        texels = loadTGA("data/urban/street/junction.tga", &w, &h, &bpp);
+        texels = Texfile::loadTGA("data/base/roads/roadNEWS.tga", &w, &h, &bpp);
         texname = GLS::glBindTexture2D(0, true, false, true, true, w, h, bpp, texels);
         sTextures[KIND_ROAD_JUNKTION] = texname;
 
-        texels = loadTGA("data/urban/street/ns_road.tga", &w, &h, &bpp);
+        texels = Texfile::loadTGA("data/base/roads/roadNS.tga", &w, &h, &bpp);
         texname = GLS::glBindTexture2D(0, true, false, true, true, w, h, bpp, texels);
         sTextures[KIND_ROAD_NORTHSOUTH] = texname;
 
-        texels = loadTGA("data/urban/street/we_road.tga", &w, &h, &bpp);
+        texels = Texfile::loadTGA("data/base/roads/roadEW.tga", &w, &h, &bpp);
         texname = GLS::glBindTexture2D(0, true, false, true, true, w, h, bpp, texels);
         sTextures[KIND_ROAD_EASTWEST] = texname;
 
@@ -100,7 +102,7 @@ cPadmap::cPadmap(float x, float y, float z) {
         heights[i] = 0.5f * h[i];
     }
 
-    mapscale[0] = 2.3;
+    mapscale[0] = 2.4;
     mapscale[1] = mapscale[0];
     mapscale[2] = mapscale[0];
 }
@@ -145,7 +147,6 @@ void cPadmap::drawSolid() {
         glEnable(GL_TEXTURE_2D);
         //glDisable(GL_CULL_FACE);
         glColor4f(1, 1, 1, 1);
-        glBindTexture(GL_TEXTURE_2D, sTextures[KIND_ROAD_JUNKTION]);
 
         glPushMatrix();
         {
@@ -167,7 +168,8 @@ void cPadmap::drawSolid() {
 
             // Draw pad tops
             {
-                glColor4f(0, 0, 1, 1);
+                glBindTexture(GL_TEXTURE_2D, sTextures[KIND_ROAD_JUNKTION]);
+                //glColor4f(0, 0, 1, 1);
                 glNormal3f(0, 1, 0);
                 int z = 0;
                 for (int j = 0; j < b - 1; j += 2) {
@@ -201,7 +203,8 @@ void cPadmap::drawSolid() {
             //glDisable(GL_TEXTURE_2D);
             // Draw east-west cliffs
             {
-                glColor4f(1, 0, 1, 1);
+                glBindTexture(GL_TEXTURE_2D, sTextures[KIND_ROAD_EASTWEST]);
+                //glColor4f(1, 0, 1, 1);
                 glNormal3f(0, 0, 1);
                 int x = 0;
                 for (int i = 0; i < a; i += 2) {
@@ -230,7 +233,8 @@ void cPadmap::drawSolid() {
             //glDisable(GL_TEXTURE_2D);
             // Draw north-south cliffs
             {
-                glColor4f(0, 1, 1, 1);
+                glBindTexture(GL_TEXTURE_2D, sTextures[KIND_ROAD_NORTHSOUTH]);
+                //glColor4f(0, 1, 1, 1);
                 glNormal3f(1, 0, 0);
                 int z = 0;
                 for (int j = 0; j < b; j += 2) {

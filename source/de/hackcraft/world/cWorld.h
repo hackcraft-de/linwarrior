@@ -97,7 +97,7 @@ private:
      */
     //std::map<std::string, std::string> mValues;
 
-    // Timing, simulation stepping, deltacycles, date, fps, etc.
+    /// Timing, simulation stepping, deltacycles, date, fps, etc.
     Timing mTiming;
 
 public: // Constructor, Object-Management and Drawing:
@@ -185,8 +185,23 @@ public: // Simulation Step - Call every frame in order to update the world/missi
 
 public: // World-Filtering, World-Scanning, World-Sense for objects.
 
+    /**
+     * Hash key for location.
+     *
+     * @param x east west coord
+     * @param z north south coord
+     * @return Hash key for location.
+     */
     OID getGeokey(long x, long z);
 
+    /**
+     * Find objects within 2d area using location hashkeys.
+     * 
+     * @param min2f First corner of square area (smaller values).
+     * @param max2f Second corner of square area (larger values).
+     * @param addunclustered Return global unclustered objects, too.
+     * @return List of found objects.
+     */
     std::list<cObject*>* getGeoInterval(float* min2f, float* max2f, bool addunclustered = false);
 
     /**
@@ -221,12 +236,11 @@ public: // World-Filtering, World-Scanning, World-Sense for objects.
      */
     std::list<cObject*>* filterByBeam(cObject* ex, float* pointa, float* pointb, float radius, int maxamount, std::list<cObject*>* objects = NULL);
 
-
     /**
      *
-     * @param worldpos
-     * @param radius
-     * @return
+     * @param worldpos The particle position to be constrained given in world coordinates.
+     * @param radius The size of the particle in terms of a radius.
+     * @return Zero if there was no collision, else the maximum impact depth.
      */
     float constrainParticle(cObject* ex, float* worldpos, float radius);
 };

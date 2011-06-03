@@ -218,7 +218,7 @@ cObject* cOpenMission::init(cWorld* world) {
     //initJurataJail(world, planetmap);
     //initSpadenixFactory(world, planetmap);
 
-    if (!true) {
+    if (true) {
         cout << "Initialising Experimental Structure...\n";
         float loc[] = {-70, 0, -70};
 

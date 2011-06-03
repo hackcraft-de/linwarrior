@@ -54,6 +54,14 @@
             <itemPath>source/de/hackcraft/comp/rWeaponSparkgun.cpp</itemPath>
             <itemPath>source/de/hackcraft/comp/rWeaponSparkgun.h</itemPath>
           </logicalFolder>
+          <logicalFolder name="f1"
+                         displayName="io"
+                         projectFiles="true"
+                         kind="SOURCE_LOGICAL_FOLDER">
+            <itemPath>source/de/hackcraft/io/MD5Format.h</itemPath>
+            <itemPath>source/de/hackcraft/io/Texfile.cpp</itemPath>
+            <itemPath>source/de/hackcraft/io/Texfile.h</itemPath>
+          </logicalFolder>
           <logicalFolder name="object"
                          displayName="object"
                          projectFiles="true"
@@ -77,10 +85,14 @@
                          displayName="proc"
                          projectFiles="true"
                          kind="SOURCE_LOGICAL_FOLDER">
-            <itemPath>/home/benben/Desktop/linux_workspaces/netbeans_workspace/linwarrior/source/de/hackcraft/proc/Distortion.h</itemPath>
+            <itemPath>source/de/hackcraft/proc/Distortion.h</itemPath>
+            <itemPath>source/de/hackcraft/proc/Facade.cpp</itemPath>
+            <itemPath>source/de/hackcraft/proc/Facade.h</itemPath>
             <itemPath>source/de/hackcraft/proc/Landscape.cpp</itemPath>
             <itemPath>source/de/hackcraft/proc/Landscape.h</itemPath>
             <itemPath>source/de/hackcraft/proc/Noise.h</itemPath>
+            <itemPath>source/de/hackcraft/proc/Road.cpp</itemPath>
+            <itemPath>source/de/hackcraft/proc/Road.h</itemPath>
             <itemPath>source/de/hackcraft/proc/Solid.cpp</itemPath>
             <itemPath>source/de/hackcraft/proc/Solid.h</itemPath>
             <itemPath>source/de/hackcraft/proc/Surface.cpp</itemPath>
@@ -91,9 +103,8 @@
                          projectFiles="true"
                          kind="SOURCE_LOGICAL_FOLDER">
             <itemPath>source/de/hackcraft/psi3d/GLS.h</itemPath>
-            <itemPath>source/de/hackcraft/psi3d/MD5Format.h</itemPath>
             <itemPath>source/de/hackcraft/psi3d/Particle.h</itemPath>
-            <itemPath>/home/benben/Desktop/linux_workspaces/netbeans_workspace/linwarrior/source/de/hackcraft/psi3d/Primitive.h</itemPath>
+            <itemPath>source/de/hackcraft/psi3d/Primitive.h</itemPath>
             <itemPath>source/de/hackcraft/psi3d/ctrl.h</itemPath>
             <itemPath>source/de/hackcraft/psi3d/instfont.h</itemPath>
             <itemPath>source/de/hackcraft/psi3d/macros.h</itemPath>
@@ -136,11 +147,12 @@
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
+    <Elem>source/io</Elem>
     <Elem>source/proc</Elem>
     <Elem>source/psi3d</Elem>
     <Elem>source/util</Elem>
     <Elem>source/comp</Elem>
-    <Elem>/home/benben/Desktop/linux_workspaces/netbeans_workspace/linwarrior/source/de</Elem>
+    <Elem>source/de</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

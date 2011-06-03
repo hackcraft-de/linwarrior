@@ -8,6 +8,8 @@
 #include "de/hackcraft/proc/Distortion.h"
 #include "de/hackcraft/proc/Solid.h"
 
+#include "de/hackcraft/io/Texfile.h"
+
 #include <cassert>
 
 #include <ostream>
@@ -161,7 +163,7 @@ cPlanetmap::cPlanetmap() {
             cout << "Loading [" << name << "] ...\n";
             unsigned int texname;
             int w, h, bpp;
-            unsigned char* texels = loadTGA(name.c_str(), &w, &h, &bpp);
+            unsigned char* texels = Texfile::loadTGA(name.c_str(), &w, &h, &bpp);
             texname = GLS::glBindTexture2D(0, true, true, false, false, w, h, bpp, texels);
             delete texels;
             sTextures.push_back(texname);

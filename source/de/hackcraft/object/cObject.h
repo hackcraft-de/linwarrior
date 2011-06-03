@@ -37,27 +37,6 @@ struct rGrouping;
 #include <AL/alut.h>
 
 
-/**
- * Utility function to load uncompressed lower-left 24 or 32 bit tga bitmaps.
- * Note that zipped tga files may be smaller than other common compressed
- * formats when zipped => Distribution size is less than or similar to
- * when png or jpg is used, the installation size is larger but
- * the quality is as good as it gets - assuming 8 bits per pixel.
- * Besides tga is one of the simplest and fastest to load.
- * An enhancement may be to have *.tga.gz if at all.
- */
-unsigned char* loadTGA(const char *fname, int *w, int* h, int* bpp);
-
-/**
- * Utility function to save uncompressed lower-left 24 or 32 bit tga bitmaps.
- * Note that zipped tga files may be smaller than other common compressed
- * formats when zipped => Distribution size is less than or similar to
- * when png or jpg is used, the installation size is larger but
- * the quality is as good as it gets - assuming 8 bits per pixel.
- * Besides tga is one of the simplest and fastest to load.
- * An enhancement may be to have *.tga.gz if at all.
- */
-int saveTGA(const char *fname, int w, int h, int bpp, unsigned char* image);
 
 #define FIELDOFS(attribute)     (((OID)&attribute) - ((OID)this))
 #define ROLEPTR(attribute)      ((rRole* cObject::*) &attribute)

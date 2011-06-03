@@ -1,14 +1,4 @@
-// cBackground.cpp
-
 #include "cBackground.h"
-
-#include <cstdio>
-#include <memory>
-#include <cstdlib>
-
-#include <iostream>
-using std::cout;
-using std::endl;
 
 #include "cWorld.h"
 
@@ -21,12 +11,18 @@ using std::endl;
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Primitive.h"
 
+#include "de/hackcraft/io/Texfile.h"
+
+#include <cstdio>
+#include <memory>
+#include <cstdlib>
+#include <iostream>
+using namespace std;
+
 #define BKGDETAIL +1
 
 #define DOME_XRES 2*6
 #define DOME_YRES 7
-
-extern unsigned char* loadTGA(const char *fname, int *w, int* h, int* bpp);
 
 enum Texids {
     T_ICE, T_MOUNTAIN, T_EARTH,
@@ -120,7 +116,7 @@ cBackground::cBackground() {
     loopi(1) {
         //if (i == 1) continue;
         int w, h, bpp;
-        unsigned char* texels = loadTGA(texturedefs[i].filename, &w, &h, &bpp);
+        unsigned char* texels = Texfile::loadTGA(texturedefs[i].filename, &w, &h, &bpp);
         bool soft = texturedefs[i].soft;
         bool repeat = texturedefs[i].repeat;
         unsigned int texname;
@@ -448,7 +444,7 @@ cBackground::cBackground() {
             if (0) {
                 try {
                     std::string fname = std::string("galaxy") + std::string(names[k]) + std::string(".tga");
-                    if (saveTGA(fname.c_str(), w, h, bpp, texels)) {
+                    if (Texfile::saveTGA(fname.c_str(), w, h, bpp, texels)) {
                         cout << "Could not save image" << endl;
                     }
                 } catch (char const* s) {

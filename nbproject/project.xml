@@ -11,11 +11,12 @@
             <sourceEncoding>UTF-8</sourceEncoding>
             <make-dep-projects/>
             <sourceRootList>
+                <sourceRootElem>source/io</sourceRootElem>
                 <sourceRootElem>source/proc</sourceRootElem>
                 <sourceRootElem>source/psi3d</sourceRootElem>
                 <sourceRootElem>source/util</sourceRootElem>
                 <sourceRootElem>source/comp</sourceRootElem>
-                <sourceRootElem>/home/benben/Desktop/linux_workspaces/netbeans_workspace/linwarrior/source/de</sourceRootElem>
+                <sourceRootElem>source/de</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>Debug</confElem>

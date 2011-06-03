@@ -10,7 +10,7 @@
 #ifndef _MD5FRMT_H_
 #define	_MD5FRMT_H_
 
-#include "math3d.h"
+#include "de/hackcraft/psi3d/math3d.h"
 
 #include <stdlib.h>
 
