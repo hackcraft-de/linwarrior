@@ -1,5 +1,5 @@
 /**
- * File:     cPadmap.h
+ * File:     rPadmap.h
  * Project:  LinWarrior 3D
  * Home:     hackcraft.de
  *
@@ -10,9 +10,14 @@
 #ifndef CPADMAP_H
 #define	CPADMAP_H
 
-#include "cObject.h"
+#include "rComponent.h"
 
-class cPadmap : public cObject {
+#include "de/hackcraft/psi3d/math3d.h"
+
+#include <vector>
+#include <map>
+
+class rPadmap : public rComponent {
 public:
     /// Possible models of tile.
 
@@ -33,11 +38,15 @@ protected:
 protected:
     int dims[2];
     float heights[16 * 16];
-    float mapscale[3];
+public: // INPUT
+    vec3 mapscale;
+    vec3 pos0;
+    quat ori0;
 public:
-    cPadmap(float x, float y, float z);
+    rPadmap(cObject* obj);
     /// Calculate Height of the xz position.
     inline float getHeight(float x, float z);
+    virtual void animate(float spf);
     virtual float constrain(float* worldpos, float radius = 0.0f, float* localpos = NULL, cObject* enactor = NULL);
     virtual void drawSolid();
 };

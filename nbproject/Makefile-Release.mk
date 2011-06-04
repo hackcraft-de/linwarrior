@@ -36,7 +36,6 @@ OBJECTFILES= \
 	${OBJECTDIR}/source/de/hackcraft/comp/rGrouping.o \
 	${OBJECTDIR}/source/de/hackcraft/comp/rController.o \
 	${OBJECTDIR}/source/de/hackcraft/world/cBackground.o \
-	${OBJECTDIR}/source/de/hackcraft/object/cPadmap.o \
 	${OBJECTDIR}/source/de/hackcraft/io/Texfile.o \
 	${OBJECTDIR}/source/de/hackcraft/proc/Road.o \
 	${OBJECTDIR}/source/de/hackcraft/comp/rRigged.o \
@@ -57,6 +56,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/source/de/hackcraft/main.o \
 	${OBJECTDIR}/source/de/hackcraft/object/cAlert.o \
 	${OBJECTDIR}/source/de/hackcraft/comp/rWeapon.o \
+	${OBJECTDIR}/source/de/hackcraft/comp/rPadmap.o \
 	${OBJECTDIR}/source/de/hackcraft/comp/rMobile.o \
 	${OBJECTDIR}/source/de/hackcraft/util/Timing.o \
 	${OBJECTDIR}/source/de/hackcraft/comp/rComcom.o \
@@ -110,11 +110,6 @@ ${OBJECTDIR}/source/de/hackcraft/world/cBackground.o: source/de/hackcraft/world/
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/world
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/world/cBackground.o source/de/hackcraft/world/cBackground.cpp
-
-${OBJECTDIR}/source/de/hackcraft/object/cPadmap.o: source/de/hackcraft/object/cPadmap.cpp 
-	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/object
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/object/cPadmap.o source/de/hackcraft/object/cPadmap.cpp
 
 ${OBJECTDIR}/source/de/hackcraft/io/Texfile.o: source/de/hackcraft/io/Texfile.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/io
@@ -215,6 +210,11 @@ ${OBJECTDIR}/source/de/hackcraft/comp/rWeapon.o: source/de/hackcraft/comp/rWeapo
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/comp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/comp/rWeapon.o source/de/hackcraft/comp/rWeapon.cpp
+
+${OBJECTDIR}/source/de/hackcraft/comp/rPadmap.o: source/de/hackcraft/comp/rPadmap.cpp 
+	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/comp
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/comp/rPadmap.o source/de/hackcraft/comp/rPadmap.cpp
 
 ${OBJECTDIR}/source/de/hackcraft/comp/rMobile.o: source/de/hackcraft/comp/rMobile.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/comp

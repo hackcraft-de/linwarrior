@@ -13,6 +13,8 @@
 
 #include "de/hackcraft/io/MD5Format.h"
 
+#include <map>
+
 /**
  * Encapsulates a rigged mesh in md5mesh format.
  */

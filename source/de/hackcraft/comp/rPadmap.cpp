@@ -1,8 +1,10 @@
-#include "cPadmap.h"
+#include "rPadmap.h"
 
 #include "de/hackcraft/psi3d/GLS.h"
 
 #include "de/hackcraft/io/Texfile.h"
+
+#include "de/hackcraft/object/cObject.h"
 
 static void stepSpiral(int& x, int& y, int& i, int& length, bool& horizontal, int& increment) {
     if (i >= length) {
@@ -21,11 +23,14 @@ static void stepSpiral(int& x, int& y, int& i, int& length, bool& horizontal, in
     }
 }
 
-int cPadmap::sInstances = 0;
-std::map<int, long> cPadmap::sTextures;
-std::vector<int> cPadmap::sSpiral[2];
+int rPadmap::sInstances = 0;
+std::map<int, long> rPadmap::sTextures;
+std::vector<int> rPadmap::sSpiral[2];
 
-cPadmap::cPadmap(float x, float y, float z) {
+rPadmap::rPadmap(cObject* obj) {
+    object = obj;
+    role = "PADMAP";
+
     sInstances++;
     if (sInstances == 1) {
         unsigned char* texels = NULL;
@@ -64,8 +69,9 @@ cPadmap::cPadmap(float x, float y, float z) {
         }
     }
 
-    vector_set(this->pos0, x, y, z);
-    quat_set(this->ori0, 0, 0, 0, 1);
+    //vector_set(this->pos0, x, y, z);
+    vector_zero(this->pos0);
+    quat_zero(this->ori0);
 
     float h[16 * 16] = {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -107,7 +113,7 @@ cPadmap::cPadmap(float x, float y, float z) {
     mapscale[2] = mapscale[0];
 }
 
-float cPadmap::getHeight(float x, float z) {
+float rPadmap::getHeight(float x, float z) {
     int a = dims[0];
     int b = dims[1];
 
@@ -139,7 +145,13 @@ float cPadmap::getHeight(float x, float z) {
     return h;
 }
 
-void cPadmap::drawSolid() {
+void rPadmap::animate(float spf) {
+    if (object == NULL) return;
+    
+    vector_cpy(pos0, object->pos0);
+}
+
+void rPadmap::drawSolid() {
     //return; // !!
 
     glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_TEXTURE_BIT);
@@ -266,7 +278,7 @@ void cPadmap::drawSolid() {
     glPopAttrib();
 }
 
-float cPadmap::constrain(float* worldpos, float radius, float* localpos, cObject* enactor) {
+float rPadmap::constrain(float* worldpos, float radius, float* localpos, cObject* enactor) {
     //return 0.0f; // !!!!!!!!!!
 
     //if (enactor == NULL) return 0.0;

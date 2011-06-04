@@ -13,6 +13,8 @@
 
 #include "de/hackcraft/util/OID.h"
 
+#include <set>
+
 /**
  * Object Group - as for now intended for messaging maillist-groups.
  */

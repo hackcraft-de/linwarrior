@@ -234,8 +234,13 @@ cObject* cOpenMission::init(cWorld* world) {
         mod->height = loc[1] + 0.019f;
         mod->range = 15;
         planetmap->mods.push_back(mod);
+
+        cObject* obj = new cObject();
+        vector_cpy(obj->pos0, loc);
+        rPadmap* pm = new rPadmap(obj);
+        obj->components.push_back(pm);
         // Experimental
-        world->spawnObject(new cPadmap(loc[0], loc[1], loc[2]));
+        world->spawnObject(obj);
     }
 
     cout << "Initialising vehicles...\n";

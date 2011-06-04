@@ -11,8 +11,10 @@
 
 #include <cassert>
 #include <string>
-#include <set>
-#include <map>
+#include <string.h>
+//#include <set>
+//#include <map>
+#include <vector>
 
 class cObject;
 class Message;
@@ -25,12 +27,37 @@ class Message;
  * or signal variables for i/o impules.
  */
 struct rComponent {
+    /// Represents a binding of a variable src to a variable dst of a given size.
+    struct Binding {
+        void* src;
+        void* dst;
+        unsigned int size;
+        Binding(void* src, void* dst, unsigned int size) {
+            this->src = src;
+            this->dst = dst;
+            this->size = size;
+        }
+        /// Store from destination to source.
+        void write() {
+            memcpy(src, dst, size);
+        }
+        /// Load from source to destination.
+        void read() {
+            memcpy(dst, src, size);
+        }
+    };
+
     /// Parent object of which this component is a part of.
     cObject* object;
     /// Typename/Role of this component (all uppercase letters without leading "r").
     std::string role;
     /// Indicates an active enabled component (or disabled if false).
     bool active;
+    /// Bindings to be executed before animation.
+    std::vector<Binding*> prebinds;
+    /// Bindings to be executed after animation (if any).
+    std::vector<Binding*> postbinds;
+    
 
     rComponent(rComponent* original = NULL) {
         if (original != NULL) {
@@ -71,7 +98,19 @@ struct rComponent {
     virtual void message(Message * message) {
     }
 
+    void prebind() {
+        for (auto i = prebinds.begin(); i != prebinds.end(); i++) {
+            (*i)->read();
+        }
+    }
+
     virtual void animate(float spf) {
+    }
+
+    void postbind() {
+        for (auto i = prebinds.begin(); i != prebinds.end(); i++) {
+            (*i)->read();
+        }
     }
 
     virtual void transform() {
@@ -86,18 +125,6 @@ struct rComponent {
     virtual void drawHUD() {
     }
 };
-
-/*
-#include "rNameable.h"
-#include "rTraceable.h"
-#include "rDamageable.h"
-#include "cController.h"
-#include "rGrouping.h"
-#include "rRigged.h"
-#include "rCamera.h"
-#include "rCollider.h"
-#include "rMobile.h"
- */
 
 #endif	/* RCOMPONENT_H */
 

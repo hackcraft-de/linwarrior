@@ -35,6 +35,8 @@
             <itemPath>source/de/hackcraft/comp/rMobile.h</itemPath>
             <itemPath>source/de/hackcraft/comp/rNameable.cpp</itemPath>
             <itemPath>source/de/hackcraft/comp/rNameable.h</itemPath>
+            <itemPath>source/de/hackcraft/comp/rPadmap.cpp</itemPath>
+            <itemPath>source/de/hackcraft/comp/rPadmap.h</itemPath>
             <itemPath>source/de/hackcraft/comp/rRigged.cpp</itemPath>
             <itemPath>source/de/hackcraft/comp/rRigged.h</itemPath>
             <itemPath>source/de/hackcraft/comp/rTraceable.cpp</itemPath>
@@ -74,8 +76,6 @@
             <itemPath>source/de/hackcraft/object/cMech.h</itemPath>
             <itemPath>source/de/hackcraft/object/cObject.cpp</itemPath>
             <itemPath>source/de/hackcraft/object/cObject.h</itemPath>
-            <itemPath>source/de/hackcraft/object/cPadmap.cpp</itemPath>
-            <itemPath>source/de/hackcraft/object/cPadmap.h</itemPath>
             <itemPath>source/de/hackcraft/object/cPlanetmap.cpp</itemPath>
             <itemPath>source/de/hackcraft/object/cPlanetmap.h</itemPath>
             <itemPath>source/de/hackcraft/object/cTree.cpp</itemPath>

@@ -15,6 +15,7 @@
 
 #include "de/hackcraft/comp/rController.h"
 #include "de/hackcraft/comp/rWeapon.h"
+#include "de/hackcraft/comp/rPadmap.h"
 
 #include "de/hackcraft/util/Pad.h"
 
@@ -25,7 +26,6 @@
 #include "de/hackcraft/object/cObject.h"
 #include "de/hackcraft/object/cMech.h"
 #include "de/hackcraft/object/cBuilding.h"
-#include "de/hackcraft/object/cPadmap.h"
 #include "de/hackcraft/object/cTree.h"
 
 #include <SDL/SDL.h>
