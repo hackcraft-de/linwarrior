@@ -39,6 +39,8 @@
             <itemPath>source/de/hackcraft/comp/rPadmap.h</itemPath>
             <itemPath>source/de/hackcraft/comp/rRigged.cpp</itemPath>
             <itemPath>source/de/hackcraft/comp/rRigged.h</itemPath>
+            <itemPath>source/de/hackcraft/comp/rScatter.cpp</itemPath>
+            <itemPath>source/de/hackcraft/comp/rScatter.h</itemPath>
             <itemPath>source/de/hackcraft/comp/rTraceable.cpp</itemPath>
             <itemPath>source/de/hackcraft/comp/rTraceable.h</itemPath>
             <itemPath>source/de/hackcraft/comp/rWeapon.cpp</itemPath>

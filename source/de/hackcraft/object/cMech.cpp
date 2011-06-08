@@ -172,6 +172,42 @@ cMech::cMech(float* pos, float* rot) {
 
     explosion = new rWeaponExplosion(this);
     mountWeapon((char*) "CTorsor", explosion, false);
+
+    // BINDINGS
+
+    // Collider
+    {
+        // from Self
+        collider->addBinding(&collider->pos0, &pos0, sizeof(vec3));
+        collider->addBinding(&collider->ori0, &ori0, sizeof(quat));
+        // from Rigged
+        collider->addBinding(&collider->radius, &rigged->radius, sizeof(float));
+        collider->ratio = 0.0f;
+        collider->addBinding(&collider->height, &rigged->height, sizeof(float));
+    }
+    // Damageable
+    {
+        // from DAMAGEABLE
+        damageable->addBinding(&damageable->active, &damageable->alife, sizeof(bool));
+        // from RIGGED
+        damageable->addBinding(&damageable->radius, &rigged->radius, sizeof(float));
+        damageable->addBinding(&damageable->height, &rigged->height, sizeof(float));
+    }
+    // Comcom
+    {
+        comcom->addBinding(&comcom->active, &damageable->alife, sizeof(bool));
+    }
+    // Tarcom
+    {
+        // from Pad
+        //tarcom->switchnext = pad->getButton(Pad::MECH_NEXT_BUTTON);
+        //tarcom->switchprev = pad->getButton(Pad::MECH_PREV_BUTTON);
+        // from DAMAGEABLE
+        tarcom->addBinding(&tarcom->active, &damageable->alife, sizeof(bool));
+        // from TRACEABLE
+        tarcom->addBinding(&tarcom->pos, &traceable->pos, sizeof(vec3));
+        tarcom->addBinding(&tarcom->ori, &traceable->ori, sizeof(quat));
+    }
 }
 
 cMech::~cMech() {
@@ -315,32 +351,32 @@ void cMech::animate(float spf) {
     // COLLIDER
     {
         // from SELF:
-        {
+        if (0) {
             vector_cpy(collider->pos0, this->pos0);
             quat_cpy(collider->ori0, this->ori0);
-            collider->radius = this->radius;
         }
         // from RIGGED:
-        {
+        if (0) {
             collider->radius = rigged->radius;
             collider->ratio = 0.0f;
             collider->height = rigged->height;
         }
-
+        collider->prebind();
         collider->animate(spf);
     }
 
     // DAMAGEABLE
     {
         // from DAMAGEABLE
-        {
+        if (0) {
             damageable->active = damageable->alife;
         }
         // from RIGGED
-        {
+        if (0) {
             damageable->radius = rigged->radius;
             damageable->height = rigged->height;
         }
+        damageable->prebind();
         damageable->animate(spf);
     }
 
@@ -349,28 +385,30 @@ void cMech::animate(float spf) {
     // COMCOM
     {
         // from DAMAGEABLE
-        {
+        if (0) {
             comcom->active = damageable->alife;
         }
+        comcom->prebind();
         comcom->animate(spf);
     }
 
     // TARCOM
     {
         // from Pad
-        {
+        if (1) {
             tarcom->switchnext = pad->getButton(Pad::MECH_NEXT_BUTTON);
             tarcom->switchprev = pad->getButton(Pad::MECH_PREV_BUTTON);
         }
         // from DAMAGEABLE
-        {
+        if (0) {
             tarcom->active = damageable->alife;
         }
         // from TRACEABLE
-        {
+        if (0) {
             vector_cpy(tarcom->pos, traceable->pos);
             quat_cpy(tarcom->ori, traceable->ori);
         }
+        tarcom->prebind();
         tarcom->animate(spf);
     }
 

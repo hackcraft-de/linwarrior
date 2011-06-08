@@ -48,32 +48,6 @@ public:
     virtual void drawEffect();
 };
 
-struct Particle;
-
-/**
- * Models a set/cluster/field of random distributed small
- * environmental decal objects such as stones, flowers,
- * grass, dirt and debris.
- */
-class cScatterfield : public cObject {
-protected:
-    static int sInstances;
-    static std::map<int, long> sTextures;
-public:
-
-    enum CollisionType {
-        CT_NONE, CT_CYLINDER, CT_SPHERE, CT_BOX
-    };
-
-    enum BillboardType {
-        BT_NONE, BT_AROUND, BT_AXIS
-    };
-protected:
-    std::list<Particle*> decalParticles;
-public:
-    cScatterfield(float x, float y, float z, float radius, float density);
-    virtual void drawEffect();
-};
 
 /**
  * Models an urban street-tile of different types.

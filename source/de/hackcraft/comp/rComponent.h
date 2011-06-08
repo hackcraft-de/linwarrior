@@ -29,12 +29,12 @@ class Message;
 struct rComponent {
     /// Represents a binding of a variable src to a variable dst of a given size.
     struct Binding {
-        void* src;
         void* dst;
+        void* src;
         unsigned int size;
-        Binding(void* src, void* dst, unsigned int size) {
-            this->src = src;
+        Binding(void* dst, void* src, unsigned int size) {
             this->dst = dst;
+            this->src = src;
             this->size = size;
         }
         /// Store from destination to source.
@@ -73,6 +73,10 @@ struct rComponent {
 
     virtual rComponent * clone() {
         return new rComponent(this);
+    }
+
+    void addBinding(void* dst, void* src, unsigned int size) {
+        prebinds.push_back(new Binding(dst, src, size));
     }
 
     virtual void spawn() {

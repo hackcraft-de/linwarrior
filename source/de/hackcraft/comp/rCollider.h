@@ -17,6 +17,11 @@
  * Currently only for cylinder collisions.
  */
 struct rCollider : public rComponent {
+public:
+    /// Yet unused.
+    enum CollisionType {
+        CT_NONE, CT_CYLINDER, CT_SPHERE, CT_BOX
+    };
 public: // INPUT
     /// Base orientation (hook i).
     vec3 pos0;
