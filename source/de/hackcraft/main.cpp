@@ -29,7 +29,7 @@ unsigned int* gInstantfont = NULL;
 DEFINE_glprintf
 
 
-#include "util/GapBuffer.h"
+#include "de/hackcraft/util/GapBuffer.h"
 
 GapBuffer console;
 
@@ -412,7 +412,6 @@ void cMain::drawFrame() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // W/o background.
     }
 
-
     GLS::glPushPerspectiveProjection(game.fov, 0.07, 300);
     {
         // Setup camera.
@@ -451,7 +450,6 @@ void cMain::drawFrame() {
     }
     GLS::glPopProjection();
 
-
     float motionblur = 0.0f;
     if (game.nightvision > 0.0001f) {
         glFlush();
@@ -460,6 +458,30 @@ void cMain::drawFrame() {
         glFlush();
         GLS::glAccumBlur(motionblur);
     }
+    
+    GLS::glPushOrthoProjection(-0.0,+1.0,-1.0,+0.0,-100,+100);
+    if (0) {
+        glPushAttrib(GL_ALL_ATTRIB_BITS);
+        {
+            glDisable(GL_CULL_FACE);
+            glDisable(GL_LIGHTING);
+            glDisable(GL_DEPTH_TEST);
+            glDepthMask(false);
+            glColor4f(1,1,1,1);
+            glPushMatrix();
+            {
+                glLoadIdentity();
+                glScalef(1.0/120.0, 1.0/60.0, 1.0);
+                glTranslatef(0,1.0,-100);
+                char buffer[256*128];
+                console.printConsole(buffer, 120, 60);
+                glDrawConsole(buffer, 120*60, 120, 0);
+            }
+            glPopMatrix();
+        }
+        glPopAttrib();
+    }
+    GLS::glPopProjection();
 
     if (picking) {
         int entries = glRenderMode(GL_RENDER);
@@ -716,7 +738,7 @@ int cMain::run(int argc, char** args) {
     //jobs.push(job_render);
 
     std::streambuf* stdout_ = std::cout.rdbuf();
-    bool redirectOutput = !true;
+    bool redirectOutput = true;
     if (redirectOutput) {
         jobs.push(job_output);
         std::cout.rdbuf( oss.rdbuf() );
