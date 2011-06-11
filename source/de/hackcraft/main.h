@@ -134,6 +134,12 @@ private:
     /// SDL doesn't count mouse wheel movement.
     static int mouseWheel;
 
+    /// Mutex for job queue - minions wait until they can grab a job.
+    static SDL_mutex* jobMutex;
+
+    /// The job queue itself - minions grab jobs here.
+    static std::queue<int (*)(void*) > jobQueue;
+
 private:
     /// For loading post-processing filter.
     static char* loadTextFile(const char* filename);
@@ -160,6 +166,18 @@ private:
 public:
     /// Called directly by the main entry point.
     static int run(int argc, char** args);
+
+    /// Started from run (called indirectly via from C-code => public)
+    static int runMinion();
+
+    /// Enables and disables OpenAL Audio-System.
+    static int alEnableSystem(bool en);
+
+    /// Experiment.
+    static void drawLog();
+
+    /// Experiment.
+    static void drawPlaque();
 };
 
 

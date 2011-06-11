@@ -2,7 +2,7 @@ MD5Version 10
 commandline ""
 
 numJoints 15
-numMeshes 8
+numMeshes 6
 
 // --------------------------------------- 
 // exporter by B. Pickhardt (hackcraft.de) 
@@ -28,7 +28,7 @@ joints {
 
 mesh {
 	// meshes: mbt_cater_left
-	shader "Material02"
+	shader "rubber"
 
 	numverts 8
 	vert 0 ( 0.000 0.000 ) 0 1
@@ -65,7 +65,7 @@ mesh {
 
 mesh {
 	// meshes: mbt_top
-	shader "Material01"
+	shader "camo"
 
 	numverts 39
 	vert 0 ( 0.000 0.000 ) 0 1
@@ -186,7 +186,7 @@ mesh {
 
 mesh {
 	// meshes: mbt_dome
-	shader "Material01"
+	shader "camo"
 
 	numverts 29
 	vert 0 ( 0.000 0.000 ) 0 1
@@ -298,19 +298,8 @@ mesh {
 }
 
 mesh {
-	// meshes: mbt_barrel
-	shader "Material02"
-
-	numverts 0
-
-	numtris 0
-
-	numweights 0
-}
-
-mesh {
 	// meshes: mbt_cater_right
-	shader "Material02"
+	shader "rubber"
 
 	numverts 8
 	vert 0 ( 1.000 0.000 ) 0 1
@@ -346,19 +335,8 @@ mesh {
 }
 
 mesh {
-	// meshes: mbt_muzzle
-	shader "flash"
-
-	numverts 0
-
-	numtris 0
-
-	numweights 0
-}
-
-mesh {
 	// meshes: attachments
-	shader "Material01"
+	shader "camo"
 
 	numverts 22
 	vert 0 ( 1.000 1.000 ) 0 1
@@ -443,7 +421,7 @@ mesh {
 
 mesh {
 	// meshes: mbt_top_side
-	shader "Material01"
+	shader "camo"
 
 	numverts 24
 	vert 0 ( 0.000 0.000 ) 0 1

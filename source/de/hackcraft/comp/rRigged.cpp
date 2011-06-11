@@ -4,12 +4,18 @@
 using std::cout;
 using std::endl;
 
+#include <string>
+using std::string;
+
 #include <GL/glew.h>
+
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Primitive.h"
 #include "de/hackcraft/psi3d/instfont.h"
 
 #define DRAWJOINTS !true
+
+std::map<std::string,unsigned long> rRigged::materials;
 
 void rRigged::drawBones() {
     glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -60,7 +66,21 @@ void rRigged::drawMeshes() {
         radius = 0;
         height = 0;
 
+        /*
+        std::map<char,float> colors;
+        colors['r'] = 0.10;
+        colors['c'] = 0.50;
+        colors['s'] = 0.80;
+        colors['g'] = 1.00;
+        */
+
         loopi(model->numMeshes) {
+            //cout << "Shader:" << msh->shader << "\n";
+            //float co = colors[msh->shader[0]];
+            //glColor3f(co,co,co);
+            
+            glBindTexture(GL_TEXTURE_3D, materials[string(msh->shader)]);
+
             //cout << curr->numverts << " " << curr->numtris << " " << curr->numweights << endl;
             float* vtx = new float[msh->numverts * 3];
             float* nrm = new float[msh->numverts * 3];

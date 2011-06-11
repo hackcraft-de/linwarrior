@@ -35,7 +35,7 @@ using std::endl;
 #include <string>
 using std::string;
 
-#define MECHDETAIL -1
+#define MECHDETAIL 0
 
 #define EXPERIMENT true
 
@@ -59,7 +59,18 @@ cMech::cMech(float* pos, float* rot) {
             const int SIZE = 1 << (7 + MECHDETAIL);
             unsigned char* texels = new unsigned char[SIZE * SIZE * SIZE * 3];
 
-            for (int l = 0; l < 4; l++) {
+            const char* names[] = {
+                "wood",
+                "urban",
+                "desert",
+                "snow",
+                "camo",
+                "glass",
+                "rubber",
+                "steel"
+            };
+
+            for (int l = 0; l < 8; l++) {
                 long t = 0;
 
                 loopijk(SIZE, SIZE, SIZE) {
@@ -76,6 +87,16 @@ cMech::cMech(float* pos, float* rot) {
                             break;
                         case TEXTURE_SNOW: Solid::camo_snow(x, y, z, color);
                             break;
+                        case 4: Solid::camo_desert(x, y, z, color); // camo
+                            break;
+                        case 5: Solid::metal_damast(x, y, z, color); // glass
+                            break;
+                        case 6: //Solid::stone_lava(x, y, z, color); // rubber
+                            color[0] = color[1] = color[2] = 0.15f;
+                            color[3] = 1.0f;
+                            break;
+                        case 7: Solid::metal_sheets(x, y, z, color); // steel
+                            break;
                         default:
                             Solid::camo_rust(x, y, z, color);
                     }
@@ -85,6 +106,7 @@ cMech::cMech(float* pos, float* rot) {
                 }
                 unsigned int texname = GLS::glBindTexture3D(0, true, true, true, true, true, SIZE, SIZE, SIZE, texels);
                 sTextures[l] = texname;
+                rRigged::materials[string(names[l])] = texname;
             }
             delete texels;
         }

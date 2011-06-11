@@ -5,7 +5,7 @@ Open Source written by Benjamin Pickhardt
 
 This incomplete-under-development-version is not considered enduser-playable.
 
-Used Libraries are GL, GLU, SDL, OpenAL, ALUT
+Used Libraries are GL, GLU, GLEW, SDL, OpenAL, ALUT
 
 Make always using "clean all".
 Run using the provided shell-script.

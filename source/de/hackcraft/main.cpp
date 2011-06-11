@@ -20,14 +20,25 @@ using std::endl;
 #endif
 #include <AL/alut.h>
 
+#include <SDL/SDL_thread.h>
+#include <iosfwd>
 
 cGame cMain::game;
+
 int cMain::mouseWheel = 0;
+SDL_mutex* cMain::jobMutex;
+std::queue<int (*)(void*) > cMain::jobQueue;
 
 unsigned int* gInstantfont = NULL;
 
 DEFINE_glprintf
 
+void cleanup() {
+    SDL_Quit();
+    alutExit();
+    cMain::alEnableSystem(false);
+    std::cout << "Thank you for playing.\n";
+}
 
 #include "de/hackcraft/util/GapBuffer.h"
 
@@ -459,8 +470,34 @@ void cMain::drawFrame() {
         GLS::glAccumBlur(motionblur);
     }
     
+    if (picking) {
+        int entries = glRenderMode(GL_RENDER);
+        cout << "selected: " << entries << endl;
+        // Picking-Entry: n, minz, maxz, n_names
+        GLuint* p = selection;
+
+        loopi(entries) {
+            GLuint n = *p++;
+            GLuint minz = *p++;
+            GLuint maxz = *p++;
+            cout << n << " " << minz << " " << maxz;
+
+            loopj(n) {
+                GLuint name = *p++;
+                cout << " " << name;
+            }
+            cout << "\n";
+        }
+    }
+    //picking = !picking;
+
+    if (!true) drawLog();
+}
+
+
+void cMain::drawLog() {
     GLS::glPushOrthoProjection(-0.0,+1.0,-1.0,+0.0,-100,+100);
-    if (0) {
+    {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
             glDisable(GL_CULL_FACE);
@@ -482,28 +519,8 @@ void cMain::drawFrame() {
         glPopAttrib();
     }
     GLS::glPopProjection();
-
-    if (picking) {
-        int entries = glRenderMode(GL_RENDER);
-        cout << "selected: " << entries << endl;
-        // Picking-Entry: n, minz, maxz, n_names
-        GLuint* p = selection;
-
-        loopi(entries) {
-            GLuint n = *p++;
-            GLuint minz = *p++;
-            GLuint maxz = *p++;
-            cout << n << " " << minz << " " << maxz;
-
-            loopj(n) {
-                GLuint name = *p++;
-                cout << " " << name;
-            }
-            cout << "\n";
-        }
-    }
-    //picking = !picking;
 }
+
 
 void cMain::updateKey(Uint8 keysym) {
     if (keysym == _WIREFRAME_KEY) {
@@ -617,7 +634,7 @@ void cMain::updatePad(Pad* pad, SDL_Joystick* joy, int* mapping) {
     }
 }
 
-int alEnableSystem(bool en) {
+int cMain::alEnableSystem(bool en) {
     static ALCdevice *dev = NULL;
     static ALCcontext *ctx = NULL;
     static bool isenabled = false;
@@ -651,36 +668,23 @@ int alEnableSystem(bool en) {
     }
 }
 
-void cleanup() {
-    SDL_Quit();
-    alutExit();
-    alEnableSystem(false);
-    std::cout << "Thank you for playing.\n";
-}
-
-
-#include <SDL/SDL_thread.h>
-#include <iosfwd>
-
-SDL_mutex* jobsmutex;
-std::queue<int (*)(void*) > jobs;
-
-int minion(void* data) {
+int cMain::runMinion() {
     unsigned int id = SDL_ThreadID();
     cout << "Minion " << id << " at your service!\n";
-    int (*job)(void*) = minion;
+    typedef int (*callback)(void*);
+    callback job = (callback) 1;
     bool done = false;
     while (!done) {
         // Grab a new job.
         int (*nextjob)(void*) = NULL;
-        SDL_mutexP(jobsmutex);
+        SDL_mutexP(jobMutex);
         {
-            if (!jobs.empty()) {
-                nextjob = jobs.front();
-                jobs.pop();
+            if (!jobQueue.empty()) {
+                nextjob = jobQueue.front();
+                jobQueue.pop();
             } // else look at secondary jobs.
         }
-        SDL_mutexV(jobsmutex);
+        SDL_mutexV(jobMutex);
         // Work on job if any available.
         if (nextjob != NULL) {
             cout << "Minion " << id << " is fulfilling your wish!\n";
@@ -699,10 +703,23 @@ int minion(void* data) {
     return 0;
 }
 
+int minion(void* data) {
+    return cMain::runMinion();
+}
+
+int state = 0;
 int job_render(void* data) {
-    while (true) {
-        //cout << "Buffering BGM.\n";
-        SDL_Delay(1.0f / DEFAULT_FPS * 1000);
+    int i = 0;
+    while (state == 0) {
+        //float s = 0.5 + 0.4 * sin(i * M_PI / 10.0);
+        //float c = 0.5 + 0.4 * cos(i * M_PI / 10.0);
+        //glClearColor(0.1+s, 0.1+c, 0.9, 1.0);
+        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        //cMain::drawPlaque();
+        //cMain::drawLog();
+        //SDL_GL_SwapBuffers();
+        SDL_Delay(1.0 / DEFAULT_FPS * 1000.0);
+        i++;
     }
     return 0;
 }
@@ -731,16 +748,53 @@ int job_output(void* data) {
     }
     return 0;
 }
-//#include <fstream>
-//#include <iostream>
+
+void cMain::drawPlaque() {
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    {
+        glDisable(GL_LIGHTING);
+        glDisable(GL_FOG);
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
+        GLS::glPushOrthoProjection();
+        {
+            glPushMatrix();
+            {
+                glLoadIdentity();
+                glTranslatef(0, 1, 0);
+                glScalef(1.0f / 80.0f, 1.0f / 40.0f, 1.0f);
+                glColor4f(1, 1, 0, 1);
+                glprintf("LinWarrior 3D  (Build " __DATE__ ") by hackcraft.de");
+                glColor4f(0, 1, 0, 1);
+                glTranslatef(0, -34, 0);
+                glprintf("IJKL-Keys   : Aim Weapons");
+                glTranslatef(0, -1, 0);
+                glprintf("Cursor-Keys : Steer Base");
+                glTranslatef(0, -1, 0);
+                glprintf("SEDF-Keys   : Main Action Buttons");
+                glTranslatef(0, -1, 0);
+                glprintf("AW-/RG-Keys : Left/Right Action Buttons");
+                glTranslatef(0, -1, 0);
+                glTranslatef(0, -1, 0);
+                glColor4f(1, 1, 0, 1);
+                glprintf("PROCESSING DATA...this may take a while...");
+            }
+            glPopMatrix();
+        }
+        GLS::glPopProjection();
+    }
+    glPopAttrib();
+}
+
 int cMain::run(int argc, char** args) {
-    //jobs.push(job_bgm);
-    //jobs.push(job_render);
+    jobMutex = SDL_CreateMutex();
+    //jobQueue.push(job_bgm);
+    jobQueue.push(job_render);
 
     std::streambuf* stdout_ = std::cout.rdbuf();
     bool redirectOutput = true;
     if (redirectOutput) {
-        jobs.push(job_output);
+        jobQueue.push(job_output);
         std::cout.rdbuf( oss.rdbuf() );
     }
 
@@ -850,47 +904,18 @@ int cMain::run(int argc, char** args) {
     bool loadscreen = true;
     if (loadscreen) {
         cout << "Showing load screen...\n";
-        glPushAttrib(GL_ALL_ATTRIB_BITS);
-        {
-            glClearColor(0.1, 0.1, 0.9, 1.0);
-            glDisable(GL_LIGHTING);
-            glDisable(GL_FOG);
-            glDisable(GL_DEPTH_TEST);
-            glDisable(GL_CULL_FACE);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            GLS::glPushOrthoProjection();
-            {
-                glPushMatrix();
-                {
-                    glLoadIdentity();
-                    glTranslatef(0, 1, 0);
-                    glScalef(1.0f / 80.0f, 1.0f / 40.0f, 1.0f);
-                    glColor4f(1, 1, 0, 1);
-                    glprintf("LinWarrior 3D  (Build " __DATE__ ") by hackcraft.de");
-                    glColor4f(0, 1, 0, 1);
-                    glTranslatef(0, -34, 0);
-                    glprintf("IJKL-Keys   : Aim Weapons");
-                    glTranslatef(0, -1, 0);
-                    glprintf("Cursor-Keys : Steer Base");
-                    glTranslatef(0, -1, 0);
-                    glprintf("SEDF-Keys   : Main Action Buttons");
-                    glTranslatef(0, -1, 0);
-                    glprintf("AW-/RG-Keys : Left/Right Action Buttons");
-                    glTranslatef(0, -1, 0);
-                    glTranslatef(0, -1, 0);
-                    glColor4f(1, 1, 0, 1);
-                    glprintf("PROCESSING DATA...this may take a while...");
-                }
-                glPopMatrix();
-            }
-            GLS::glPopProjection();
-        }
-        glPopAttrib();
+        glClearColor(0.1, 0.1, 0.9, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        drawPlaque();
         SDL_GL_SwapBuffers();
     }
 
     cout << "Initialising Mission...\n";
     game.initMission();
+
+    // Signal state change.
+    state = 1;
+    SDL_Delay(200);
 
     cout << "Entering Mainloop...\n";
     bool done = false;
@@ -993,6 +1018,7 @@ int cMain::run(int argc, char** args) {
     loopi(maxminions) {
         SDL_KillThread(minions[i]);
     }
+    SDL_DestroyMutex(jobMutex);
     
     std::cout.rdbuf( stdout_ );
     //console.print();

@@ -19,6 +19,8 @@
  * Encapsulates a rigged mesh in md5mesh format.
  */
 struct rRigged : public rComponent {
+public:
+    static std::map<std::string,unsigned long> materials;
 public: // INPUT
     /// Model scale. (1.0f, unused/removed now)
     float scale;

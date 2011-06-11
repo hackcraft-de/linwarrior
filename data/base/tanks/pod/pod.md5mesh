@@ -28,7 +28,7 @@ joints {
 
 mesh {
 	// meshes: pod_base
-	shader "camoflage"
+	shader "camo"
 
 	numverts 13
 	vert 0 ( 0.350 0.373 ) 0 1
@@ -87,7 +87,7 @@ mesh {
 
 mesh {
 	// meshes: pod_dome
-	shader "camoflage"
+	shader "camo"
 
 	numverts 37
 	vert 0 ( 0.330 0.582 ) 0 1
