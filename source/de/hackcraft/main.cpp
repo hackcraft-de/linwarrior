@@ -1052,5 +1052,6 @@ int main(int argc, char **args) {
     } catch (const char* s) {
         cout << "Fatal exception caught:\n" << s << endl;
     }
+    return 0;    
 }
 

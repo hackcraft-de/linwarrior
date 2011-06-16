@@ -21,6 +21,18 @@ ifneq (,$(findstring Win,$(OS)))
 	CFLAGS+= -static-libgcc
 	QUOTE='
 else
+
+ifdef WIN
+	LIBRARIES= -Wl,-subsystem,console -lmingw32 -lSDLmain -lSDL -lopengl32  -lglew32 -lglu32 -lOpenAL32 -lalut
+	CPP=i586-mingw32msvc-c++ -I ~/MinGW/include -L ~/MinGW/lib -D__GNUWIN32__ -DHAVE_W32API_H -D__WINDOWS__
+	TARGET=dist/linwarrior.exe
+	MKDIR=mkdir -p
+	RM=rm -f
+	RMREC=rm -f -r
+	CP=cp
+	LIMITER=/
+	QUOTE=
+else
 	LIBRARIES= -lGLEW -lGLU -lSDL -lopenal -lalut
 	TARGET=dist/linwarrior
 	MKDIR=mkdir -p
@@ -32,12 +44,14 @@ else
 	QUOTE=
 endif
 
+endif
+
 # Creation of dependency information when compiling.
 CFLAGS += -Wp,-M,-MP,-MT,$@,-MF,dep/$(subst /,-,$@).d
 
 # Enable c++0x standard which gives extended initializer lists
-CFLAGS += -std=c++0x
-#CFLAGS += -std=gnu++0x
+#CFLAGS += -std=c++0x
+CFLAGS += -std=gnu++0x
 
 # Print warnings when compiling.
 CFLAGS += -Wall
