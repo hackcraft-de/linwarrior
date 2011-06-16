@@ -7,9 +7,6 @@
 #include "de/hackcraft/psi3d/instfont.h"
 #include "de/hackcraft/psi3d/Primitive.h"
 
-DEFINE_Console_printf
-DEFINE_glprintf
-
 // FIXME: Wepcom rely on mech.
 #include "de/hackcraft/object/cMech.h"
 
@@ -31,16 +28,16 @@ rComcom::rComcom(cObject* obj) {
 
     int w = 20;
     int h = 10;
-    mConsole = Console_new(w * h, w);
+    mConsole = Console::Console_new(w * h, w);
     assert(mConsole != NULL);
     Console* console = (Console*) mConsole;
     //Console_printf(mConsole, "* Welcome to LinWarrior3D\n");
-    Console_printf(console, "ComCOM(1) - MENU\n\n");
-    Console_printf(console, " [1] Formation\n");
-    Console_printf(console, " [2] Engage\n");
-    Console_printf(console, " [3] Report\n");
-    Console_printf(console, " [4] Objectives\n");
-    Console_printf(console, "\n\n > ");
+    Console::Console_printf(console, "ComCOM(1) - MENU\n\n");
+    Console::Console_printf(console, " [1] Formation\n");
+    Console::Console_printf(console, " [2] Engage\n");
+    Console::Console_printf(console, " [3] Report\n");
+    Console::Console_printf(console, " [4] Objectives\n");
+    Console::Console_printf(console, "\n\n > ");
     mLastMessage = 0;
 }
 
@@ -70,7 +67,7 @@ void rComcom::drawHUD() {
         float h = console->size / console->width;
         glTranslatef(0, 1.0f + (1.0f / h), 0);
         glScalef(1.0f / w, 1.0f / h, 1.0f);
-        Console_draw(console);
+        Console::Console_draw(console);
     }
     glPopMatrix();
 }
@@ -574,8 +571,8 @@ void rForcom::drawHUD() {
             //glRotatef(1, 0,0,1);
             glTranslatef(0, -0, 0);
             s << mMessage;
-            glprintf(s.str().c_str());
-            //glprintf("TEST TEST TEST ... TEST TEST TEST\ntest test test");
+            GLF::glprintf(s.str().c_str());
+            //GLF::glprintf("TEST TEST TEST ... TEST TEST TEST\ntest test test");
         }
         glPopMatrix();
     } // Message display
@@ -729,20 +726,20 @@ void rNavcom::drawHUD() {
         cWorld* w = cWorld::instance;
         int x = int(pos[0]);
         int z = int(pos[2]);
-        glprintf("Merc: %06i %06i", x, z);
+        GLF::glprintf("Merc: %06i %06i", x, z);
         glTranslatef(0, -1, 0);
-        glprintf("Alt: %3.2f", (pos[1]));
+        GLF::glprintf("Alt: %3.2f", (pos[1]));
         glTranslatef(0, -1, 0);
         float angle = atan2(ori[1], ori[3]);
-        glprintf("MKS: %2i", int(64 - angle * 64 / M_PI) % 64);
+        GLF::glprintf("MKS: %2i", int(64 - angle * 64 / M_PI) % 64);
         glTranslatef(0, -6, 0);
         s << "Date: " << w->getTiming()->getDate();
-        glprintf(s.str().c_str());
+        GLF::glprintf(s.str().c_str());
         glTranslatef(0, -1, 0);
         s.clear();
         s.str("");
         s << "Time: " << w->getTiming()->getTime();
-        glprintf(s.str().c_str());
+        GLF::glprintf(s.str().c_str());
     }
     glPopMatrix();
 }

@@ -3,7 +3,7 @@
 
 // Textured Console Font out of a box.
 // For opengl use glUploadFont()
-// and then glPrintf("Hello World");
+// and then glprintf("Hello World");
 // Or use bnprintf(..) for console buffer writing followed by
 // glDrawConsole(..);
 //
@@ -18,6 +18,18 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <string.h>
+#include <stdarg.h>
+
+#define FORMATBUFFER \
+    va_list args; \
+    va_start(args, format); \
+    char buffer[1024]; \
+    int len = vsnprintf(buffer, 1023, format, args); \
+    buffer[len] = '\0'; \
+    va_end(args);
+
+#define MIPMAPPEDFONT 0
 
 // 256 ASCI characacter table.
 // 8x times 16y bits = 128bits = 4 unsigned longs for each character.
@@ -282,300 +294,351 @@
     0X0, 0X0, 0X0, 0X0, /* Unbreakable Space (255) */
 
 
-
-// Retrieves the black(0) or white(255) pixel color of the given ascii character at
-// position (x, y) ([0, 8] and [0, 15] range).
-
-#define getFontPixel(font, ascii, x, y) \
-({ \
-    int u = (int) (x); \
-    int v = (int) (y); \
-    unsigned char result = 0; \
-    if (((unsigned char*) font)[(((unsigned int)(ascii))&0xFF) * 16 + v] & (1UL << u)) result = 255; \
-    result; \
-})
+struct GLF {
+    typedef int32_t four_bytes;
 
 
-// Retrieves the 8x16 monochrome bitmap of the specified ascii character.
+    /**
+     * Retrieves the black(0) or white(255) pixel color of the given ascii character at
+     * position (x, y) ([0, 8] and [0, 15] range).
+     *
+     * @param font
+     * @param ascii
+     * @param x
+     * @param y
+     * @return
+     */
+    static unsigned char getFontPixel(four_bytes* font, unsigned char ascii, int x, int y) {
+        int u = (int) (x);
+        int v = (int) (y);
+        unsigned char result = 0; \
+        if (((unsigned char*) font)[(((unsigned int)(ascii))&0xFF) * 16 + v] & (1UL << u)) result = 255;
+        return result;
+    }
 
-#define getFontBitmap_8_16_mono(font, bitmap, ascii) \
-{ \
-    int i; \
-    for (i = 0; i < 8 * 16; i++) { \
-        bitmap[i] = getFontPixel(font, ascii, i % 8, i / 8); \
-    } \
-}
+    /**
+     * Retrieves the 8x16 monochrome bitmap of the specified ascii character.
+     *
+     * @param font
+     * @param bitmap
+     * @param ascii
+     */
+    static void getFontBitmap_8_16_mono(four_bytes* font, unsigned char* bitmap, unsigned char ascii) {
+        int i;
+        for (i = 0; i < 8 * 16; i++) {
+            bitmap[i] = getFontPixel(font, ascii, i % 8, i / 8);
+        }
+    }
 
-// Retrieves the white 8x16 rgb bitmap of the specified ascii character.
+    /**
+     * Retrieves the white 8x16 rgb bitmap of the specified ascii character.
+     *
+     * @param font
+     * @param bitmap
+     * @param ascii
+     */
+    static void getFontBitmap_8_16_rgb(four_bytes* font, unsigned char* bitmap, unsigned char ascii) {
+        int i;
+        for (i = 0; i < 8 * 16 * 3; i += 3) {
+            int j = i / 3;
+            bitmap[i + 0] = getFontPixel(font, ascii, j % 8, j / 8);
+            bitmap[i + 1] = bitmap[i];
+            bitmap[i + 2] = bitmap[i];
+        }
+    }
 
-#define getFontBitmap_8_16_rgb(font, bitmap, ascii) \
-{ \
-    int i; \
-    for (i = 0; i < 8 * 16 * 3; i += 3) { \
-        int j = i / 3; \
-        bitmap[i + 0] = getFontPixel(font, ascii, j % 8, j / 8); \
-        bitmap[i + 1] = bitmap[i]; \
-        bitmap[i + 2] = bitmap[i]; \
-    } \
-}
+    /**
+     * Retrieves the white 8x16 rgba bitmap of the specified ascii character
+     * where every black pixel is translucent.
+     *
+     * @param font
+     * @param bitmap
+     * @param ascii
+     */
+    static void getFontBitmap_8_16_rgba(four_bytes* font, unsigned char* bitmap, unsigned char ascii) {
+        int i;
+        for (i = 0; i < 8 * 16 * 4; i += 4) {
+            int j = i >> 2;
+            unsigned char mono = getFontPixel(font, ascii, (j & 7), (j >> 3));
+            float r, g, b;
+            float c = ((j >> 3) / 16.0f);
+            c = (c < 0.5f) ? (c) : (c - 0.5f);
+            c = (0.5 + c) * (0.7 + 0.3 * sin((j >> 3) / 16.0f * M_PI));
+            r = g = b = c;
+            bitmap[i + 0] = (unsigned char) (r * mono);
+            bitmap[i + 1] = (unsigned char) (g * mono);
+            bitmap[i + 2] = (unsigned char) (b * mono);
+            bitmap[i + 3] = mono;
+        }
+    }
 
-// Retrieves the white 8x16 rgba bitmap of the specified ascii character
-// where every black pixel is translucent.
+    static unsigned int* getFont() {
+        static unsigned int* gInstantfont = NULL;
+        if (gInstantfont == NULL) {
+            gInstantfont = glUploadFont();
+        }
+        return gInstantfont;
+    }
 
-#define getFontBitmap_8_16_rgba(font, bitmap, ascii) \
-{ \
-    int i; \
-    for (i = 0; i < 8 * 16 * 4; i += 4) { \
-        int j = i >> 2; \
-        unsigned char mono = getFontPixel(font, ascii, (j & 7), (j >> 3)); \
-        float r, g, b; \
-        float c = ((j >> 3) / 16.0f); \
-        c = (c < 0.5f) ? (c) : (c - 0.5f); \
-        c = (0.5 + c) * (0.7 + 0.3 * sin((j >> 3) / 16.0f * M_PI)); \
-        r = g = b = c; \
-        bitmap[i + 0] = (unsigned char) (r * mono); \
-        bitmap[i + 1] = (unsigned char) (g * mono); \
-        bitmap[i + 2] = (unsigned char) (b * mono); \
-        bitmap[i + 3] = mono; \
-    } \
-}
+    /**
+     * Use this function to generate and upload GL textures for ascii characters
+     * { start_ascii+0, start_ascii+1, ..., start_ascii+howmany-1 },
+     * where start_ascii == 0 and howmany = 256.
+     * The corresponding GL bind ids are stored back into gFontBind[0], gFontBindv[1], ..., gFontBind[howmany-1].
+     * gFontBind is a user defined pointer - memory is allocated by this function
+     * and it is user-responsibility to free and set to NULL when not used anymore.
+     */
+    static unsigned int* glUploadFont() {
+        four_bytes font[] = {FONTTABLEDATA};
+        unsigned int start_ascii = 0;
+        unsigned int end_ascii = 256;
+        unsigned int* binds = (unsigned int*) malloc(sizeof (unsigned int) * 256);
+        glPushAttrib(GL_TEXTURE_BIT);
+        glEnable(GL_TEXTURE_2D);
+        glGenTextures(end_ascii - start_ascii, binds);
+        unsigned char* rgba = (unsigned char*) malloc(sizeof (char) *8 * 16 * 4); /* glTexImage2D *needs* dynamic memory.*/
+        unsigned int i;
+        for (i = 0; i <= end_ascii; i++) {
+            glBindTexture(GL_TEXTURE_2D, binds[i]);
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+            unsigned char ascii = (start_ascii + i);
+            getFontBitmap_8_16_rgba(font, rgba, ascii);
+            if (MIPMAPPEDFONT) {
+                gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, 8, 16, GL_RGBA, GL_UNSIGNED_BYTE, (void*) rgba);
+            } else {
+                glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 16, 0, GL_RGBA, GL_UNSIGNED_BYTE, (void*) rgba);
+            }
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        }
+        free(rgba);
+        glPopAttrib();
+        return binds;
+    }
 
+    /**
+     * Draws a texture mapped square from (0,0,0) to (1,-1,0)
+     * with texture coords (0,0) to (1,1).
+     * With gluPerspective that's a square from left-top to right-low.
+     *
+     * @param bind
+     */
+    static void glTexturedSquare(unsigned int bind) {
+        glBindTexture(GL_TEXTURE_2D, (unsigned int) bind);
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0);
+        glVertex3f(0, 0, 0);
+        glTexCoord2f(1, 0);
+        glVertex3f(1, 0, 0);
+        glTexCoord2f(1, 1);
+        glVertex3f(1, -1, 0);
+        glTexCoord2f(0, 1);
+        glVertex3f(0, -1, 0);
+        glEnd();
+    }
 
-#define MIPMAPPEDFONT 0
+    /**
+     * Just call like printf but with asciibinds being all gl
+     * texture bindings for character pictures 0..255.
+     *
+     * @param buffer
+     */
+    static void glprint(const char* buffer) {
+        char* buf = (char*) buffer;
+        int len = strlen(buf);
+        unsigned int* asciibinds = getFont();
+        if (asciibinds == NULL) return;
+        glPushAttrib(GL_ENABLE_BIT);
+        {
+            glDisable(GL_CULL_FACE);
+            glEnable(GL_TEXTURE_2D);
+            glPushMatrix();
+            {
+                int i, col = 0;
+                for (i = 0; i < len; i++) {
+                    if (buf[i] == '\n') {
+                        glTranslatef(-col, -1, 0);
+                        col = 0;
+                    } else if (buf[i] == '\t') {
+                        glTranslatef((col + 1) % 5, 0, 0);
+                        col += ((col + 1) % 5);
+                    } else {
+                        glTexturedSquare(asciibinds[(unsigned char)buf[i]]);
+                        glTranslatef(1, 0, 0);
+                        col++;
+                    }
+                }
+            }
+            glPopMatrix();
+        }
+        glPopAttrib();
+    }
 
-// Has to be defined by user, somewhere, and initialised to NULL.
-extern unsigned int* gInstantfont;
+    /**
+     *
+     * @param format
+     * @param ...
+     */
+    static void glprintf(const char* format, ...) {
+        FORMATBUFFER
+        glprint(buffer);
+    }
 
-// If you don't want to declare somewhere else and this headerfile
-// is only included once in the whole project (unlikely) then
-// the global Font Texture-Bind-Array can be declared here.
-#define nFONTBINDINC
-#if defined(FONTBINDINC)
-unsigned int* gInstantfont = NULL;
-#endif
-
-
-// Use this function to generate and upload GL textures for ascii characters
-// { start_ascii+0, start_ascii+1, ..., start_ascii+howmany-1 },
-// where start_ascii == 0 and howmany = 256.
-// The corresponding GL bind ids are stored back into gFontBind[0], gFontBindv[1], ..., gFontBind[howmany-1].
-// gFontBind is a user defined pointer - memory is allocated by this function
-// and it is user-responsibility to free and set to NULL when not used anymore.
-typedef unsigned int four_bytes;
-#define glUploadFont() \
-{ \
-    four_bytes font[] = {FONTTABLEDATA}; \
-    unsigned int start_ascii = 0; \
-    unsigned int end_ascii = 256; \
-    gInstantfont = (unsigned int*) malloc(sizeof (unsigned int) * 256); \
-    unsigned int* binds = gInstantfont; \
-    glPushAttrib(GL_TEXTURE_BIT); \
-    glEnable(GL_TEXTURE_2D); \
-    glGenTextures(end_ascii - start_ascii, binds); \
-    unsigned char* rgba = (unsigned char*) malloc(sizeof (char) *8 * 16 * 4); /* glTexImage2D *needs* dynamic memory.*/  \
-    unsigned int i; \
-    for (i = 0; i <= end_ascii; i++) { \
-        glBindTexture(GL_TEXTURE_2D, binds[i]); \
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1); \
-        unsigned char ascii = (start_ascii + i); \
-        getFontBitmap_8_16_rgba(font, rgba, ascii); \
-        if (MIPMAPPEDFONT) { \
-            gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, 8, 16, GL_RGBA, GL_UNSIGNED_BYTE, (void*) rgba); \
-        } else { \
-            glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 16, 0, GL_RGBA, GL_UNSIGNED_BYTE, (void*) rgba); \
-        } \
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP); \
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP); \
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); \
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); \
-    } \
-    free(rgba); \
-    glPopAttrib(); \
-}
-
-// Draws a texture mapped square from (0,0,0) to (1,-1,0)
-// with texture coords (0,0) to (1,1).
-// With gluPerspective that's a square from left-top to right-low.
-
-#define glTexturedSquare(bind) \
-{ \
-    glBindTexture(GL_TEXTURE_2D, (unsigned int) bind); \
-    glBegin(GL_QUADS); \
-    glTexCoord2f(0, 0); \
-    glVertex3f(0, 0, 0); \
-    glTexCoord2f(1, 0); \
-    glVertex3f(1, 0, 0); \
-    glTexCoord2f(1, 1); \
-    glVertex3f(1, -1, 0); \
-    glTexCoord2f(0, 1); \
-    glVertex3f(0, -1, 0); \
-    glEnd(); \
-}
-
-
-
-// Just call like printf but with asciibinds being all gl
-// texture bindings for character pictures 0..255.
-
-#define glPrint(buffer) \
-{ \
-    char* buf = (char*) buffer; \
-    int len = strlen(buf); \
-    if (gInstantfont == NULL) return; \
-    unsigned int* asciibinds = gInstantfont; \
-    glPushAttrib(GL_ENABLE_BIT); \
-    { \
-        glDisable(GL_CULL_FACE); \
-        glEnable(GL_TEXTURE_2D); \
-        glPushMatrix(); \
-        { \
-            int i, col = 0; \
-            for (i = 0; i < len; i++) { \
-                if (buf[i] == '\n') { \
-                    glTranslatef(-col, -1, 0); \
-                    col = 0; \
-                } else if (buf[i] == '\t') { \
-                    glTranslatef((col + 1) % 5, 0, 0); \
-                    col += ((col + 1) % 5); \
-                } else { \
-                    glTexturedSquare(asciibinds[(unsigned char)buf[i]]); \
-                    glTranslatef(1, 0, 0); \
-                    col++; \
-                } \
-            } \
-        } \
-        glPopMatrix(); \
-    } \
-    glPopAttrib(); \
-}
-
-#include <string.h>
-
-// Prints the given formated string into a console like string buffer.
-// Console like means that the string buffer is treated as having
-// (buffersize modulo bufferwidth) rows - each of bufferwidth characters.
-// bufferpos holds the posisition where printing into the buffer shall start
-// and where it shall start the next time when calling.
-// The function maintains newlines ('\n') and tabs ('\t') and
-// maintains buffer scrolling when the buffer is full.
-
-#define bnprint(bufferstr, buffersize, bufferwidth, bufferpos, buffer)  \
-{ \
-    int len = strlen(buffer); \
-    int p = bufferpos; \
-    int i; \
-    for (i = 0; i < len; i++) { \
-        if (buffer[i] == '\n') { \
-            p += ((bufferwidth) - (p % (bufferwidth))); \
-        } else if (buffer[i] == '\t') { \
-            p += (5 - ((p % (bufferwidth)) % 5)); \
-        } else { \
-            bufferstr[p] = buffer[i]; \
-            p++; \
-        } \
-        if (p >= buffersize) { \
-            memmove(bufferstr, &bufferstr[bufferwidth], buffersize - (bufferwidth)); \
-            memset(&bufferstr[buffersize - (bufferwidth)], 0, bufferwidth); \
-            p -= bufferwidth; \
-        } \
-    } \
-    bufferpos = p; \
-}
-
-
-#include <stdarg.h>
-#define FORMATBUFFER \
-    va_list args; \
-    va_start(args, format); \
-    char buffer[1024]; \
-    int len = vsnprintf(buffer, 1023, format, args); \
-    buffer[len] = '\0'; \
-    va_end(args);
+};
 
 
-#define DEFINE_glprintf \
-static void glprintf(const char* format, ...) { \
-    FORMATBUFFER \
-    glPrint(buffer); \
-}
-
-#define DEFINE_bnprintf \
-static void bnprintf(char* bufferstr, size_t buffersize, int bufferwidth, int* bufferpos, const char* format, ...) { \
-    FORMATBUFFER \
-    bnprint(bufferstr, buffersize, bufferwidth, bufferpos, buffer) \
-}
-
-// Draws the characters in bufferstr rowwise, with bufferwidth characters for each row.
-// buffersize is the total size of the buffer (multiples of bufferwidth would be meaningful).
-// bufferpos is the byte position of the cursor inside the console buffer, set negative for no cursor.
-
-#define glDrawConsole(buffer, buffersize, bufferwidth, bufferpos) \
-{ \
-    unsigned char* bufferstr = (unsigned char*) (buffer); \
-    if (gInstantfont == NULL) return; \
-    unsigned int* asciibinds = gInstantfont; \
-    glPushAttrib(GL_ENABLE_BIT); \
-    { \
-        glDisable(GL_CULL_FACE); \
-        glEnable(GL_TEXTURE_2D); \
-        glPushMatrix(); \
-        { \
-            int i, col = 0; \
-            for (i = 0; i < (buffersize); i++) { \
-                if ((i % (bufferwidth)) == 0) { \
-                    glTranslatef(-col, -1, 0); \
-                    col = 0; \
-                } \
-                if (bufferstr[i] != 0) glTexturedSquare(asciibinds[bufferstr[i]]); \
-                if (bufferpos == i) glTexturedSquare(asciibinds[0]); \
-                glTranslatef(1, 0, 0); \
-                col++; \
-            } \
-        } \
-        glPopMatrix(); \
-    } \
-    glPopAttrib(); \
-}
-
-
-typedef struct Console {
+struct Console {
     char* buffer;
     int size;
     int width;
     int cursor;
-} Console;
 
-#define Console_new(size, width) \
-({ \
-    char* buffer = (char*) malloc(sizeof(char) * size); \
-    memset(buffer, 0, sizeof(char) * size); \
-    Console* con = (Console*) malloc(sizeof(Console)); \
-    Console_init(con, buffer, size, width); \
-    con; \
-})
+    /**
+     *
+     * @param size
+     * @param width
+     * @return
+     */
+    static Console* Console_new(int size, int width) {
+        char* buffer = (char*) malloc(sizeof(char) * size);
+        memset(buffer, 0, sizeof(char) * size);
+        Console* con = (Console*) malloc(sizeof(Console));
+        Console_init(con, buffer, size, width);
+        return con;
+    }
 
-#define Console_free(itself) \
-{ \
-    free(itself->buffer); \
-    free(itself); \
-}
+    /**
+     *
+     * @param itself
+     */
+    static void Console_free(Console* itself) {
+        free(itself->buffer);
+        free(itself);
+    }
 
-#define Console_init(itself, buffer, buffersize, bufferwidth) \
-{ \
-    itself->buffer = buffer; \
-    itself->size = buffersize; \
-    itself->width = bufferwidth; \
-    itself->cursor = 0; \
-}
+    /**
+     *
+     * @param itself
+     * @param buffer
+     * @param buffersize
+     * @param bufferwidth
+     */
+    static void Console_init(Console* itself, char* buffer, int buffersize, int bufferwidth) {
+        itself->buffer = buffer;
+        itself->size = buffersize;
+        itself->width = bufferwidth;
+        itself->cursor = 0;
+    }
 
-#define Console_draw(itself) \
-    glDrawConsole(itself->buffer, itself->size, itself->width, itself->cursor)
+    /**
+     *
+     * @param itself
+     */
+    static void Console_draw(Console* itself) {
+        glDrawConsole(itself->buffer, itself->size, itself->width, itself->cursor);
+    }
 
-#define DEFINE_Console_printf \
-static void Console_printf(Console* itself, const char* format, ...) { \
-    FORMATBUFFER \
-    bnprint(itself->buffer, itself->size, itself->width, itself->cursor, buffer) \
-}
+    /**
+     * Prints the given formated string into a console like string buffer.
+     * Console like means that the string buffer is treated as having
+     * (buffersize modulo bufferwidth) rows - each of bufferwidth characters.
+     * bufferpos holds the posisition where printing into the buffer shall start
+     * and where it shall start the next time when calling.
+     * The function maintains newlines ('\n') and tabs ('\t') and
+     * maintains buffer scrolling when the buffer is full.
+     *
+     * @param bufferstr
+     * @param buffersize
+     * @param bufferwidth
+     * @param bufferpos
+     * @param buffer
+     */
+    static void bnprint(char* bufferstr, int buffersize, int bufferwidth, int* bufferpos, const char* buffer) {
+        int len = strlen(buffer);
+        int p = *bufferpos;
+        int i;
+        for (i = 0; i < len; i++) {
+            if (buffer[i] == '\n') {
+                p += ((bufferwidth) - (p % (bufferwidth)));
+            } else if (buffer[i] == '\t') {
+                p += (5 - ((p % (bufferwidth)) % 5));
+            } else {
+                bufferstr[p] = buffer[i];
+                p++;
+            }
+            if (p >= buffersize) {
+                memmove(bufferstr, &bufferstr[bufferwidth], buffersize - (bufferwidth));
+                memset(&bufferstr[buffersize - (bufferwidth)], 0, bufferwidth);
+                p -= bufferwidth;
+            }
+        }
+        *bufferpos = p;
+    }
+
+    /**
+     *
+     * @param bufferstr
+     * @param buffersize
+     * @param bufferwidth
+     * @param bufferpos
+     * @param format
+     * @param ...
+     */
+    static void bnprintf(char* bufferstr, size_t buffersize, int bufferwidth, int* bufferpos, const char* format, ...) {
+        FORMATBUFFER
+        bnprint(bufferstr, buffersize, bufferwidth, bufferpos, buffer);
+    }
+    
+    /**
+     * Draws the characters in bufferstr rowwise, with bufferwidth characters for each row.
+     * buffersize is the total size of the buffer (multiples of bufferwidth would be meaningful).
+     * bufferpos is the byte position of the cursor inside the console buffer, set negative for no cursor.
+     *
+     * @param buffer
+     * @param buffersize
+     * @param bufferwidth
+     * @param bufferpos
+     */
+    static void glDrawConsole(char* buffer, int buffersize, int bufferwidth, int bufferpos) {
+        unsigned char* bufferstr = (unsigned char*) (buffer);
+        unsigned int* asciibinds = GLF::getFont();
+        if (asciibinds == NULL) return;
+        glPushAttrib(GL_ENABLE_BIT);
+        {
+            glDisable(GL_CULL_FACE);
+            glEnable(GL_TEXTURE_2D);
+            glPushMatrix();
+            {
+                int i, col = 0;
+                for (i = 0; i < (buffersize); i++) {
+                    if ((i % (bufferwidth)) == 0) {
+                        glTranslatef(-col, -1, 0);
+                        col = 0;
+                    }
+                    if (bufferstr[i] != 0) GLF::glTexturedSquare(asciibinds[bufferstr[i]]);
+                    if (bufferpos == i) GLF::glTexturedSquare(asciibinds[0]);
+                    glTranslatef(1, 0, 0);
+                    col++;
+                }
+            }
+            glPopMatrix();
+        }
+        glPopAttrib();
+    }
+
+    /**
+     *
+     * @param itself
+     * @param format
+     * @param ...
+     */
+    static void Console_printf(Console* itself, const char* format, ...) {
+        FORMATBUFFER
+        bnprint(itself->buffer, itself->size, itself->width, &itself->cursor, buffer);
+    }
+};
 
 #endif
 

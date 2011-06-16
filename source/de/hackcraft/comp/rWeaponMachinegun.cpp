@@ -243,7 +243,7 @@ void rWeaponMachinegun::drawEffect() {
                 glScalef(0.6, 0.6, 0.8);
                 glMultMatrixf(n);
                 glColor4f(1, 0, 0, 0.7);
-                glPrint(((std::string*)s->data)->c_str());
+                GLF::glprint(((std::string*)s->data)->c_str());
             }
             glPopMatrix();
         }

@@ -29,10 +29,6 @@ int cMain::mouseWheel = 0;
 SDL_mutex* cMain::jobMutex;
 std::queue<int (*)(void*) > cMain::jobQueue;
 
-unsigned int* gInstantfont = NULL;
-
-DEFINE_glprintf
-
 void cleanup() {
     SDL_Quit();
     alutExit();
@@ -259,7 +255,7 @@ void cMain::initGL(int width, int height) {
     }
 
     // Init instant console font.
-    glUploadFont();
+    GLF::glUploadFont();
 }
 
 char* cMain::loadTextFile(const char* filename) {
@@ -512,7 +508,7 @@ void cMain::drawLog() {
                 glTranslatef(0,1.0,-100);
                 char buffer[256*128];
                 console.printConsole(buffer, 120, 60);
-                glDrawConsole(buffer, 120*60, 120, 0);
+                Console::glDrawConsole(buffer, 120*60, 120, 0);
             }
             glPopMatrix();
         }
@@ -764,20 +760,20 @@ void cMain::drawPlaque() {
                 glTranslatef(0, 1, 0);
                 glScalef(1.0f / 80.0f, 1.0f / 40.0f, 1.0f);
                 glColor4f(1, 1, 0, 1);
-                glprintf("LinWarrior 3D  (Build " __DATE__ ") by hackcraft.de");
+                GLF::glprintf("LinWarrior 3D  (Build " __DATE__ ") by hackcraft.de");
                 glColor4f(0, 1, 0, 1);
                 glTranslatef(0, -34, 0);
-                glprintf("IJKL-Keys   : Aim Weapons");
+                GLF::glprintf("IJKL-Keys   : Aim Weapons");
                 glTranslatef(0, -1, 0);
-                glprintf("Cursor-Keys : Steer Base");
+                GLF::glprintf("Cursor-Keys : Steer Base");
                 glTranslatef(0, -1, 0);
-                glprintf("SEDF-Keys   : Main Action Buttons");
+                GLF::glprintf("SEDF-Keys   : Main Action Buttons");
                 glTranslatef(0, -1, 0);
-                glprintf("AW-/RG-Keys : Left/Right Action Buttons");
+                GLF::glprintf("AW-/RG-Keys : Left/Right Action Buttons");
                 glTranslatef(0, -1, 0);
                 glTranslatef(0, -1, 0);
                 glColor4f(1, 1, 0, 1);
-                glprintf("PROCESSING DATA...this may take a while...");
+                GLF::glprintf("PROCESSING DATA...this may take a while...");
             }
             glPopMatrix();
         }

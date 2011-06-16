@@ -2,12 +2,11 @@
 
 #include "de/hackcraft/object/cObject.h"
 
-#include <GL/glew.h>
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/instfont.h"
 #include "de/hackcraft/psi3d/Primitive.h"
 
-DEFINE_glprintf
+#include <GL/glew.h>
 
 
 rDamageable::rDamageable(cObject* obj) {
@@ -111,13 +110,13 @@ void rDamageable::drawHUD() {
         glColor4f(0.09, 0.99, 0.09, 1);
         glScalef(1.0f / 20.0f, 1.0f / 10.0f, 1.0f);
         glTranslatef(0, 1, 0);
-        glprintf("hackcraft.de");
+        GLF::glprintf("hackcraft.de");
         glTranslatef(0, 9, 0);
         int left = rDamageable::LEFT;
         int body = rDamageable::BODY;
         int right = rDamageable::RIGHT;
         int legs = rDamageable::LEGS;
-        glprintf("L %3.0f  T %3.0f  R %3.0f\n       B %3.0f", hp[left], hp[body], hp[right], hp[legs]);
+        GLF::glprintf("L %3.0f  T %3.0f  R %3.0f\n       B %3.0f", hp[left], hp[body], hp[right], hp[legs]);
     }
     glPopMatrix();
 }

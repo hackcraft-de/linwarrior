@@ -1,11 +1,9 @@
 #include "rNameable.h"
 
-#include <GL/glew.h>
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/instfont.h"
 
-DEFINE_glprintf
-
+#include <GL/glew.h>
 
 rNameable::rNameable(cObject* obj) : name("Unnamed"), description("Undescribed"), designation(0) {
     role = "NAMEABLE";
@@ -57,7 +55,7 @@ void rNameable::drawEffect() {
             }
             int l = name.length();
             glTranslatef(-l * 0.5f, 0, 0);
-            glprintf(name.c_str());
+            GLF::glprintf(name.c_str());
         }
         glPopAttrib();
     }

@@ -53,8 +53,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/source/de/hackcraft/comp/rWeaponMachinegun.o \
 	${OBJECTDIR}/source/de/hackcraft/proc/Landscape.o \
 	${OBJECTDIR}/source/de/hackcraft/object/cBuilding.o \
-	${OBJECTDIR}/source/de/hackcraft/comp/rScatter.o \
 	${OBJECTDIR}/source/de/hackcraft/main.o \
+	${OBJECTDIR}/source/de/hackcraft/comp/rScatter.o \
 	${OBJECTDIR}/source/de/hackcraft/object/cAlert.o \
 	${OBJECTDIR}/source/de/hackcraft/comp/rWeapon.o \
 	${OBJECTDIR}/source/de/hackcraft/comp/rPadmap.o \
@@ -197,15 +197,15 @@ ${OBJECTDIR}/source/de/hackcraft/object/cBuilding.o: source/de/hackcraft/object/
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/object/cBuilding.o source/de/hackcraft/object/cBuilding.cpp
 
-${OBJECTDIR}/source/de/hackcraft/comp/rScatter.o: source/de/hackcraft/comp/rScatter.cpp 
-	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/comp
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/comp/rScatter.o source/de/hackcraft/comp/rScatter.cpp
-
 ${OBJECTDIR}/source/de/hackcraft/main.o: source/de/hackcraft/main.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/main.o source/de/hackcraft/main.cpp
+
+${OBJECTDIR}/source/de/hackcraft/comp/rScatter.o: source/de/hackcraft/comp/rScatter.cpp 
+	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/comp
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/comp/rScatter.o source/de/hackcraft/comp/rScatter.cpp
 
 ${OBJECTDIR}/source/de/hackcraft/object/cAlert.o: source/de/hackcraft/object/cAlert.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/object
