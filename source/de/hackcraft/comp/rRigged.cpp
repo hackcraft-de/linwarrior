@@ -1,5 +1,9 @@
 #include "rRigged.h"
 
+#include "de/hackcraft/psi3d/GLS.h"
+#include "de/hackcraft/psi3d/Primitive.h"
+#include "de/hackcraft/psi3d/GLF.h"
+
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -8,10 +12,6 @@ using std::endl;
 using std::string;
 
 #include <GL/glew.h>
-
-#include "de/hackcraft/psi3d/GLS.h"
-#include "de/hackcraft/psi3d/Primitive.h"
-#include "de/hackcraft/psi3d/instfont.h"
 
 #define DRAWJOINTS !true
 

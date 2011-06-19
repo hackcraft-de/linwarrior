@@ -3,7 +3,7 @@
 #include "main.h"
 
 #include "de/hackcraft/psi3d/GLS.h"
-#include "de/hackcraft/psi3d/instfont.h"
+#include "de/hackcraft/psi3d/GLF.h"
 
 // To dis-/enable zone drawing.
 #include "de/hackcraft/object/cAlert.h"
@@ -760,20 +760,20 @@ void cMain::drawPlaque() {
                 glTranslatef(0, 1, 0);
                 glScalef(1.0f / 80.0f, 1.0f / 40.0f, 1.0f);
                 glColor4f(1, 1, 0, 1);
-                GLF::glprintf("LinWarrior 3D  (Build " __DATE__ ") by hackcraft.de");
+                GLF::glprint("LinWarrior 3D  (Build " __DATE__ ") by hackcraft.de");
                 glColor4f(0, 1, 0, 1);
                 glTranslatef(0, -34, 0);
-                GLF::glprintf("IJKL-Keys   : Aim Weapons");
+                GLF::glprint("IJKL-Keys   : Aim Weapons");
                 glTranslatef(0, -1, 0);
-                GLF::glprintf("Cursor-Keys : Steer Base");
+                GLF::glprint("Cursor-Keys : Steer Base");
                 glTranslatef(0, -1, 0);
-                GLF::glprintf("SEDF-Keys   : Main Action Buttons");
+                GLF::glprint("SEDF-Keys   : Main Action Buttons");
                 glTranslatef(0, -1, 0);
-                GLF::glprintf("AW-/RG-Keys : Left/Right Action Buttons");
+                GLF::glprint("AW-/RG-Keys : Left/Right Action Buttons");
                 glTranslatef(0, -1, 0);
                 glTranslatef(0, -1, 0);
                 glColor4f(1, 1, 0, 1);
-                GLF::glprintf("PROCESSING DATA...this may take a while...");
+                GLF::glprint("PROCESSING DATA...this may take a while...");
             }
             glPopMatrix();
         }

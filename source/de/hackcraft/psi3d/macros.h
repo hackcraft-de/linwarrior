@@ -11,8 +11,6 @@
 
 #include "ctrl.h"
 #include "math3d.h"
-//#include "GLS.h"
-//#include "instfont.h"
 
 // Not a number: NaN
 // gcc supplies a NAN which is float but that may not be available everywhere.

@@ -1,7 +1,7 @@
 #include "rNameable.h"
 
 #include "de/hackcraft/psi3d/GLS.h"
-#include "de/hackcraft/psi3d/instfont.h"
+#include "de/hackcraft/psi3d/GLF.h"
 
 #include <GL/glew.h>
 
@@ -41,7 +41,6 @@ void rNameable::drawEffect() {
             glColor4fv(color);
 
             float s = 0.75;
-            //glTranslatef(pos[0], pos[1] + 0.5f*s, pos[2]);
             glTranslatef(pos0[0], pos0[1], pos0[2]);
             GLS::glRotateq(ori0);
             glTranslatef(pos1[0], pos1[1], pos1[2]);
@@ -55,7 +54,7 @@ void rNameable::drawEffect() {
             }
             int l = name.length();
             glTranslatef(-l * 0.5f, 0, 0);
-            GLF::glprintf(name.c_str());
+            GLF::glprint(name.c_str());
         }
         glPopAttrib();
     }

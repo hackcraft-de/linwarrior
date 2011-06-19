@@ -2,7 +2,7 @@
 
 #include "de/hackcraft/world/cWorld.h"
 
-#include "de/hackcraft/psi3d/instfont.h"
+#include "de/hackcraft/psi3d/GLF.h"
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Primitive.h"
 

@@ -10,8 +10,8 @@
 // See function definitions for further comment and information.
 // See end of file for a testdriver/sample of use.
 
-#ifndef _INSTFONT_H
-#define	_INSTFONT_H
+#ifndef _GLFONT_H
+#define	_GLFONT_H
 
 #include <GL/glew.h>
 
@@ -576,20 +576,6 @@ struct Console {
         }
         *bufferpos = p;
     }
-
-    /**
-     *
-     * @param bufferstr
-     * @param buffersize
-     * @param bufferwidth
-     * @param bufferpos
-     * @param format
-     * @param ...
-     */
-    static void bnprintf(char* bufferstr, size_t buffersize, int bufferwidth, int* bufferpos, const char* format, ...) {
-        FORMATBUFFER
-        bnprint(bufferstr, buffersize, bufferwidth, bufferpos, buffer);
-    }
     
     /**
      * Draws the characters in bufferstr rowwise, with bufferwidth characters for each row.
@@ -631,11 +617,9 @@ struct Console {
     /**
      *
      * @param itself
-     * @param format
-     * @param ...
+     * @param buffer
      */
-    static void Console_printf(Console* itself, const char* format, ...) {
-        FORMATBUFFER
+    static void Console_print(Console* itself, const char* buffer) {
         bnprint(itself->buffer, itself->size, itself->width, &itself->cursor, buffer);
     }
 };

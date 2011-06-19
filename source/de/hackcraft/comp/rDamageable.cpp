@@ -3,7 +3,7 @@
 #include "de/hackcraft/object/cObject.h"
 
 #include "de/hackcraft/psi3d/GLS.h"
-#include "de/hackcraft/psi3d/instfont.h"
+#include "de/hackcraft/psi3d/GLF.h"
 #include "de/hackcraft/psi3d/Primitive.h"
 
 #include <GL/glew.h>
@@ -110,7 +110,7 @@ void rDamageable::drawHUD() {
         glColor4f(0.09, 0.99, 0.09, 1);
         glScalef(1.0f / 20.0f, 1.0f / 10.0f, 1.0f);
         glTranslatef(0, 1, 0);
-        GLF::glprintf("hackcraft.de");
+        GLF::glprint("hackcraft.de");
         glTranslatef(0, 9, 0);
         int left = rDamageable::LEFT;
         int body = rDamageable::BODY;

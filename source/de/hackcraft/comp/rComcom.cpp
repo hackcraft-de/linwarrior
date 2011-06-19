@@ -3,8 +3,7 @@
 #include "de/hackcraft/world/cWorld.h"
 
 #include "de/hackcraft/psi3d/GLS.h"
-// for Console and glprintf
-#include "de/hackcraft/psi3d/instfont.h"
+#include "de/hackcraft/psi3d/GLF.h"
 #include "de/hackcraft/psi3d/Primitive.h"
 
 // FIXME: Wepcom rely on mech.
@@ -32,12 +31,12 @@ rComcom::rComcom(cObject* obj) {
     assert(mConsole != NULL);
     Console* console = (Console*) mConsole;
     //Console_printf(mConsole, "* Welcome to LinWarrior3D\n");
-    Console::Console_printf(console, "ComCOM(1) - MENU\n\n");
-    Console::Console_printf(console, " [1] Formation\n");
-    Console::Console_printf(console, " [2] Engage\n");
-    Console::Console_printf(console, " [3] Report\n");
-    Console::Console_printf(console, " [4] Objectives\n");
-    Console::Console_printf(console, "\n\n > ");
+    Console::Console_print(console, "ComCOM(1) - MENU\n\n");
+    Console::Console_print(console, " [1] Formation\n");
+    Console::Console_print(console, " [2] Engage\n");
+    Console::Console_print(console, " [3] Report\n");
+    Console::Console_print(console, " [4] Objectives\n");
+    Console::Console_print(console, "\n\n > ");
     mLastMessage = 0;
 }
 
@@ -563,15 +562,12 @@ void rForcom::drawHUD() {
     if (true) {
         glPushMatrix();
         {
-            std::stringstream s;
             glColor4f(0.99, 0.99, 0.19, 1);
             glTranslatef(0, 1, 0);
             glScalef(1.0f / 60.0f, 1.0f / 20.0f, 1.0f);
             glColor4f(0.09, 0.99, 0.09, 1);
-            //glRotatef(1, 0,0,1);
             glTranslatef(0, -0, 0);
-            s << mMessage;
-            GLF::glprintf(s.str().c_str());
+            GLF::glprint(mMessage.c_str());
             //GLF::glprintf("TEST TEST TEST ... TEST TEST TEST\ntest test test");
         }
         glPopMatrix();
@@ -716,30 +712,30 @@ void rNavcom::drawHUD() {
     // Overlay information text: time, date, direction, location.
     glPushMatrix();
     {
-        std::stringstream s;
+        cWorld* world = cWorld::instance;
+
         glColor4f(0.99, 0.99, 0.19, 1);
         glTranslatef(0, 1, 0);
         glScalef(1.0f / 20.0f, 1.0f / 10.0f, 1.0f);
         glColor4f(0.09, 0.99, 0.09, 1);
-        //glRotatef(1, 0,0,1);
+
         glTranslatef(0, -0, 0);
-        cWorld* w = cWorld::instance;
         int x = int(pos[0]);
         int z = int(pos[2]);
         GLF::glprintf("Merc: %06i %06i", x, z);
+
         glTranslatef(0, -1, 0);
         GLF::glprintf("Alt: %3.2f", (pos[1]));
+
         glTranslatef(0, -1, 0);
         float angle = atan2(ori[1], ori[3]);
         GLF::glprintf("MKS: %2i", int(64 - angle * 64 / M_PI) % 64);
+        
         glTranslatef(0, -6, 0);
-        s << "Date: " << w->getTiming()->getDate();
-        GLF::glprintf(s.str().c_str());
+        GLF::glprintf("Date: %s", world->getTiming()->getDate().c_str());
+
         glTranslatef(0, -1, 0);
-        s.clear();
-        s.str("");
-        s << "Time: " << w->getTiming()->getTime();
-        GLF::glprintf(s.str().c_str());
+        GLF::glprintf("Time: %s", world->getTiming()->getTime().c_str());
     }
     glPopMatrix();
 }
