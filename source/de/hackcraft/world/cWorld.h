@@ -20,7 +20,7 @@ class cWorld;
 #include "de/hackcraft/util/Timing.h"
 #include "de/hackcraft/util/Message.h"
 
-#include "de/hackcraft/object/cObject.h"
+#include "de/hackcraft/world/object/cObject.h"
 
 #include <list>
 #include <set>

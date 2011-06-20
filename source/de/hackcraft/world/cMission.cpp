@@ -2,12 +2,12 @@
 
 #include "de/hackcraft/main.h"
 
-#include "de/hackcraft/object/cObject.h"
-#include "de/hackcraft/object/cAlert.h"
-#include "de/hackcraft/object/cPlanetmap.h"
+#include "de/hackcraft/world/object/cObject.h"
+#include "de/hackcraft/world/object/cAlert.h"
+#include "de/hackcraft/world/object/cPlanetmap.h"
 
-#include "de/hackcraft/comp/rComcom.h"
-#include "de/hackcraft/comp/rNameable.h"
+#include "de/hackcraft/world/comp/computer/rComcom.h"
+#include "de/hackcraft/world/comp/rNameable.h"
 
 #include <list>
 #include <vector>

@@ -13,9 +13,11 @@
 
 #include "userkeys.h"
 
-#include "de/hackcraft/comp/rController.h"
-#include "de/hackcraft/comp/rWeapon.h"
-#include "de/hackcraft/comp/rPadmap.h"
+#include "de/hackcraft/world/comp/computer/rController.h"
+
+#include "de/hackcraft/world/comp/weapon/rWeapon.h"
+
+#include "de/hackcraft/world/comp/rPadmap.h"
 
 #include "de/hackcraft/util/Pad.h"
 
@@ -23,10 +25,10 @@
 #include "de/hackcraft/world/cMission.h"
 #include "de/hackcraft/world/cWorld.h"
 
-#include "de/hackcraft/object/cObject.h"
-#include "de/hackcraft/object/cMech.h"
-#include "de/hackcraft/object/cBuilding.h"
-#include "de/hackcraft/object/cTree.h"
+#include "de/hackcraft/world/object/cObject.h"
+#include "de/hackcraft/world/object/cMech.h"
+#include "de/hackcraft/world/object/cBuilding.h"
+#include "de/hackcraft/world/object/cTree.h"
 
 #include <SDL/SDL.h>
 #include <string>

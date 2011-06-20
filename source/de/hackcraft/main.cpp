@@ -6,7 +6,7 @@
 #include "de/hackcraft/psi3d/GLF.h"
 
 // To dis-/enable zone drawing.
-#include "de/hackcraft/object/cAlert.h"
+#include "de/hackcraft/world/object/cAlert.h"
 
 #include <iostream>
 

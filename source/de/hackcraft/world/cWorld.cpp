@@ -5,7 +5,7 @@
 #include "cBackground.h"
 #include "cMission.h"
 
-#include "de/hackcraft/object/cObject.h"
+#include "de/hackcraft/world/object/cObject.h"
 
 #include <cassert>
 
