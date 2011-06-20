@@ -53,25 +53,15 @@ public:
  * includes Radar, target-selection and -display.
  */
 struct rTarcom : public rComputer {
-public:
+public: // INPUT
     /// Sensor orientation. (hook i)
-    quat ori;
+    quat ori0;
     /// Sensor position. (hook i)
-    vec3 pos;
-    /// List of objects in far range.
-    std::list<cObject*>* far;
-    /// List of objects in range.
-    std::list<cObject*>* near;
-    /// List of (possible) enemy objects in range (only inc_enemies).
-    std::list<cObject*>* enemies;
-    /// ID of selected object (hook o)
-    OID selected;
+    vec3 pos0;
     /// Switch to next target. (hook i)
     bool switchnext;
     /// Switch to previous target. (hook i)
     bool switchprev;
-    /// Switching to next/prev target in progress.
-    bool switching;
     /// Set lists Tags of allies.
     std::set<OID> inc_allies;
     /// Set lists Tags of explicitly excluded allied (like dead ones).
@@ -80,8 +70,20 @@ public:
     std::set<OID> inc_enemies;
     /// Set lists Tags of explicitly excluded enemies (like dead ones).
     std::set<OID> exc_enemies;
+public: // OUTPUT
+    /// List of objects in far range.
+    std::list<cObject*>* far;
+    /// List of objects in range.
+    std::list<cObject*>* near;
+    /// List of (possible) enemy objects in range (only inc_enemies).
+    std::list<cObject*>* enemies;
+    /// ID of selected object (hook o)
+    OID selected;
+    /// Switching to next/prev target in progress.
+    bool switching;
     /// Just any near enemy. (hook o)
     OID nearbyEnemy;
+public: // INTERNALS
 public:
     /// Constructor.
     rTarcom(cObject* obj = NULL);
@@ -140,8 +142,8 @@ public:
  */
 struct rNavcom : public rComputer {
 public:
-    quat ori;
-    vec3 pos;
+    quat ori0;
+    vec3 pos0;
     int mWaypoint;
     bool mCyclic;
     std::vector< int > mRoute;

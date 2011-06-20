@@ -487,7 +487,7 @@ void cMain::drawFrame() {
     }
     //picking = !picking;
 
-    if (!true) drawLog();
+    if (game.paused) drawLog();
 }
 
 

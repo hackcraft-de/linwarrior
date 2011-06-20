@@ -13,7 +13,7 @@
 
 struct rController;
 
-#include "de/hackcraft/world/comp/rComponent.h"
+#include "de/hackcraft/world/comp/computer/rComcom.h"
 
 #include "de/hackcraft/util/OID.h"
 
@@ -23,11 +23,11 @@ struct rController;
 #include <string>
 
 /**
- * Autopilot/AI object controller, controlls usualy Mechs.
+ * Autopilot/AI object controller, controlls Mechs.
  * Implements an stack-automaton for object behavior control
  * and plan execution.
  */
-struct rController : public rComponent {
+struct rController : public rComputer {
 public: // INPUT
     /// Whether control is enabled (autopilot/ai enabled/disabled).
     bool enabled;
@@ -35,6 +35,10 @@ public: // INPUT
     OID disturbedBy;
     /// Set to nearby enemy object if any. (hook i)
     OID enemyNearby;
+    /// Indicator of distance to aim-target, see Mobile. (hook i)
+    float aimrange;
+    /// Indicator of distance to walk-target, see Mobile. (hook i)
+    float walkrange;
 public: // OUTPUT
     /// Target for aiming or zero. (hook o)
     OID aimtarget;
@@ -46,10 +50,6 @@ public: // OUTPUT
     float walktargetdist;
     /// Disable any action. (hook o)
     bool idling;
-    /// Indicator of distance to aim-target, see Mobile. (hook i)
-    float aimrange;
-    /// Indicator of distance to walk-target, see Mobile. (hook i)
-    float walkrange;
 protected: // INTERNALS
     /// Available opcodes of stack-machine.
 

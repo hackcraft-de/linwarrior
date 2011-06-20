@@ -229,8 +229,8 @@ cMech::cMech(float* pos, float* rot) {
         // from DAMAGEABLE
         tarcom->addBinding(&tarcom->active, &damageable->alife, sizeof(bool));
         // from TRACEABLE
-        tarcom->addBinding(&tarcom->pos, &traceable->pos, sizeof(vec3));
-        tarcom->addBinding(&tarcom->ori, &traceable->ori, sizeof(quat));
+        tarcom->addBinding(&tarcom->pos0, &traceable->pos, sizeof(vec3));
+        tarcom->addBinding(&tarcom->ori0, &traceable->ori, sizeof(quat));
     }
 }
 
@@ -429,8 +429,8 @@ void cMech::animate(float spf) {
         }
         // from TRACEABLE
         if (0) {
-            vector_cpy(tarcom->pos, traceable->pos);
-            quat_cpy(tarcom->ori, traceable->ori);
+            vector_cpy(tarcom->pos0, traceable->pos);
+            quat_cpy(tarcom->ori0, traceable->ori);
         }
         tarcom->prebind();
         tarcom->animate(spf);
@@ -474,8 +474,8 @@ void cMech::animate(float spf) {
         }
         // from TRACEABLE
         {
-            vector_cpy(navcom->pos, traceable->pos);
-            quat_cpy(navcom->ori, traceable->ori);
+            vector_cpy(navcom->pos0, traceable->pos);
+            quat_cpy(navcom->ori0, traceable->ori);
         }
         navcom->animate(spf);
     }

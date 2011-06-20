@@ -77,8 +77,8 @@ rTarcom::rTarcom(cObject* obj) {
     object = obj;
     role = "TARCOM";
 
-    quat_zero(ori);
-    vector_zero(pos);
+    quat_zero(ori0);
+    vector_zero(pos0);
 
     near = new std::list<cObject*>();
     far = new std::list<cObject*>();
@@ -159,9 +159,9 @@ void rTarcom::animate(float spf) {
     //if (key0 == framekey) {
     if ((key % 23) == (frame % 23)) {
         delete far;
-        far = cWorld::instance->filterByRange(object, pos, 0, 100, -1, NULL);
+        far = cWorld::instance->filterByRange(object, pos0, 0, 100, -1, NULL);
         delete near;
-        near = cWorld::instance->filterByRange(object, pos, 0, 55, -1, far);
+        near = cWorld::instance->filterByRange(object, pos0, 0, 55, -1, far);
         delete enemies;
         enemies = cWorld::instance->filterByTags(object, &inc_enemies, false, -1, near);
         // Filter one nearby.
@@ -220,7 +220,7 @@ void rTarcom::drawHUD() {
         Primitive::glDisk(16, 1.0f);
         glScalef(1.0 / r2, 1.0 / r2, 1);
         quat ori_;
-        quat_cpy(ori_, ori);
+        quat_cpy(ori_, ori0);
         quat_conj(ori_);
         glRotatef(90, 1, 0, 0);
         GLS::glRotateq(ori_);
@@ -243,8 +243,8 @@ void rTarcom::drawHUD() {
                 else if (o->hasTag(cObject::BLUE)) glColor4f(0, 0, 1, 1);
                 else if (o->hasTag(cObject::YELLOW)) glColor4f(0, 1, 0, 1);
                 if (o->oid == selected) glColor4f(1, 0, 1, 1);
-                float dx = o->pos0[0] - pos[0];
-                float dz = o->pos0[2] - pos[2];
+                float dx = o->pos0[0] - pos0[0];
+                float dz = o->pos0[2] - pos0[2];
                 float r = sqrtf(dx * dx + dz * dz);
                 dx /= r;
                 dz /= r;
@@ -580,8 +580,8 @@ rNavcom::rNavcom(cObject* obj) {
     object = obj;
     role = "NAVCOM";
 
-    vector_zero(pos);
-    quat_zero(ori);
+    vector_zero(pos0);
+    quat_zero(ori0);
 
     std::vector<float> p;
     p.reserve(3);
@@ -641,8 +641,8 @@ void rNavcom::drawHUD() {
     glVertex3f(0, 0, 0);
     glVertex3f(1, 0, 0);
     glEnd();
-    float x = pos[0];
-    float z = pos[2];
+    float x = pos0[0];
+    float z = pos0[2];
     float s = 0.005;
 
     glPushMatrix();
@@ -694,7 +694,7 @@ void rNavcom::drawHUD() {
         // Draw arrow direction indicator
         {
             quat ori_;
-            quat_cpy(ori_, ori);
+            quat_cpy(ori_, ori0);
             glRotatef(90, 1, 0, 0);
             GLS::glRotateq(ori_);
             glRotatef(-90, 1, 0, 0);
@@ -720,15 +720,15 @@ void rNavcom::drawHUD() {
         glColor4f(0.09, 0.99, 0.09, 1);
 
         glTranslatef(0, -0, 0);
-        int x = int(pos[0]);
-        int z = int(pos[2]);
+        int x = int(pos0[0]);
+        int z = int(pos0[2]);
         GLF::glprintf("Merc: %06i %06i", x, z);
 
         glTranslatef(0, -1, 0);
-        GLF::glprintf("Alt: %3.2f", (pos[1]));
+        GLF::glprintf("Alt: %3.2f", (pos0[1]));
 
         glTranslatef(0, -1, 0);
-        float angle = atan2(ori[1], ori[3]);
+        float angle = atan2(ori0[1], ori0[3]);
         GLF::glprintf("MKS: %2i", int(64 - angle * 64 / M_PI) % 64);
         
         glTranslatef(0, -6, 0);
