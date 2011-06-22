@@ -61,6 +61,19 @@ cMech::cMech(float* pos, float* rot) {
             const int SIZE = 1 << (7 + MECHDETAIL);
             unsigned char* texels = new unsigned char[SIZE * SIZE * SIZE * 3];
 
+            enum {
+                WOOD,
+                URBAN,
+                DESERT,
+                SNOW,
+                CAMO,
+                GLASS,
+                RUBBER,
+                STEEL,
+                WARN,
+                MAX_TEX
+            };
+
             const char* names[] = {
                 "wood",
                 "urban",
@@ -69,10 +82,11 @@ cMech::cMech(float* pos, float* rot) {
                 "camo",
                 "glass",
                 "rubber",
-                "steel"
+                "steel",
+                "warn"
             };
 
-            for (int l = 0; l < 8; l++) {
+            for (int l = 0; l < MAX_TEX; l++) {
                 long t = 0;
 
                 loopijk(SIZE, SIZE, SIZE) {
@@ -81,23 +95,25 @@ cMech::cMech(float* pos, float* rot) {
                     float x = f*i, y = f*j, z = f*k;
                     switch (l) {
                             //case TEXTURE_WOOD: cSolid::camo_wood(x, y, z, color); break;
-                        case TEXTURE_WOOD: Solid::camo_rust(x, y, z, color);
+                        case WOOD: Solid::camo_rust(x, y, z, color);
                             break;
-                        case TEXTURE_URBAN: Solid::camo_urban(x, y, z, color);
+                        case URBAN: Solid::camo_urban(x, y, z, color);
                             break;
-                        case TEXTURE_DESERT: Solid::camo_desert(x, y, z, color);
+                        case DESERT: Solid::camo_desert(x, y, z, color);
                             break;
-                        case TEXTURE_SNOW: Solid::camo_snow(x, y, z, color);
+                        case SNOW: Solid::camo_snow(x, y, z, color);
                             break;
-                        case 4: Solid::camo_desert(x, y, z, color); // camo
+                        case CAMO: Solid::camo_desert(x, y, z, color); // camo
                             break;
-                        case 5: Solid::metal_damast(x, y, z, color); // glass
+                        case GLASS: Solid::metal_damast(x, y, z, color); // glass
                             break;
-                        case 6: //Solid::stone_lava(x, y, z, color); // rubber
-                            color[0] = color[1] = color[2] = 0.15f;
+                        case RUBBER: //Solid::stone_lava(x, y, z, color); // rubber
+                            color[0] = color[1] = color[2] = 0.2f;
                             color[3] = 1.0f;
                             break;
-                        case 7: Solid::metal_sheets(x, y, z, color); // steel
+                        case STEEL: Solid::metal_sheets(x, y, z, color); // steel
+                            break;
+                        case WARN: Solid::pattern_warning(x, y, z, color); // warn
                             break;
                         default:
                             Solid::camo_rust(x, y, z, color);

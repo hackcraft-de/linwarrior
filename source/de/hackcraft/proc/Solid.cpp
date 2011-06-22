@@ -404,3 +404,13 @@ void Solid::planet_grain(float x, float y, float z, float* color, unsigned char 
     color[3] = 1;
 }
 
+void Solid::pattern_warning(float x, float y, float z, float* color, unsigned char seed) {
+    float f = 4;
+    int x_ = (x + 0) * f;
+    int z_ = (z + y) * f;
+    int marker = (z_ + x_) & 1;
+    color[0] = 0.1f + 0.8f * marker;
+    color[1] = 0.1f + 0.8f * marker;
+    color[2] = 0.1f;
+    color[3] = 1;
+}

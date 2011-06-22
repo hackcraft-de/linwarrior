@@ -41,6 +41,7 @@ struct Solid {
     static void planet_ground(float x, float y, float z, float* color, unsigned char seed = 131);
     static void planet_grain(float x, float y, float z, float* color, unsigned char seed = 131);
 
+    static void pattern_warning(float x, float y, float z, float* color, unsigned char seed = 131);
 };
 
 #endif	/* CSOLID_H */
