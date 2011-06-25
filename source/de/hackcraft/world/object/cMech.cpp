@@ -213,19 +213,19 @@ cMech::cMech(float* pos, float* rot) {
     explosion = new rWeaponExplosion(this);
     mountWeapon((char*) "CTorsor", explosion, false);
 
-    // BINDINGS
+    // Bindings for components
 
-    // Collider
+    // COLLIDER
     {
         // from Self
         collider->addBinding(&collider->pos0, &pos0, sizeof(vec3));
         collider->addBinding(&collider->ori0, &ori0, sizeof(quat));
-        // from Rigged
+        // from RIGGED
         collider->addBinding(&collider->radius, &rigged->radius, sizeof(float));
         collider->ratio = 0.0f;
         collider->addBinding(&collider->height, &rigged->height, sizeof(float));
     }
-    // Damageable
+    // DAMAGEABLE
     {
         // from DAMAGEABLE
         damageable->addBinding(&damageable->active, &damageable->alife, sizeof(bool));
@@ -233,11 +233,11 @@ cMech::cMech(float* pos, float* rot) {
         damageable->addBinding(&damageable->radius, &rigged->radius, sizeof(float));
         damageable->addBinding(&damageable->height, &rigged->height, sizeof(float));
     }
-    // Comcom
+    // COMCOM
     {
         comcom->addBinding(&comcom->active, &damageable->alife, sizeof(bool));
     }
-    // Tarcom
+    // TARCOM
     {
         // from Pad
         //tarcom->switchnext = pad->getButton(Pad::MECH_NEXT_BUTTON);
@@ -247,6 +247,40 @@ cMech::cMech(float* pos, float* rot) {
         // from TRACEABLE
         tarcom->addBinding(&tarcom->pos0, &traceable->pos, sizeof(vec3));
         tarcom->addBinding(&tarcom->ori0, &traceable->ori, sizeof(quat));
+    }
+    // WEPCOM
+    {
+        wepcom->addBinding(&wepcom->active, &damageable->alife, sizeof(bool));
+    }
+    // FORCOM
+    {
+        // from DAMAGEABLE
+        forcom->addBinding(&forcom->active, &damageable->alife, sizeof(bool));
+        // from TRACEABLE
+        forcom->addBinding(&forcom->ori, &traceable->ori, sizeof(quat));
+        // from MOBILE
+        forcom->addBinding(&forcom->twr, &mobile->twr, sizeof(vec3));
+        // from CAMERA
+        forcom->addBinding(&forcom->reticle, &camra->firstperson, sizeof(bool));
+    }
+    // NAVCOM
+    {
+        // from DAMAGEABLE
+        navcom->addBinding(&navcom->active, &damageable->alife, sizeof(bool));
+        // from TRACEABLE
+        navcom->addBinding(&navcom->pos0, &traceable->pos, sizeof(vec3));
+        navcom->addBinding(&navcom->ori0, &traceable->ori, sizeof(quat));
+    }
+    // CONTROLLER
+    {
+        // from Damageable
+        controller->addBinding(&controller->active, &damageable->alife, sizeof(bool));
+        controller->addBinding(&controller->disturbedBy, &damageable->disturber, sizeof(OID));
+        // from tarcom
+        controller->addBinding(&controller->enemyNearby, &tarcom->nearbyEnemy, sizeof(OID));
+        // from Mobile
+        controller->addBinding(&controller->aimrange, &mobile->aimrange, sizeof(float));
+        controller->addBinding(&controller->walkrange, &mobile->walkrange, sizeof(float));
     }
 }
 
@@ -455,69 +489,67 @@ void cMech::animate(float spf) {
     // WEPCOM
     {
         // from DAMAGEABLE
-        {
+        if (0) {
             wepcom->active = damageable->alife;
         }
+        wepcom->prebind();
         wepcom->animate(spf);
     }
 
     // FORCOM
     {
         // from DAMAGEABLE
-        {
+        if (0) {
             forcom->active = damageable->alife;
         }
         // from traceable
-        {
+        if (0) {
             quat_cpy(forcom->ori, traceable->ori);
         }
         // from MOBILE
-        {
+        if (0) {
             vector_cpy(forcom->twr, mobile->twr);
         }
         // from CAMERA
-        {
+        if (0) {
             forcom->reticle = camra->firstperson;
         }
+        forcom->prebind();
         forcom->animate(spf);
     }
 
     // NAVCOM
     {
         // from DAMAGEABLE
-        {
+        if (0) {
             navcom->active = damageable->alife;
         }
         // from TRACEABLE
-        {
+        if (0) {
             vector_cpy(navcom->pos0, traceable->pos);
             quat_cpy(navcom->ori0, traceable->ori);
         }
+        navcom->prebind();
         navcom->animate(spf);
     }
-
-    // <-- end COMPUTERs
 
     // CONTROLLER
     {
         // from Damageable
-        {
+        if (0) {
             controller->active = damageable->alife;
             controller->disturbedBy = damageable->disturber;
-            //controlled->controller->disturbedBy = this->disturbedBy();
         }
-
         // from tarcom
-        {
+        if (0) {
             controller->enemyNearby = tarcom->nearbyEnemy;
         }
-
         // from Mobile
-        {
+        if (0) {
             controller->aimrange = mobile->aimrange;
             controller->walkrange = mobile->walkrange;
         }
-
+        controller->prebind();
         controller->animate(spf);
     }
 
@@ -546,6 +578,7 @@ void cMech::animate(float spf) {
         {
             vector_cpy(mobile->pos0, traceable->pos);
         }
+        mobile->prebind();
         mobile->animate(spf);
     }
 

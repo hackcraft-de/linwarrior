@@ -141,7 +141,7 @@ cPlanetmap::cPlanetmap() {
             string("desertblossom.tga"),
             string("grass.tga"),
             string("grass.tga"),
-            string("desertplant.tga"),
+            string("greenplant.tga"),
             string("desertplant.tga"),
             string("treeleafs.tga"),
             string("pineleafs.tga"),
