@@ -140,7 +140,7 @@ cPlanetmap::cPlanetmap() {
         string filenames[] = {
             string("desertblossom.tga"),
             string("grass.tga"),
-            string("grass.tga"),
+            string("longplant.tga"),
             string("greenplant.tga"),
             string("desertplant.tga"),
             string("treeleafs.tga"),
@@ -150,7 +150,7 @@ cPlanetmap::cPlanetmap() {
         float sizes[] = {
             0.4,
             1.1,
-            1.1,
+            1.9,
             1.6,
             1.0,
             1.4,
