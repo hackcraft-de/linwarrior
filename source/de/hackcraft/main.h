@@ -11,7 +11,7 @@
 
 #include "de/hackcraft/psi3d/macros.h"
 
-#include "userkeys.h"
+#include "de/hackcraft/userkeys.h"
 
 #include "de/hackcraft/world/comp/computer/rController.h"
 
@@ -19,6 +19,7 @@
 
 #include "de/hackcraft/world/comp/rPadmap.h"
 
+#include "de/hackcraft/util/GapBuffer.h"
 #include "de/hackcraft/util/Pad.h"
 
 #include "de/hackcraft/world/cBackground.h"
@@ -124,62 +125,107 @@ struct cGame {
 
 };
 
+
+/**
+ * Thread-runnable object interface.
+ */
+class Runnable {
+public:
+    virtual void run() = 0;
+};
+
+
+/**
+ * Models a minion worker thread that fetches jobs
+ * from the main job queue.
+ */
+class Minion : public Runnable {
+private:
+    /// Pointing to the main job-mutex.
+    SDL_mutex* jobMutex;
+    /// Pointing to the main job-queue.
+    std::queue<int (*)(void*) >* jobQueue;
+public:
+    void run();
+};
+
+
 /**
  * Encapsulates low level system-, startup- and io-code.
  * Actually it is just a collection of what would be functions otherwise.
  */
 class cMain {
+public:
+    friend class Minion;
+    /// Points to the main instance, necessary because of c-callbacks/threads.
+    static cMain* instance;
+    
 private:
     /// Current game configuration.
-    static cGame game;
+    cGame game;
 
     /// SDL doesn't count mouse wheel movement.
-    static int mouseWheel;
+    int mouseWheel;
 
     /// Mutex for job queue - minions wait until they can grab a job.
-    static SDL_mutex* jobMutex;
+    SDL_mutex* jobMutex;
 
     /// The job queue itself - minions grab jobs here.
-    static std::queue<int (*)(void*) > jobQueue;
+    std::queue<int(*)(void*)>* jobQueue;
+
+    /// stdout is redirected to this stringstream.
+    std::stringstream oss;
+
+    /// Console log.
+    GapBuffer console;
+
+    /// Commandline input buffer for console.
+    GapBuffer cmdline;
+
+    /// Command & Control Overlay enabled => redirect keyboard
+    bool overlayEnabled;
 
 private:
     /// For loading post-processing filter.
-    static char* loadTextFile(const char* filename);
+    char* loadTextFile(const char* filename);
 
     /// Apply post-processing filter right after drawing frame.
-    static void applyFilter(int width, int height);
+    void applyFilter(int width, int height);
     
 private:
     /// Sets initial OpenGL mode parameters (dis-/enables and values).
-    static void initGL(int width, int height);
+    void initGL(int width, int height);
     
     /// Handles "special" keys for things like rendering options.
-    static void updateKey(Uint8 keysym);
+    void updateKey(Uint8 keysym);
 
     /// Reads joystick/keyboard input and maps it to to a Gamepad structure.
-    static void updatePad(Pad* pad, SDL_Joystick* joy, int* mapping);
+    void updatePad(Pad* pad, SDL_Joystick* joy, int* mapping);
 
     /// Updating the world for the given delta time.
-    static void updateFrame(int elapsed_msec);
+    void updateFrame(int elapsed_msec);
 
     /// Draws a single frame.
-    static void drawFrame();
+    void drawFrame();
 
 public:
-    /// Called directly by the main entry point.
-    static int run(int argc, char** args);
+    /// Constructor sets instance pointer among other things.
+    cMain();
 
-    /// Started from run (called indirectly via from C-code => public)
-    static int runMinion();
+    /// Called directly by the main entry point.
+    int run(int argc, char** args);
 
     /// Enables and disables OpenAL Audio-System.
-    static int alEnableSystem(bool en);
+    int alEnableSystem(bool en);
 
     /// Experiment.
-    static void drawLog();
+    void drawLog();
 
     /// Experiment.
-    static void drawPlaque();
+    void drawPlaque();
+
+    /// Experiment.
+    void updateLog();
 };
 
 

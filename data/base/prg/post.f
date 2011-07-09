@@ -195,7 +195,7 @@ void main()
 	float lum0 = (color0.r + color0.g + color0.b);
 	float lumn = (colorn.r + colorn.g + colorn.b);
 	float bloom = 1.0*(sig((max(0,lumn - lum0) - 0.00045) * 9) - 0.1);
-	vec4 composite = color0 * (0.80 + 0.99 * bloom) + 0.1 * (blur * bluryness);
+	vec4 composite = color0 * (0.70 + 1.19 * bloom) + 0.1 * (blur * bluryness);
 
 #if 1
 	vec4 result = (1.0+0.0*nois) * composite;// + d0 * pow(max(0.0,-voxel.y)*10.0,2.0) * vec4(0.0,1.0,0.0,1.0) + pow(1.0*d0, 0.9) * max(0.0,voxel.y) * vec4(1.0,0.9,0.5,1.0);

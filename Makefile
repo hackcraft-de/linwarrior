@@ -22,7 +22,7 @@ ifneq (,$(findstring Win,$(OS)))
 	QUOTE='
 else
 
-ifdef WIN
+ifdef MINGWCROSS
 	LIBRARIES= -Wl,-subsystem,console -lmingw32 -lSDLmain -lSDL -lopengl32  -lglew32 -lglu32 -lOpenAL32 -lalut
 	CPP=i586-mingw32msvc-c++ -I ~/MinGW/include -L ~/MinGW/lib -D__GNUWIN32__ -DHAVE_W32API_H -D__WINDOWS__
 	TARGET=dist/linwarrior.exe

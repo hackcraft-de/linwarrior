@@ -17,6 +17,10 @@
                 <sourceRootElem>source/util</sourceRootElem>
                 <sourceRootElem>source/comp</sourceRootElem>
                 <sourceRootElem>source/de</sourceRootElem>
+                <sourceRootElem>data/base</sourceRootElem>
+                <sourceRootElem>data/blendswap.com</sourceRootElem>
+                <sourceRootElem>data/freesound.org</sourceRootElem>
+                <sourceRootElem>data/opengameart.org</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>Debug</confElem>

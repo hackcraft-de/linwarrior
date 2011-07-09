@@ -23,22 +23,65 @@ using std::endl;
 #include <SDL/SDL_thread.h>
 #include <iosfwd>
 
-cGame cMain::game;
 
-int cMain::mouseWheel = 0;
-SDL_mutex* cMain::jobMutex;
-std::queue<int (*)(void*) > cMain::jobQueue;
+cMain* cMain::instance = NULL;
 
+
+// Called atexit
 void cleanup() {
+    std::cout << "Thank you for playing.\n";
     SDL_Quit();
     alutExit();
-    cMain::alEnableSystem(false);
-    std::cout << "Thank you for playing.\n";
+    cMain::instance->alEnableSystem(false);
+    delete cMain::instance;
+    cMain::instance = NULL;
 }
 
-#include "de/hackcraft/util/GapBuffer.h"
 
-GapBuffer console;
+// Just serves to start the Runnable run method after a thread fork.
+int runRunnable(void* data) {
+    Runnable* r = (Runnable*) data;
+    r->run();
+    return 0;
+}
+
+
+int state = 0;
+
+
+int job_render(void* data) {
+    int i = 0;
+    while (state == 0) {
+        //float s = 0.5 + 0.4 * sin(i * M_PI / 10.0);
+        //float c = 0.5 + 0.4 * cos(i * M_PI / 10.0);
+        //glClearColor(0.1+s, 0.1+c, 0.9, 1.0);
+        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        //cMain::drawPlaque();
+        //cMain::drawLog();
+        //SDL_GL_SwapBuffers();
+        SDL_Delay(1.0 / DEFAULT_FPS * 1000.0);
+        i++;
+    }
+    return 0;
+}
+
+
+int job_bgm(void* data) {
+    while (true) {
+        //cout << "Buffering BGM.\n";
+        SDL_Delay(1000);
+    }
+    return 0;
+}
+
+
+int job_output(void* data) {
+    while (true) {
+        cMain::instance->updateLog();
+        SDL_Delay(200);
+    }
+    return 0;
+}
 
 /*
  * Models an all-in-one widget:
@@ -60,7 +103,7 @@ camera(NULL),
 world(NULL),
 
 mission(0),
-bgm("data/freesound.org/ambient.wav"),
+bgm("data/org/freesound/ambient.wav"),
 
 paused(false),
 fullscreen(DEFAULT_FULLSCREEN),
@@ -190,6 +233,55 @@ void cGame::initMission() {
     assert(this->pad1 != NULL);
 }
 
+
+void Minion::run() {
+    unsigned int id = SDL_ThreadID();
+    cout << "Minion " << id << " at your service!\n";
+    typedef int (*callback)(void*);
+    callback job = (callback) 1;
+    bool done = false;
+
+    jobMutex = cMain::instance->jobMutex;
+    jobQueue = cMain::instance->jobQueue;
+
+    while (!done) {
+        // Grab a new job.
+        int (*nextjob)(void*) = NULL;
+        SDL_mutexP(jobMutex);
+        {
+            if (!jobQueue->empty()) {
+                nextjob = jobQueue->front();
+                jobQueue->pop();
+            } // else look at secondary jobs.
+        }
+        SDL_mutexV(jobMutex);
+        // Work on job if any available.
+        if (nextjob != NULL) {
+            cout << "Minion " << id << " is fulfilling your wish!\n";
+            job = nextjob;
+            int result = job(NULL);
+            cout << "Minion " << id << " job is finished with result " << result << "!\n";
+        } else if (job != NULL && nextjob == NULL) {
+            // Wait for a job to do.
+            cout << "Minion " << id << " is awaiting your command!\n";
+            job = nextjob;
+            SDL_Delay(10);
+        } else {
+            SDL_Delay(10);
+        }
+    }
+}
+
+
+cMain::cMain() {
+    instance = this;
+    jobMutex = SDL_CreateMutex();
+    jobQueue = new std::queue<int(*)(void*)>();
+    mouseWheel = 0;
+    overlayEnabled = !true;
+}
+
+
 void cMain::initGL(int width, int height) {
     if (true) {
         std::string glinfo;
@@ -258,6 +350,7 @@ void cMain::initGL(int width, int height) {
     GLF::glUploadFont();
 }
 
+
 char* cMain::loadTextFile(const char* filename) {
     FILE* f = fopen(filename, "rb");
     if (f == NULL) {
@@ -274,6 +367,7 @@ char* cMain::loadTextFile(const char* filename) {
     fclose(f);
     return cstr;
 }
+
 
 void cMain::applyFilter(int width, int height) {
     static bool fail = false;
@@ -341,6 +435,7 @@ void cMain::applyFilter(int width, int height) {
     glPopAttrib();
 }
 
+
 void cMain::updateFrame(int elapsed_msec) {
     if (game.paused) {
         // Delete Fragged Objects of previous frames.
@@ -372,6 +467,7 @@ void cMain::updateFrame(int elapsed_msec) {
         glPopMatrix();
     }
 }
+
 
 void cMain::drawFrame() {
     //std::cout << "elapsed: " << (elapsed_msec / 1000.0f) << std::endl;
@@ -487,7 +583,7 @@ void cMain::drawFrame() {
     }
     //picking = !picking;
 
-    if (game.paused) drawLog();
+    if (game.paused || overlayEnabled) drawLog();
 }
 
 
@@ -530,6 +626,7 @@ void cMain::updateKey(Uint8 keysym) {
         else if (keysym == SDLK_PLUS) cWorld::instance->setViewdistance(fmin(3000, cWorld::instance->getViewdistance() + 50));
     }
 }
+
 
 void cMain::updatePad(Pad* pad, SDL_Joystick* joy, int* mapping) {
     if (pad == NULL) return;
@@ -630,6 +727,7 @@ void cMain::updatePad(Pad* pad, SDL_Joystick* joy, int* mapping) {
     }
 }
 
+
 int cMain::alEnableSystem(bool en) {
     static ALCdevice *dev = NULL;
     static ALCcontext *ctx = NULL;
@@ -664,86 +762,6 @@ int cMain::alEnableSystem(bool en) {
     }
 }
 
-int cMain::runMinion() {
-    unsigned int id = SDL_ThreadID();
-    cout << "Minion " << id << " at your service!\n";
-    typedef int (*callback)(void*);
-    callback job = (callback) 1;
-    bool done = false;
-    while (!done) {
-        // Grab a new job.
-        int (*nextjob)(void*) = NULL;
-        SDL_mutexP(jobMutex);
-        {
-            if (!jobQueue.empty()) {
-                nextjob = jobQueue.front();
-                jobQueue.pop();
-            } // else look at secondary jobs.
-        }
-        SDL_mutexV(jobMutex);
-        // Work on job if any available.
-        if (nextjob != NULL) {
-            cout << "Minion " << id << " is fulfilling your wish!\n";
-            job = nextjob;
-            int result = job(NULL);
-            cout << "Minion " << id << " job is finished with result " << result << "!\n";
-        } else if (job != NULL && nextjob == NULL) {
-            // Wait for a job to do.
-            cout << "Minion " << id << " is awaiting your command!\n";
-            job = nextjob;
-            SDL_Delay(10);
-        } else {
-            SDL_Delay(10);
-        }
-    }
-    return 0;
-}
-
-int minion(void* data) {
-    return cMain::runMinion();
-}
-
-int state = 0;
-int job_render(void* data) {
-    int i = 0;
-    while (state == 0) {
-        //float s = 0.5 + 0.4 * sin(i * M_PI / 10.0);
-        //float c = 0.5 + 0.4 * cos(i * M_PI / 10.0);
-        //glClearColor(0.1+s, 0.1+c, 0.9, 1.0);
-        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        //cMain::drawPlaque();
-        //cMain::drawLog();
-        //SDL_GL_SwapBuffers();
-        SDL_Delay(1.0 / DEFAULT_FPS * 1000.0);
-        i++;
-    }
-    return 0;
-}
-
-int job_bgm(void* data) {
-    while (true) {
-        //cout << "Buffering BGM.\n";
-        SDL_Delay(1000);
-    }
-    return 0;
-}
-
-std::stringstream oss;
-
-int job_output(void* data) {
-    while (true) {
-        //cout << "Redirecting text output.\n";
-        if (!oss.str().empty()) {
-            console.write(oss.str().c_str());
-            printf("%s", oss.str().c_str());
-            oss.clear();
-            oss.str("");
-            fflush(stdout);
-        }
-        SDL_Delay(200);
-    }
-    return 0;
-}
 
 void cMain::drawPlaque() {
     glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -782,15 +800,27 @@ void cMain::drawPlaque() {
     glPopAttrib();
 }
 
+
+void cMain::updateLog() {
+    //cout << "Redirecting text output.\n";
+    if (!oss.str().empty()) {
+        console.write(oss.str().c_str());
+        printf("%s", oss.str().c_str());
+        oss.clear();
+        oss.str("");
+        fflush(stdout);
+    }
+}
+
+
 int cMain::run(int argc, char** args) {
-    jobMutex = SDL_CreateMutex();
     //jobQueue.push(job_bgm);
-    jobQueue.push(job_render);
+    jobQueue->push(job_render);
 
     std::streambuf* stdout_ = std::cout.rdbuf();
     bool redirectOutput = true;
     if (redirectOutput) {
-        jobQueue.push(job_output);
+        jobQueue->push(job_output);
         std::cout.rdbuf( oss.rdbuf() );
     }
 
@@ -894,7 +924,7 @@ int cMain::run(int argc, char** args) {
     SDL_Thread * minions[maxminions];
 
     loopi(maxminions) {
-        minions[i] = SDL_CreateThread(minion, &i);
+        minions[i] = SDL_CreateThread(runRunnable, new Minion());
     }
 
     bool loadscreen = true;
@@ -1042,7 +1072,7 @@ int main(int argc, char **args) {
     //return 0;
     
     try {
-        return cMain::run(argc, args);
+        return (new cMain())->run(argc, args);
     } catch (char* s) {
         cout << "Fatal exception caught:\n" << s << endl;
     } catch (const char* s) {

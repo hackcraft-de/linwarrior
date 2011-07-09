@@ -23,20 +23,15 @@
  * A player and its data may be associated with the pad.
  */
 class Pad {
-private:
-    char axes[4];
-    unsigned short buttons;
-    unsigned short buttons_;
-    void* playerdata;
 public:
-
     /**
      * Identifiers for single (analouge) Axes:
      * UD1, LR1: Primary stick.
      * UD2, LR2: Secondary stick.
      */
     enum Axes {
-        AX_LR1, AX_UD1, AX_UD2, AX_LR2
+        AX_LR1, AX_UD1, AX_UD2, AX_LR2,
+        MAX_AXES
     };
 
     /**
@@ -53,14 +48,25 @@ public:
         BT_L1, BT_L2, BT_R1, BT_R2, // 2 + 2 Shoulder buttons.
         BT_SELECT, BT_START, // 2 Central controll buttons.
         BT_J1B, BT_J2B, // 2 Analouge stick push down buttons (or L3 and R3).
-        BT_HU, BT_HD, BT_HL, BT_HR // 4 HUD directional buttons.
+        BT_HU, BT_HD, BT_HL, BT_HR, // 4 HUD directional buttons.
+        MAX_BUTTONS
     };
 
+private:
+    char axes[MAX_AXES];
+    unsigned short buttons[MAX_BUTTONS];
+    unsigned short buttons_[MAX_BUTTONS];
+    void* playerdata;
+
+public:
     /**
      * A new instance of a pad will be initialised to all zeros.
      */
     Pad() {
-        buttons = 0;
+        //buttons = 0;
+        for (int i = 0; i < MAX_BUTTONS; i++) {
+            buttons[i] = 0;
+        }
         reset();
     }
 
@@ -72,10 +78,17 @@ public:
      * Ranges in float for Axis are [-1,+1], whereas for int it is [-127,+127].
      */
     void reset() {
-        axes[0] = axes[1] = axes[2] = axes[3] = 0;
-        buttons_ = buttons;
-        buttons = 0;
-    };
+        //axes[0] = axes[1] = axes[2] = axes[3] = 0;
+        //buttons_ = buttons;
+        //buttons = 0;
+        for (int i = 0; i < MAX_AXES; i++) {
+            axes[i] = 0;
+        }
+        for (int i = 0; i < MAX_BUTTONS; i++) {
+            buttons_[i] = buttons[i];
+            buttons[i] = 0;
+        }
+    }
 
     /**
      * Set axis indicated by enum-constant to a value in [-127,+127] range.
@@ -83,7 +96,7 @@ public:
      */
     void setAxis(Axes axis, int value) {
         this->axes[axis] = (value < -127) ? -127 : (value > +127) ? +127 : value;
-    };
+    }
 
     /**
      * Set axis indicated by an enum-constant to a value in [-1.0,+1.0] range.
@@ -92,7 +105,7 @@ public:
      */
     void setAxis(Axes axis, float value) {
         this->axes[axis] = (char) (127.0f * ((value < -1.0f) ? -1.0f : (value > +1.0f) ? +1.0f : value));
-    };
+    }
 
     /**
      * Get the value of an axis indicated by an enum-constant.
@@ -101,16 +114,17 @@ public:
      */
     float getAxis(Axes axis) {
         return (((float) this->axes[axis]) / 127.0f);
-    };
+    }
 
     /**
      * Set a button indicated by an enum-constant to either un-/pressed.
      * True (unequal zero) is equal to pressed.
      */
     void setButton(Buttons button, bool enable) {
-        if (enable) this->buttons |= (1UL << button);
-        else this->buttons &= ~(1UL << button);
-    };
+        //if (enable) this->buttons |= (1UL << button);
+        //else this->buttons &= ~(1UL << button);
+        buttons[button] = enable ? 1 : 0;
+    }
 
     /**
      * Get the state of a button indicated by an enum-constant.
@@ -118,9 +132,10 @@ public:
      * Hint: Use the button state as a enabling factor in calculations.
      */
     int getButton(Buttons button) {
-        if ((this->buttons & (1UL << button)) != 0) return 1;
-        return 0;
-    };
+        //if ((this->buttons & (1UL << button)) != 0) return 1;
+        //return 0;
+        return buttons[button];
+    }
 
     /**
      * Get the event-state of a button indicated by an enum-constant.
@@ -128,9 +143,10 @@ public:
      * after reset was called.
      */
     int getButtonEvent(Buttons button) {
-        if ((this->buttons & (1UL << button)) != (this->buttons_ & (1UL << button))) return 1;
-        return 0;
-    };
+        //if ((this->buttons & (1UL << button)) != (this->buttons_ & (1UL << button))) return 1;
+        //return 0;
+        return ((buttons[button] != buttons_[button]) ? 1 : 0);
+    }
 
     /**
      * Puts the current pad configuration into a string and returns it.
@@ -159,22 +175,26 @@ public:
      * and returns that incremented pointer to the buffer
      * so that it can be used for the next call.
      */
+    /*
     char* serialise(char *buffer) {
         int size = 8;
         memcpy(buffer, this, size);
         return (buffer + size);
     }
+    */
 
     /**
      * Input playback for demo replay
      * Just like input recording but reads a pad
      * configuration from the buffer instead.
      */
+    /*
     char* deserialise(char* buffer) {
         int size = 8;
         memcpy(this, buffer, size);
         return (buffer + size);
     }
+    */
 };
 
 #endif

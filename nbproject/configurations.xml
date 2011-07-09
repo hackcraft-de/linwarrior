@@ -159,6 +159,10 @@
     <Elem>source/util</Elem>
     <Elem>source/comp</Elem>
     <Elem>source/de</Elem>
+    <Elem>data/base</Elem>
+    <Elem>data/blendswap.com</Elem>
+    <Elem>data/freesound.org</Elem>
+    <Elem>data/opengameart.org</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

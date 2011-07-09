@@ -9,6 +9,8 @@
 #ifndef GAPBUFFER_H
 #define	GAPBUFFER_H
 
+#include <iostream>
+
 /**
  * Models a Textbuffer by implementing a Gap-Buffer.
  */
@@ -92,7 +94,7 @@ public: // Gap buffer operations
 
     bool stepUp() {
         int col = gotoLineBegin();
-        cout << "col: " << col << "\n";
+        std::cout << "col: " << col << "\n";
         if (!stepLeft()) return false;
         gotoLineBegin();
         while (col--) {
@@ -104,7 +106,7 @@ public: // Gap buffer operations
 
     bool stepDown() {
         int col = gotoLineBegin();
-        cout << "col: " << col << "\n";
+        std::cout << "col: " << col << "\n";
         gotoLineEnd();
         if (!stepRight()) return false;
         while (col--) {
@@ -272,20 +274,20 @@ public: // Testing
             write(", same line*");
             //print();
 
-            cout << "a) "; printState();
+            std::cout << "a) "; printState();
             gotoLineBegin();
-            cout << "b) "; printState();
+            std::cout << "b) "; printState();
             stepLeft();
-            cout << "c) "; printState();
+            std::cout << "c) "; printState();
             gotoLineBegin();
-            //cout << "d) "; printState_();
+            //std::cout << "d) "; printState_();
             write("On the ");
-            //cout << "e) "; printState_();
+            //std::cout << "e) "; printState_();
             print();
 
-            cout << "a) "; printState();
+            std::cout << "a) "; printState();
             gotoLineEnd();
-            cout << "b) "; printState();
+            std::cout << "b) "; printState();
             stepRight();
             write("This is the third line");
             print();

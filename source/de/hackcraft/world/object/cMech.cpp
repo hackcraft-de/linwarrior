@@ -182,12 +182,13 @@ cMech::cMech(float* pos, float* rot) {
         const char* fns[] = {
             //"/media/44EA-7693/workspaces/mm3d/soldier/soldier.md5mesh",
             "data/base/wanzers/frogger/frogger.md5mesh",
-            "data/blendswap.com/flopsy/flopsy.md5mesh",
+            "data/com/blendswap/flopsy/flopsy.md5mesh",
             "data/base/wanzers/gorilla/gorilla_ii.md5mesh",
-            "data/opengameart.org/scorpion/scorpion.md5mesh",
+            "data/org/opengameart/scorpion/scorpion.md5mesh",
             "data/base/wanzers/lemur/lemur.md5mesh",
             "data/base/tanks/bug/bug.md5mesh",
             "data/base/tanks/ant/ant.md5mesh",
+            //"data/org/opengameart/thunderbird/thunderbird.md5mesh",
             "data/base/wanzers/kibitz/kibitz.md5mesh",
             //"data/base/tanks/pod/pod.md5mesh"
         };

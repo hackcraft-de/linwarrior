@@ -16,7 +16,7 @@ rWeaponPlasmagun::rWeaponPlasmagun(cObject* obj) {
 
     if (WEAPONSOUND) {
         //ALuint buffer = alutCreateBufferHelloWorld();
-        ALuint buffer = alutCreateBufferFromFile("data/freesound.org/plasmagun.wav");
+        ALuint buffer = alutCreateBufferFromFile("data/org/freesound/plasmagun.wav");
         alGenSources(1, &soundSource);
         alSourcei(soundSource, AL_BUFFER, buffer);
         alSourcef(soundSource, AL_PITCH, 1.0f);
