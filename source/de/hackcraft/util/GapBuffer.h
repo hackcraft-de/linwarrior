@@ -94,7 +94,7 @@ public: // Gap buffer operations
 
     bool stepUp() {
         int col = gotoLineBegin();
-        std::cout << "col: " << col << "\n";
+        //std::cout << "col: " << col << "\n";
         if (!stepLeft()) return false;
         gotoLineBegin();
         while (col--) {
@@ -106,7 +106,7 @@ public: // Gap buffer operations
 
     bool stepDown() {
         int col = gotoLineBegin();
-        std::cout << "col: " << col << "\n";
+        //std::cout << "col: " << col << "\n";
         gotoLineEnd();
         if (!stepRight()) return false;
         while (col--) {

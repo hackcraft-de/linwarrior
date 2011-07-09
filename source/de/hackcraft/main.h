@@ -167,6 +167,9 @@ private:
     /// SDL doesn't count mouse wheel movement.
     int mouseWheel;
 
+    /// Old keystates
+    Uint8 keystate_[512];
+
     /// Mutex for job queue - minions wait until they can grab a job.
     SDL_mutex* jobMutex;
 
@@ -176,7 +179,10 @@ private:
     /// stdout is redirected to this stringstream.
     std::stringstream oss;
 
-    /// Console log.
+    /// Program output log.
+    GapBuffer log;
+
+    /// Console terminal program output.
     GapBuffer console;
 
     /// Commandline input buffer for console.

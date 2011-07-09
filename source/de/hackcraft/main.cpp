@@ -279,6 +279,10 @@ cMain::cMain() {
     jobQueue = new std::queue<int(*)(void*)>();
     mouseWheel = 0;
     overlayEnabled = !true;
+
+    memset(keystate_, 0, sizeof(keystate_));
+    console.write("Console program output is printed here...");
+    cmdline.write("Console commandline input is inserted here...");
 }
 
 
@@ -603,8 +607,16 @@ void cMain::drawLog() {
                 glScalef(1.0/120.0, 1.0/60.0, 1.0);
                 glTranslatef(0,1.0,-100);
                 char buffer[256*128];
-                console.printConsole(buffer, 120, 60);
-                Console::glDrawConsole(buffer, 120*60, 120, 0);
+                log.printConsole(buffer, 120, 60/3);
+                Console::glDrawConsole(buffer, 120*60/3, 120, 0);
+
+                glTranslatef(0,-60/3.0f,0);
+                console.printConsole(buffer, 120, 60/3);
+                Console::glDrawConsole(buffer, 120*60/3, 120, 0);
+
+                glTranslatef(0,-60/3.0f,0);
+                cmdline.printConsole(buffer, 120, 60/3);
+                Console::glDrawConsole(buffer, 120*60/3, 120, 0);
             }
             glPopMatrix();
         }
@@ -615,6 +627,26 @@ void cMain::drawLog() {
 
 
 void cMain::updateKey(Uint8 keysym) {
+    if (keysym == SDLK_TAB) {
+        overlayEnabled ^= true;
+    }
+
+    if (overlayEnabled) {
+        GapBuffer* text = &cmdline;
+        if (keysym == SDLK_LEFT) text->stepLeft();
+        if (keysym == SDLK_RIGHT) text->stepRight();
+        if (keysym == SDLK_UP) text->stepUp();
+        if (keysym == SDLK_DOWN) text->stepDown();
+        if (keysym == SDLK_RETURN) text->write('\n');
+        if (keysym == SDLK_BACKSPACE) text->deleteLeft();
+
+        if (keysym >= SDLK_a && keysym <= SDLK_z) {
+            text->write('#');
+        }
+
+        return;
+    }
+
     if (keysym == _WIREFRAME_KEY) {
         game.wireframe = !game.wireframe;
     } else if (keysym == _NIGHTVISION_KEY) {
@@ -629,6 +661,7 @@ void cMain::updateKey(Uint8 keysym) {
 
 
 void cMain::updatePad(Pad* pad, SDL_Joystick* joy, int* mapping) {
+
     if (pad == NULL) return;
 
     int default_mapping[] = {
@@ -659,6 +692,8 @@ void cMain::updatePad(Pad* pad, SDL_Joystick* joy, int* mapping) {
 
     Uint8 *keystate = SDL_GetKeyState(NULL);
     if (keystate == NULL) return;
+    if (overlayEnabled) return;
+
     // First Analogue Control Stick
     if (keystate[SDLK_LEFT] == 1) pad->setAxis(Pad::AX_LR1, -1.0f);
     if (keystate[SDLK_RIGHT] == 1) pad->setAxis(Pad::AX_LR1, +1.0f);
@@ -725,6 +760,9 @@ void cMain::updatePad(Pad* pad, SDL_Joystick* joy, int* mapping) {
         if (mb & SDL_BUTTON_LMASK) pad->setButton(Pad::BT_R2, true);
 
     }
+    
+    assert(sizeof(keystate_) == 512);
+    memcpy(keystate_, keystate, sizeof(keystate_));
 }
 
 
@@ -804,7 +842,7 @@ void cMain::drawPlaque() {
 void cMain::updateLog() {
     //cout << "Redirecting text output.\n";
     if (!oss.str().empty()) {
-        console.write(oss.str().c_str());
+        log.write(oss.str().c_str());
         printf("%s", oss.str().c_str());
         oss.clear();
         oss.str("");
