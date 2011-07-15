@@ -1,82 +1,103 @@
-- Move code from damageByParticle(.) to rDamageable.damage(.) and bind in cMech->animate(.).
+- The Topics TODOs need a evaluation and priorization pass
+  [Note: Topics aren't ordered - individual TODOs approx top most next]
 
-- Implement Target ahead selection in tarcom?
 
-- Fix reaction to ai being fired at (state transitions in controller).
+Inspector-/Edit-Mode:
 
-- Reintroduce some random walking pattern when in close range combat (or in line of sight).
-
-- Remove reliance on NaN for no destination (portability and fast-math problems).
-
-- Order TODO items into groups like "cleanup", "gameplay", "ai", "landscape", ...
-
-- Player's jumpjet light shall be moved to a component.
-
-- rGrouping shall be handled like other object components (use message method).
-
-- Remove components from base Object.
-
-- Convert visual/model objects (tree, planetmap, building, etc.) to components?
-
-- Object's damageByParticle() shall be represented in components, too.
-
-- Think about blocked-left/-front/-right detectors for collision avoidance.
-
-- Resolve HUD dependency on cMech-Class's weapons.
-
-- Make weapon chaining work with weapon-bindings.
-
-- Wingmen shall maintain minimum distance to each other (collision avoidance).
-  [solvable by just avoiding the nearest unit at a time]
-
-- Take slope into account for Planetmap erosion and material within second pass.
-
-- Global lightsource-position shall be animated according to sun/moon.
+- Provide command shell to provide tools
 
 - Render Debug-Object-Information when Paused/Debug-Mode.
 
 - Extend Pause/Debug-Mode to Simple Object-Placement Edit-Mode.
 
-- Select target ahead (button).
 
-- Selected target should be identified (button/automatically-timed).
+AI and behavior:
 
-- Wingmen Orders
+- Fix reaction to ai being fired at (state transitions in controller).
 
-- Reload/Refill/Repair Zones.
+- Reintroduce some random walking pattern when in close range combat (or in line of sight).
 
-- OGG or FLAC loader instead of flat WAV?
+- Think about blocked-left/-front/-right detectors for collision avoidance.
 
-- Footstep sound
-
-- Turrets
-
-- First real mission.
+- Wingmen shall maintain minimum distance to each other (collision avoidance).
+  [solvable by just avoiding the nearest unit at a time]
 
 - AI Target-Visibility (LOS): Don't shoot when target is behind a wall.
 
-- Radar LOS and Disturbances?
-
 - Waypoints and pathfinding? (works fine so far without)
+
+- AI shall support allied Objects (attack their targets/attackers, learn their enemies, follow allies on demand).
+
+- AI allies should pop follow command when leader is wrecked.
+
+
+Refactoring and cleanup:
+
+- Bind all mech's components properly
+
+- Remove reliance on NaN for no destination (portability and fast-math problems).
+
+- rGrouping shall be handled like other object components (use message method?).
+
+- Player's jumpjet light shall be moved to a component.
+
+- Convert visual/model objects (tree, planetmap, building, etc.) to components?
+
+- Resolve HUD dependency on cMech-Class's weapons.
+
+- Make weapon chaining work with weapon-bindings.
+
+- Use vec4 to utilize vector ops.
+
+
+Landscape:
+
+- Implement different rendering geometries for plants, bushes and grass.
+
+- Take slope into account for Planetmap erosion and material within second pass.
 
 - City-generator.
 
-- Weapon-Engage and -Disengage time. (necessary?)
+
+Immersion and FX:
+
+- Footstep sound
 
 - Colored particles indicating damage inflicted (chipping off).
+
+
+Gameplay:
+
+- Select target ahead (button). Implement Target ahead selection in tarcom?
+
+- Selected target should be identified (button/automatically-timed).
+
+- Implement command scheme and gui for sending Wingmen Orders to group members
+
+- Reload/Refill/Repair Zones.
+
+- First real mission.
+
+- Radar LOS and Disturbances?
+
+- Turrets
+
+- Weapon-Engage and -Disengage time. (necessary?)
+
+
+Formats and Files:
+
+- OGG or FLAC loader instead of flat WAV?
 
 - Decide on static object format(s). (same as rigged meshes? special ones?)
 
 - Mission File Loading.
 
-- AI shall support allied Objects (attack their targets/attackers, learn their enemies, follow allies on demand).
 
-- AI allies should pop follow command when leader is wrecked.
+Materials and lighting:
 
 - Someday with shaders: Shadowmapping for global sun/moon lightsource.
 
 - Someday with shaders: Environment-Ambient-lighting according to the dome.
 
 - Someday with shaders: Deferred lighting, necessary for multiple effect lights.
-
-- Maybe someday: Outsource Tools and generating from Simulator?
