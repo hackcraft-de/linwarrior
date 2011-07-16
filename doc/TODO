@@ -47,7 +47,7 @@ Refactoring and cleanup:
 
 - Make weapon chaining work with weapon-bindings.
 
-- Use vec4 to utilize vector ops.
+- Use vec4 to utilize vector ops?
 
 
 Landscape:
@@ -60,6 +60,8 @@ Landscape:
 
 
 Immersion and FX:
+
+- Implement camera lag and shake rig
 
 - Footstep sound
 
@@ -83,6 +85,8 @@ Gameplay:
 - Turrets
 
 - Weapon-Engage and -Disengage time. (necessary?)
+
+- Portals
 
 
 Formats and Files:

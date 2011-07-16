@@ -411,6 +411,121 @@ struct Primitive {
         glEnd();
     }
 
+    static inline void glStar() {
+        glBegin(GL_QUADS);
+        {
+            // _
+            glTexCoord2i(1, 0);
+            glVertex3f(+0.5f, 0.0f, -0.0f);
+            glTexCoord2i(0, 0);
+            glVertex3f(-0.5f, 0.0f, -0.0f);
+            glTexCoord2i(0, 1);
+            glVertex3f(-0.5f, +1.0f, -0.0f);
+            glTexCoord2i(1, 1);
+            glVertex3f(+0.5f, +1.0f, -0.0f);
+            // /
+            glTexCoord2i(1, 0);
+            glVertex3f(+0.25f, 0.0f, +0.43f);
+            glTexCoord2i(0, 0);
+            glVertex3f(-0.25f, 0.0f, -0.43f);
+            glTexCoord2i(0, 1);
+            glVertex3f(-0.25f, +1.0f, -0.43f);
+            glTexCoord2i(1, 1);
+            glVertex3f(+0.25f, +1.0f, +0.43f);
+            // / inverted
+            glTexCoord2i(1, 0);
+            glVertex3f(+0.25f, 0.0f, -0.43f);
+            glTexCoord2i(0, 0);
+            glVertex3f(-0.25f, 0.0f, +0.43f);
+            glTexCoord2i(0, 1);
+            glVertex3f(-0.25f, +1.0f, +0.43f);
+            glTexCoord2i(1, 1);
+            glVertex3f(+0.25f, +1.0f, -0.43f);
+        }
+        glEnd();
+    }
+
+    static inline void glBrush() {
+        const float f = 0.20f;
+        const float s0 = +0.0000f * f;
+        const float c0 = +1.0000f * f;
+        const float s1 = +0.8660f * f;
+        const float c1 = -0.5000f * f;
+        const float s2 = -0.8660f * f;
+        const float c2 = -0.5000f * f;
+        glBegin(GL_QUADS);
+        {
+            // _
+            glTexCoord2i(1, 0);
+            glVertex3f(+0.5f + s0, 0.0f, -0.0f + c0);
+            glTexCoord2i(0, 0);
+            glVertex3f(-0.5f + s0, 0.0f, -0.0f + c0);
+            glTexCoord2i(0, 1);
+            glVertex3f(-0.5f - s0, +1.0f, -0.0f - c0);
+            glTexCoord2i(1, 1);
+            glVertex3f(+0.5f - s0, +1.0f, -0.0f - c0);
+            // /
+            glTexCoord2i(1, 0);
+            glVertex3f(+0.25f + s1, 0.0f, +0.43f + c1);
+            glTexCoord2i(0, 0);
+            glVertex3f(-0.25f + s1, 0.0f, -0.43f + c1);
+            glTexCoord2i(0, 1);
+            glVertex3f(-0.25f - s1, +1.0f, -0.43f - c1);
+            glTexCoord2i(1, 1);
+            glVertex3f(+0.25f - s1, +1.0f, +0.43f - c1);
+            // / inverted
+            glTexCoord2i(1, 0);
+            glVertex3f(+0.25f + s2, 0.0f, -0.43f + c2);
+            glTexCoord2i(0, 0);
+            glVertex3f(-0.25f + s2, 0.0f, +0.43f + c2);
+            glTexCoord2i(0, 1);
+            glVertex3f(-0.25f - s2, +1.0f, +0.43f - c2);
+            glTexCoord2i(1, 1);
+            glVertex3f(+0.25f - s2, +1.0f, -0.43f - c2);
+        }
+        glEnd();
+    }
+
+    static inline void glSharp() {
+        const float f = 0.10f;
+        const float s0 = +0.0000f * f;
+        const float c0 = +1.0000f * f;
+        const float s1 = +0.8660f * f;
+        const float c1 = -0.5000f * f;
+        const float s2 = -0.8660f * f;
+        const float c2 = -0.5000f * f;
+        glBegin(GL_QUADS);
+        {
+            // _
+            glTexCoord2i(1, 0);
+            glVertex3f(+0.5f + s0, 0.0f, -0.0f + c0);
+            glTexCoord2i(0, 0);
+            glVertex3f(-0.5f + s0, 0.0f, -0.0f + c0);
+            glTexCoord2i(0, 1);
+            glVertex3f(-0.5f + s0, +1.0f, -0.0f + c0);
+            glTexCoord2i(1, 1);
+            glVertex3f(+0.5f + s0, +1.0f, -0.0f + c0);
+            // /
+            glTexCoord2i(1, 0);
+            glVertex3f(+0.25f + s1, 0.0f, +0.43f + c1);
+            glTexCoord2i(0, 0);
+            glVertex3f(-0.25f + s1, 0.0f, -0.43f + c1);
+            glTexCoord2i(0, 1);
+            glVertex3f(-0.25f + s1, +1.0f, -0.43f + c1);
+            glTexCoord2i(1, 1);
+            glVertex3f(+0.25f + s1, +1.0f, +0.43f + c1);
+            // / inverted
+            glTexCoord2i(1, 0);
+            glVertex3f(+0.25f + s2, 0.0f, -0.43f + c2);
+            glTexCoord2i(0, 0);
+            glVertex3f(-0.25f + s2, 0.0f, +0.43f + c2);
+            glTexCoord2i(0, 1);
+            glVertex3f(-0.25f + s2, +1.0f, +0.43f + c2);
+            glTexCoord2i(1, 1);
+            glVertex3f(+0.25f + s2, +1.0f, -0.43f + c2);
+        }
+        glEnd();
+    }
 };
 
 #endif	/* PRIMITIVE_H */
