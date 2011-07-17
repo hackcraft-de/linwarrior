@@ -21,7 +21,8 @@ using namespace std;
 
 int cPlanetmap::sInstances = 0;
 std::vector<long> cPlanetmap::sTextures;
-std::vector<float> cPlanetmap::sSizes;
+std::vector<cPlanetmap::Growth*> cPlanetmap::sGrowth;
+
 
 inline float cPlanetmap::sMod::getModifiedHeight(float x, float z, float h) {
     // Square leveling
@@ -143,7 +144,7 @@ cPlanetmap::cPlanetmap() {
             string("longplant.tga"),
             string("greenplant.tga"),
             string("desertplant.tga"),
-            string("treeleafs.tga"),
+            string("treewood.tga"),
             string("pineleafs.tga"),
             string("strangeleafs.tga")
         };
@@ -157,6 +158,16 @@ cPlanetmap::cPlanetmap() {
             1.5,
             1.1
         };
+        Growth::Rendertype render[] = {
+            Growth::BILLBOARD,
+            Growth::TRIANGLE,
+            Growth::BILLBOARD,
+            Growth::BILLBOARD,
+            Growth::BILLBOARD,
+            Growth::STAR,
+            Growth::STAR,
+            Growth::STAR
+        };
 
         loopi(8) {
             string name = string(basepath).append(filenames[i]);
@@ -166,8 +177,7 @@ cPlanetmap::cPlanetmap() {
             unsigned char* texels = Texfile::loadTGA(name.c_str(), &w, &h, &bpp);
             texname = GLS::glBindTexture2D(0, true, true, false, false, w, h, bpp, texels);
             delete texels;
-            sTextures.push_back(texname);
-            sSizes.push_back(2.0f * sizes[i]);
+            sGrowth.push_back(new Growth(texname, 2.0f * sizes[i], render[i]));
         }
     }
 
@@ -727,6 +737,31 @@ void cPlanetmap::drawSolid() {
     }
 }
 
+void cPlanetmap::drawBillboardPlant(float x__, float h, float z__, float scale, float* unrotateMatrix) {
+    glTranslatef(x__, h - 0.2, z__);
+    glMultMatrixf(unrotateMatrix);
+    glScalef(scale, scale, scale);
+    Primitive::glXCenteredTextureSquare();
+    //glAxis(0.9);
+}
+
+void cPlanetmap::drawStarPlant(float x__, float h, float z__, float scale) {
+    glTranslatef(x__, h - 0.2-0.3, z__);
+    glScalef(scale, scale, scale);
+    Primitive::glBrush();
+}
+
+void cPlanetmap::drawTrianglePlant(float x__, float h, float z__, float scale) {
+    glTranslatef(x__, h - 0.2, z__);
+    glScalef(scale, scale, scale);
+    Primitive::glSharp();
+}
+
+void cPlanetmap::drawCrossPlant(float x__, float h, float z__, float scale) {
+    glTranslatef(x__, h - 0.2, z__);
+    glScalef(scale, scale, scale);
+    Primitive::glStar();
+}
 
 void cPlanetmap::drawEffect() {
     const float totaldensity = VEGETATION;
@@ -875,26 +910,30 @@ void cPlanetmap::drawEffect() {
 
                         unsigned char tex = (rot >> 4) & 7;
                         unsigned char size = rot;
+
+                        float sizef = size * 0.003906f;
+                        float scale = plantscale * sGrowth[tex]->size * (0.35f + 0.65f * sizef + 0.005f * plantdensity);
+
                         glColor4f(1, 1, 1, opacity);
-                        glBindTexture(GL_TEXTURE_2D, sTextures[tex + 1]);
-#if 1
-                        glTranslatef(x__, h - 0.2, z__);
-                        glMultMatrixf(n);
-                        //glRotatef(rot*0.351563f, 0, 1, 0);
-                        float sizef = size * 0.003906f;
-                        float s = plantscale * sSizes[tex] * (0.35f + 0.65f * sizef + 0.005f * plantdensity);
-                        glScalef(1 * s, 0.65 * s, 1 * s);
-                        //glAxis(0.9);
-                        Primitive::glXCenteredTextureSquare();
-                        //glRotatef(90, 0, 1, 0);
-                        //glXCenteredTextureSquare(sTextures[tex + 1]);
-#else
-                        float sizef = size * 0.003906f;
-                        float s = plantscale * sSizes[tex] * (0.35f + 0.65f * sizef + 0.005f * plantdensity);
-                        glTranslatef(x__, h - 0.2, z__);
-                        glScalef(1.2f * s, 0.7f * s, 1.2f * s);
-                        Primitive::glBrush();
-#endif
+                        glBindTexture(GL_TEXTURE_2D, sGrowth[tex]->texture);
+
+                        switch (sGrowth[tex]->rendertype) {
+                            case Growth::BILLBOARD:
+                                drawBillboardPlant(x__, h, z__, scale, n);
+                                break;
+                            case Growth::STAR:
+                                drawStarPlant(x__, h, z__, scale);
+                                break;
+                            case Growth::TRIANGLE:
+                                drawTrianglePlant(x__, h, z__, scale);
+                                break;
+                            case Growth::CROSS:
+                                drawCrossPlant(x__, h, z__, scale);
+                                break;
+                            default:
+                                drawBillboardPlant(x__, h, z__, scale, n);
+                                break;
+                        }
                     }
                     glPopMatrix();
                 } // loopi visibleplants

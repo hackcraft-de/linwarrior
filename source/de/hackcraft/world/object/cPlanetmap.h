@@ -44,8 +44,25 @@ public:
     static int sInstances;
     /// Instance shared Textures.
     static std::vector<long> sTextures;
-    /// Instance shared foliage sizes.
-    static std::vector<float> sSizes;
+
+    struct Growth {
+        enum Rendertype {
+            BILLBOARD,
+            CROSS,
+            STAR,
+            TRIANGLE
+        };
+        long texture;
+        float size;
+        Rendertype rendertype;
+        Growth(long texture, float size, Rendertype rendertype) {
+            this->texture = texture;
+            this->size = size;
+            this->rendertype = rendertype;
+        }
+    };
+    static std::vector<cPlanetmap::Growth*> sGrowth;
+
 public:
     /// Surface Modifiction
 
@@ -89,6 +106,11 @@ public:
     virtual void drawSolid();
     /// Draw Decals surrounding the current camera position.
     virtual void drawEffect();
+protected:
+    void drawBillboardPlant(float x, float h, float z, float scale, float* unrotateMatrix);
+    void drawStarPlant(float x, float h, float z, float scale);
+    void drawTrianglePlant(float x, float h, float z, float scale);
+    void drawCrossPlant(float x, float h, float z, float scale);
 };
 
 #endif	/* PLANETMAP_H */
