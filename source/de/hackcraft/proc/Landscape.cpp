@@ -152,10 +152,13 @@ void Landscape::land_grass(float x, float y, float z, float* color, unsigned cha
     const float p2 = 1.0f / 47.0f;
     float o2 = Noise::simplex3(71 + x*p2, 57 + y*p2, 19 + z*p2, seed + 1);
 
-    float h = (0.9f * o1 + 0.5f * o2) * 0.5 + 0.5;
-
     const float p3 = 1.0f / 17.0f;
-    float o3 = Noise::simplex3(21 + x*p3, 41 + y*p3, 79 + z*p3, seed + 2);
+    float o3 = Noise::simplex3(17 + x*p3, 67 + y*p3, 197 + z*p3, seed + 3);
+
+    const float p4 = 1.0f / 11.0f;
+    float o4 = Noise::simplex3(21 + x*p4, 41 + y*p4, 79 + z*p4, seed + 2);
+
+    float h = (0.9f * o1 + 0.5f * o2 + 0.1 * o3) * 0.5 + 0.5;
 
     //float top[] = {0.59f, 0.80f, 0.58f};
     //float bottom[] = {0.85f, 0.93f, 0.58f};
@@ -167,7 +170,7 @@ void Landscape::land_grass(float x, float y, float z, float* color, unsigned cha
     float splat[] = {f * 0x8d, f * 0x98, f * 0x49};
     float top_alpha = h;
     float bottom_alpha = 1.0f - h;
-    float splat_alpha = (exp(o2 * 0.5 + 0.5))*0.1 + (exp(o3 * 0.5 + 0.5))*0.05;
+    float splat_alpha = (exp(o2 * 0.5 + 0.5))*0.1 + (exp(o4 * 0.5 + 0.5))*0.05;
 
     color[RED] = top[0] * top_alpha + bottom[0] * bottom_alpha + splat[0] * splat_alpha;
     color[GRN] = top[1] * top_alpha + bottom[1] * bottom_alpha + splat[1] * splat_alpha;
