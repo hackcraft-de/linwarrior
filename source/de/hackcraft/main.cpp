@@ -13,12 +13,17 @@
 using std::cout;
 using std::endl;
 
+#ifdef __APPLE__
+#include <OpenAL/alc.h>
+#include <ALUT/alut.h>
+#else
 #include <SDL/SDL_timer.h>
 #include <AL/alc.h>
 #ifndef __WIN32
 #include <AL/alext.h>
 #endif
 #include <AL/alut.h>
+#endif
 
 #include <SDL/SDL_thread.h>
 #include <iosfwd>

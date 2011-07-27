@@ -10,6 +10,7 @@ OBJECTS=$(addprefix build/, $(subst .cpp,.o, $(wildcard source/*.cpp source/*/*.
 
 # Different Parameters and Programms for different OSes.
 ifneq (,$(findstring Win,$(OS)))
+	DESCRIPTION=Make using native mingw
 	LIBRARIES= -Wl,-subsystem,console -lmingw32 -lSDLmain -lSDL -lOpenGL32  -lglew32 -lGLU32 -lopenal32 -lalut
 	TARGET=dist\linwarrior.exe
 	MKDIR=mkdir
@@ -22,7 +23,23 @@ ifneq (,$(findstring Win,$(OS)))
 	QUOTE='
 else
 
+ifeq ($(shell uname -s), Darwin)
+	DESCRIPTION=Make for white fruit computers
+	LIBRARIES= -framework Cocoa -framework OpenGL -framework OpenAL -framework Alut -L/opt/local/lib/ -lSDLmain -lSDL -lGLEW -lGLU
+	TARGET=dist/linwarrior
+	MKDIR=mkdir -p
+	RM=rm -f
+	RMREC=rm -f -r
+	CP=cp
+	# NOTE: Change the compiler path and version to match your system, eg.
+	# CPP=/opt/local/bin/g++-mp-4.5
+	CPP=g++
+	LIMITER=/
+	QUOTE=
+else
+
 ifdef MINGWCROSS
+	DESCRIPTION=Make for wine using cross platform mingw
 	LIBRARIES= -Wl,-subsystem,console -lmingw32 -lSDLmain -lSDL -lopengl32  -lglew32 -lglu32 -lOpenAL32 -lalut
 	CPP=i586-mingw32msvc-c++ -I ~/MinGW/include -L ~/MinGW/lib -D__GNUWIN32__ -DHAVE_W32API_H -D__WINDOWS__
 	TARGET=dist/linwarrior.exe
@@ -33,6 +50,7 @@ ifdef MINGWCROSS
 	LIMITER=/
 	QUOTE=
 else
+	DESCRIPTION=Make for Linux and derivates
 	LIBRARIES= -lGLEW -lGLU -lSDL -lopenal -lalut
 	TARGET=dist/linwarrior
 	MKDIR=mkdir -p
@@ -42,6 +60,8 @@ else
 	CPP=c++
 	LIMITER=/
 	QUOTE=
+endif
+
 endif
 
 endif
@@ -79,7 +99,10 @@ CFLAGS += -O1 -funroll-loops
 #LFLAGS += -pg
 
 # Default makefile Target.
-all: $(TARGET)
+all: PRINTPLATFORM $(TARGET)
+
+PRINTPLATFORM:
+	@echo $(DESCRIPTION)
 
 # For executable we need all sources compiled to objects.
 $(TARGET): $(OBJECTS)

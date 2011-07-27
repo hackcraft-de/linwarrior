@@ -33,9 +33,14 @@ struct rGrouping;
 #include <iostream>
 
 #include <GL/glew.h>
+
+#ifdef __APPLE__
+#include <OpenAL/al.h>
+#include <ALUT/alut.h>
+#else
 #include <AL/al.h>
 #include <AL/alut.h>
-
+#endif
 
 
 #define FIELDOFS(attribute)     (((OID)&attribute) - ((OID)this))
