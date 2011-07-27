@@ -17,29 +17,30 @@ RANLIB=ranlib
 CC=gcc
 CCC=g++
 CXX=g++
-FC=
+FC=gfortran
 AS=as
 
 # Macros
 CND_PLATFORM=GNU-Linux-x86
 CND_CONF=Release
 CND_DISTDIR=dist
+CND_BUILDDIR=build
 
 # Include project Makefile
 include Makefile
 
 # Object Directory
-OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
+OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/source/de/hackcraft/world/comp/rTraceable.o \
 	${OBJECTDIR}/source/de/hackcraft/world/comp/rGrouping.o \
-	${OBJECTDIR}/source/de/hackcraft/world/cBackground.o \
 	${OBJECTDIR}/source/de/hackcraft/world/comp/rRigged.o \
-	${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeaponMachinegun.o \
+	${OBJECTDIR}/source/de/hackcraft/world/cBackground.o \
 	${OBJECTDIR}/source/de/hackcraft/io/Texfile.o \
 	${OBJECTDIR}/source/de/hackcraft/proc/Road.o \
+	${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeaponMachinegun.o \
 	${OBJECTDIR}/source/de/hackcraft/proc/Facade.o \
 	${OBJECTDIR}/source/de/hackcraft/util/Message.o \
 	${OBJECTDIR}/source/de/hackcraft/world/object/cAlert.o \
@@ -56,17 +57,17 @@ OBJECTFILES= \
 	${OBJECTDIR}/source/de/hackcraft/world/comp/rPadmap.o \
 	${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeaponPlasmagun.o \
 	${OBJECTDIR}/source/de/hackcraft/main.o \
+	${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeapon.o \
 	${OBJECTDIR}/source/de/hackcraft/util/Timing.o \
 	${OBJECTDIR}/source/de/hackcraft/world/object/cMech.o \
-	${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeapon.o \
 	${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeaponHoming.o \
 	${OBJECTDIR}/source/de/hackcraft/world/object/cBuilding.o \
 	${OBJECTDIR}/source/de/hackcraft/world/object/cTree.o \
 	${OBJECTDIR}/source/de/hackcraft/world/cMission.o \
 	${OBJECTDIR}/source/de/hackcraft/world/comp/rScatter.o \
-	${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeaponRaybeam.o \
 	${OBJECTDIR}/source/de/hackcraft/world/comp/rDamageable.o \
 	${OBJECTDIR}/source/de/hackcraft/world/comp/rComponent.o \
+	${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeaponRaybeam.o \
 	${OBJECTDIR}/source/de/hackcraft/world/comp/rCollider.o \
 	${OBJECTDIR}/source/de/hackcraft/proc/Surface.o \
 	${OBJECTDIR}/source/de/hackcraft/world/comp/rCamera.o \
@@ -91,10 +92,10 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-Release.mk dist/Release/GNU-Linux-x86/linwarrior
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/linwarrior
 
-dist/Release/GNU-Linux-x86/linwarrior: ${OBJECTFILES}
-	${MKDIR} -p dist/Release/GNU-Linux-x86
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/linwarrior: ${OBJECTFILES}
+	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/linwarrior ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
 ${OBJECTDIR}/source/de/hackcraft/world/comp/rTraceable.o: source/de/hackcraft/world/comp/rTraceable.cpp 
@@ -107,20 +108,15 @@ ${OBJECTDIR}/source/de/hackcraft/world/comp/rGrouping.o: source/de/hackcraft/wor
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/world/comp/rGrouping.o source/de/hackcraft/world/comp/rGrouping.cpp
 
-${OBJECTDIR}/source/de/hackcraft/world/cBackground.o: source/de/hackcraft/world/cBackground.cpp 
-	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/world
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/world/cBackground.o source/de/hackcraft/world/cBackground.cpp
-
 ${OBJECTDIR}/source/de/hackcraft/world/comp/rRigged.o: source/de/hackcraft/world/comp/rRigged.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/world/comp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/world/comp/rRigged.o source/de/hackcraft/world/comp/rRigged.cpp
 
-${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeaponMachinegun.o: source/de/hackcraft/world/comp/weapon/rWeaponMachinegun.cpp 
-	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/world/comp/weapon
+${OBJECTDIR}/source/de/hackcraft/world/cBackground.o: source/de/hackcraft/world/cBackground.cpp 
+	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/world
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeaponMachinegun.o source/de/hackcraft/world/comp/weapon/rWeaponMachinegun.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/world/cBackground.o source/de/hackcraft/world/cBackground.cpp
 
 ${OBJECTDIR}/source/de/hackcraft/io/Texfile.o: source/de/hackcraft/io/Texfile.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/io
@@ -131,6 +127,11 @@ ${OBJECTDIR}/source/de/hackcraft/proc/Road.o: source/de/hackcraft/proc/Road.cpp
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/proc
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/proc/Road.o source/de/hackcraft/proc/Road.cpp
+
+${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeaponMachinegun.o: source/de/hackcraft/world/comp/weapon/rWeaponMachinegun.cpp 
+	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/world/comp/weapon
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeaponMachinegun.o source/de/hackcraft/world/comp/weapon/rWeaponMachinegun.cpp
 
 ${OBJECTDIR}/source/de/hackcraft/proc/Facade.o: source/de/hackcraft/proc/Facade.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/proc
@@ -212,6 +213,11 @@ ${OBJECTDIR}/source/de/hackcraft/main.o: source/de/hackcraft/main.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/main.o source/de/hackcraft/main.cpp
 
+${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeapon.o: source/de/hackcraft/world/comp/weapon/rWeapon.cpp 
+	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/world/comp/weapon
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeapon.o source/de/hackcraft/world/comp/weapon/rWeapon.cpp
+
 ${OBJECTDIR}/source/de/hackcraft/util/Timing.o: source/de/hackcraft/util/Timing.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/util
 	${RM} $@.d
@@ -221,11 +227,6 @@ ${OBJECTDIR}/source/de/hackcraft/world/object/cMech.o: source/de/hackcraft/world
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/world/object
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/world/object/cMech.o source/de/hackcraft/world/object/cMech.cpp
-
-${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeapon.o: source/de/hackcraft/world/comp/weapon/rWeapon.cpp 
-	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/world/comp/weapon
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeapon.o source/de/hackcraft/world/comp/weapon/rWeapon.cpp
 
 ${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeaponHoming.o: source/de/hackcraft/world/comp/weapon/rWeaponHoming.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/world/comp/weapon
@@ -252,11 +253,6 @@ ${OBJECTDIR}/source/de/hackcraft/world/comp/rScatter.o: source/de/hackcraft/worl
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/world/comp/rScatter.o source/de/hackcraft/world/comp/rScatter.cpp
 
-${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeaponRaybeam.o: source/de/hackcraft/world/comp/weapon/rWeaponRaybeam.cpp 
-	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/world/comp/weapon
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeaponRaybeam.o source/de/hackcraft/world/comp/weapon/rWeaponRaybeam.cpp
-
 ${OBJECTDIR}/source/de/hackcraft/world/comp/rDamageable.o: source/de/hackcraft/world/comp/rDamageable.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/world/comp
 	${RM} $@.d
@@ -266,6 +262,11 @@ ${OBJECTDIR}/source/de/hackcraft/world/comp/rComponent.o: source/de/hackcraft/wo
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/world/comp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/world/comp/rComponent.o source/de/hackcraft/world/comp/rComponent.cpp
+
+${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeaponRaybeam.o: source/de/hackcraft/world/comp/weapon/rWeaponRaybeam.cpp 
+	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/world/comp/weapon
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeaponRaybeam.o source/de/hackcraft/world/comp/weapon/rWeaponRaybeam.cpp
 
 ${OBJECTDIR}/source/de/hackcraft/world/comp/rCollider.o: source/de/hackcraft/world/comp/rCollider.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/world/comp
@@ -292,8 +293,8 @@ ${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeaponSparkgun.o: source/de/
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
-	${RM} -r build/Release
-	${RM} dist/Release/GNU-Linux-x86/linwarrior
+	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
+	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/linwarrior
 
 # Subprojects
 .clean-subprojects:

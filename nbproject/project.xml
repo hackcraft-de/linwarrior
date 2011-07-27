@@ -10,21 +10,16 @@
             <header-extensions>h</header-extensions>
             <sourceEncoding>UTF-8</sourceEncoding>
             <make-dep-projects/>
-            <sourceRootList>
-                <sourceRootElem>source/io</sourceRootElem>
-                <sourceRootElem>source/proc</sourceRootElem>
-                <sourceRootElem>source/psi3d</sourceRootElem>
-                <sourceRootElem>source/util</sourceRootElem>
-                <sourceRootElem>source/comp</sourceRootElem>
-                <sourceRootElem>source/de</sourceRootElem>
-                <sourceRootElem>data/base</sourceRootElem>
-                <sourceRootElem>data/blendswap.com</sourceRootElem>
-                <sourceRootElem>data/freesound.org</sourceRootElem>
-                <sourceRootElem>data/opengameart.org</sourceRootElem>
-            </sourceRootList>
+            <sourceRootList/>
             <confList>
-                <confElem>Debug</confElem>
-                <confElem>Release</confElem>
+                <confElem>
+                    <name>Debug</name>
+                    <type>0</type>
+                </confElem>
+                <confElem>
+                    <name>Release</name>
+                    <type>1</type>
+                </confElem>
             </confList>
         </data>
     </configuration>

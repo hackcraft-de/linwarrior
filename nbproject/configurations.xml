@@ -11,20 +11,17 @@
       <logicalFolder name="de" displayName="de" projectFiles="true">
         <logicalFolder name="hackcraft"
                        displayName="hackcraft"
-                       projectFiles="true"
-                       kind="SOURCE_LOGICAL_FOLDER">
-          <logicalFolder name="f1"
+                       projectFiles="true">
+          <logicalFolder name="io"
                          displayName="io"
-                         projectFiles="true"
-                         kind="SOURCE_LOGICAL_FOLDER">
+                         projectFiles="true">
             <itemPath>source/de/hackcraft/io/MD5Format.h</itemPath>
             <itemPath>source/de/hackcraft/io/Texfile.cpp</itemPath>
             <itemPath>source/de/hackcraft/io/Texfile.h</itemPath>
           </logicalFolder>
           <logicalFolder name="proc"
                          displayName="proc"
-                         projectFiles="true"
-                         kind="SOURCE_LOGICAL_FOLDER">
+                         projectFiles="true">
             <itemPath>source/de/hackcraft/proc/Distortion.h</itemPath>
             <itemPath>source/de/hackcraft/proc/Facade.cpp</itemPath>
             <itemPath>source/de/hackcraft/proc/Facade.h</itemPath>
@@ -40,8 +37,7 @@
           </logicalFolder>
           <logicalFolder name="psi3d"
                          displayName="psi3d"
-                         projectFiles="true"
-                         kind="SOURCE_LOGICAL_FOLDER">
+                         projectFiles="true">
             <itemPath>source/de/hackcraft/psi3d/GLF.h</itemPath>
             <itemPath>source/de/hackcraft/psi3d/GLS.h</itemPath>
             <itemPath>source/de/hackcraft/psi3d/Particle.h</itemPath>
@@ -52,8 +48,7 @@
           </logicalFolder>
           <logicalFolder name="util"
                          displayName="util"
-                         projectFiles="true"
-                         kind="SOURCE_LOGICAL_FOLDER">
+                         projectFiles="true">
             <itemPath>source/de/hackcraft/util/GapBuffer.h</itemPath>
             <itemPath>source/de/hackcraft/util/KDTree.h</itemPath>
             <itemPath>source/de/hackcraft/util/Message.cpp</itemPath>
@@ -65,12 +60,10 @@
           </logicalFolder>
           <logicalFolder name="world"
                          displayName="world"
-                         projectFiles="true"
-                         kind="SOURCE_LOGICAL_FOLDER">
+                         projectFiles="true">
             <logicalFolder name="comp"
                            displayName="comp"
-                           projectFiles="true"
-                           kind="SOURCE_LOGICAL_FOLDER">
+                           projectFiles="true">
               <logicalFolder name="computer" displayName="computer" projectFiles="true">
                 <itemPath>source/de/hackcraft/world/comp/computer/rComcom.cpp</itemPath>
                 <itemPath>source/de/hackcraft/world/comp/computer/rComcom.h</itemPath>
@@ -118,8 +111,7 @@
             </logicalFolder>
             <logicalFolder name="object"
                            displayName="object"
-                           projectFiles="true"
-                           kind="SOURCE_LOGICAL_FOLDER">
+                           projectFiles="true">
               <itemPath>source/de/hackcraft/world/object/cAlert.cpp</itemPath>
               <itemPath>source/de/hackcraft/world/object/cAlert.h</itemPath>
               <itemPath>source/de/hackcraft/world/object/cBuilding.cpp</itemPath>
@@ -152,18 +144,6 @@
       <itemPath>Makefile</itemPath>
     </logicalFolder>
   </logicalFolder>
-  <sourceRootList>
-    <Elem>source/io</Elem>
-    <Elem>source/proc</Elem>
-    <Elem>source/psi3d</Elem>
-    <Elem>source/util</Elem>
-    <Elem>source/comp</Elem>
-    <Elem>source/de</Elem>
-    <Elem>data/base</Elem>
-    <Elem>data/blendswap.com</Elem>
-    <Elem>data/freesound.org</Elem>
-    <Elem>data/opengameart.org</Elem>
-  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="Debug" type="0">
@@ -174,9 +154,9 @@
       </toolsSet>
       <makefileType>
         <makeTool>
-          <buildCommandWorkingDir>ExistingProjectRoot</buildCommandWorkingDir>
-          <buildCommand>${MAKE} -f ExistingMakefile</buildCommand>
-          <cleanCommand>${MAKE} -f ExistingMakefile clean</cleanCommand>
+          <buildCommandWorkingDir>.</buildCommandWorkingDir>
+          <buildCommand>${MAKE}</buildCommand>
+          <cleanCommand>${MAKE} clean</cleanCommand>
           <executablePath>dist/linwarrior</executablePath>
           <cTool>
             <incDir>
