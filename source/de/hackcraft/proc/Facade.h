@@ -22,6 +22,10 @@ struct Facade {
     static void getConcrete(float x, float y, float z, float* color4fv, unsigned char seed = 131);
 
     static void getFacade(float x, float y, int gx, int gy, float age, float* c3f, unsigned char seed = 131);
+    
+private:
+    
+    static unsigned char generateFrame(float* dims4x4, float (*sums5)[4], unsigned char seed);
 };
 
 #endif	/* FACADE_H */

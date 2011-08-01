@@ -33,7 +33,7 @@ cBuilding::cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
 
         {
             cout << "Generating Rooftops..." << endl;
-            int w = 1 << (5 + BUILDINGDETAIL);
+            int w = 1 << (6 + BUILDINGDETAIL);
             int h = w;
             int bpp = 3;
             unsigned char* texels = new unsigned char[((unsigned long) w) * h * bpp];
@@ -59,7 +59,7 @@ cBuilding::cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
             cout << "Generating Facades..." << endl;
 
             loopk(17) {
-                int w = 1 << (7 + BUILDINGDETAIL);
+                int w = 1 << (8 + BUILDINGDETAIL);
                 int h = w;
                 int bpp = 3;
                 unsigned char* texels = new unsigned char[((unsigned long) w) * h * bpp];
@@ -89,7 +89,7 @@ cBuilding::cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
                 if (0) {
                     try {
                         char numb[3] = { char('0' + (k / 10)), char('0' + (k % 10)), '\0' };
-                        std::string fname = std::string("data/urban/scraper2/facade") + std::string(numb) + std::string(".tga");
+                        std::string fname = std::string("data/base/urban/facade/facade_") + std::string(numb) + std::string(".tga");
                         if (Texfile::saveTGA(fname.c_str(), w, h, bpp, texels)) {
                             cout << "Could not save image" << endl;
                         }

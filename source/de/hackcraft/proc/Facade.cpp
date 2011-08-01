@@ -44,25 +44,23 @@ void Facade::getConcrete(float x, float y, float z, float* color4fv, unsigned ch
     color4fv[3] = 1.0f;
 }
 
-void Facade::getFacade(float x, float y, int gx, int gy, float age, float* c3f, unsigned char seed) {
-
-    // Border Levels from outside to inside.
-
+unsigned char Facade::generateFrame(float* dims4x4, float (*sums5)[4], unsigned char seed) {
+    
     enum Levels {
         MARGIN, BORDER, PADDING, CONTENT, MAX_LEVELS
     };
-
-    float dims[4 * MAX_LEVELS];
-
+    
+    float* dims = dims4x4;
+    float (*sum)[4] = sums5;
+    
+    // Get the random numbers rolling...
     unsigned char r = Noise::LFSR8(seed);
     r = Noise::LFSR8(r);
     r = Noise::LFSR8(r);
     r = Noise::LFSR8(r);
     r = Noise::LFSR8(r);
+    
     const float inv256 = 0.003906f;
-
-    r = Noise::LFSR8(r);
-    bool rowmajor = (r & 1) == 0;
 
     float* margin = &dims[0];
     {
@@ -113,9 +111,10 @@ void Facade::getFacade(float x, float y, int gx, int gy, float age, float* c3f, 
         content[3] = r * 0.0001f * h + 0.0001f * h;
     }
 
-    float sum[MAX_LEVELS + 1][4] = {
-        {0, 0, 0, 0}
-    };
+    sum[0][0] = 0;
+    sum[0][1] = 0;
+    sum[0][2] = 0;
+    sum[0][3] = 0;
 
     loopi(MAX_LEVELS) {
         sum[i + 1][0] = sum[i][0] + dims[4 * i + 0];
@@ -123,6 +122,31 @@ void Facade::getFacade(float x, float y, int gx, int gy, float age, float* c3f, 
         sum[i + 1][2] = sum[i][2] + dims[4 * i + 2];
         sum[i + 1][3] = sum[i][3] + dims[4 * i + 3];
     }
+    
+    // Row major if result is even.
+    return Noise::LFSR8(r);
+}
+
+void Facade::getFacade(float x, float y, int gx, int gy, float age, float* c3f, unsigned char seed) {
+
+    // Border Levels from outside to inside.
+
+    enum Levels {
+        MARGIN, BORDER, PADDING, CONTENT, MAX_LEVELS
+    };
+    
+    float dims[4 * MAX_LEVELS];
+    float sum[MAX_LEVELS + 1][4];
+    
+    unsigned char r = generateFrame(dims, sum, seed);
+    bool rowmajor = (r & 1) == 0;
+    
+    float* margin = &dims[0];
+    //float* border = &dims[4];
+    //float* padding = &dims[8];
+    //float* content = &dims[12];
+    
+    const float inv256 = 0.003906f;
 
     float pyr[MAX_LEVELS + 1];
 
@@ -231,12 +255,22 @@ void Facade::getFacade(float x, float y, int gx, int gy, float age, float* c3f, 
     int winpart = inside[BORDER + 1];
     Distortion::mix3(1.0f - winpart, c3f, winpart, shade, c3f);
 
-    return;
+    //return;
 
+    /*
     float dirt[] = {0.3, 0.3, 0.25, 1.0f};
     float dirtf = 1.0f + pyr[BORDER + 1];
     dirtf = (dirtf > 1.0f) ? 0.0f : dirtf;
     dirtf *= 0.99f;
     Distortion::mix3(1.0f - dirtf, c3f, dirtf, dirt, c3f);
+    */
+    
+    float windowf = -cos((x - 0.5) * 6.0 * M_PI);
+    //float windowf = cos((x - 0.5) * 4.0 * M_PI);
+    windowf = fmax(windowf, cos((y - 0.5) * 12.0 * M_PI));
+    windowf = ((windowf < 0.98) || !winpart) ? 0.0 : windowf;
+    
+    float wframe[] = { 0, 0, 0, 1 };
+    Distortion::mix3(1.0f - windowf, c3f, windowf, wframe, c3f);
 }
 
