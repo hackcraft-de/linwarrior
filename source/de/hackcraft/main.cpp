@@ -1096,6 +1096,7 @@ int cMain::run(int argc, char** args) {
 }
 
 
+
 //
 // GOD begins below!
 //
@@ -1109,10 +1110,6 @@ extern "C" int __stdcall WinMain(void* hInstance, void* hPrevInstance, char* lpC
 
 int main(int argc, char **args) {
 #endif
-
-    //console.test0();
-    //console.test1();
-    //return 0;
     
     try {
         return (new cMain())->run(argc, args);

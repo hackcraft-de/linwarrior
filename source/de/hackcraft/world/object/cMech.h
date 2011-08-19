@@ -31,6 +31,7 @@ struct rCollider;
 struct rWeapon;
 struct rWeaponExplosion;
 
+#include <string>
 #include <vector>
 #include <map>
 
@@ -46,6 +47,8 @@ struct rWeaponExplosion;
 #define MECH_CAMERA_BUTTON    BT_PU
 #define MECH_NEXT_BUTTON      BT_PR
 #define MECH_PREV_BUTTON      BT_PL
+
+typedef std::map<std::string,void*> Properties_;
 
 /**
  * Models Mechlike Objects.
@@ -97,8 +100,11 @@ public:
     int currentWeapon;
 
 public:
-    cMech(float* pos = NULL, float* rot = NULL);
+    cMech(Properties_& cnf);
+    cMech(float* pos, float* rot, std::string modelName);
     ~cMech();
+    
+    void init(float* pos, float* rot, std::string modelName);
 
     // Events
     virtual void spawn();

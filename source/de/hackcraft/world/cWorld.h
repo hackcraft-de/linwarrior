@@ -12,13 +12,12 @@
 
 class cWorld;
 
-#include "cBackground.h"
-
 #include "de/hackcraft/psi3d/macros.h"
 
-#include "de/hackcraft/util/OID.h"
-#include "de/hackcraft/util/Timing.h"
-#include "de/hackcraft/util/Message.h"
+#include "de/hackcraft/world/cBackground.h"
+#include "de/hackcraft/world/OID.h"
+#include "de/hackcraft/world/Timing.h"
+#include "de/hackcraft/world/Message.h"
 
 #include "de/hackcraft/world/object/cObject.h"
 

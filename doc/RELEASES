@@ -4,7 +4,8 @@ RELEASE NOTES
 ? release:
 Enhanced Landscape Rendering
 - Added different rendering styles for foliage
-
+Enhanced Internals
+- Ability to configure some mech parameters.
 Enhanced Sky Model:
 - Moving sun/moon light
 

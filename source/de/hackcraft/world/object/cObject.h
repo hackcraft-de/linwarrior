@@ -17,11 +17,12 @@ class cWorld;
 
 struct rGrouping;
 
+#include "de/hackcraft/world/Message.h"
+#include "de/hackcraft/world/OID.h"
+
 #include "de/hackcraft/world/comp/rGrouping.h"
 
-#include "de/hackcraft/util/OID.h"
 #include "de/hackcraft/util/Pad.h"
-#include "de/hackcraft/util/Message.h"
 
 #include "de/hackcraft/psi3d/math3d.h"
 

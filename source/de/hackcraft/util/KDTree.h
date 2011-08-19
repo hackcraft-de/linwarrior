@@ -1,5 +1,5 @@
 /*
- * File:   kdtree.inc
+ * File:   KDTree.h
  * Author: Benjamin Pickhardt
  * Home:   hackcraft.de
  *

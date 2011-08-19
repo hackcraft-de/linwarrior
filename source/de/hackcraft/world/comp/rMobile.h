@@ -11,7 +11,7 @@
 
 #include "rComponent.h"
 
-#include "de/hackcraft/util/OID.h"
+#include "de/hackcraft/world/OID.h"
 
 #include "de/hackcraft/psi3d/math3d.h"
 

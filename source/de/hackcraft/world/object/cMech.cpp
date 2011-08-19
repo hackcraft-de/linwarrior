@@ -37,6 +37,9 @@ using std::endl;
 #include <string>
 using std::string;
 
+#include <map>
+using std::map;
+
 #define MECHDETAIL 0
 
 #define EXPERIMENT true
@@ -44,11 +47,27 @@ using std::string;
 
 // -------------------------------------------------------------------
 
+#include <typeinfo>
 
 int cMech::sInstances = 0;
 std::map<int, long> cMech::sTextures;
 
-cMech::cMech(float* pos, float* rot) {
+cMech::cMech(Properties_& cnf) {
+    float* pos = (float*) cnf["pos"];
+    cout << pos[0] << " " << pos[1] << " " << pos[2] << endl;
+    float* rot = (float*) cnf["rot"];
+    cout << rot[0] << " " << rot[1] << " " << rot[2] << endl;
+    string* modelName = (string*) cnf["model"];
+    cout << *modelName << endl;
+    //cout << "TYPE: " << (typeid(cnf["model"]) == typeid(void*)) << " " << typeid(cnf["string"]).name() << "\n";
+    init(pos, rot, *modelName);
+}
+
+cMech::cMech(float* pos, float* rot, string modelName) {
+    init(pos, rot, modelName);
+}
+
+void cMech::init(float* pos, float* rot, string modelName) {
     sInstances++;
     if (sInstances == 1) {
         if (1) {
@@ -177,22 +196,37 @@ cMech::cMech(float* pos, float* rot) {
     }
 
     try {
-        int mod = (9 + rand()) % 8; // fr
-        //int mod = (13+rand())%8; // le
-        const char* fns[] = {
-            //"/media/44EA-7693/workspaces/mm3d/soldier/soldier.md5mesh",
-            "data/base/wanzers/frogger/frogger.md5mesh",
-            "data/com/blendswap/flopsy/flopsy.md5mesh",
-            "data/base/wanzers/gorilla/gorilla_ii.md5mesh",
-            "data/org/opengameart/scorpion/scorpion.md5mesh",
-            "data/base/wanzers/lemur/lemur.md5mesh",
-            "data/base/tanks/bug/bug.md5mesh",
-            "data/base/tanks/ant/ant.md5mesh",
-            //"data/org/opengameart/thunderbird/thunderbird.md5mesh",
-            "data/base/wanzers/kibitz/kibitz.md5mesh",
-            //"data/base/tanks/pod/pod.md5mesh"
-        };
-        rigged->loadModel(string(fns[mod]));
+        
+        map<string,string> m2f;
+        
+        m2f["frogger"] = "data/base/wanzers/frogger/frogger.md5mesh";
+        m2f["gorilla_ii"] = "data/base/wanzers/gorilla/gorilla_ii.md5mesh";
+        m2f["lemur"] = "data/base/wanzers/lemur/lemur.md5mesh";
+        m2f["kibitz"] = "data/base/wanzers/kibitz/kibitz.md5mesh";
+        
+        m2f["pod"] = "data/base/tanks/pod/pod.md5mesh";
+
+        m2f["bug"] = "data/base/tanks/bug/bug.md5mesh";
+        m2f["ant"] = "data/base/tanks/ant/ant.md5mesh";
+        
+        m2f["flopsy"] = "data/com/blendswap/flopsy/flopsy.md5mesh";
+        
+        m2f["scorpion"] = "data/org/opengameart/scorpion/scorpion.md5mesh";
+        m2f["thunderbird"] = "data/org/opengameart/thunderbird/thunderbird.md5mesh";
+        
+        m2f["soldier"] = "/media/44EA-7693/workspaces/mm3d/soldier/soldier.md5mesh";
+        
+        string name = modelName;
+        if (m2f.find(name) == m2f.end()) {
+            int n = rand() % m2f.size();
+            for (auto i = m2f.begin(); i != m2f.end(); i++) {
+                if (n == 0) {
+                    name = i->first;
+                }
+                n--;
+            }
+        }
+        rigged->loadModel(m2f[name]);
     } catch (const char* s) {
         cout << "CATCHING: " << s << endl;
         rigged->loadModel(string("data/base/wanzers/frogger/frogger.md5mesh"));

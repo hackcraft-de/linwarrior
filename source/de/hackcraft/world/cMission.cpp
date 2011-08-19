@@ -17,6 +17,7 @@
 using std::cout;
 using std::endl;
 #include <string>
+#include <typeinfo>
 using std::string;
 
 void adjustHeight(cPlanetmap* planetmap, float* pos) {
@@ -75,7 +76,7 @@ cObject* cMission::init(cWorld* world) {
 
     if (true) {
         float pos[3] = {-50, 0, -50};
-        cMech* mech = new cMech(pos);
+        cMech* mech = new cMech(pos, NULL, "frogger");
         assert(mech != NULL);
         mech->name = "Playermech";
 
@@ -286,6 +287,13 @@ cObject* cOpenMission::init(cWorld* world) {
     return player;
 }
 
+/*
+#include "de/hackcraft/util/Properties.h"
+#include "de/hackcraft/util/String.h"
+#include "de/hackcraft/util/ArrayList.h"
+#include "de/hackcraft/util/HashSet.h"
+*/
+
 cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, float* position) {
     cObject* player = NULL;
 
@@ -293,10 +301,25 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
 
     // Player
     if (true) {
-        float pos[3] = {p[0] - 20, 0.1, p[2] - 50};
-        float rot[3] = {0, -170, 0};
+        float* pos = vector_new(p[0] - 20, 0.1, p[2] - 50);
+        float* rot = vector_new(0, -170, 0);
+        string* model = new string("frogger");
+        
         adjustHeight(planetmap, pos);
-        cMech* mech = new cMech(pos, rot);
+        
+        Properties_ c;
+        c["pos"] = pos;
+        c["rot"] = rot;
+        c["model"] = model;
+        //c["name"] = new string("Playermech");
+        //c["nameable/name"] = new string("Alpha");
+        
+        cMech* mech = new cMech(c);
+        
+        delete (string*) c["model"];
+
+        //cMech* mech = new cMech(pos, rot, "lemur");
+        
         if (mech == NULL) throw "No memory for player mech!";
         player = mech;
         mech->name = "Playermech";
@@ -343,7 +366,7 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
         float pos[3] = {p[0] + 13 * 1, 0.1, p[2] - 50 * 1};
         float rot[3] = {0, -210, 0};
         adjustHeight(planetmap, pos);
-        cMech* mech = new cMech(pos, rot);
+        cMech* mech = new cMech(pos, rot, "frogger");
         assert(mech != NULL);
 
         mech->name = "Player's Wing 1";
@@ -366,7 +389,7 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
         float pos[3] = {p[0] + 7 * 1, 0.1, p[2] - 50 * 1};
         float rot[3] = {0, -210, 0};
         adjustHeight(planetmap, pos);
-        cMech* mech = new cMech(pos, rot);
+        cMech* mech = new cMech(pos, rot, "frogger");
         assert(mech != NULL);
 
         mech->name = "Player's Wing 2";
@@ -429,7 +452,7 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
         float pos[3] = {loc[0] + 10, loc[1], loc[2] - 50};
         float rot[3] = {0, -210, 0};
         adjustHeight(planetmap, pos);
-        cMech* mech = new cMech(pos, rot);
+        cMech* mech = new cMech(pos, rot, "frogger");
         assert(mech != NULL);
 
         mech->name = "Mech/Stortebeker";
@@ -470,7 +493,7 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
     if (true) {
         float pos[3] = {loc[0] + 50, loc[1], loc[2] + 50};
         adjustHeight(planetmap, pos);
-        cMech* mech = new cMech(pos);
+        cMech* mech = new cMech(pos, NULL, "scorpion");
         assert(mech != NULL);
 
         mech->name = "Mech/OffendingVillain";
@@ -501,7 +524,7 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
     if (true) {
         float pos[3] = {loc[0] - 50, loc[1], loc[2] + 50};
         adjustHeight(planetmap, pos);
-        cMech* mech = new cMech(pos);
+        cMech* mech = new cMech(pos, NULL, "scorpion");
         assert(mech != NULL);
 
         mech->name = "Mech/LurkingBandit";
@@ -560,9 +583,9 @@ void cOpenMission::initStarcircleTown(cWorld* world, cPlanetmap* planetmap) {
     roundForrest(loc[0], loc[1], loc[2], world, 7 * 2, 22 * 2, 3);
 
     if (true) {
-        smallArmy(loc[0], loc[1] + 5, loc[2], world, "Bandit Leader", 1, false, 1);
-        smallArmy(loc[0] - 48, loc[1] + 5, loc[2] + 17, world, "Bandits A", 3, false, 3);
-        smallArmy(loc[0] - 50, loc[1] + 5, loc[2] - 50, world, "Bandits B", 2, false, 2);
+        smallArmy(loc[0], loc[1] + 5, loc[2], world, "Bandit Leader", 1, false, 1, "frogger");
+        smallArmy(loc[0] - 48, loc[1] + 5, loc[2] + 17, world, "Bandits A", 3, false, 3, "ant");
+        smallArmy(loc[0] - 50, loc[1] + 5, loc[2] - 50, world, "Bandits B", 2, false, 2, "lemur");
     }
 
     {
@@ -715,7 +738,7 @@ void cOpenMission::initPyraNanoCorp(cWorld* world, cPlanetmap* planetmap) {
 
     pyramidBuilding(loc[0], loc[1], loc[2], world);
     roundForrest(loc[0], loc[1], loc[2], world, 28, 50, 3);
-    smallArmy(loc[0] + 15, loc[1], loc[2] - 30, world, "Bandito", 3, false);
+    smallArmy(loc[0] + 15, loc[1], loc[2] - 30, world, "Bandito", 3, false, 0, "flopsy");
 }
 
 void cOpenMission::initPentaSpaceport(cWorld* world, cPlanetmap* planetmap) {
@@ -778,7 +801,7 @@ void cOpenMission::initPentaSpaceport(cWorld* world, cPlanetmap* planetmap) {
 
     loopi(2) {
         pos[0] += 20;
-        cMech* mech = new cMech(pos, rot);
+        cMech* mech = new cMech(pos, rot, "bug");
         if (mech == NULL) throw "No memory for cMech in spacePortMechs.";
         mech->name = "Mech/SpacePortGuard_i";
         mech->nameable->name = "Space-Bandit";
@@ -795,7 +818,7 @@ void cOpenMission::battleField(cWorld* world) {
     loopi(25) {
         float s = 30;
         float pos[3] = {(i % 6) * s - 50, 0, 20 + (i / 6) * s + (i / 6 % 2) * s / 2};
-        cMech* mech = new cMech(pos);
+        cMech* mech = new cMech(pos, NULL, "");
         if (mech == NULL) throw "No memory for cMech in battleField.";
 
         mech->name = "Mech/Battlemech_i";
@@ -815,7 +838,7 @@ void cOpenMission::battleField(cWorld* world) {
 
     loopi(20) {
         float pos[3] = {(i % 6) * 10 - 50.0f, 0.0f, -20.0f + (i / 6)*10 + (i / 6 % 2)*5};
-        cMech* mech = new cMech(pos);
+        cMech* mech = new cMech(pos, NULL, "");
         if (mech == NULL) throw "No memory for cMech in battleField.";
 
         mech->name = "Mech/Fieldmech_i";
@@ -834,7 +857,7 @@ void cOpenMission::battleField(cWorld* world) {
     }
 }
 
-void cOpenMission::smallArmy(int wx, int wy, int wz, cWorld* world, const char* name, int n, bool blue, int wpn) {
+void cOpenMission::smallArmy(int wx, int wy, int wz, cWorld* world, const char* name, int n, bool blue, int wpn, string model) {
     float r = 2;
     float a = 0;
 
@@ -845,7 +868,7 @@ void cOpenMission::smallArmy(int wx, int wy, int wz, cWorld* world, const char* 
 
         float pos[3] = {x, y, z};
         float rot[3] = {0, float(rand() % 360), 0};
-        cMech* mech = new cMech(pos, rot);
+        cMech* mech = new cMech(pos, rot, model);
         if (mech == NULL) throw "No memory for cMech in smallArmy.";
         mech->name = name;
         mech->nameable->name = name;

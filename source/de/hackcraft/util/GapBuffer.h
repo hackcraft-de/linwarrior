@@ -364,8 +364,10 @@ private:
         if (bufferPre == bufferPost - 1) {
             unsigned long bufferSize_ = 2 * bufferSize;
             char* bufferData_ = new char[bufferSize_];
-            memset(bufferData_, cl, bufferSize_);
             unsigned long i = 0;
+            for (i = 0; i < bufferSize_; i++) {
+                bufferData_[i] = cl;
+            }
             for (i = 0; i <= bufferPre; i++) {
                 bufferData_[i] = bufferData[i];
             }

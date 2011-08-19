@@ -1,6 +1,7 @@
 /* 
  * File:   Distortion.h
- * Author: benben
+ * Author: Benjamin Pickhardt
+ * Home:   hackcraft.de
  *
  * Created on June 2, 2011, 4:52 PM
  */

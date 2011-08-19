@@ -19,6 +19,7 @@ class cMission;
 #include "de/hackcraft/util/Pad.h"
 
 #include <vector>
+#include <string>
 
 /**
  * Missions are responsible for initial and midtime spawning of objects
@@ -97,7 +98,7 @@ private:
     void initSpadenixFactory(cWorld* world, cPlanetmap* planetmap);
 private:
     static void battleField(cWorld* world);
-    static void smallArmy(int wx, int wy, int wz, cWorld* world, const char* name, int n, bool blue, int wpn = 0);
+    static void smallArmy(int wx, int wy, int wz, cWorld* world, const char* name, int n, bool blue, int wpn /*0*/, std::string model);
     static void smallSettling(int wx, int wy, int wz, cWorld* world, int n);
     static void roundForrest(int wx, int wy, int wz, cWorld* world, int r1, int r2, int nmax = 17);
     static void capitalCity(int wx, int wy, int wz, cWorld* world);

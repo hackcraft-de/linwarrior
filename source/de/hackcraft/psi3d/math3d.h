@@ -478,6 +478,8 @@ typedef vec4 quat;
     printf("< %3.4f %3.4f %3.4f >\n", (A)[0], (A)[1], (A)[2]); \
 }
 
+#define vector_new(x, y, z)             ({ float* v = new vec3; v[0] = (x);  v[1] = (y); v[2] = (z); v; })
+
 #define vector_zero(result)             { (result)[0] = (result)[1] = (result)[2] = 0.0f; }
 
 #define vector_cpy(result, A)           { (result)[0] = (A)[0]; (result)[1] = (A)[1]; (result)[2] = (A)[2]; }

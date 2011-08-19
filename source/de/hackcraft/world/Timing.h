@@ -11,7 +11,7 @@
 
 class Timing;
 
-#include "OID.h"
+#include "de/hackcraft/world/OID.h"
 
 #include <string>
 

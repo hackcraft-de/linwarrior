@@ -38,9 +38,9 @@ OBJECTFILES= \
 	${OBJECTDIR}/source/de/hackcraft/world/comp/rGrouping.o \
 	${OBJECTDIR}/source/de/hackcraft/world/comp/rRigged.o \
 	${OBJECTDIR}/source/de/hackcraft/world/cBackground.o \
+	${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeaponMachinegun.o \
 	${OBJECTDIR}/source/de/hackcraft/io/Texfile.o \
 	${OBJECTDIR}/source/de/hackcraft/proc/Road.o \
-	${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeaponMachinegun.o \
 	${OBJECTDIR}/source/de/hackcraft/proc/Facade.o \
 	${OBJECTDIR}/source/de/hackcraft/util/Message.o \
 	${OBJECTDIR}/source/de/hackcraft/world/object/cAlert.o \
@@ -118,6 +118,11 @@ ${OBJECTDIR}/source/de/hackcraft/world/cBackground.o: source/de/hackcraft/world/
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/world/cBackground.o source/de/hackcraft/world/cBackground.cpp
 
+${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeaponMachinegun.o: source/de/hackcraft/world/comp/weapon/rWeaponMachinegun.cpp 
+	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/world/comp/weapon
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeaponMachinegun.o source/de/hackcraft/world/comp/weapon/rWeaponMachinegun.cpp
+
 ${OBJECTDIR}/source/de/hackcraft/io/Texfile.o: source/de/hackcraft/io/Texfile.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/io
 	${RM} $@.d
@@ -127,11 +132,6 @@ ${OBJECTDIR}/source/de/hackcraft/proc/Road.o: source/de/hackcraft/proc/Road.cpp
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/proc
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/proc/Road.o source/de/hackcraft/proc/Road.cpp
-
-${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeaponMachinegun.o: source/de/hackcraft/world/comp/weapon/rWeaponMachinegun.cpp 
-	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/world/comp/weapon
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/world/comp/weapon/rWeaponMachinegun.o source/de/hackcraft/world/comp/weapon/rWeaponMachinegun.cpp
 
 ${OBJECTDIR}/source/de/hackcraft/proc/Facade.o: source/de/hackcraft/proc/Facade.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/proc

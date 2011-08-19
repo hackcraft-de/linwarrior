@@ -52,20 +52,32 @@ Refactoring and cleanup:
 
 Landscape:
 
-- Implement different rendering geometries for plants, bushes and grass.
-
 - Take slope into account for Planetmap erosion and material within second pass.
 
 - City-generator.
+
+- Biome and continents - pre-designed shape and automatic fill out?
+
+- Find a way to add Caves and sub-terrain to the Planetmap's height map (hole mod?).
+
+- Add vegetation growth mods.
+
+- Add water veins.
+
+- Add oceans.
 
 
 Immersion and FX:
 
 - Implement camera lag and shake rig
 
+- Camera shall not pass through ground (implement camera particle physics)
+
 - Footstep sound
 
 - Colored particles indicating damage inflicted (chipping off).
+
+- Dust when walking
 
 
 Gameplay:

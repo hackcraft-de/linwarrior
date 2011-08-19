@@ -13,14 +13,14 @@
 
 #include "de/hackcraft/userkeys.h"
 
+#include "de/hackcraft/util/GapBuffer.h"
+#include "de/hackcraft/util/Pad.h"
+
 #include "de/hackcraft/world/comp/computer/rController.h"
 
 #include "de/hackcraft/world/comp/weapon/rWeapon.h"
 
 #include "de/hackcraft/world/comp/rPadmap.h"
-
-#include "de/hackcraft/util/GapBuffer.h"
-#include "de/hackcraft/util/Pad.h"
 
 #include "de/hackcraft/world/cBackground.h"
 #include "de/hackcraft/world/cMission.h"

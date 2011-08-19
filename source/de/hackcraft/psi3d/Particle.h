@@ -9,11 +9,8 @@
 #ifndef _CPARTICLE_H
 #define	_CPARTICLE_H
 
-//#include "de/hackcraft/util/OID.h"
 typedef unsigned long long OBID;
 
-// for loops
-#include "de/hackcraft/psi3d/ctrl.h"
 // for vector ops
 #include "de/hackcraft/psi3d/math3d.h"
 // for float_NAN
@@ -114,7 +111,7 @@ struct Particle {
         data = original->data;
 
 
-        foreach(i, original->trail) {
+        for (auto i = original->trail.begin(); i != original->trail.end(); i++) {
             trail.push_back(new Particle(*i));
         }
         //for (Particle* i: original->trail) {
@@ -438,7 +435,7 @@ struct Particle {
         float maxval = -1000000;
         int maxidx = 0;
 
-        loopi(6) {
+        for (int i = 0; i < 6; i++) {
             //cout << dminmax[i] << endl;
             if (dminmax[i] > 0) return 0;
             if (dminmax[i] > maxval) {
