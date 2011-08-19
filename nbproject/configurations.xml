@@ -11,13 +11,7 @@
         <itemPath>source/de/hackcraft/io/Texfile.h</itemPath>
       </logicalFolder>
       <logicalFolder name="lang" displayName="lang" projectFiles="true">
-        <itemPath>source/de/hackcraft/lang/ArrayList.h</itemPath>
-        <itemPath>source/de/hackcraft/lang/HashMap.h</itemPath>
-        <itemPath>source/de/hackcraft/lang/HashSet.h</itemPath>
-        <itemPath>source/de/hackcraft/lang/LinkedList.h</itemPath>
         <itemPath>source/de/hackcraft/lang/Object.h</itemPath>
-        <itemPath>source/de/hackcraft/lang/Properties.h</itemPath>
-        <itemPath>source/de/hackcraft/lang/String.h</itemPath>
       </logicalFolder>
       <logicalFolder name="proc" displayName="proc" projectFiles="true">
         <itemPath>source/de/hackcraft/proc/Distortion.h</itemPath>
@@ -183,24 +177,6 @@
           <developmentMode>5</developmentMode>
         </fortranCompilerTool>
       </compileType>
-      <item path="source/de/hackcraft/lang/ArrayList.h" ex="true" tool="3" flavor="0">
-      </item>
-      <item path="source/de/hackcraft/lang/HashMap.h" ex="true" tool="3" flavor="0">
-      </item>
-      <item path="source/de/hackcraft/lang/HashSet.h" ex="true" tool="3" flavor="0">
-      </item>
-      <item path="source/de/hackcraft/lang/LinkedList.h"
-            ex="true"
-            tool="3"
-            flavor="0">
-      </item>
-      <item path="source/de/hackcraft/lang/Properties.h"
-            ex="true"
-            tool="3"
-            flavor="0">
-      </item>
-      <item path="source/de/hackcraft/lang/String.h" ex="true" tool="3" flavor="0">
-      </item>
       <item path="source/de/hackcraft/world/Timing.cpp" ex="true" tool="1" flavor="0">
       </item>
       <item path="source/de/hackcraft/world/Timing.h" ex="true" tool="3" flavor="0">
