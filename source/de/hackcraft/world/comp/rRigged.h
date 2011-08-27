@@ -102,7 +102,7 @@ public:
         return std::string(names[num]);
     }
 
-    int getMountpoint(char* point) {
+    int getMountpoint(const char* point) {
         int jp = 0;
         if (strcmp(point, "LTorsor") == 0) jp = LSMOUNT;
         else if (strcmp(point, "LUpArm") == 0) jp = LSMOUNT;

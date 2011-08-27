@@ -19,6 +19,8 @@ using std::endl;
 #include <string>
 #include <typeinfo>
 using std::string;
+#include <sstream>
+using std::stringstream;
 
 void adjustHeight(cPlanetmap* planetmap, float* pos) {
     float color[16];
@@ -292,7 +294,7 @@ cObject* cOpenMission::init(cWorld* world) {
 #include "de/hackcraft/util/String.h"
 #include "de/hackcraft/util/ArrayList.h"
 #include "de/hackcraft/util/HashSet.h"
-*/
+ */
 
 cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, float* position) {
     cObject* player = NULL;
@@ -303,28 +305,39 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
     if (true) {
         float* pos = vector_new(p[0] - 20, 0.1, p[2] - 50);
         float* rot = vector_new(0, -170, 0);
-        string* model = new string("frogger");
-        
-        adjustHeight(planetmap, pos);
-        
-        Properties_ c;
-        c["pos"] = pos;
-        c["rot"] = rot;
-        c["model"] = model;
-        //c["name"] = new string("Playermech");
-        //c["nameable/name"] = new string("Alpha");
-        
-        cMech* mech = new cMech(c);
-        
-        delete (string*) c["model"];
 
-        //cMech* mech = new cMech(pos, rot, "lemur");
+        adjustHeight(planetmap, pos);
+
+        Props c;
+
+        stringstream pos_;
+        pos_ << "(" << pos[0] << "," << pos[1] << "," << pos[2] << ")";
+        c["pos"] = pos_.str();
+
+        stringstream rot_;
+        rot_ << "(" << rot[0] << "," << rot[1] << "," << rot[2] << ")";
+        c["rot"] = rot_.str();
+
+        c["name"] = "Playermech";
+        c["displayname"] = "Alpha";
+        c["model"] = "frogger";
+        c["ai"] = "false";
+        //c["tags"] = "{BLUE,HUMANPLAYER}";
+        //c["enemies"] = "{RED}";
+        //c["notenemies"] = "{DEAD}";
         
+        c["Center"] = "none";
+        c["LTorsor"] = "Plasma";
+        c["RTorsor"] = "Raybeam";
+        c["LUpArm"] = "Homing";
+        c["RUpArm"] = "Homing";
+        c["LLoArm"] = "Machinegun";
+        c["RLoArm"] = "Machinegun";
+
+        cMech* mech = new cMech(c);
         if (mech == NULL) throw "No memory for player mech!";
         player = mech;
-        mech->name = "Playermech";
-        mech->nameable->name = "Alpha";
-        mech->controller->enabled = false; // Disable Autopilot.
+        
         mech->addTag(cObject::BLUE);
         mech->addTag(cObject::HUMANPLAYER);
         mech->tarcom->addEnemy(cObject::RED);
@@ -335,30 +348,6 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
         group_alliance_wingmen.grouping->members.insert(mech->oid);
         group_alliance_all.grouping->members.insert(mech->oid);
         cout << "after first spawn\n";
-
-        if (true) {
-            if (!true) {
-                mech->mountWeapon((char*) "LTorsor", new rWeaponExplosion);
-                //mech->mountWeapon((char*) "RTorsor", new cExplosion);
-            }
-            if (true) {
-                mech->mountWeapon((char*) "LTorsor", new rWeaponPlasmagun);
-                //mech->mountWeapon((char*) "RTorsor", new cPlasmaGun);
-            }
-            if (true) {
-                mech->mountWeapon((char*) "LLoArm", new rWeaponMachinegun);
-                mech->mountWeapon((char*) "RLoArm", new rWeaponMachinegun);
-            }
-            if (!true) {
-                mech->mountWeapon((char*) "RLoArm", new rWeaponHoming);
-                mech->mountWeapon((char*) "RLoArm", new rWeaponRaybeam);
-            }
-            if (true) {
-                //mech->mountWeapon((char*) "Center", new cRaybeam);
-                mech->mountWeapon((char*) "RTorsor", new rWeaponRaybeam);
-            }
-        }
-        cout << "after first weapons\n";
     }
 
     // Wing 1
@@ -584,8 +573,8 @@ void cOpenMission::initStarcircleTown(cWorld* world, cPlanetmap* planetmap) {
 
     if (true) {
         smallArmy(loc[0], loc[1] + 5, loc[2], world, "Bandit Leader", 1, false, 1, "frogger");
-        smallArmy(loc[0] - 48, loc[1] + 5, loc[2] + 17, world, "Bandits A", 3, false, 3, "ant");
-        smallArmy(loc[0] - 50, loc[1] + 5, loc[2] - 50, world, "Bandits B", 2, false, 2, "lemur");
+        smallArmy(loc[0] - 48, loc[1] + 5, loc[2] + 17, world, "Bandits A", 2, false, 3, "bug");
+        smallArmy(loc[0] - 50, loc[1] + 5, loc[2] - 50, world, "Bandits B", 5, false, 2, "lemur");
     }
 
     {

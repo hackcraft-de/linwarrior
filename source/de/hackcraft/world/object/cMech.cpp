@@ -52,15 +52,66 @@ using std::map;
 int cMech::sInstances = 0;
 std::map<int, long> cMech::sTextures;
 
-cMech::cMech(Properties_& cnf) {
-    float* pos = (float*) cnf["pos"];
-    cout << pos[0] << " " << pos[1] << " " << pos[2] << endl;
-    float* rot = (float*) cnf["rot"];
-    cout << rot[0] << " " << rot[1] << " " << rot[2] << endl;
-    string* modelName = (string*) cnf["model"];
-    cout << *modelName << endl;
-    //cout << "TYPE: " << (typeid(cnf["model"]) == typeid(void*)) << " " << typeid(cnf["string"]).name() << "\n";
-    init(pos, rot, *modelName);
+cMech::cMech(Props& cnf) {
+    
+    int n;
+    float x, y, z;
+    
+    cout << cnf["model"] << "\n";
+    
+    cout << cnf["pos"] << "\n";
+    n = sscanf(cnf["pos"].c_str(), " ( %f , %f , %f ) ", &x, &y, &z);
+    vec3 pos;
+    vector_set(pos, x, y, z);
+    
+    cout << cnf["rot"] << "\n";
+    n = sscanf(cnf["rot"].c_str(), " ( %f , %f , %f ) ", &x, &y, &z);
+    vec3 rot;
+    vector_set(rot, x, y, z);
+    
+    init(pos, rot, cnf["model"]);
+    
+    // Mount weapons
+    
+    const char* mpts[] = {
+        "Center",
+        "LTorsor", "RTorsor",
+        "LLoArm", "LUpArm",
+        "RLoArm", "RUpArm"
+    };
+    
+    for (int i = 0; i < 7; i++) {
+        
+        string wpn = cnf[mpts[i]];
+        
+        if (wpn.compare("Plasma") == 0) {
+            cout << wpn << " selected for " << mpts[i] << "\n";
+            mountWeapon(mpts[i], new rWeaponPlasmagun());
+            
+        } else if (wpn.compare("Homing") == 0) {
+            cout << wpn << " selected for " << mpts[i] << "\n";
+            mountWeapon(mpts[i], new rWeaponHoming());
+            
+        } else if (wpn.compare("Raybeam") == 0) {
+            cout << wpn << " selected for " << mpts[i] << "\n";
+            mountWeapon(mpts[i], new rWeaponRaybeam());
+            
+        } else if (wpn.compare("Machinegun") == 0) {
+            cout << wpn << " selected for " << mpts[i] << "\n";
+            mountWeapon(mpts[i], new rWeaponMachinegun());
+            
+        } else if (wpn.compare("Explosion") == 0) {
+            cout << wpn << " selected for " << mpts[i] << "\n";
+            mountWeapon(mpts[i], new rWeaponExplosion());
+            
+        } else {
+            cout << "No weapon selected for " << mpts[i] << "\n";
+        }
+    }
+
+    name = cnf["name"];
+    nameable->name = cnf["displayname"];
+    controller->enabled = (cnf["ai"].compare("true") == 0);
 }
 
 cMech::cMech(float* pos, float* rot, string modelName) {
@@ -368,7 +419,7 @@ void cMech::listener() {
     alListenerfv(AL_ORIENTATION, at_and_up);
 }
 
-void cMech::mountWeapon(char* point, rWeapon *weapon, bool add) {
+void cMech::mountWeapon(const char* point, rWeapon *weapon, bool add) {
     if (weapon == NULL) throw "Null weapon for mounting given.";
     weapon->weaponMount = rigged->getMountpoint(point);
     //weapon->weaponBasefv = rigged->getMountMatrix(point);

@@ -48,7 +48,7 @@ struct rWeaponExplosion;
 #define MECH_NEXT_BUTTON      BT_PR
 #define MECH_PREV_BUTTON      BT_PL
 
-typedef std::map<std::string,void*> Properties_;
+typedef std::map<std::string,std::string> Props;
 
 /**
  * Models Mechlike Objects.
@@ -100,7 +100,7 @@ public:
     int currentWeapon;
 
 public:
-    cMech(Properties_& cnf);
+    cMech(Props& cnf);
     cMech(float* pos, float* rot, std::string modelName);
     ~cMech();
     
@@ -114,7 +114,7 @@ public:
     void listener();
 
     // Weapons
-    void mountWeapon(char* point, rWeapon *weapon, bool add = true);
+    void mountWeapon(const char* point, rWeapon *weapon, bool add = true);
     void fireCycleWeapons();
     void fireAllWeapons();
     void fireWeapon(unsigned n);

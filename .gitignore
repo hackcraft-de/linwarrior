@@ -1,7 +1,6 @@
 dep
 dist
 build
-data/freesound.org
 doc/doxygen
 gmon.out
 profile
