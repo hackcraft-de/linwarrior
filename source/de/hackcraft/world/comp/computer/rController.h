@@ -117,7 +117,7 @@ protected:
     void push(OID value);
 
     /// Remove whole instruction/frame from stack.
-    void pop();
+    void pop(std::string reason);
 
 public:
     // 1. Transition Function

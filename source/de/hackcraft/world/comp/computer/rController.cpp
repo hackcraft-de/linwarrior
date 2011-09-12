@@ -126,9 +126,9 @@ void rController::push(OID value) {
     commandStack.push_back(value);
 }
 
-void rController::pop() {
+void rController::pop(std::string reason) {
     if (debug_transitions) {
-        cout << object->name.c_str() << "#" << object->oid << ".pop()\n";
+        cout << object->name.c_str() << "#" << object->oid << ".pop(" << reason << ")\n";
     }
     int size = getFrameSize(); // Important: eval outside loop-condition!
     loopi(size) commandStack.pop_back();
@@ -215,7 +215,7 @@ void rController::waitEvent() {
         mseconds -= 1000 / 40;
         setParameter(1, mseconds);
         if (mseconds <= 0) {
-            pop();
+            pop("Timeout for wait was reached.");
             return;
         }
     }
@@ -249,19 +249,16 @@ void rController::attackEnemy() {
 
     cObject* target = cWorld::instance->getObject(entity);
     if (target == NULL) {
-        // Target disappeared (removed from world: fragged).
         this->doit(0, NULL, false);
-        pop();
+        pop("Target disappeared (removed from world: fragged).");
         return;
     } else if (!mech->tarcom->isEnemy(&target->tags)) {
-        // Not an enemy anymore (maybe dead or not interesting anymore).
         this->doit(0, NULL, false);
-        pop();
+        pop("Not an enemy anymore (maybe dead or not interesting anymore).");
         return;
-    } else if (aimrange > 60.0f) {
-        // Target is out of targeting range.
+    } else if (aimrange > 60.0f && disturbedBy == 0 ) {
         this->doit(0, NULL, false);
-        pop();
+        pop("Target is out of targeting range.");
         return;
     }
 }
@@ -334,7 +331,7 @@ void rController::gotoDestination() {
     if (debug_state) cout << "DestinationRange " << range << endl;
     if (range < 8.0f) {
         this->doit(0, NULL, false);
-        pop();
+        pop("Destination was reached (within destination range).");
         return;
     }
 

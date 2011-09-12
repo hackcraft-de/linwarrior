@@ -205,16 +205,16 @@ cObject* cOpenMission::init(cWorld* world) {
     }
 
     cout << "Initialising Skytide City...\n";
-    initSkytideCity(world, planetmap);
+    //initSkytideCity(world, planetmap);
 
     cout << "Initialising Starcircle Town...\n";
     initStarcircleTown(world, planetmap);
 
     cout << "Initialising Penta Spaceport...\n";
-    initPentaSpaceport(world, planetmap);
+    //initPentaSpaceport(world, planetmap);
 
     cout << "Initialising Pyra Nano Corp...\n";
-    initPyraNanoCorp(world, planetmap);
+    //initPyraNanoCorp(world, planetmap);
 
     //initAcroloidMines(world, planetmap);
     //initCollapsiumFactory(world, planetmap);
