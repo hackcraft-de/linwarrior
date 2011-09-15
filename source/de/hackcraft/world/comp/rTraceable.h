@@ -16,14 +16,17 @@
 /**
  * Encapsulates physical state as far as movement and position is concerned.
  */
-struct rTraceable : public rComponent, public Particle {
-    /// Averaged amount of groundedness [0,1] result from collision checks.
-    float grounded;
+class rTraceable : public rComponent, public Particle {
+public: // INPUT
     /// Jetdrive throttle setting hook usually [0,1].
     float jetthrottle;
     /// Grounddrive throttle setting hook usually [0,1].
     float throttle;
-
+public: // OUTPUT
+    /// Averaged amount of groundedness [0,1] result from collision checks.
+    float grounded;
+protected: // INTERNALS
+public:
     /// Constructor.
     rTraceable(cObject* obj = NULL);
     /// Copy Constructor.

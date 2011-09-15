@@ -84,7 +84,7 @@ public: // OUTPUT
     float aimrange;
     /// Distance to walk-target. (hook o)
     float walkrange;
-public: // INTERNALS
+protected: // INTERNALS
 public:
 
     /// Constructor

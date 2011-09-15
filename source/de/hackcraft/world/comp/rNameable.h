@@ -17,6 +17,7 @@
  *  Encapsulates onscreen descriptive texts about an object.
  */
 struct rNameable : public rComponent {
+public: // INPUT
     /// Base position for rendering. (hook i)
     vec3 pos0;
     /// Base orientation for rendering. (hook i)
@@ -35,7 +36,9 @@ struct rNameable : public rComponent {
     std::string description;
     /// { 0, .., 25 } for { a, ..., z }.
     unsigned int designation;
-
+public: // OUTPUT
+public: // INTERNALS
+public:
     /// Constructor.
     rNameable(cObject* obj = NULL);
     /// Copy Constructor.

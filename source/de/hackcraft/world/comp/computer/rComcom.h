@@ -83,7 +83,7 @@ public: // OUTPUT
     bool switching;
     /// Just any near enemy. (hook o)
     OID nearbyEnemy;
-public: // INTERNALS
+protected: // INTERNALS
 public:
     /// Constructor.
     rTarcom(cObject* obj = NULL);
