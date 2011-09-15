@@ -53,9 +53,58 @@ bool rDamageable::damage(float* localpos, float damage, cObject* enactor) {
         dead = !alife;
     }
     if (enactor != NULL && damage > 0.0001f) {
-        disturber = enactor->oid;
+        
+        // Setup an averaging memory slot for that enactor.
+        if (damages.find(enactor->oid) == damages.end()) {
+            disturbers[enactor->oid] = 0;
+            damages[enactor->oid] = 0;
+        }
+        
+        // Sum the disturbance (damage) for the enactor over the time of one frame.
+        damages[enactor->oid] += damage;
     }
     return alife;
+}
+
+void rDamageable::animate(float spf) {
+
+    // Average the disturbance (damage) for the enactor over time.
+    float alpha = 0.01;
+
+    OID maxDisturber = 0;
+    float maxDisturbance = 0;
+    
+    // Loop through memory, average new damage in and find biggest disturbance.
+    for (std::map<OID,float>::iterator i = disturbers.begin(); i != disturbers.end(); i++) {
+        OID enactor = (*i).first;
+        float disturbanceValue = (*i).second;
+        
+        disturbers[enactor] = (1-alpha) * disturbers[enactor] + alpha * damages[enactor];
+        damages[enactor] = 0;
+        
+        if (disturbanceValue > maxDisturbance) {
+            maxDisturbance = disturbanceValue;
+            maxDisturber = enactor;
+        }
+        //if (object->oid % 1000ULL == 104) {
+                //std::cout << object->oid << " Disturber: " << enactor << " => " << disturbanceValue << "\n";
+        //}
+    }
+
+    // If there already was a disturber then switch only if the difference is big enough.
+    if ( disturber != maxDisturber && disturber != 0 && disturbers.find(disturber) != disturbers.end()) {
+        if (maxDisturbance > disturbers[disturber] + 0.0005) {
+            disturber = maxDisturber;
+            disturbance = maxDisturbance;
+        }
+    } else {
+            disturber = maxDisturber;
+            disturbance = maxDisturbance;
+    }
+    
+    //if (disturber != 0 && disturbance > 0.001 && (object->oid % 1000ULL == 104)) {
+        //std::cout << object->oid << " Misturber: " << disturber << " => " << disturbance << "\n";
+    //}
 }
 
 void rDamageable::drawHUD() {

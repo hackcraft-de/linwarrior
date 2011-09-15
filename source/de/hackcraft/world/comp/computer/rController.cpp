@@ -246,6 +246,12 @@ void rController::attackEnemy() {
 
     // FIXME: Depends on Mech/tarcom.
     cMech* mech = (cMech*) object;
+    
+    if (disturbedBy != 0 && disturbedBy != entity) {
+        pop("Changing target (disturbed by another)");
+        pushAttackEnemy(disturbedBy);
+        return;
+    }
 
     cObject* target = cWorld::instance->getObject(entity);
     if (target == NULL) {

@@ -13,6 +13,8 @@
 
 #include "de/hackcraft/world/OID.h"
 
+#include <map>
+
 /**
  * Encapsulates attributes related to body damage and armor state.
  */
@@ -46,7 +48,11 @@ public: // OUTPUT
     // float sinks[MAX_PARTS];
     /// Some object that dealt some damage to the object. (hook o) [(oid, damage)]?
     OID disturber;
+    float disturbance;
 protected: // INTERNALS
+    // Smarter disturbance with non-persistent memory.
+    std::map<OID,float> disturbers;
+    std::map<OID,float> damages;
 public:
     /// Constructor.
     rDamageable(cObject* obj = NULL);
@@ -56,6 +62,8 @@ public:
     virtual rComponent * clone();
     /// Apply damage to a hitzone, and return alife.
     virtual bool damage(float* localpos, float damage, cObject * enactor);
+    /// Average disturbance (damage) and find max disturbing enactor.
+    virtual void animate(float spf);
     /// Display damaging.
     virtual void drawHUD();
 };
