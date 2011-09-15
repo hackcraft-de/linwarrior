@@ -13,7 +13,7 @@
 
 struct rController;
 
-#include "de/hackcraft/world/comp/computer/rComcom.h"
+#include "rComputer.h"
 
 #include "de/hackcraft/world/OID.h"
 

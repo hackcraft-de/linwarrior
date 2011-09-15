@@ -48,8 +48,18 @@
           <logicalFolder name="computer" displayName="computer" projectFiles="true">
             <itemPath>source/de/hackcraft/world/comp/computer/rComcom.cpp</itemPath>
             <itemPath>source/de/hackcraft/world/comp/computer/rComcom.h</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/computer/rComputer.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/computer/rComputer.h</itemPath>
             <itemPath>source/de/hackcraft/world/comp/computer/rController.cpp</itemPath>
             <itemPath>source/de/hackcraft/world/comp/computer/rController.h</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/computer/rForcom.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/computer/rForcom.h</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/computer/rNavcom.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/computer/rNavcom.h</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/computer/rTarcom.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/computer/rTarcom.h</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/computer/rWepcom.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/computer/rWepcom.h</itemPath>
           </logicalFolder>
           <logicalFolder name="weapon" displayName="weapon" projectFiles="true">
             <itemPath>source/de/hackcraft/world/comp/weapon/rWeapon.cpp</itemPath>
