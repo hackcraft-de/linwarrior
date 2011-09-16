@@ -644,9 +644,11 @@ void cMain::updateKey(Uint8 keysym) {
         if (keysym == SDLK_DOWN) text->stepDown();
         if (keysym == SDLK_RETURN) text->write('\n');
         if (keysym == SDLK_BACKSPACE) text->deleteLeft();
+        if (keysym == SDLK_SPACE) text->write(' ');
 
         if (keysym >= SDLK_a && keysym <= SDLK_z) {
-            text->write('#');
+            //text->write('#');
+            text->write('a' + (keysym-SDLK_a));
         }
 
         return;

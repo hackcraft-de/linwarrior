@@ -11,12 +11,12 @@
             <line>828</line>
         </file>
         <file>
-            <url>source/cMech.cpp</url>
-            <line>670</line>
-        </file>
-        <file>
             <url>source/cPlanetmap.cpp</url>
             <line>520</line>
+        </file>
+        <file>
+            <url>source/cMech.cpp</url>
+            <line>670</line>
         </file>
     </editor-bookmarks>
 </project-private>
