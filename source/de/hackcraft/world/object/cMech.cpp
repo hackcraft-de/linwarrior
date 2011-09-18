@@ -2,7 +2,7 @@
 
 #include "cMech.h"
 
-#include "de/hackcraft/world/cWorld.h"
+#include "de/hackcraft/world/World.h"
 
 #include "de/hackcraft/util/Pad.h"
 
@@ -397,7 +397,7 @@ void cMech::camera() {
 
 void cMech::listener() {
     float s = -0.1;
-    float step = s * cWorld::instance->getTiming()->getSPF();
+    float step = s * World::instance->getTiming()->getSPF();
     float vel[] = {
         traceable->vel[0] * step,
         traceable->vel[1] * step,

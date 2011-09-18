@@ -1,6 +1,6 @@
 #include "rWeaponMachinegun.h"
 
-#include "de/hackcraft/world/cWorld.h"
+#include "de/hackcraft/world/World.h"
 
 #include "de/hackcraft/psi3d/GLF.h"
 #include "de/hackcraft/psi3d/GLS.h"
@@ -110,7 +110,7 @@ void rWeaponMachinegun::animate(float spf) {
 
     foreachNoInc(i, castoffParticles) {
         Particle* s = *i++;
-        s->vel[1] += cWorld::instance->getGravity()[1] * spf;
+        s->vel[1] += World::instance->getGravity()[1] * spf;
         vector_muladd(s->pos, s->pos, s->vel, spf);
         s->fuel -= spf;
         if (s->fuel < 0) {

@@ -1,6 +1,6 @@
 #include "rComcom.h"
 
-#include "de/hackcraft/world/cWorld.h"
+#include "de/hackcraft/world/World.h"
 
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/GLF.h"
@@ -34,7 +34,7 @@ rComcom::rComcom(cObject* obj) {
 }
 
 void rComcom::animate(float spf) {
-    Message* message = NULL; //cWorld::instance->recvMessage(0, mLastMessage);
+    Message* message = NULL; //World::instance->recvMessage(0, mLastMessage);
     if (message != NULL) {
         mLastMessage = message->getTimestamp();
     }

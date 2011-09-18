@@ -1,6 +1,6 @@
 #include "cAlert.h"
 
-#include "de/hackcraft/world/cWorld.h"
+#include "de/hackcraft/world/World.h"
 
 #include "de/hackcraft/world/comp/rNameable.h"
 
@@ -95,7 +95,7 @@ float cAlert::constrain(float* worldpos, float radius, float* localpos, cObject*
             if (posedge) {
                 fired = true;
                 //cout << "fusedelay=" << fusedelay << endl;
-                cWorld::instance->sendMessage(fusedelay, oid, receiver, msgtype, msgtext, NULL);
+                World::instance->sendMessage(fusedelay, oid, receiver, msgtype, msgtext, NULL);
             }
         }
     } else {
@@ -104,7 +104,7 @@ float cAlert::constrain(float* worldpos, float radius, float* localpos, cObject*
             intruders.erase(enactor->oid);
             if (!posedge) {
                 fired = true;
-                cWorld::instance->sendMessage(fusedelay, oid, receiver, msgtype, msgtext, NULL);
+                World::instance->sendMessage(fusedelay, oid, receiver, msgtype, msgtext, NULL);
             }
         }
     }

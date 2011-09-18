@@ -1,5 +1,5 @@
 /**
- * File:     cWorld.h
+ * File:     World.h
  * Project:  LinWarrior 3D
  * Home:     hackcraft.de
  *
@@ -10,11 +10,11 @@
 #define _CWORLD_H
 
 
-class cWorld;
+class World;
 
 #include "de/hackcraft/psi3d/macros.h"
 
-#include "de/hackcraft/world/cBackground.h"
+#include "de/hackcraft/world/Background.h"
 #include "de/hackcraft/world/OID.h"
 #include "de/hackcraft/world/Timing.h"
 #include "de/hackcraft/world/Message.h"
@@ -28,22 +28,22 @@ class cWorld;
 #include <vector>
 #include <queue>
 
-class cBackground;
+class Background;
 class cObject;
-class cMission;
+class Mission;
 
 /**
  * The Game-Object-Managing World-Database-Class.
  * Cares about spawning, indexing, searching, messaging, updating, rendering.
  */
-class cWorld {
+class World {
 public:
     /// The current World instance (singleton) other objects may
     /// only affect that current instance.
-    static cWorld* instance;
+    static World* instance;
 
     /// Mission Setup and Objective-Controller.
-    cMission* mMission;
+    Mission* mMission;
 
 private:
     /// Not yet dispatched messages (because they are not yet overdue).
@@ -53,7 +53,7 @@ private:
     std::list<Message*> mDispatchedMessages;
 
     /// Background Object
-    cBackground mBackground;
+    Background mBackground;
 
     // Not Yet, may be merged with Background:
     // Overlays weather effects like rain, snow or dust.
@@ -101,7 +101,7 @@ private:
 
 public: // Constructor, Object-Management and Drawing:
 
-    cWorld();
+    World();
 
 public: // Accessors
 

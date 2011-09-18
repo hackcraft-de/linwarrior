@@ -1,6 +1,6 @@
 #include "rWeaponHoming.h"
 
-#include "de/hackcraft/world/cWorld.h"
+#include "de/hackcraft/world/World.h"
 
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Primitive.h"
@@ -105,7 +105,7 @@ void rWeaponHoming::animate(float spf) {
 
         // Now update the Missile itself
         if (s->target) {
-            cObject *targetobject = cWorld::instance->getObject(s->target);
+            cObject *targetobject = World::instance->getObject(s->target);
             if (targetobject && true) {
                 float tgt[] = {0, 0, 0};
                 vector_cpy(tgt, targetobject->pos0);

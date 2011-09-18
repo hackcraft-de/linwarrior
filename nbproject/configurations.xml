@@ -114,17 +114,17 @@
           <itemPath>source/de/hackcraft/world/object/cTree.cpp</itemPath>
           <itemPath>source/de/hackcraft/world/object/cTree.h</itemPath>
         </logicalFolder>
+        <itemPath>source/de/hackcraft/world/Background.cpp</itemPath>
+        <itemPath>source/de/hackcraft/world/Background.h</itemPath>
         <itemPath>source/de/hackcraft/world/Message.cpp</itemPath>
         <itemPath>source/de/hackcraft/world/Message.h</itemPath>
+        <itemPath>source/de/hackcraft/world/Mission.cpp</itemPath>
+        <itemPath>source/de/hackcraft/world/Mission.h</itemPath>
         <itemPath>source/de/hackcraft/world/OID.h</itemPath>
         <itemPath>source/de/hackcraft/world/Timing.cpp</itemPath>
         <itemPath>source/de/hackcraft/world/Timing.h</itemPath>
-        <itemPath>source/de/hackcraft/world/cBackground.cpp</itemPath>
-        <itemPath>source/de/hackcraft/world/cBackground.h</itemPath>
-        <itemPath>source/de/hackcraft/world/cMission.cpp</itemPath>
-        <itemPath>source/de/hackcraft/world/cMission.h</itemPath>
-        <itemPath>source/de/hackcraft/world/cWorld.cpp</itemPath>
-        <itemPath>source/de/hackcraft/world/cWorld.h</itemPath>
+        <itemPath>source/de/hackcraft/world/World.cpp</itemPath>
+        <itemPath>source/de/hackcraft/world/World.h</itemPath>
       </logicalFolder>
       <itemPath>source/de/hackcraft/main.cpp</itemPath>
       <itemPath>source/de/hackcraft/main.h</itemPath>
@@ -166,9 +166,13 @@
           </ccTool>
         </makeTool>
       </makefileType>
+      <item path="source/de/hackcraft/lang/Object.h" ex="true" tool="3" flavor="0">
+      </item>
       <item path="source/de/hackcraft/proc/noise.h" ex="true" tool="3" flavor="0">
       </item>
       <item path="source/de/hackcraft/util/KDTree.h" ex="true" tool="3" flavor="0">
+      </item>
+      <item path="source/de/hackcraft/util/String.h" ex="true" tool="3" flavor="0">
       </item>
     </conf>
     <conf name="Release" type="1">

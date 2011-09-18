@@ -45,7 +45,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/source/de/hackcraft/util/Message.o \
 	${OBJECTDIR}/source/de/hackcraft/world/object/cAlert.o \
 	${OBJECTDIR}/source/de/hackcraft/proc/Solid.o \
-	${OBJECTDIR}/source/de/hackcraft/world/cWorld.o \
+	${OBJECTDIR}/source/de/hackcraft/world/World.o \
 	${OBJECTDIR}/source/de/hackcraft/world/comp/computer/rComcom.o \
 	${OBJECTDIR}/source/de/hackcraft/world/object/cObject.o \
 	${OBJECTDIR}/source/de/hackcraft/world/object/cPlanetmap.o \
@@ -153,10 +153,10 @@ ${OBJECTDIR}/source/de/hackcraft/proc/Solid.o: source/de/hackcraft/proc/Solid.cp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/proc/Solid.o source/de/hackcraft/proc/Solid.cpp
 
-${OBJECTDIR}/source/de/hackcraft/world/cWorld.o: source/de/hackcraft/world/cWorld.cpp 
+${OBJECTDIR}/source/de/hackcraft/world/World.o: source/de/hackcraft/world/World.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/world
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/world/cWorld.o source/de/hackcraft/world/cWorld.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/source/de/hackcraft/world/World.o source/de/hackcraft/world/World.cpp
 
 ${OBJECTDIR}/source/de/hackcraft/world/comp/computer/rComcom.o: source/de/hackcraft/world/comp/computer/rComcom.cpp 
 	${MKDIR} -p ${OBJECTDIR}/source/de/hackcraft/world/comp/computer

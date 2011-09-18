@@ -1,9 +1,7 @@
-// cWorld.cpp
+#include "World.h"
 
-#include "cWorld.h"
-
-#include "cBackground.h"
-#include "cMission.h"
+#include "Background.h"
+#include "Mission.h"
 
 #include "de/hackcraft/world/object/cObject.h"
 
@@ -20,10 +18,10 @@ using std::cout;
 using std::endl;
 
 
-cWorld* cWorld::instance = NULL;
+World* World::instance = NULL;
 
-cWorld::cWorld() {
-    cWorld::instance = this;
+World::World() {
+    World::instance = this;
 
     mMission = NULL;
 
@@ -50,42 +48,42 @@ cWorld::cWorld() {
 
 // Accessors
 
-OID cWorld::getOID() {
+OID World::getOID() {
     return mTiming.getTimekey();
 }
 
-Timing* cWorld::getTiming() {
+Timing* World::getTiming() {
     return &mTiming;
 }
 
-cObject* cWorld::getObject(OID oid) {
+cObject* World::getObject(OID oid) {
     return mIndex[oid];
 }
 
-float* cWorld::getGravity() {
+float* World::getGravity() {
     return mGravity;
 }
 
-float cWorld::getGndfriction() {
+float World::getGndfriction() {
     return mGndfriction;
 }
 
-float cWorld::getAirdensity() {
+float World::getAirdensity() {
     return mAirdensity;
 }
 
-void cWorld::setViewdistance(float viewdistance) {
+void World::setViewdistance(float viewdistance) {
     mViewdistance = viewdistance;
 }
 
-float cWorld::getViewdistance() {
+float World::getViewdistance() {
     return mViewdistance;
 }
 
 
 // Messaging
 
-void cWorld::sendMessage(OID delay, OID sender /* = 0 */, OID recvid /* = 0 */, string type, string text, void* blob) {
+void World::sendMessage(OID delay, OID sender /* = 0 */, OID recvid /* = 0 */, string type, string text, void* blob) {
     //cout << "sendMessageT(dly=" << delay << ", sdr=" << sender << ", gid=" << groupid << ", txt=" << text << ")" << endl;
     mTiming.advanceDelta();
     Message* message = new Message(sender, recvid, mTiming.getTimekey() + delay, 0, type, text, blob);
@@ -96,7 +94,7 @@ void cWorld::sendMessage(OID delay, OID sender /* = 0 */, OID recvid /* = 0 */, 
 
 // Spawning And Fragging
 
-void cWorld::spawnObject(cObject *object) {
+void World::spawnObject(cObject *object) {
     if (object == NULL) throw "Null object for spawnObject given.";
 
     OID serid = getOID();
@@ -112,7 +110,7 @@ void cWorld::spawnObject(cObject *object) {
     // cout << serid << " spawn complete.\n";
 }
 
-void cWorld::fragObject(cObject *object) {
+void World::fragObject(cObject *object) {
     if (object->oid == 0) return;
     mObjects.remove(object);
     mCorpses.push_back(object);
@@ -121,7 +119,7 @@ void cWorld::fragObject(cObject *object) {
     object->oid = 0;
 }
 
-void cWorld::bagFragged() {
+void World::bagFragged() {
     // Finally delete objects which where fragged before.
     while (!mCorpses.empty()) {
         cObject* object = mCorpses.front();
@@ -133,14 +131,14 @@ void cWorld::bagFragged() {
 
 // Simulation Step
 
-void cWorld::advanceTime(int deltamsec) {
+void World::advanceTime(int deltamsec) {
     //cout << "advanceTime()\n";
     if (mMission) mMission->checkConditions();
     mTiming.advanceTime(deltamsec);
     //cout << getSerial() << ": " << mHour << " " << mMinute << " " << mSecond << " " << mDeltacycle << endl;
 }
 
-void cWorld::clusterObjects() {
+void World::clusterObjects() {
     try {
         int j = 0;
         mGeomap.clear();
@@ -162,7 +160,7 @@ void cWorld::clusterObjects() {
     }
 }
 
-void cWorld::dispatchMessages() {
+void World::dispatchMessages() {
     OID now = getOID();
     while (!mMessages.empty()) {
         Message* message = mMessages.top();
@@ -200,7 +198,7 @@ void cWorld::dispatchMessages() {
     }
 }
 
-void cWorld::animateObjects() {
+void World::animateObjects() {
     //cout << "animateObjects()\n";
     float spf = mTiming.getSPF();
 
@@ -211,7 +209,7 @@ void cWorld::animateObjects() {
     }
 }
 
-void cWorld::transformObjects() {
+void World::transformObjects() {
     //cout << "transformObjects()\n";
 
     foreachNoInc(i, mObjects) {
@@ -222,12 +220,12 @@ void cWorld::transformObjects() {
     }
 }
 
-void cWorld::drawBack() {
+void World::drawBack() {
     //cout << "drawBack()\n";
     mBackground.drawBackground(mTiming.getTime24());
 }
 
-void cWorld::drawSolid(cObject* camera, std::list<cObject*>* objects) {
+void World::drawSolid(cObject* camera, std::list<cObject*>* objects) {
     //cout << "drawSolid()\n";
     float* origin = camera->pos0;
     if (objects == NULL) objects = &mObjects;
@@ -249,7 +247,7 @@ void cWorld::drawSolid(cObject* camera, std::list<cObject*>* objects) {
     }
 }
 
-void cWorld::drawEffect(cObject* camera, std::list<cObject*>* objects) {
+void World::drawEffect(cObject* camera, std::list<cObject*>* objects) {
     //cout << "drawEffect()\n";
     float* origin = camera->pos0;
     if (objects == NULL) objects = &mObjects;
@@ -291,7 +289,7 @@ void cWorld::drawEffect(cObject* camera, std::list<cObject*>* objects) {
 
 // World Scanning And Filtering
 
-OID cWorld::getGeokey(long x, long z) {
+OID World::getGeokey(long x, long z) {
     OID xpart = ((OID) ((long(x))&0xFFFFFFFF)) >> 5;
     //cout << x << " ~ " << xpart << endl;
     OID zpart = ((OID) ((long(z))&0xFFFFFFFF)) >> 5;
@@ -300,7 +298,7 @@ OID cWorld::getGeokey(long x, long z) {
     return key;
 }
 
-std::list<cObject*>* cWorld::getGeoInterval(float* min2f, float* max2f, bool addunclustered) {
+std::list<cObject*>* World::getGeoInterval(float* min2f, float* max2f, bool addunclustered) {
     std::list<cObject*>* found = new std::list<cObject*>();
     const long f = 1 << 5;
 
@@ -330,7 +328,7 @@ std::list<cObject*>* cWorld::getGeoInterval(float* min2f, float* max2f, bool add
     return found;
 }
 
-string cWorld::getNames(std::list<cObject*>* objects) {
+string World::getNames(std::list<cObject*>* objects) {
     if (objects == NULL) objects = &mObjects;
     stringstream s;
     s << "[";
@@ -353,7 +351,7 @@ string cWorld::getNames(std::list<cObject*>* objects) {
     return s.str();
 }
 
-std::list<cObject*>* cWorld::filterByTags(cObject* ex, std::set<OID>* rolemask, bool all, int maxamount, std::list<cObject*>* objects) {
+std::list<cObject*>* World::filterByTags(cObject* ex, std::set<OID>* rolemask, bool all, int maxamount, std::list<cObject*>* objects) {
     std::list<cObject*>* result = new std::list<cObject*>;
     assert(result != NULL);
     int amount = maxamount;
@@ -376,7 +374,7 @@ std::list<cObject*>* cWorld::filterByTags(cObject* ex, std::set<OID>* rolemask, 
     return result;
 }
 
-std::list<cObject*>* cWorld::filterByRange(cObject* ex, float* origin, float minrange, float maxrange, int maxamount, std::list<cObject*>* objects) {
+std::list<cObject*>* World::filterByRange(cObject* ex, float* origin, float minrange, float maxrange, int maxamount, std::list<cObject*>* objects) {
     std::list<cObject*>* result = new std::list<cObject*>;
     assert(result != NULL);
     int amount = maxamount;
@@ -416,7 +414,7 @@ std::list<cObject*>* cWorld::filterByRange(cObject* ex, float* origin, float min
     return result;
 }
 
-std::list<cObject*>* cWorld::filterByName(cObject* ex, char* name, int maxamount, std::list<cObject*>* objects) {
+std::list<cObject*>* World::filterByName(cObject* ex, char* name, int maxamount, std::list<cObject*>* objects) {
     std::list<cObject*>* result = new std::list<cObject*>;
     assert(result != NULL);
     int amount = maxamount;
@@ -435,7 +433,7 @@ std::list<cObject*>* cWorld::filterByName(cObject* ex, char* name, int maxamount
     return result;
 }
 
-std::list<cObject*>* cWorld::filterByBeam(cObject* ex, float* pointa, float* pointb, float radius, int maxamount, std::list<cObject*>* objects) {
+std::list<cObject*>* World::filterByBeam(cObject* ex, float* pointa, float* pointb, float radius, int maxamount, std::list<cObject*>* objects) {
     float* x1 = pointa;
     float* x2 = pointb;
     std::list<cObject*>* result = new std::list<cObject*>;
@@ -485,7 +483,7 @@ std::list<cObject*>* cWorld::filterByBeam(cObject* ex, float* pointa, float* poi
     return result;
 }
 
-float cWorld::constrainParticle(cObject* ex, float* worldpos, float radius) {
+float World::constrainParticle(cObject* ex, float* worldpos, float radius) {
     float depth = 0;
     float maxrange = 25;
     bool groundplane = !true;

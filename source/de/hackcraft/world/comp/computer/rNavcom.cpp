@@ -3,7 +3,7 @@
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/GLF.h"
 
-#include "de/hackcraft/world/cWorld.h"
+#include "de/hackcraft/world/World.h"
 
 
 rNavcom::rNavcom(cObject* obj) {
@@ -142,7 +142,7 @@ void rNavcom::drawHUD() {
     // Overlay information text: time, date, direction, location.
     glPushMatrix();
     {
-        cWorld* world = cWorld::instance;
+        World* world = World::instance;
 
         glColor4f(0.99, 0.99, 0.19, 1);
         glTranslatef(0, 1, 0);

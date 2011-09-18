@@ -13,7 +13,7 @@
 #ifndef _COBJECT_H
 #define _COBJECT_H
 
-class cWorld;
+class World;
 
 struct rGrouping;
 
@@ -60,7 +60,7 @@ struct rGrouping;
  * the kind of the object (roles) too much.
  */
 class cObject {
-    friend class cWorld;
+    friend class World;
 
 public: // Basic Object attributes for managing.
 

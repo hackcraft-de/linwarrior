@@ -1,6 +1,6 @@
 #include "rTraceable.h"
 
-#include "de/hackcraft/world/cWorld.h"
+#include "de/hackcraft/world/World.h"
 
 rTraceable::rTraceable(cObject* obj) : Particle() {
     role = "TRACEABLE";
@@ -35,9 +35,9 @@ void rTraceable::accumulate(float spf) {
     }
 
     // Accumulate environmental forces
-    applyGravityForce(cWorld::instance->getGravity());
+    applyGravityForce(World::instance->getGravity());
     applyFrictionForce(spf);
-    applyAirdragForce(cWorld::instance->getAirdensity());
+    applyAirdragForce(World::instance->getAirdensity());
 }
 
 void rTraceable::integrate(float spf) {
@@ -52,7 +52,7 @@ void rTraceable::collide(float spf) {
         float center[3];
         vector_cpy(center, pos);
         center[1] += radius;
-        depth = cWorld::instance->constrainParticle(object, center, radius);
+        depth = World::instance->constrainParticle(object, center, radius);
         if (depth > 0.0f) {
             // There was a collision.
             // Set current position to corrected position.
@@ -87,7 +87,7 @@ void rTraceable::collide(float spf) {
     // Average groundedness to decide on friction.
     grounded += 0.1 * (onground - grounded);
     // Set friction for next frame.
-    friction = ((grounded > 0.1) ? 1.0f : 0.0f) * cWorld::instance->getGndfriction();
+    friction = ((grounded > 0.1) ? 1.0f : 0.0f) * World::instance->getGndfriction();
 }
 
 void rTraceable::animate(float spf) {

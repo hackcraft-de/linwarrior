@@ -1,6 +1,6 @@
-#include "cBackground.h"
+#include "Background.h"
 
-#include "cWorld.h"
+#include "World.h"
 
 #include "de/hackcraft/proc/Noise.h"
 #include "de/hackcraft/proc/Distortion.h"
@@ -103,7 +103,7 @@ void ambient_sky(float x, float y, float z, float* color, float hour = 24.00f) {
     }
 }
 
-cBackground::cBackground() {
+Background::Background() {
     /*
     struct Texture {
         const char* filename;
@@ -460,7 +460,7 @@ cBackground::cBackground() {
     vector_set(light, 0.7, 0.9, -0.3);
 }
 
-void cBackground::drawBackground(float h) {
+void Background::drawBackground(float h) {
     // Reference: dawn sunrise daylight sunset dusk darkness
 
     // Push random seed because the current seed is going to be
@@ -568,7 +568,7 @@ void cBackground::drawBackground(float h) {
     srand(seed);
 }
 
-void cBackground::drawGalaxy() {
+void Background::drawGalaxy() {
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_TEXTURE_BIT);
     {
         GLS::glUseProgram_bkplaintexture();
@@ -682,7 +682,7 @@ void cBackground::drawGalaxy() {
     glPopAttrib();
 }
 
-void cBackground::drawUpperDome() {
+void Background::drawUpperDome() {
     glPushAttrib(GL_ALL_ATTRIB_BITS | GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
         GLS::glUseProgram_bkplaincolor();
@@ -741,7 +741,7 @@ void cBackground::drawUpperDome() {
     glPopAttrib();
 }
 
-void cBackground::drawLowerDome() {
+void Background::drawLowerDome() {
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
         GLS::glUseProgram_bkplaincolor();
@@ -799,7 +799,7 @@ void cBackground::drawLowerDome() {
     glPopAttrib();
 }
 
-void cBackground::drawGround() {
+void Background::drawGround() {
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_TEXTURE_BIT);
     {
         GLS::glUseProgram_bkplaintexture();
@@ -862,7 +862,7 @@ void cBackground::drawGround() {
     glPopAttrib();
 }
 
-void cBackground::drawClouds() {
+void Background::drawClouds() {
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
         GLS::glUseProgram_bkplaintexture();
@@ -999,7 +999,7 @@ void cDomeBackground::drawMountains() {
  */
 
 
-void cBackground::drawSun() {
+void Background::drawSun() {
     if (hour < 5.00 || hour > 22.00) return;
 
     // Setup rotation only matrix.
@@ -1077,7 +1077,7 @@ void cBackground::drawSun() {
     glPopAttrib();
 }
 
-void cBackground::drawOrbit() {
+void Background::drawOrbit() {
     if (hour > 10.00 && hour < 16.00) return;
 
     // Setup rotation only matrix.
@@ -1130,7 +1130,7 @@ void cBackground::drawOrbit() {
     glPopAttrib();
 }
 
-void cBackground::drawRain() {
+void Background::drawRain() {
     srand(seed);
     seed = rand();
 

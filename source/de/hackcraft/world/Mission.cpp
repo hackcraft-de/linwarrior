@@ -1,4 +1,4 @@
-#include "cMission.h"
+#include "Mission.h"
 
 #include "de/hackcraft/main.h"
 
@@ -28,7 +28,7 @@ void adjustHeight(cPlanetmap* planetmap, float* pos) {
     pos[1] = color[3] + 0.001f;
 }
 
-void cMission::checkConditions() {
+void Mission::checkConditions() {
     // Destroyed all necessary enemies?
     unsigned int n = 0;
     loopiv(mVictory) if (mVictory[i]->hasTag(cObject::DEAD)) n++;
@@ -45,27 +45,27 @@ void cMission::checkConditions() {
     }
 }
 
-void cMission::onVictory() {
+void Mission::onVictory() {
     if (mState != -1) {
         mState = -1;
-        cWorld::instance->sendMessage(0, 0, 0,
+        World::instance->sendMessage(0, 0, 0,
                 "DISPLAY",
                 std::string("   (+) Primary target fullfilled.\n   (+) You Won!\n   (+) Hit ESC to finish Mission\n")
                 );
     }
 }
 
-void cMission::onDefeat() {
+void Mission::onDefeat() {
     if (mState != -2) {
         mState = -2;
-        cWorld::instance->sendMessage(0, 0, 0,
+        World::instance->sendMessage(0, 0, 0,
                 "DISPLAY",
                 std::string("   (-) You Lost!\n   (+) Hit ESC to finish Mission\n")
                 );
     }
 }
 
-cObject* cMission::init(cWorld* world) {
+cObject* Mission::init(World* world) {
     if (true) {
         world->getTiming()->setTime(12);
     } else {
@@ -136,12 +136,12 @@ cObject* cMission::init(cWorld* world) {
 
 #define PLAYERPOS SKYTIDE
 
-void cOpenMission::onVictory() {
-    //cMission::onVictory();
+void OpenMission::onVictory() {
+    //Mission::onVictory();
     if (mState != -1) {
         mState = -1;
         cout << "onVictory!";
-        cWorld::instance->sendMessage(0, 0, group_alliance_player.oid,
+        World::instance->sendMessage(0, 0, group_alliance_player.oid,
                 "DISPLAY",
                 //std::string("   (+) Primary target fullfilled.\n   (+) You Won!\n   (+) Hit ESC to finish Mission\n")
                 std::string("Stortebeker:\n  Good work!\n  We now have control over the town.\n  You may have a look around:\n  Pyra Nano Corp: SW of Skytide.\n  Starcircle: E of Skytide\n  Spaceport: NW\n  And don't get yourself killed.")
@@ -149,12 +149,12 @@ void cOpenMission::onVictory() {
     }
 }
 
-void cOpenMission::onDefeat() {
-    //cMission::onDefeat();
+void OpenMission::onDefeat() {
+    //Mission::onDefeat();
     if (mState != -2) {
         mState = -2;
         cout << "onDefeat!";
-        cWorld::instance->sendMessage(0, 0, group_alliance_player.oid,
+        World::instance->sendMessage(0, 0, group_alliance_player.oid,
                 "DISPLAY",
                 //std::string("   (-) You Lost!\n   (+) Hit ESC to finish Mission\n")
                 std::string("Stortebeker:\n  And I told you not to die!\n  We will share your booty evenly\n  and spread your ashes in space.\n")
@@ -162,7 +162,7 @@ void cOpenMission::onDefeat() {
     }
 }
 
-cObject* cOpenMission::init(cWorld* world) {
+cObject* OpenMission::init(World* world) {
     srand(0);
 
     cout << "Setting mission date and time...\n";
@@ -296,7 +296,7 @@ cObject* cOpenMission::init(cWorld* world) {
 #include "de/hackcraft/util/HashSet.h"
  */
 
-cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, float* position) {
+cObject* OpenMission::initPlayerParty(World* world, cPlanetmap* planetmap, float* position) {
     cObject* player = NULL;
 
     float* p = position;
@@ -403,7 +403,7 @@ cObject* cOpenMission::initPlayerParty(cWorld* world, cPlanetmap* planetmap, flo
     return player;
 }
 
-void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
+void OpenMission::initSkytideCity(World* world, cPlanetmap* planetmap) {
     float loc[] = SKYTIDE;
 
     // Get natural height.
@@ -540,7 +540,7 @@ void cOpenMission::initSkytideCity(cWorld* world, cPlanetmap* planetmap) {
     }
 }
 
-void cOpenMission::initStarcircleTown(cWorld* world, cPlanetmap* planetmap) {
+void OpenMission::initStarcircleTown(World* world, cPlanetmap* planetmap) {
     float loc[] = STARCIRCLE;
 
     // Get natural height.
@@ -591,7 +591,7 @@ void cOpenMission::initStarcircleTown(cWorld* world, cPlanetmap* planetmap) {
     }
 }
 
-void cOpenMission::initAcroloidMines(cWorld* world, cPlanetmap* planetmap) {
+void OpenMission::initAcroloidMines(World* world, cPlanetmap* planetmap) {
     float loc[] = ACROLOID;
 
     // Get natural height.
@@ -618,7 +618,7 @@ void cOpenMission::initAcroloidMines(cWorld* world, cPlanetmap* planetmap) {
     }
 }
 
-void cOpenMission::initCollapsiumFactory(cWorld* world, cPlanetmap* planetmap) {
+void OpenMission::initCollapsiumFactory(World* world, cPlanetmap* planetmap) {
     float loc[] = COLLAPSIUM;
 
     // Get natural height.
@@ -645,7 +645,7 @@ void cOpenMission::initCollapsiumFactory(cWorld* world, cPlanetmap* planetmap) {
     }
 }
 
-void cOpenMission::initJurataJail(cWorld* world, cPlanetmap* planetmap) {
+void OpenMission::initJurataJail(World* world, cPlanetmap* planetmap) {
     float loc[] = JURATA;
 
     // Get natural height.
@@ -672,7 +672,7 @@ void cOpenMission::initJurataJail(cWorld* world, cPlanetmap* planetmap) {
     }
 }
 
-void cOpenMission::initSpadenixFactory(cWorld* world, cPlanetmap* planetmap) {
+void OpenMission::initSpadenixFactory(World* world, cPlanetmap* planetmap) {
     float loc[] = SPADENIX;
 
     // Get natural height.
@@ -699,7 +699,7 @@ void cOpenMission::initSpadenixFactory(cWorld* world, cPlanetmap* planetmap) {
     }
 }
 
-void cOpenMission::initPyraNanoCorp(cWorld* world, cPlanetmap* planetmap) {
+void OpenMission::initPyraNanoCorp(World* world, cPlanetmap* planetmap) {
     float loc[] = PYRANANO;
 
     // Get natural height.
@@ -730,7 +730,7 @@ void cOpenMission::initPyraNanoCorp(cWorld* world, cPlanetmap* planetmap) {
     smallArmy(loc[0] + 15, loc[1], loc[2] - 30, world, "Bandito", 3, false, 0, "flopsy");
 }
 
-void cOpenMission::initPentaSpaceport(cWorld* world, cPlanetmap* planetmap) {
+void OpenMission::initPentaSpaceport(World* world, cPlanetmap* planetmap) {
     float loc[] = SPACEPORT;
 
     // Get natural height.
@@ -802,7 +802,7 @@ void cOpenMission::initPentaSpaceport(cWorld* world, cPlanetmap* planetmap) {
     }
 }
 
-void cOpenMission::battleField(cWorld* world) {
+void OpenMission::battleField(World* world) {
 
     loopi(25) {
         float s = 30;
@@ -846,7 +846,7 @@ void cOpenMission::battleField(cWorld* world) {
     }
 }
 
-void cOpenMission::smallArmy(int wx, int wy, int wz, cWorld* world, const char* name, int n, bool blue, int wpn, string model) {
+void OpenMission::smallArmy(int wx, int wy, int wz, World* world, const char* name, int n, bool blue, int wpn, string model) {
     float r = 2;
     float a = 0;
 
@@ -886,7 +886,7 @@ void cOpenMission::smallArmy(int wx, int wy, int wz, cWorld* world, const char* 
     }
 }
 
-void cOpenMission::smallSettling(int wx, int wy, int wz, cWorld* world, int n) {
+void OpenMission::smallSettling(int wx, int wy, int wz, World* world, int n) {
     float r = 2;
     float a = 0;
 
@@ -901,7 +901,7 @@ void cOpenMission::smallSettling(int wx, int wy, int wz, cWorld* world, int n) {
     //world->spawnObject(new cScatterfield(wx*3.0f, wy, wz*3.0f, 25, 0.2));
 }
 
-void cOpenMission::roundForrest(int wx, int wy, int wz, cWorld* world, int r1, int r2, int nmax) {
+void OpenMission::roundForrest(int wx, int wy, int wz, World* world, int r1, int r2, int nmax) {
 
     struct plantplan {
         int n, seed, type, age;
@@ -928,7 +928,7 @@ void cOpenMission::roundForrest(int wx, int wy, int wz, cWorld* world, int r1, i
     }
 }
 
-void cOpenMission::capitalCity(int wx, int wy, int wz, cWorld* world) {
+void OpenMission::capitalCity(int wx, int wy, int wz, World* world) {
     const int b = 0;
     const int width = 11;
     const int height = 11;
@@ -1027,7 +1027,7 @@ void cOpenMission::capitalCity(int wx, int wy, int wz, cWorld* world) {
     }
 }
 
-void cOpenMission::pyramidBuilding(int x, int y, int z, cWorld* world) {
+void OpenMission::pyramidBuilding(int x, int y, int z, World* world) {
     int n = 5;
 
     loopi(n) {

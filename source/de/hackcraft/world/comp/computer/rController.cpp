@@ -1,6 +1,6 @@
 #include "rController.h"
 
-#include "de/hackcraft/world/cWorld.h"
+#include "de/hackcraft/world/World.h"
 
 #include "de/hackcraft/world/object/cObject.h"
 #include "de/hackcraft/world/object/cMech.h"
@@ -55,7 +55,7 @@ void rController::doit(OID aim, float* go, bool fire, float distance) {
     } else if (aimtarget == 0) {
         vector_set(walktarget, float_NAN, float_NAN, float_NAN);
     } else {
-        cObject* tgt = cWorld::instance->getObject(aimtarget);
+        cObject* tgt = World::instance->getObject(aimtarget);
         if (tgt != NULL) {
             vector_cpy(walktarget, tgt->pos0);
         } else {
@@ -204,7 +204,7 @@ void rController::waitEvent() {
                 OID self = object->oid;
                 std::stringstream s;
                 s << self << ": Intruder!\n";
-                cWorld::instance->sendMessage(0, self, 0, "DEBUG", s.str());
+                World::instance->sendMessage(0, self, 0, "DEBUG", s.str());
             }
             this->doit(enemy, NULL, false, NEARTO);
             pushAttackEnemy(enemy);
@@ -229,7 +229,7 @@ void rController::pushAttackEnemy(OID entity) {
     }
     {
         //OID self = mDevice->mSerial;
-        //cWorld::instance->sendMessage("@%llu: All ur base belongs to us.\n", entity);
+        //World::instance->sendMessage("@%llu: All ur base belongs to us.\n", entity);
     }
     push(entity);
     push(ATTACK);
@@ -253,7 +253,7 @@ void rController::attackEnemy() {
         return;
     }
 
-    cObject* target = cWorld::instance->getObject(entity);
+    cObject* target = World::instance->getObject(entity);
     if (target == NULL) {
         this->doit(0, NULL, false);
         pop("Target disappeared (removed from world: fragged).");

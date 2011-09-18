@@ -22,9 +22,9 @@
 
 #include "de/hackcraft/world/comp/rPadmap.h"
 
-#include "de/hackcraft/world/cBackground.h"
-#include "de/hackcraft/world/cMission.h"
-#include "de/hackcraft/world/cWorld.h"
+#include "de/hackcraft/world/Background.h"
+#include "de/hackcraft/world/Mission.h"
+#include "de/hackcraft/world/World.h"
 
 #include "de/hackcraft/world/object/cObject.h"
 #include "de/hackcraft/world/object/cMech.h"
@@ -46,7 +46,7 @@
  * io-configuration. This is a singleton. It should not be used
  * by any other class and is maintained directly by the main code.
  */
-struct cGame {
+struct Game {
     /// Keyboard/Joystick inputs sent to which Virtual-Gamepad?
     Pad* pad1;
 
@@ -57,7 +57,7 @@ struct cGame {
     cObject* camera;
 
     /// Instance of the world we are on.
-    cWorld *world;
+    World *world;
 
     /// Id of Mission we are running.
     int mission;
@@ -104,7 +104,7 @@ struct cGame {
     /**
      * Initialises default attribute parameters for running a game.
      */
-    cGame();
+    Game();
 
     /**
      * Prints commandline help.
@@ -154,15 +154,15 @@ public:
  * Encapsulates low level system-, startup- and io-code.
  * Actually it is just a collection of what would be functions otherwise.
  */
-class cMain {
+class Main {
 public:
     friend class Minion;
     /// Points to the main instance, necessary because of c-callbacks/threads.
-    static cMain* instance;
+    static Main* instance;
     
 private:
     /// Current game configuration.
-    cGame game;
+    Game game;
 
     /// SDL doesn't count mouse wheel movement.
     int mouseWheel;
@@ -216,7 +216,7 @@ private:
 
 public:
     /// Constructor sets instance pointer among other things.
-    cMain();
+    Main();
 
     /// Called directly by the main entry point.
     int run(int argc, char** args);

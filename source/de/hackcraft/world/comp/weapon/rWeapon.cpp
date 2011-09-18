@@ -1,6 +1,6 @@
 #include "rWeapon.h"
 
-#include "de/hackcraft/world/cWorld.h"
+#include "de/hackcraft/world/World.h"
 
 #include "de/hackcraft/psi3d/macros.h"
 #include "de/hackcraft/psi3d/GLS.h"
@@ -128,8 +128,8 @@ int rWeapon::damageByParticle(float* worldpos, float radius, int roles, float da
     float maxrange = 25;
     float worldpos_[3];
     vector_cpy(worldpos_, worldpos);
-    std::list<cObject*>* range = cWorld::instance->filterByRange(object, worldpos, 0.0f, maxrange, -1, NULL);
-    //cout << "damageByParticle: "  << cWorld::instance->getNames(range) << endl;
+    std::list<cObject*>* range = World::instance->filterByRange(object, worldpos, 0.0f, maxrange, -1, NULL);
+    //cout << "damageByParticle: "  << World::instance->getNames(range) << endl;
     if (!range->empty()) {
 
         foreach(i, *range) {

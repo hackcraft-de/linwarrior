@@ -1,6 +1,6 @@
 #include "rMobile.h"
 
-#include "de/hackcraft/world/cWorld.h"
+#include "de/hackcraft/world/World.h"
 
 #include "de/hackcraft/psi3d/macros.h"
 #include "GL/glew.h"
@@ -103,7 +103,7 @@ void rMobile::animate(float spf) {
 
     // Determine Aim-Range
     {
-        cObject* tgt = cWorld::instance->getObject(aimtarget);
+        cObject* tgt = World::instance->getObject(aimtarget);
         if (tgt == NULL) {
             aimrange = 10000.0f;
         } else {
@@ -172,7 +172,7 @@ void rMobile::animate(float spf) {
         cObject* tgt = NULL;
         float* target_pos = NULL;
         if (aimtarget != 0) {
-            tgt = cWorld::instance->getObject(aimtarget);
+            tgt = World::instance->getObject(aimtarget);
             if (tgt != NULL) target_pos = tgt->pos0;
         }
         if (target_pos == NULL) {

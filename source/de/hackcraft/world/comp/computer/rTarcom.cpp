@@ -6,7 +6,7 @@
 
 #include "de/hackcraft/psi3d/ctrl.h"
 
-#include "de/hackcraft/world/cWorld.h"
+#include "de/hackcraft/world/World.h"
 
 #include "de/hackcraft/world/object/cObject.h"
 
@@ -87,7 +87,7 @@ void rTarcom::animate(float spf) {
         switching = (switchnext || switchprev);
     }
 
-    unsigned long frame = cWorld::instance->getTiming()->getFrame();
+    unsigned long frame = World::instance->getTiming()->getFrame();
     unsigned long key = (((unsigned long) this) >> 1) * 174763;
     //cout << "RANGING KEY CODE IS " << key << " !!\n";
     //unsigned int m = 3;
@@ -96,11 +96,11 @@ void rTarcom::animate(float spf) {
     //if (key0 == framekey) {
     if ((key % 23) == (frame % 23)) {
         delete far;
-        far = cWorld::instance->filterByRange(object, pos0, 0, 100, -1, NULL);
+        far = World::instance->filterByRange(object, pos0, 0, 100, -1, NULL);
         delete near;
-        near = cWorld::instance->filterByRange(object, pos0, 0, 55, -1, far);
+        near = World::instance->filterByRange(object, pos0, 0, 55, -1, far);
         delete enemies;
-        enemies = cWorld::instance->filterByTags(object, &inc_enemies, false, -1, near);
+        enemies = World::instance->filterByTags(object, &inc_enemies, false, -1, near);
         // Filter one nearby.
         nearbyEnemy = 0;
         for (std::list<cObject*>::iterator i = enemies->begin(); i != enemies->end(); i++) {
@@ -119,12 +119,12 @@ void rTarcom::animate(float spf) {
     // Find all objects in near range.
     if (key1 == framekey) {
         delete near;
-        near = cWorld::instance->filterByRange(object, pos, 0, 50, -1, far);
+        near = World::instance->filterByRange(object, pos, 0, 50, -1, far);
     }
     // Find all objects belonging to any enemy party/role.
     if (key2 == framekey) {
         delete enemies;
-        enemies = cWorld::instance->filterByTags(object, &inc_enemies, false, -1, near);
+        enemies = World::instance->filterByTags(object, &inc_enemies, false, -1, near);
     }
      */
 }

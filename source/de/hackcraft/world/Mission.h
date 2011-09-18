@@ -1,5 +1,5 @@
 /**
- * File:     cMission.h
+ * File:     Mission.h
  * Project:  LinWarrior 3D
  * Home:     hackcraft.de
  *
@@ -9,9 +9,9 @@
 #ifndef _CMISSION_H
 #define _CMISSION_H
 
-class cMission;
+class Mission;
 
-#include "cWorld.h"
+#include "World.h"
 
 #include "de/hackcraft/world/object/cObject.h"
 #include "de/hackcraft/world/object/cPlanetmap.h"
@@ -28,7 +28,7 @@ class cMission;
  * Future: support for timetriggers like onTime().
  *
  */
-class cMission {
+class Mission {
 protected:
     // Mission Objectives
     std::vector<cObject*> mVictory; // Shall be destroyed
@@ -36,7 +36,7 @@ protected:
     int mState;
 public:
 
-    cMission() : mState(0) {
+    Mission() : mState(0) {
     };
 
     /**
@@ -44,7 +44,7 @@ public:
      * So this method should spawn objects into the world and setup
      * other mission critical data of the derived mission.
      */
-    virtual cObject* init(cWorld* world);
+    virtual cObject* init(World* world);
 
     /**
      * Through this method mission objectives can be traced.
@@ -74,7 +74,7 @@ public:
 /**
  * Mission for testing new Mission features.
  */
-class cOpenMission : public cMission {
+class OpenMission : public Mission {
 private:
     cObject group_alliance_player;
     cObject group_alliance_wingmen;
@@ -85,25 +85,25 @@ private:
 private:
     virtual void onVictory();
     virtual void onDefeat();
-    virtual cObject* init(cWorld* world);
+    virtual cObject* init(World* world);
 private:
-    cObject* initPlayerParty(cWorld* world, cPlanetmap* planetmap, float* position);
-    void initSkytideCity(cWorld* world, cPlanetmap* planetmap);
-    void initStarcircleTown(cWorld* world, cPlanetmap* planetmap);
-    void initPentaSpaceport(cWorld* world, cPlanetmap* planetmap);
-    void initPyraNanoCorp(cWorld* world, cPlanetmap* planetmap);
-    void initAcroloidMines(cWorld* world, cPlanetmap* planetmap);
-    void initCollapsiumFactory(cWorld* world, cPlanetmap* planetmap);
-    void initJurataJail(cWorld* world, cPlanetmap* planetmap);
-    void initSpadenixFactory(cWorld* world, cPlanetmap* planetmap);
+    cObject* initPlayerParty(World* world, cPlanetmap* planetmap, float* position);
+    void initSkytideCity(World* world, cPlanetmap* planetmap);
+    void initStarcircleTown(World* world, cPlanetmap* planetmap);
+    void initPentaSpaceport(World* world, cPlanetmap* planetmap);
+    void initPyraNanoCorp(World* world, cPlanetmap* planetmap);
+    void initAcroloidMines(World* world, cPlanetmap* planetmap);
+    void initCollapsiumFactory(World* world, cPlanetmap* planetmap);
+    void initJurataJail(World* world, cPlanetmap* planetmap);
+    void initSpadenixFactory(World* world, cPlanetmap* planetmap);
 private:
-    static void battleField(cWorld* world);
-    static void smallArmy(int wx, int wy, int wz, cWorld* world, const char* name, int n, bool blue, int wpn /*0*/, std::string model);
-    static void smallSettling(int wx, int wy, int wz, cWorld* world, int n);
-    static void roundForrest(int wx, int wy, int wz, cWorld* world, int r1, int r2, int nmax = 17);
-    static void capitalCity(int wx, int wy, int wz, cWorld* world);
-    static void pyramidBuilding(int x, int y, int z, cWorld* world);
-    static void spacePort(int x, int y, int z, cWorld* world, std::vector<cObject*>& defeat, std::vector<cObject*>& victory);
+    static void battleField(World* world);
+    static void smallArmy(int wx, int wy, int wz, World* world, const char* name, int n, bool blue, int wpn /*0*/, std::string model);
+    static void smallSettling(int wx, int wy, int wz, World* world, int n);
+    static void roundForrest(int wx, int wy, int wz, World* world, int r1, int r2, int nmax = 17);
+    static void capitalCity(int wx, int wy, int wz, World* world);
+    static void pyramidBuilding(int x, int y, int z, World* world);
+    static void spacePort(int x, int y, int z, World* world, std::vector<cObject*>& defeat, std::vector<cObject*>& victory);
 };
 
 /** 

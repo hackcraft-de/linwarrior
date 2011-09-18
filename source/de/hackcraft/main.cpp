@@ -29,7 +29,7 @@ using std::endl;
 #include <iosfwd>
 
 
-cMain* cMain::instance = NULL;
+Main* Main::instance = NULL;
 
 
 // Called atexit
@@ -37,9 +37,9 @@ void cleanup() {
     std::cout << "Thank you for playing.\n";
     SDL_Quit();
     alutExit();
-    cMain::instance->alEnableSystem(false);
-    delete cMain::instance;
-    cMain::instance = NULL;
+    Main::instance->alEnableSystem(false);
+    delete Main::instance;
+    Main::instance = NULL;
 }
 
 
@@ -82,7 +82,7 @@ int job_bgm(void* data) {
 
 int job_output(void* data) {
     while (true) {
-        cMain::instance->updateLog();
+        Main::instance->updateLog();
         SDL_Delay(200);
     }
     return 0;
@@ -99,7 +99,7 @@ class Widget {
 };
 
 
-cGame::cGame()
+Game::Game()
 : pad1(NULL),
 map1(map_zedwise),
 
@@ -125,7 +125,7 @@ fov(DEFAULT_FOV),
 mouseInput(true) {
 }
 
-void cGame::printHelp() {
+void Game::printHelp() {
     std::cout << std::endl
             << "LinWarrior" << std::endl
             << "  by Benjamin Pickhardt (benjamin.pickhardt*udo.edu)" << std::endl
@@ -153,7 +153,7 @@ void cGame::printHelp() {
             << std::endl;
 }
 
-int cGame::parseArgs(int argc, char** args) {
+int Game::parseArgs(int argc, char** args) {
     // Walk through arguments until all consumed or an error occured.
 
     loopi(argc) {
@@ -220,16 +220,16 @@ int cGame::parseArgs(int argc, char** args) {
     return 0;
 }
 
-void cGame::initMission() {
-    this->world = new cWorld();
+void Game::initMission() {
+    this->world = new World();
     assert(this->world != NULL);
     if (this->mission == 1) {
-        this->world->mMission = new cMission();
+        this->world->mMission = new Mission();
         assert(this->world->mMission != NULL);
         this->camera = this->world->mMission->init(this->world);
         this->pad1 = this->camera->pad;
     } else {
-        this->world->mMission = new cOpenMission();
+        this->world->mMission = new OpenMission();
         assert(this->world->mMission != NULL);
         this->camera = this->world->mMission->init(this->world);
         this->pad1 = this->camera->pad;
@@ -246,8 +246,8 @@ void Minion::run() {
     callback job = (callback) 1;
     bool done = false;
 
-    jobMutex = cMain::instance->jobMutex;
-    jobQueue = cMain::instance->jobQueue;
+    jobMutex = Main::instance->jobMutex;
+    jobQueue = Main::instance->jobQueue;
 
     while (!done) {
         // Grab a new job.
@@ -278,7 +278,7 @@ void Minion::run() {
 }
 
 
-cMain::cMain() {
+Main::Main() {
     instance = this;
     jobMutex = SDL_CreateMutex();
     jobQueue = new std::queue<int(*)(void*)>();
@@ -291,7 +291,7 @@ cMain::cMain() {
 }
 
 
-void cMain::initGL(int width, int height) {
+void Main::initGL(int width, int height) {
     if (true) {
         std::string glinfo;
         glinfo = (const char*) glGetString(GL_RENDERER);
@@ -360,7 +360,7 @@ void cMain::initGL(int width, int height) {
 }
 
 
-char* cMain::loadTextFile(const char* filename) {
+char* Main::loadTextFile(const char* filename) {
     FILE* f = fopen(filename, "rb");
     if (f == NULL) {
         char* cstr = new char[1];
@@ -378,7 +378,7 @@ char* cMain::loadTextFile(const char* filename) {
 }
 
 
-void cMain::applyFilter(int width, int height) {
+void Main::applyFilter(int width, int height) {
     static bool fail = false;
     static GLenum postprocess = 0;
 
@@ -445,7 +445,7 @@ void cMain::applyFilter(int width, int height) {
 }
 
 
-void cMain::updateFrame(int elapsed_msec) {
+void Main::updateFrame(int elapsed_msec) {
     if (game.paused) {
         // Delete Fragged Objects of previous frames.
         game.world->bagFragged();
@@ -478,7 +478,7 @@ void cMain::updateFrame(int elapsed_msec) {
 }
 
 
-void cMain::drawFrame() {
+void Main::drawFrame() {
     //std::cout << "elapsed: " << (elapsed_msec / 1000.0f) << std::endl;
     //if (hurlmotion) elapsed = int(elapsed * 1.0f);
 
@@ -596,7 +596,7 @@ void cMain::drawFrame() {
 }
 
 
-void cMain::drawLog() {
+void Main::drawLog() {
     GLS::glPushOrthoProjection(-0.0,+1.0,-1.0,+0.0,-100,+100);
     {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -631,7 +631,7 @@ void cMain::drawLog() {
 }
 
 
-void cMain::updateKey(Uint8 keysym) {
+void Main::updateKey(Uint8 keysym) {
     if (keysym == SDLK_TAB) {
         overlayEnabled ^= true;
     }
@@ -661,13 +661,13 @@ void cMain::updateKey(Uint8 keysym) {
     } else if (keysym == _PAUSE_KEY) {
         game.paused = !game.paused;
     } else {
-        if (keysym == SDLK_MINUS) cWorld::instance->setViewdistance(fmax(100, cWorld::instance->getViewdistance() - 50));
-        else if (keysym == SDLK_PLUS) cWorld::instance->setViewdistance(fmin(3000, cWorld::instance->getViewdistance() + 50));
+        if (keysym == SDLK_MINUS) World::instance->setViewdistance(fmax(100, World::instance->getViewdistance() - 50));
+        else if (keysym == SDLK_PLUS) World::instance->setViewdistance(fmin(3000, World::instance->getViewdistance() + 50));
     }
 }
 
 
-void cMain::updatePad(Pad* pad, SDL_Joystick* joy, int* mapping) {
+void Main::updatePad(Pad* pad, SDL_Joystick* joy, int* mapping) {
 
     if (pad == NULL) return;
 
@@ -773,7 +773,7 @@ void cMain::updatePad(Pad* pad, SDL_Joystick* joy, int* mapping) {
 }
 
 
-int cMain::alEnableSystem(bool en) {
+int Main::alEnableSystem(bool en) {
     static ALCdevice *dev = NULL;
     static ALCcontext *ctx = NULL;
     static bool isenabled = false;
@@ -808,7 +808,7 @@ int cMain::alEnableSystem(bool en) {
 }
 
 
-void cMain::drawPlaque() {
+void Main::drawPlaque() {
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
         glDisable(GL_LIGHTING);
@@ -846,7 +846,7 @@ void cMain::drawPlaque() {
 }
 
 
-void cMain::updateLog() {
+void Main::updateLog() {
     //cout << "Redirecting text output.\n";
     if (!oss.str().empty()) {
         log.write(oss.str().c_str());
@@ -858,7 +858,7 @@ void cMain::updateLog() {
 }
 
 
-int cMain::run(int argc, char** args) {
+int Main::run(int argc, char** args) {
     //jobQueue.push(job_bgm);
     jobQueue->push(job_render);
 
@@ -1114,7 +1114,7 @@ int main(int argc, char **args) {
 #endif
     
     try {
-        return (new cMain())->run(argc, args);
+        return (new Main())->run(argc, args);
     } catch (char* s) {
         cout << "Fatal exception caught:\n" << s << endl;
     } catch (const char* s) {

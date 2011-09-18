@@ -17,7 +17,7 @@
  * a targeting weapon (or Mech) and a hostile target Mech.
  * Only bind together what belongs together and what would be destroyed together.
  * Pointers express responsibility whereas OIDs loosely couple.
- * Use cWorld::instance->getObject(oid) to map serial to pointer.
+ * Use World::instance->getObject(oid) to map serial to pointer.
  */
 typedef unsigned long long OID;
 

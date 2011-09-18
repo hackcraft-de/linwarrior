@@ -12,19 +12,20 @@
 #ifndef _CBACKGROUND_H
 #define _CBACKGROUND_H
 
+class Background;
+
 #include <map>
 #include <list>
 
 #include "de/hackcraft/psi3d/Particle.h"
 
-class cBackground;
 
 /**
  * A background in form of a SkySphere just like
  * those virtual horizons found in aviation instruments.
  * Sets lightsource 0 as skylight according to time.
  */
-class cBackground {
+class Background {
 public:
     float hour;
     std::map<int, unsigned int> textures;
@@ -34,7 +35,7 @@ public:
     float heightshift;
     vec3 light;
 public:
-    cBackground();
+    Background();
     void drawBackground(float h = 12.00f); // Calls other draw*()
     void drawGalaxy();
     void drawUpperDome();
