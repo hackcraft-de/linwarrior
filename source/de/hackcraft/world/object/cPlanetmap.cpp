@@ -141,6 +141,7 @@ cPlanetmap::cPlanetmap() {
             string("longplant.tga"),
             string("greenplant.tga"),
             string("desertplant.tga"),
+            string("melissa.tga"),
             string("treewood.tga"),
             string("pineleafs.tga"),
             string("strangeleafs.tga")
@@ -151,6 +152,7 @@ cPlanetmap::cPlanetmap() {
             1.9,
             1.6,
             1.0,
+            0.7,
             1.4,
             1.5,
             1.1
@@ -161,12 +163,13 @@ cPlanetmap::cPlanetmap() {
             Growth::BILLBOARD,
             Growth::BILLBOARD,
             Growth::BILLBOARD,
+            Growth::BILLBOARD,
             Growth::STAR,
             Growth::STAR,
             Growth::STAR
         };
 
-        loopi(8) {
+        loopi(9) {
             string name = string(basepath).append(filenames[i]);
             cout << "Loading [" << name << "] ...\n";
             unsigned int texname;
@@ -831,6 +834,8 @@ void cPlanetmap::drawEffect() {
         const float z = -((int) (p[2] / step)) * step;
         //cout << x << " " << z << endl;
         float color[16];
+        
+        const int maxplants = sGrowth.size();
 
         glBindTexture(GL_TEXTURE_2D, sTextures[1]);
 
@@ -905,7 +910,7 @@ void cPlanetmap::drawEffect() {
                         //lfsr16 = LFSR16(lfsr16);
                         //unsigned char size = lfsr16;
 
-                        unsigned char tex = (rot >> 4) & 7;
+                        unsigned char tex = (rot >> 2) % maxplants;
                         unsigned char size = rot;
 
                         float sizef = size * 0.003906f;
