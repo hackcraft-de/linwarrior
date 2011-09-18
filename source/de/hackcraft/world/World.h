@@ -98,6 +98,21 @@ private:
 
     /// Timing, simulation stepping, deltacycles, date, fps, etc.
     Timing mTiming;
+    
+    /// Groups objects together for searching, messaging, tagging, ...
+    struct Group {
+        /// Group id used for reference (later: use for tags)
+        OID gid;
+        /// Group id of parent group if not zero.
+        //OID parent;
+        /// Name of the group (use qualified names like: "world/enemies/squads/alpha" or "state/dead")
+        std::string name;
+        /// Objects in this group.
+        std::list<OID> members;
+    };
+    
+    /// Groups of objects
+    std::map<OID,Group*> mGroupIndex;
 
 public: // Constructor, Object-Management and Drawing:
 
@@ -121,6 +136,14 @@ public: // Accessors
     void setViewdistance(float viewdistance);
 
     float getViewdistance();
+    
+public: // Grouping
+
+    /// Finds and returns a group or creates a new one.
+    OID getGroup(std::string name);
+
+    /// Adds a new member to a existing group or creates a new one, returns gid.
+    void addToGroup(OID gid, cObject* member);
 
 public: // Messaging
 

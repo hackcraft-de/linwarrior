@@ -141,7 +141,7 @@ void OpenMission::onVictory() {
     if (mState != -1) {
         mState = -1;
         cout << "onVictory!";
-        World::instance->sendMessage(0, 0, group_alliance_player.oid,
+        World::instance->sendMessage(0, 0, group_alliance_player,
                 "DISPLAY",
                 //std::string("   (+) Primary target fullfilled.\n   (+) You Won!\n   (+) Hit ESC to finish Mission\n")
                 std::string("Stortebeker:\n  Good work!\n  We now have control over the town.\n  You may have a look around:\n  Pyra Nano Corp: SW of Skytide.\n  Starcircle: E of Skytide\n  Spaceport: NW\n  And don't get yourself killed.")
@@ -154,7 +154,7 @@ void OpenMission::onDefeat() {
     if (mState != -2) {
         mState = -2;
         cout << "onDefeat!";
-        World::instance->sendMessage(0, 0, group_alliance_player.oid,
+        World::instance->sendMessage(0, 0, group_alliance_player,
                 "DISPLAY",
                 //std::string("   (-) You Lost!\n   (+) Hit ESC to finish Mission\n")
                 std::string("Stortebeker:\n  And I told you not to die!\n  We will share your booty evenly\n  and spread your ashes in space.\n")
@@ -181,21 +181,10 @@ cObject* OpenMission::init(World* world) {
 
     cout << "Initialising call groups...\n";
     {
-        group_alliance_player.name = "/call/alliance/player";
-        group_alliance_player.grouping = new rGrouping();
-        world->spawnObject(&group_alliance_player);
-
-        group_alliance_wingmen.name = "/call/alliance/wingmen";
-        group_alliance_wingmen.grouping = new rGrouping();
-        world->spawnObject(&group_alliance_wingmen);
-
-        group_alliance_all.name = "/call/alliance/all";
-        group_alliance_all.grouping = new rGrouping();
-        world->spawnObject(&group_alliance_all);
-
-        group_enemies_all.name = "/call/enemies/all";
-        group_enemies_all.grouping = new rGrouping();
-        world->spawnObject(&group_enemies_all);
+        group_alliance_player = World::instance->getGroup("/call/alliance/player");
+        group_alliance_wingmen = World::instance->getGroup("/call/alliance/wingmen");
+        group_alliance_all = World::instance->getGroup("/call/alliance/all");
+        group_enemies_all = World::instance->getGroup("/call/enemies/all");
     }
 
     cout << "Initialising default sensitivities...\n";
@@ -259,7 +248,7 @@ cObject* OpenMission::init(World* world) {
         {
             float pos[] = {50, -1, 50};
             float range[] = {400, 100, 400};
-            OID group = group_alliance_player.oid;
+            OID group = group_alliance_player;
             std::string type = "RADIO";
             std::string message = std::string("YOU ARE LEAVING THE MISSION AREA!");
             bool positive = false;
@@ -273,7 +262,7 @@ cObject* OpenMission::init(World* world) {
         {
             float pos[] = {50, -1, 50};
             float range[] = {490, 190, 490};
-            OID group = group_alliance_player.oid;
+            OID group = group_alliance_player;
             std::string type = "RADIO";
             std::string message = std::string("YOU HAVE LEFT THE MISSION AREA, CONTRACT VOIDED!");
             bool positive = false;
@@ -344,9 +333,9 @@ cObject* OpenMission::initPlayerParty(World* world, cPlanetmap* planetmap, float
         mech->tarcom->addEnemy(cObject::DEAD, false);
 
         world->spawnObject(mech);
-        group_alliance_player.grouping->members.insert(mech->oid);
-        group_alliance_wingmen.grouping->members.insert(mech->oid);
-        group_alliance_all.grouping->members.insert(mech->oid);
+        world->addToGroup(group_alliance_player, mech);
+        world->addToGroup(group_alliance_wingmen, mech);
+        world->addToGroup(group_alliance_all, mech);
         cout << "after first spawn\n";
     }
 
@@ -366,8 +355,8 @@ cObject* OpenMission::initPlayerParty(World* world, cPlanetmap* planetmap, float
         mech->tarcom->addEnemy(cObject::DEAD, false);
 
         world->spawnObject(mech);
-        group_alliance_wingmen.grouping->members.insert(mech->oid);
-        group_alliance_all.grouping->members.insert(mech->oid);
+        world->addToGroup(group_alliance_wingmen, mech);
+        world->addToGroup(group_alliance_all, mech);
         bool patrol = true;
         mech->controller->pushFollowLeader(player->oid, patrol);
         mech->mountWeapon((char*) "LLoArm", new rWeaponMachinegun);
@@ -389,16 +378,16 @@ cObject* OpenMission::initPlayerParty(World* world, cPlanetmap* planetmap, float
         mech->tarcom->addEnemy(cObject::DEAD, false);
 
         world->spawnObject(mech);
-        group_alliance_wingmen.grouping->members.insert(mech->oid);
-        group_alliance_all.grouping->members.insert(mech->oid);
+        world->addToGroup(group_alliance_wingmen, mech);
+        world->addToGroup(group_alliance_all, mech);
         bool patrol = true;
         mech->controller->pushFollowLeader(player->oid, patrol);
         mech->mountWeapon((char*) "RLoArm", new rWeaponMachinegun);
     }
 
-    world->sendMessage(0, player->oid, group_alliance_all.oid, "RADIO", string("Stay alert there have been intruders!"));
-    world->sendMessage(0, player->oid, group_alliance_wingmen.oid, "RADIO", string("Wingmen into formation!"));
-    world->sendMessage(0, player->oid, group_alliance_player.oid, "RADIO", string("Stortebeker:\n  You guys search the town for offenders.\n  Then I'll give you more work!\n  I'll search the sourrounding."));
+    world->sendMessage(0, player->oid, group_alliance_all, "RADIO", string("Stay alert there have been intruders!"));
+    world->sendMessage(0, player->oid, group_alliance_wingmen, "RADIO", string("Wingmen into formation!"));
+    world->sendMessage(0, player->oid, group_alliance_player, "RADIO", string("Stortebeker:\n  You guys search the town for offenders.\n  Then I'll give you more work!\n  I'll search the sourrounding."));
 
     return player;
 }
@@ -427,7 +416,7 @@ void OpenMission::initSkytideCity(World* world, cPlanetmap* planetmap) {
     roundForrest(loc[0] + 50, loc[1], loc[2] + 50, world, 65, 150, 1);
 
     {
-        OID group = group_alliance_player.oid;
+        OID group = group_alliance_player;
         float pos[] = {loc[0] + 48, loc[1] + 9, loc[2] + 58};
         float range[] = {60.5, 40.5, 60.5};
         string message = string("Skytide City");
@@ -452,7 +441,7 @@ void OpenMission::initSkytideCity(World* world, cPlanetmap* planetmap) {
         mech->tarcom->addEnemy(cObject::DEAD, false);
 
         world->spawnObject(mech);
-        group_alliance_all.grouping->members.insert(mech->oid);
+        world->addToGroup(group_alliance_all, mech);
 
         if (true) {
             //mech->mountWeapon((char*)"LLoArm",  new cMachineGun);
@@ -499,7 +488,7 @@ void OpenMission::initSkytideCity(World* world, cPlanetmap* planetmap) {
         mVictory.push_back(mech);
 
         world->spawnObject(mech);
-        group_enemies_all.grouping->members.insert(mech->oid);
+        world->addToGroup(group_enemies_all, mech);
 
         if (true) {
             //mech->mountWeapon((char*)"LTorsor", new cExplosion);
@@ -528,7 +517,7 @@ void OpenMission::initSkytideCity(World* world, cPlanetmap* planetmap) {
 
         //gCameraEntity = mech;
         world->spawnObject(mech);
-        group_enemies_all.grouping->members.insert(mech->oid);
+        world->addToGroup(group_enemies_all, mech);
 
         if (true) {
             mech->mountWeapon((char*) "LLoArm", new rWeaponSparkgun);
@@ -559,7 +548,7 @@ void OpenMission::initStarcircleTown(World* world, cPlanetmap* planetmap) {
     planetmap->mods.push_back(mod);
 
     {
-        OID group = group_alliance_player.oid;
+        OID group = group_alliance_player;
         float pos[] = {loc[0], loc[1] + 9, loc[2]};
         float range[] = {50.5, 40.5, 50.5};
         string message = string("Starcircle Town\n(currently under bandit control)");
@@ -580,7 +569,7 @@ void OpenMission::initStarcircleTown(World* world, cPlanetmap* planetmap) {
     {
         float pos[] = STARCIRCLE;
         float range[] = {10, 3, 10};
-        OID group = group_alliance_player.oid;
+        OID group = group_alliance_player;
         std::string type = "RADIO";
         std::string message = std::string("EVACUATION ZONE REACHED, FINISHING MISSION!");
         bool positive = true;
@@ -608,7 +597,7 @@ void OpenMission::initAcroloidMines(World* world, cPlanetmap* planetmap) {
     planetmap->mods.push_back(mod);
 
     {
-        OID group = group_alliance_player.oid;
+        OID group = group_alliance_player;
         float pos[] = {loc[0], loc[1] + 9, loc[2]};
         float range[] = {0.5, 0.5, 0.5};
         string message = string("Acroloid Surface Mining Ltd. Co.\n(under construction)");
@@ -635,7 +624,7 @@ void OpenMission::initCollapsiumFactory(World* world, cPlanetmap* planetmap) {
     planetmap->mods.push_back(mod);
 
     {
-        OID group = group_alliance_player.oid;
+        OID group = group_alliance_player;
         float pos[] = {loc[0], loc[1] + 9, loc[2]};
         float range[] = {0.5, 0.5, 0.5};
         string message = string("Collapsium Factory Ltd.\n(under construction)");
@@ -662,7 +651,7 @@ void OpenMission::initJurataJail(World* world, cPlanetmap* planetmap) {
     planetmap->mods.push_back(mod);
 
     {
-        OID group = group_alliance_player.oid;
+        OID group = group_alliance_player;
         float pos[] = {loc[0], loc[1] + 9, loc[2]};
         float range[] = {0.5, 0.5, 0.5};
         string message = string("Jurata Jail Ltd.\n- Service Company -\n(under construction)");
@@ -689,7 +678,7 @@ void OpenMission::initSpadenixFactory(World* world, cPlanetmap* planetmap) {
     planetmap->mods.push_back(mod);
 
     {
-        OID group = group_alliance_player.oid;
+        OID group = group_alliance_player;
         float pos[] = {loc[0], loc[1] + 9, loc[2]};
         float range[] = {0.5, 0.5, 0.5};
         string message = string("Spadenix Mechanical Factory Ltd.\n(under construction)");
@@ -716,7 +705,7 @@ void OpenMission::initPyraNanoCorp(World* world, cPlanetmap* planetmap) {
     planetmap->mods.push_back(mod);
 
     {
-        OID group = group_alliance_player.oid;
+        OID group = group_alliance_player;
         float pos[] = {loc[0], loc[1] + 9, loc[2]};
         float range[] = {50.5, 40.5, 50.5};
         string message = string("Pyra Nano Corporation\n(currently under bandit control)");
@@ -747,7 +736,7 @@ void OpenMission::initPentaSpaceport(World* world, cPlanetmap* planetmap) {
     planetmap->mods.push_back(mod);
 
     {
-        OID group = group_alliance_player.oid;
+        OID group = group_alliance_player;
         float pos[] = {loc[0] + 5, loc[1] + 9, loc[2] + 3};
         float range[] = {90.5, 40.5, 90.5};
         string message = string("Penta Interstellar Spaceport\n(currently under bandit control)");

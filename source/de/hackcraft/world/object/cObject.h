@@ -13,14 +13,12 @@
 #ifndef _COBJECT_H
 #define _COBJECT_H
 
-class World;
-
-struct rGrouping;
+class Object;
 
 #include "de/hackcraft/world/Message.h"
 #include "de/hackcraft/world/OID.h"
 
-#include "de/hackcraft/world/comp/rGrouping.h"
+#include "de/hackcraft/world/comp/rComponent.h"
 
 #include "de/hackcraft/util/Pad.h"
 
@@ -47,6 +45,8 @@ struct rGrouping;
 #define FIELDOFS(attribute)     (((OID)&attribute) - ((OID)this))
 #define ROLEPTR(attribute)      ((rRole* cObject::*) &attribute)
 #define GETROLE(offset)         ((rRole*) *((OID*)( ((OID)this) + offset )))
+
+class World;
 
 /**
  * Generic Game-Object (Object with Roles) which
@@ -83,10 +83,6 @@ public: // Components
 
     std::vector<rComponent*> components;
 
-public: // FIXME: Predefined Components, to be removed from cObject
-
-    rGrouping* grouping;
-
 public: // Experimental Component "Managing"
 
     //static std::map<std::string, rComponent*> roleprotos;
@@ -98,7 +94,7 @@ public: // Experimental Component "Managing"
 
 public: // Object Tags
 
-    /// Tags (IDs, Social-Roles, Parties, States...) this object has.
+    /// Tags (IDs, Social-Roles, Parties, States...) this object has (=groups?).
     std::set<OID> tags;
 
     enum DefaultTags {
@@ -134,20 +130,16 @@ public:
             //registerRole(new rTraceable, FIELDOFS(traceable), ROLEPTR(cObject::traceable));
             //registerRole(new rDamageable, FIELDOFS(damageable), ROLEPTR(cObject::damageable));
             //registerRole(new rControlled, FIELDOFS(controlled), ROLEPTR(cObject::controlled));
-            //registerRole(new rGrouping, FIELDOFS(grouping), ROLEPTR(cObject::grouping));
         //}
-        grouping = NULL;
         pad = NULL;
         //rRole* r = GETROLE(FIELDOFS(nameable));
         //std::cout << "TEST: " << r << " vs " << nameable << "\n";
     }
 
     cObject(cObject* original) {
-        if (original->grouping) grouping = new rGrouping(original->grouping);
     }
 
     virtual ~cObject() {
-        delete this->grouping;
     }
 
     /*

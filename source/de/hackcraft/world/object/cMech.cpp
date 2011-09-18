@@ -14,7 +14,6 @@
 #include "de/hackcraft/world/comp/rNameable.h"
 #include "de/hackcraft/world/comp/rTraceable.h"
 #include "de/hackcraft/world/comp/rDamageable.h"
-#include "de/hackcraft/world/comp/rGrouping.h"
 #include "de/hackcraft/world/comp/rRigged.h"
 #include "de/hackcraft/world/comp/rCamera.h"
 #include "de/hackcraft/world/comp/rCollider.h"

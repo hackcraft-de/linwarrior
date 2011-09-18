@@ -76,10 +76,10 @@ public:
  */
 class OpenMission : public Mission {
 private:
-    cObject group_alliance_player;
-    cObject group_alliance_wingmen;
-    cObject group_alliance_all;
-    cObject group_enemies_all;
+    OID group_alliance_player;
+    OID group_alliance_wingmen;
+    OID group_alliance_all;
+    OID group_enemies_all;
     std::set<OID> inc_sense;
     std::set<OID> exc_sense;
 private:

@@ -85,8 +85,6 @@
           <itemPath>source/de/hackcraft/world/comp/rComponent.h</itemPath>
           <itemPath>source/de/hackcraft/world/comp/rDamageable.cpp</itemPath>
           <itemPath>source/de/hackcraft/world/comp/rDamageable.h</itemPath>
-          <itemPath>source/de/hackcraft/world/comp/rGrouping.cpp</itemPath>
-          <itemPath>source/de/hackcraft/world/comp/rGrouping.h</itemPath>
           <itemPath>source/de/hackcraft/world/comp/rMobile.cpp</itemPath>
           <itemPath>source/de/hackcraft/world/comp/rMobile.h</itemPath>
           <itemPath>source/de/hackcraft/world/comp/rNameable.cpp</itemPath>

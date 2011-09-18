@@ -81,6 +81,35 @@ float World::getViewdistance() {
 }
 
 
+// Grouping
+
+OID World::getGroup(std::string name) {
+    for (std::map<OID,Group*>::iterator i = mGroupIndex.begin(); i != mGroupIndex.end(); i++) {
+        if ((*i).second->name.compare(name) == 0) {
+            return (*i).second->gid;
+        }
+    }
+    Group* group = new Group();
+    group->gid = (OID) group;
+    group->name = name;
+    mGroupIndex[group->gid] = group;
+    cout << "Group created: " << group->gid << " as " << group->name << "\n";
+    return group->gid;
+}
+
+void World::addToGroup(OID gid, cObject* member) {
+    if (member == NULL) {
+        cout << "No object given while trying to add object to group.\n";
+    }
+    if (mGroupIndex[gid] == NULL) {
+        cout << "No such group " << gid << " while trying to add object " << member->oid << " to group.\n";
+        return;
+    }
+    cout << "Adding object " << member->oid << " to group " << gid << " " << mGroupIndex[gid]->name << ".\n";
+    mGroupIndex[gid]->members.push_back(member->oid);
+}
+
+    
 // Messaging
 
 void World::sendMessage(OID delay, OID sender /* = 0 */, OID recvid /* = 0 */, string type, string text, void* blob) {
@@ -169,26 +198,16 @@ void World::dispatchMessages() {
             mMessages.pop();
             // Keep record of sent messages.
             mDispatchedMessages.push_front(message);
-            // Deliver info about new message to individual receiver(s).
-            if (message->getReceiver() != 0) {
-                // Message to single receiver.
-                cObject* object = mIndex[message->getReceiver()];
-                // Unable to deliver message to non-existent object?
-                if (object == NULL) continue;
-                // Deliver.
-                object->message(message);
-                // Later this shall be handled by the object/role itself in onMessage(message).
-                if (object->grouping) {
-                    // Message to group receivers.
-                    rGrouping* group = object->grouping;
-                    // Unable to deliver message to non-existent group?
-                    if (group == NULL) continue;
-                    // Inform each group member of the new message.
+            // Deliver info about new message to individual group members.
+            if (message->getReceiver() == 0) continue;
 
-                    foreach(i, group->members) {
-                        OID oid = *i;
-                        this->sendMessage(0, message->getSender(), oid, message->getType(), message->getText(), message->getBlob());
-                    }
+            Group* group = mGroupIndex[message->getReceiver()];
+            if (group == NULL) continue;
+
+            foreach(i, group->members) {
+                cObject* object = mIndex[*i];
+                if (object != NULL) {
+                    object->message(message);
                 }
             }
         } else {
