@@ -4,5 +4,5 @@ build
 doc/doxygen
 gmon.out
 profile
-nbproject/private
+nbproject/private/*
 
