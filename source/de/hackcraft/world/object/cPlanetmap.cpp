@@ -25,12 +25,9 @@ std::vector<cPlanetmap::Growth*> cPlanetmap::sGrowth;
 
 
 inline float cPlanetmap::sMod::getModifiedHeight(float x, float z, float h) {
-    // Square leveling
-    int type = 3;
 
     switch (type) {
-            // Flat Square Level
-        case 0:
+        case MODTYPE_FLATSQUARE:
         {
             float x_ = x - pos[0];
             float z_ = z - pos[2];
@@ -46,8 +43,8 @@ inline float cPlanetmap::sMod::getModifiedHeight(float x, float z, float h) {
             return h;
         }
         break;
-            // Smooth Square Level
-        case 1:
+        
+        case MODTYPE_SMOOTHSQUARE:
         {
             float x_ = x - pos[0];
             float z_ = z - pos[2];
@@ -62,8 +59,8 @@ inline float cPlanetmap::sMod::getModifiedHeight(float x, float z, float h) {
             return h;
         }
         break;
-            // Smooth Round Level
-        case 2:
+        
+        case MODTYPE_SMOOTHROUND:
         {
             float x_ = x - pos[0];
             float z_ = z - pos[2];
@@ -76,8 +73,8 @@ inline float cPlanetmap::sMod::getModifiedHeight(float x, float z, float h) {
             return h;
         }
         break;
-            // Crater
-        case 3:
+        
+        case MODTYPE_CRATER:
         {
             float x_ = x - pos[0];
             float z_ = z - pos[2];

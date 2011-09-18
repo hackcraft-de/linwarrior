@@ -70,6 +70,14 @@ public:
         float pos[3];
         float range;
         float height;
+        enum Modtype {
+            MODTYPE_FLATSQUARE,
+            MODTYPE_SMOOTHSQUARE,
+            MODTYPE_SMOOTHROUND,
+            MODTYPE_CRATER
+        };
+        Modtype type;
+        sMod() { type = MODTYPE_SMOOTHROUND; pos[0] = pos[1] = pos[2] = 0.0f; range = 10.0f; height = 0.0f; }
         float getModifiedHeight(float x, float y, float h);
     };
     /// All effective surface modifictions.
