@@ -16,8 +16,8 @@
 
 using namespace std;
 
-#define GROUNDDETAIL -1
-#define VEGETATION 0.8f
+#define GROUNDDETAIL 0
+#define VEGETATION 0.7f
 
 int cPlanetmap::sInstances = 0;
 std::vector<long> cPlanetmap::sTextures;
@@ -876,13 +876,15 @@ void cPlanetmap::drawEffect() {
                 unsigned char key = Noise::permutation2d(perms, a, b);
 
                 const float b2f = 1.0f / 256.0f;
+                
+                key = Noise::simplex3(a, b, 0.1f, 123) * 255.0f;
 
                 float plantscale = 1.0f;
                 float plantdensity = (totaldensity * 10.00f * key) * b2f;
                 int visibleplants = plantdensity * opacity;
 
                 key = Noise::LFSR16(key);
-                float treedensity = (totaldensity * 2.00f * key) * b2f;
+                float treedensity = (totaldensity * 1.85f * key) * b2f;
                 float visibletrees = treedensity;
 
                 //cout << "opacity " << opacity << "  density " << density << endl;
@@ -917,7 +919,7 @@ void cPlanetmap::drawEffect() {
                         unsigned char size = rot;
 
                         float sizef = size * 0.003906f;
-                        float scale = plantscale * sGrowth[tex]->size * (0.35f + 0.65f * sizef + 0.005f * plantdensity);
+                        float scale = plantscale * sGrowth[tex]->size * (0.35f + 0.65f * sizef + 0.008f * plantdensity);
 
                         glColor4f(1, 1, 1, opacity);
                         glBindTexture(GL_TEXTURE_2D, sGrowth[tex]->texture);
