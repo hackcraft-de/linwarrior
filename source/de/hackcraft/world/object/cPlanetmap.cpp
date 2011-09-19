@@ -142,6 +142,7 @@ cPlanetmap::cPlanetmap() {
             string("greenplant.tga"),
             string("desertplant.tga"),
             string("melissa.tga"),
+            string("bluishplant.tga"),
             string("treewood.tga"),
             string("pineleafs.tga"),
             string("strangeleafs.tga")
@@ -153,6 +154,7 @@ cPlanetmap::cPlanetmap() {
             1.6,
             1.0,
             0.7,
+            0.8,
             1.4,
             1.5,
             1.1
@@ -164,12 +166,13 @@ cPlanetmap::cPlanetmap() {
             Growth::BILLBOARD,
             Growth::BILLBOARD,
             Growth::BILLBOARD,
+            Growth::BILLBOARD,
             Growth::STAR,
             Growth::STAR,
             Growth::STAR
         };
 
-        loopi(9) {
+        loopi(10) {
             string name = string(basepath).append(filenames[i]);
             cout << "Loading [" << name << "] ...\n";
             unsigned int texname;
