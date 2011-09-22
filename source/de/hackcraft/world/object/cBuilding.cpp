@@ -3,6 +3,7 @@
 #include "cBuilding.h"
 
 #include "de/hackcraft/world/comp/rDamageable.h"
+#include "de/hackcraft/world/World.h"
 
 #include "de/hackcraft/psi3d/macros.h"
 #include "de/hackcraft/psi3d/GLS.h"
@@ -127,10 +128,10 @@ void cBuilding::damage(float* localpos, float damage, cObject* enactor) {
             cout << "cBuilding::damageByParticle(): DEAD\n";
             explosionObject.trigger = true;
         }
-        if (damageable->hp[body] <= 75) addTag(WOUNDED);
-        if (damageable->hp[body] <= 50) addTag(SERIOUS);
-        if (damageable->hp[body] <= 25) addTag(CRITICAL);
-        if (damageable->hp[body] <= 0) addTag(DEAD);
+        if (damageable->hp[body] <= 75) addTag(World::instance->getGroup(HLT_WOUNDED));
+        if (damageable->hp[body] <= 50) addTag(World::instance->getGroup(HLT_SERIOUS));
+        if (damageable->hp[body] <= 25) addTag(World::instance->getGroup(HLT_CRITICAL));
+        if (damageable->hp[body] <= 0) addTag(World::instance->getGroup(HLT_DEAD));
     }
 }
 
@@ -318,6 +319,7 @@ void cBuilding::drawEffect() {
 
 #include "de/hackcraft/proc/Surface.h"
 #include "de/hackcraft/proc/Road.h"
+#include "de/hackcraft/world/World.h"
 
 
 int cTile::sInstances = 0;

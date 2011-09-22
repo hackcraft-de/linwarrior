@@ -31,14 +31,14 @@ void adjustHeight(cPlanetmap* planetmap, float* pos) {
 void Mission::checkConditions() {
     // Destroyed all necessary enemies?
     unsigned int n = 0;
-    loopiv(mVictory) if (mVictory[i]->hasTag(cObject::DEAD)) n++;
+    loopiv(mVictory) if (mVictory[i]->hasTag(World::instance->getGroup(HLT_DEAD))) n++;
     if (n != 0 && n == mVictory.size()) {
         onVictory();
         return;
     }
     // Destroyed any neccessary friend?
     n = 0;
-    loopiv(mDefeat) if (mDefeat[i]->hasTag(cObject::DEAD)) n++;
+    loopiv(mDefeat) if (mDefeat[i]->hasTag(World::instance->getGroup(HLT_DEAD))) n++;
     if (n != 0) {
         onDefeat();
         return;
@@ -85,10 +85,10 @@ cObject* Mission::init(World* world) {
         mech->nameable->name = "Alpha";
 
         mech->controller->enabled = false; // Disable Autopilot.
-        mech->addTag(cObject::BLUE);
-        mech->addTag(cObject::HUMANPLAYER);
-        mech->tarcom->addEnemy(cObject::RED);
-        mech->tarcom->addEnemy(cObject::DEAD, false);
+        mech->addTag(World::instance->getGroup(FAC_BLUE));
+        mech->addTag(World::instance->getGroup(PLR_HUMAN));
+        mech->tarcom->addEnemy(World::instance->getGroup(FAC_RED));
+        mech->tarcom->addEnemy(World::instance->getGroup(HLT_DEAD), false);
 
         player = mech;
 
@@ -189,8 +189,8 @@ cObject* OpenMission::init(World* world) {
 
     cout << "Initialising default sensitivities...\n";
     {
-        inc_sense.insert(cObject::HUMANPLAYER);
-        exc_sense.insert(cObject::DEAD);
+        inc_sense.insert(World::instance->getGroup(PLR_HUMAN));
+        exc_sense.insert(World::instance->getGroup(HLT_DEAD));
     }
 
     cout << "Initialising Skytide City...\n";
@@ -311,9 +311,9 @@ cObject* OpenMission::initPlayerParty(World* world, cPlanetmap* planetmap, float
         c["displayname"] = "Alpha";
         c["model"] = "frogger";
         c["ai"] = "false";
-        //c["tags"] = "{BLUE,HUMANPLAYER}";
-        //c["enemies"] = "{RED}";
-        //c["notenemies"] = "{DEAD}";
+        //c["tags"] = "{FAC_BLUE,PLR_HUMAN}";
+        //c["enemies"] = "{FAC_RED}";
+        //c["notenemies"] = "{HLT_DEAD}";
         
         c["Center"] = "none";
         c["LTorsor"] = "Plasma";
@@ -327,10 +327,10 @@ cObject* OpenMission::initPlayerParty(World* world, cPlanetmap* planetmap, float
         if (mech == NULL) throw "No memory for player mech!";
         player = mech;
         
-        mech->addTag(cObject::BLUE);
-        mech->addTag(cObject::HUMANPLAYER);
-        mech->tarcom->addEnemy(cObject::RED);
-        mech->tarcom->addEnemy(cObject::DEAD, false);
+        mech->addTag(World::instance->getGroup(FAC_BLUE));
+        mech->addTag(World::instance->getGroup(PLR_HUMAN));
+        mech->tarcom->addEnemy(World::instance->getGroup(FAC_RED));
+        mech->tarcom->addEnemy(World::instance->getGroup(HLT_DEAD), false);
 
         world->spawnObject(mech);
         world->addToGroup(group_alliance_player, mech);
@@ -350,9 +350,9 @@ cObject* OpenMission::initPlayerParty(World* world, cPlanetmap* planetmap, float
         mech->name = "Player's Wing 1";
         mech->nameable->name = "Joe";
 
-        mech->addTag(cObject::BLUE);
-        mech->tarcom->addEnemy(cObject::RED);
-        mech->tarcom->addEnemy(cObject::DEAD, false);
+        mech->addTag(World::instance->getGroup(FAC_BLUE));
+        mech->tarcom->addEnemy(World::instance->getGroup(FAC_RED));
+        mech->tarcom->addEnemy(World::instance->getGroup(HLT_DEAD), false);
 
         world->spawnObject(mech);
         world->addToGroup(group_alliance_wingmen, mech);
@@ -373,9 +373,9 @@ cObject* OpenMission::initPlayerParty(World* world, cPlanetmap* planetmap, float
         mech->name = "Player's Wing 2";
         mech->nameable->name = "Jack";
 
-        mech->addTag(cObject::BLUE);
-        mech->tarcom->addEnemy(cObject::RED);
-        mech->tarcom->addEnemy(cObject::DEAD, false);
+        mech->addTag(World::instance->getGroup(FAC_BLUE));
+        mech->tarcom->addEnemy(World::instance->getGroup(FAC_RED));
+        mech->tarcom->addEnemy(World::instance->getGroup(HLT_DEAD), false);
 
         world->spawnObject(mech);
         world->addToGroup(group_alliance_wingmen, mech);
@@ -436,9 +436,9 @@ void OpenMission::initSkytideCity(World* world, cPlanetmap* planetmap) {
         mech->name = "Mech/Stortebeker";
         mech->nameable->name = "Stortebeker";
 
-        mech->addTag(cObject::BLUE);
-        mech->tarcom->addEnemy(cObject::RED);
-        mech->tarcom->addEnemy(cObject::DEAD, false);
+        mech->addTag(World::instance->getGroup(FAC_BLUE));
+        mech->tarcom->addEnemy(World::instance->getGroup(FAC_RED));
+        mech->tarcom->addEnemy(World::instance->getGroup(HLT_DEAD), false);
 
         world->spawnObject(mech);
         world->addToGroup(group_alliance_all, mech);
@@ -477,9 +477,9 @@ void OpenMission::initSkytideCity(World* world, cPlanetmap* planetmap) {
         mech->name = "Mech/OffendingVillain";
         mech->nameable->name = "Offending Villain";
 
-        mech->addTag(cObject::RED);
-        mech->tarcom->addEnemy(cObject::BLUE);
-        mech->tarcom->addEnemy(cObject::DEAD, false);
+        mech->addTag(World::instance->getGroup(FAC_RED));
+        mech->tarcom->addEnemy(World::instance->getGroup(FAC_BLUE));
+        mech->tarcom->addEnemy(World::instance->getGroup(HLT_DEAD), false);
 
         //ai->newState(cController::WAIT, (char*) NULL);
         //ai->newState(cController::TARGET, "Delta");
@@ -508,9 +508,9 @@ void OpenMission::initSkytideCity(World* world, cPlanetmap* planetmap) {
         mech->name = "Mech/LurkingBandit";
         mech->nameable->name = "Lurking Bandit";
 
-        mech->addTag(cObject::RED);
-        mech->tarcom->addEnemy(cObject::BLUE);
-        mech->tarcom->addEnemy(cObject::DEAD, false);
+        mech->addTag(World::instance->getGroup(FAC_RED));
+        mech->tarcom->addEnemy(World::instance->getGroup(FAC_BLUE));
+        mech->tarcom->addEnemy(World::instance->getGroup(HLT_DEAD), false);
 
         //ai->newState(cController::ENGAGE, "Charly");
         //ai->newState(cController::ROUTE, navs);
@@ -783,9 +783,9 @@ void OpenMission::initPentaSpaceport(World* world, cPlanetmap* planetmap) {
         if (mech == NULL) throw "No memory for cMech in spacePortMechs.";
         mech->name = "Mech/SpacePortGuard_i";
         mech->nameable->name = "Space-Bandit";
-        mech->addTag(cObject::RED);
-        mech->tarcom->addEnemy(cObject::BLUE);
-        mech->tarcom->addEnemy(cObject::DEAD, false);
+        mech->addTag(World::instance->getGroup(FAC_RED));
+        mech->tarcom->addEnemy(World::instance->getGroup(FAC_BLUE));
+        mech->tarcom->addEnemy(World::instance->getGroup(HLT_DEAD), false);
         world->spawnObject(mech);
         mech->mountWeapon((char*) "Center", new rWeaponMachinegun);
     }
@@ -800,9 +800,9 @@ void OpenMission::battleField(World* world) {
         if (mech == NULL) throw "No memory for cMech in battleField.";
 
         mech->name = "Mech/Battlemech_i";
-        mech->addTag(cObject::RED);
-        mech->tarcom->addEnemy(cObject::BLUE);
-        mech->tarcom->addEnemy(cObject::DEAD, false);
+        mech->addTag(World::instance->getGroup(FAC_RED));
+        mech->tarcom->addEnemy(World::instance->getGroup(FAC_BLUE));
+        mech->tarcom->addEnemy(World::instance->getGroup(HLT_DEAD), false);
 
         world->spawnObject(mech);
 
@@ -820,9 +820,9 @@ void OpenMission::battleField(World* world) {
         if (mech == NULL) throw "No memory for cMech in battleField.";
 
         mech->name = "Mech/Fieldmech_i";
-        mech->addTag(cObject::BLUE);
-        mech->tarcom->addEnemy(cObject::RED);
-        mech->tarcom->addEnemy(cObject::DEAD, false);
+        mech->addTag(World::instance->getGroup(FAC_BLUE));
+        mech->tarcom->addEnemy(World::instance->getGroup(FAC_RED));
+        mech->tarcom->addEnemy(World::instance->getGroup(HLT_DEAD), false);
 
         world->spawnObject(mech);
 
@@ -851,13 +851,13 @@ void OpenMission::smallArmy(int wx, int wy, int wz, World* world, const char* na
         mech->name = name;
         mech->nameable->name = name;
         if (blue) {
-            mech->addTag(cObject::BLUE);
-            mech->tarcom->addEnemy(cObject::RED);
-            mech->tarcom->addEnemy(cObject::DEAD, false);
+            mech->addTag(World::instance->getGroup(FAC_BLUE));
+            mech->tarcom->addEnemy(World::instance->getGroup(FAC_RED));
+            mech->tarcom->addEnemy(World::instance->getGroup(HLT_DEAD), false);
         } else {
-            mech->addTag(cObject::RED);
-            mech->tarcom->addEnemy(cObject::BLUE);
-            mech->tarcom->addEnemy(cObject::DEAD, false);
+            mech->addTag(World::instance->getGroup(FAC_RED));
+            mech->tarcom->addEnemy(World::instance->getGroup(FAC_BLUE));
+            mech->tarcom->addEnemy(World::instance->getGroup(HLT_DEAD), false);
         }
         world->spawnObject(mech);
         if (wpn == 0) {

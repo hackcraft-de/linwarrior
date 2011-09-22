@@ -41,6 +41,27 @@ class Object;
 #include <AL/alut.h>
 #endif
 
+// Some predefined groups (move to groups class file later).
+
+// Roles indicating belonging to certain Social-Parties
+#define FAC_RED "/faction/red"
+#define FAC_BLUE "/faction/blue"
+#define FAC_GREEN "/faction/green"
+#define FAC_YELLOW "/faction/yellow"
+
+// Roles indicating State
+//  <= 75% hp
+#define HLT_WOUNDED "/health/wounded"
+// <= 50% hp
+#define HLT_SERIOUS "/health/serious"
+// <= 25% hp
+#define HLT_CRITICAL "/health/critical"
+// <= 0% hp, note that the later include the former.
+#define HLT_DEAD "/health/dead"
+
+// Special
+#define PLR_HUMAN "/player/human"
+#define PLR_AI "/player/ai"
 
 #define FIELDOFS(attribute)     (((OID)&attribute) - ((OID)this))
 #define ROLEPTR(attribute)      ((rRole* cObject::*) &attribute)
@@ -96,25 +117,6 @@ public: // Object Tags
 
     /// Tags (IDs, Social-Roles, Parties, States...) this object has (=groups?).
     std::set<OID> tags;
-
-    enum DefaultTags {
-        // Roles indicating belonging to certain Social-Parties
-        RED,
-        BLUE,
-        GREEN,
-        YELLOW,
-
-        // Roles indicating State
-        WOUNDED, //  <= 75% hp
-        SERIOUS, // <= 50% hp
-        CRITICAL, // <= 25% hp
-        DEAD, // <= 0% hp, note that the later include the former.
-
-        // Special Roles
-        HUMANPLAYER,
-
-        MAX_PARTIES
-    };
 
 public:
 

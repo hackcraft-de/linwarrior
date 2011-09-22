@@ -386,7 +386,7 @@ void cMech::message(Message* message) {
 void cMech::spawn() {
     //cout << "cMech::onSpawn()\n";
     ALuint soundsource = traceable->sound;
-    if (hasTag(HUMANPLAYER) && alIsSource(soundsource)) alSourcePlay(soundsource);
+    if (hasTag(World::instance->getGroup(PLR_HUMAN)) && alIsSource(soundsource)) alSourcePlay(soundsource);
     //cout << "Mech spawned " << oid << "\n";
 }
 
@@ -707,10 +707,10 @@ void cMech::animate(float spf) {
         {
             // Group-to-texture.
             int texture = 0;
-            texture = hasTag(RED) ? 0 : texture;
-            texture = hasTag(BLUE) ? 1 : texture;
-            texture = hasTag(GREEN) ? 2 : texture;
-            texture = hasTag(YELLOW) ? 3 : texture;
+            texture = hasTag(World::instance->getGroup(FAC_RED)) ? 0 : texture;
+            texture = hasTag(World::instance->getGroup(FAC_BLUE)) ? 1 : texture;
+            texture = hasTag(World::instance->getGroup(FAC_GREEN)) ? 2 : texture;
+            texture = hasTag(World::instance->getGroup(FAC_YELLOW)) ? 3 : texture;
             rigged->basetexture3d = sTextures[texture];
         }
 
@@ -722,10 +722,10 @@ void cMech::animate(float spf) {
     {
         // from Object
         {
-            nameable->color[0] = hasTag(RED) ? 1.0f : 0.0f;
-            nameable->color[1] = hasTag(GREEN) ? 1.0f : 0.0f;
-            nameable->color[2] = hasTag(BLUE) ? 1.0f : 0.0f;
-            nameable->effect = !hasTag(HUMANPLAYER) && !hasTag(DEAD);
+            nameable->color[0] = hasTag(World::instance->getGroup(FAC_RED)) ? 1.0f : 0.0f;
+            nameable->color[1] = hasTag(World::instance->getGroup(FAC_GREEN)) ? 1.0f : 0.0f;
+            nameable->color[2] = hasTag(World::instance->getGroup(FAC_BLUE)) ? 1.0f : 0.0f;
+            nameable->effect = !hasTag(World::instance->getGroup(PLR_HUMAN)) && !hasTag(World::instance->getGroup(HLT_DEAD));
         }
         // from RIGGED
         {
@@ -837,7 +837,7 @@ void cMech::transform() {
 
 void cMech::drawSolid() {
     // Setup jumpjet light source - for player only so far. move to rLightsource?
-    if (hasTag(HUMANPLAYER)) {
+    if (hasTag(World::instance->getGroup(PLR_HUMAN))) {
         int light = GL_LIGHT1;
         if (mobile->jetthrottle > 0.001f) {
             float p[] = {traceable->pos[0], traceable->pos[1] + 1.2f, traceable->pos[2], 1.0f};
@@ -973,10 +973,10 @@ void cMech::damage(float* localpos, float damage, cObject* enactor) {
         explosion->trigger = true;
     }
     int body = rDamageable::BODY;
-    if (damageable->hp[body] <= 75) addTag(WOUNDED);
-    if (damageable->hp[body] <= 50) addTag(SERIOUS);
-    if (damageable->hp[body] <= 25) addTag(CRITICAL);
-    if (damageable->hp[body] <= 0) addTag(DEAD);
+    if (damageable->hp[body] <= 75) addTag(World::instance->getGroup(HLT_WOUNDED));
+    if (damageable->hp[body] <= 50) addTag(World::instance->getGroup(HLT_SERIOUS));
+    if (damageable->hp[body] <= 25) addTag(World::instance->getGroup(HLT_CRITICAL));
+    if (damageable->hp[body] <= 0) addTag(World::instance->getGroup(HLT_DEAD));
 }
 
 float cMech::constrain(float* worldpos, float radius, float* localpos, cObject* enactor) {

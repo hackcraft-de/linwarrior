@@ -175,10 +175,10 @@ void rTarcom::drawHUD() {
             {
                 cObject* o = *i;
                 glColor4f(0.5, 0.5, 0.5, 1);
-                if (o->hasTag(cObject::RED)) glColor4f(1, 0, 0, 1);
-                else if (o->hasTag(cObject::GREEN)) glColor4f(0, 1, 0, 1);
-                else if (o->hasTag(cObject::BLUE)) glColor4f(0, 0, 1, 1);
-                else if (o->hasTag(cObject::YELLOW)) glColor4f(0, 1, 0, 1);
+                if (o->hasTag(World::instance->getGroup(FAC_RED))) glColor4f(1, 0, 0, 1);
+                else if (o->hasTag(World::instance->getGroup(FAC_GREEN))) glColor4f(0, 1, 0, 1);
+                else if (o->hasTag(World::instance->getGroup(FAC_BLUE))) glColor4f(0, 0, 1, 1);
+                else if (o->hasTag(World::instance->getGroup(FAC_YELLOW))) glColor4f(0, 1, 0, 1);
                 if (o->oid == selected) glColor4f(1, 0, 1, 1);
                 float dx = o->pos0[0] - pos0[0];
                 float dz = o->pos0[2] - pos0[2];
