@@ -12,6 +12,9 @@
       </logicalFolder>
       <logicalFolder name="lang" displayName="lang" projectFiles="true">
         <itemPath>source/de/hackcraft/lang/Object.h</itemPath>
+        <itemPath>source/de/hackcraft/lang/Runnable.h</itemPath>
+        <itemPath>source/de/hackcraft/lang/Thread.cpp</itemPath>
+        <itemPath>source/de/hackcraft/lang/Thread.h</itemPath>
       </logicalFolder>
       <logicalFolder name="proc" displayName="proc" projectFiles="true">
         <itemPath>source/de/hackcraft/proc/Distortion.h</itemPath>

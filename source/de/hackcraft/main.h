@@ -11,25 +11,19 @@
 
 #include "de/hackcraft/util/GapBuffer.h"
 
+#include "de/hackcraft/lang/Thread.h"
+
 #include "Game.h"
 
 #include <SDL/SDL.h>
 #include <string>
-
-/**
- * Thread-runnable object interface.
- */
-class Runnable {
-public:
-    virtual void run() = 0;
-};
 
 
 /**
  * Models a minion worker thread that fetches jobs
  * from the main job queue.
  */
-class Minion : public Runnable {
+class Minion : public Thread {
 private:
     /// Pointing to the main job-mutex.
     SDL_mutex* jobMutex;

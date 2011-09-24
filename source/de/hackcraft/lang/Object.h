@@ -26,7 +26,7 @@ public:
     }
     
     virtual String* toString() {
-        return NULL;
+        return (String*) 0;
     }
 };
 

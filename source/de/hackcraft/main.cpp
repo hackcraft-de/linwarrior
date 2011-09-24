@@ -45,14 +45,6 @@ void cleanup() {
 }
 
 
-// Just serves to start the Runnable run method after a thread fork.
-int runRunnable(void* data) {
-    Runnable* r = (Runnable*) data;
-    r->run();
-    return 0;
-}
-
-
 int state = 0;
 
 
@@ -103,7 +95,7 @@ class Widget {
 
 
 void Minion::run() {
-    unsigned int id = SDL_ThreadID();
+    unsigned long id = (unsigned long) this;//SDL_ThreadID();
     cout << "Minion " << id << " at your service!\n";
     typedef int (*callback)(void*);
     callback job = (callback) 1;
@@ -829,10 +821,11 @@ int Main::run(int argc, char** args) {
 
     cout << "Breeding Minions...\n";
     int maxminions = 3;
-    SDL_Thread * minions[maxminions];
+    Minion* minions[maxminions];
 
     loopi(maxminions) {
-        minions[i] = SDL_CreateThread(runRunnable, new Minion());
+        minions[i] = new Minion();
+        minions[i]->start();
     }
 
     bool loadscreen = true;
@@ -950,7 +943,7 @@ int Main::run(int argc, char** args) {
     // Better set global signal and SDL_WaitThread.
 
     loopi(maxminions) {
-        SDL_KillThread(minions[i]);
+        minions[i]->stop();
     }
     SDL_DestroyMutex(jobMutex);
     
