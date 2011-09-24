@@ -1,10 +1,19 @@
 #include "Mission.h"
 
-#include "de/hackcraft/main.h"
+#include "de/hackcraft/Game.h"
+
+#include "de/hackcraft/world/comp/computer/rController.h"
+
+#include "de/hackcraft/world/comp/weapon/rWeapon.h"
+
+#include "de/hackcraft/world/comp/rPadmap.h"
 
 #include "de/hackcraft/world/object/cObject.h"
 #include "de/hackcraft/world/object/cAlert.h"
 #include "de/hackcraft/world/object/cPlanetmap.h"
+#include "de/hackcraft/world/object/cMech.h"
+#include "de/hackcraft/world/object/cBuilding.h"
+#include "de/hackcraft/world/object/cTree.h"
 
 #include "de/hackcraft/world/comp/computer/rComcom.h"
 #include "de/hackcraft/world/comp/rNameable.h"

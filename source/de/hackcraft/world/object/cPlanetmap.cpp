@@ -328,26 +328,6 @@ void cPlanetmap::getHeight(float x, float z, float* const color) {
 
     loopiv(mods) {
         h = mods[i]->getModifiedHeight(x, z, h);
-        /*
-        sMod* mod = mods[i];
-
-        // Square leveling
-        {
-            float x_ = x - mod->pos[0];
-            float z_ = z - mod->pos[2];
-            const float range = mod->range;
-            const float height = mod->height;
-            const float inv_range = 1.0f / range;
-            if (-range < x_ && x_ < +range && -range < z_ && z_ < +range) {
-                float dx = fabs(x_);
-                float dz = fabs(z_);
-                float dy = 1.0f - fmax(dx,dz) * inv_range;
-                dy = (dy < 0.25f) ? (dy * 4.0f) : 1.0f;
-                h *= (1.0f - dy);
-                h += height * dy;
-            }
-        }
-         */
     }
 
     color[Landscape::BUMP] = h;

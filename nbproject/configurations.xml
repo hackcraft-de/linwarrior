@@ -124,6 +124,8 @@
         <itemPath>source/de/hackcraft/world/World.cpp</itemPath>
         <itemPath>source/de/hackcraft/world/World.h</itemPath>
       </logicalFolder>
+      <itemPath>source/de/hackcraft/Game.cpp</itemPath>
+      <itemPath>source/de/hackcraft/Game.h</itemPath>
       <itemPath>source/de/hackcraft/main.cpp</itemPath>
       <itemPath>source/de/hackcraft/main.h</itemPath>
       <itemPath>source/de/hackcraft/userkeys.h</itemPath>
