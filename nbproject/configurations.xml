@@ -77,6 +77,8 @@
             <itemPath>source/de/hackcraft/world/comp/weapon/rWeaponSparkgun.cpp</itemPath>
             <itemPath>source/de/hackcraft/world/comp/weapon/rWeaponSparkgun.h</itemPath>
           </logicalFolder>
+          <itemPath>source/de/hackcraft/world/comp/rAlert.cpp</itemPath>
+          <itemPath>source/de/hackcraft/world/comp/rAlert.h</itemPath>
           <itemPath>source/de/hackcraft/world/comp/rCamera.cpp</itemPath>
           <itemPath>source/de/hackcraft/world/comp/rCamera.h</itemPath>
           <itemPath>source/de/hackcraft/world/comp/rCollider.cpp</itemPath>
