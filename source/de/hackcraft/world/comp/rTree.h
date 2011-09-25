@@ -1,27 +1,42 @@
-/**
- * File:     cTree.h
- * Project:  LinWarrior 3D
- * Home:     hackcraft.de
+/* 
+ * File:   rTree.h
+ * Author: benben
  *
- * Created on March 25, 2008, 10:48 PM
+ * Created on September 25, 2011, 10:27 AM
  */
 
-#ifndef _CTREE_H
-#define	_CTREE_H
+#ifndef RTREE_H
+#define	RTREE_H
 
-class cTree;
+struct rTree;
 
-#include "cObject.h"
+#include "rComponent.h"
+
+#include "de/hackcraft/world/OID.h"
+
+#include "de/hackcraft/psi3d/math3d.h"
+#include "de/hackcraft/psi3d/GLS.h"
+
 #include <list>
+#include <map>
 
 class cPlanetmap;
 
 /**
  * Generates and caches proceduraly generated 3d tree models.
  */
-struct cTree : public cObject {
+struct rTree : public rComponent {
+public: // INPUT
+    /// Base position vector.
+    vec3 pos0;
+    /// Base orientation quaternion.
+    quat ori0;
+    /// Seconds since spawn for leaf animation.
+    float seconds;
+public: // OUTPUT
+protected: // INTERNALS
     friend class cPlanetmap;
-    struct rTree {
+    struct TreeType {
         // Random seed that produced this tree.
         unsigned int seed;
         // Type of tree, equals leaves.
@@ -35,9 +50,9 @@ struct cTree : public cObject {
         // Experimental: Tree height.
         float height;
     };
-    rTree* tree;
+    TreeType* tree;
 public:
-    cTree(float* pos = NULL, float* rot = NULL, int seed = 0, int type = 0, int age = 0);
+    rTree(cObject* obj, float* pos = NULL, float* rot = NULL, int seed = 0, int type = 0, int age = 0);
     
     virtual void animate(float spf);
     virtual void drawSolid();
@@ -50,9 +65,9 @@ private:
     /// Instance shared Textures.
     static std::vector<long> sTextures;
     /// Instance shared Tree cache.
-    static std::map<OID,rTree*> sTrees;
+    static std::map<OID,TreeType*> sTrees;
 
-    static rTree* getCompiledTree(int seed, int type, int age);
+    static TreeType* getCompiledTree(int seed, int type, int age);
     static int drawTreePart(int depth, int maxdepth, float length, int seed, GLuint trunk_displaylist, GLuint leaf_displaylist, std::vector<float>* leaves, float* totalheight);
     static void drawRubberTreeLeaf();
     static void drawCaribeanTreeLeaf();
@@ -61,5 +76,5 @@ private:
 };
 
 
-#endif	/* _CTREE_H */
+#endif	/* RTREE_H */
 

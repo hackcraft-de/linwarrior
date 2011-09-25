@@ -81,7 +81,7 @@ protected: // INTERNALS
     rShape shape;
 public:
 
-    rAlert(float* center, float* range, int shapetype, std::string msgtype, std::string msgtext, OID receiver, std::set<OID>* include, std::set<OID>* exclude, bool positive = true, bool posedge = true, bool once = false, OID fusedelay = 0);
+    rAlert(cObject* obj, float* center, float* range, int shapetype, std::string msgtype, std::string msgtext, OID receiver, std::set<OID>* include, std::set<OID>* exclude, bool positive = true, bool posedge = true, bool once = false, OID fusedelay = 0);
 
     virtual float constrain(float* worldpos, float radius = 0.0f, float* localpos = NULL, cObject* enactor = NULL);
     virtual void drawEffect();

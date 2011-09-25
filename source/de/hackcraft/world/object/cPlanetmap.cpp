@@ -194,7 +194,7 @@ cPlanetmap::cPlanetmap() {
     vector_set(this->pos0, float_NAN, float_NAN, float_NAN);
 
     name = "PLANETMAP";
-    tree = new cTree();
+    tree = new rTree(NULL, NULL, NULL, 0, 0, 0);
 }
 
 void cPlanetmap::invalidateCache() {
@@ -956,9 +956,11 @@ void cPlanetmap::drawEffect() {
                         int age = fmax(0, fmin(6, i * 0.5f + ((a + b)&1)));
                         int type = (b * b + (a >> 1))&7;
 
-                        tree->tree = cTree::getCompiledTree(1230 + (b & 6), type, 2 + age);
+                        tree->tree = rTree::getCompiledTree(1230 + (b & 6), type, 2 + age);
                         vector_set(tree->pos0, x__, h - 0.2, z__);
-                        tree->ori0[1] = a + b;
+                        //tree->ori0[1] = a + b;
+                        float axis[] = {0, 1, 0};
+                        quat_rotaxis(tree->ori0, (a+b) * PI_OVER_180, axis);
                         glColor4f(0.15f, 0.09f, 0.03f, opacity);
                         tree->drawSolid();
                         glColor4f(1, 1, 1, opacity);

@@ -13,7 +13,6 @@
 #include "de/hackcraft/world/object/cPlanetmap.h"
 #include "de/hackcraft/world/object/cMech.h"
 #include "de/hackcraft/world/object/cBuilding.h"
-#include "de/hackcraft/world/object/cTree.h"
 
 #include "de/hackcraft/world/comp/computer/rComcom.h"
 #include "de/hackcraft/world/comp/rNameable.h"
@@ -921,7 +920,9 @@ void OpenMission::roundForrest(int wx, int wy, int wz, World* world, int r1, int
             float b = r1 + (rand() % r2);
             float pos[3] = {float(wx + sin(a) * b), float(0 + wy), float(wz + cos(a) * b)};
             float rot[3] = {0, 10.0f * (rand() % 36), 0};
-            world->spawnObject(new cTree(pos, rot, pp[j].seed, pp[j].type, pp[j].age));
+            cObject* treeobj = new cObject();
+            treeobj->components.push_back(new rTree(treeobj, pos, rot, pp[j].seed, pp[j].type, pp[j].age));
+            world->spawnObject(treeobj);
         };
     }
 }

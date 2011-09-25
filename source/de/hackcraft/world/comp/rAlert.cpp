@@ -14,7 +14,10 @@ using std::endl;
 
 bool rAlert::sDrawzone = !true;
 
-rAlert::rAlert(float* center, float* range, int shapetype, std::string msgtype, std::string msgtext, OID receiver, std::set<OID>* include, std::set<OID>* exclude, bool positive, bool posedge, bool once, OID fusedelay) {
+rAlert::rAlert(cObject* obj, float* center, float* range, int shapetype, std::string msgtype, std::string msgtext, OID receiver, std::set<OID>* include, std::set<OID>* exclude, bool positive, bool posedge, bool once, OID fusedelay) {
+    this->object = obj;
+    this->role = "ALERT";
+    
     vector_cpy(shape.center, center);
     vector_cpy(shape.range, range);
 

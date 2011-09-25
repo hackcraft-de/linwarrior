@@ -102,6 +102,8 @@
           <itemPath>source/de/hackcraft/world/comp/rScatter.h</itemPath>
           <itemPath>source/de/hackcraft/world/comp/rTraceable.cpp</itemPath>
           <itemPath>source/de/hackcraft/world/comp/rTraceable.h</itemPath>
+          <itemPath>source/de/hackcraft/world/comp/rTree.cpp</itemPath>
+          <itemPath>source/de/hackcraft/world/comp/rTree.h</itemPath>
         </logicalFolder>
         <logicalFolder name="object" displayName="object" projectFiles="true">
           <itemPath>source/de/hackcraft/world/object/cAlert.cpp</itemPath>
@@ -114,8 +116,6 @@
           <itemPath>source/de/hackcraft/world/object/cObject.h</itemPath>
           <itemPath>source/de/hackcraft/world/object/cPlanetmap.cpp</itemPath>
           <itemPath>source/de/hackcraft/world/object/cPlanetmap.h</itemPath>
-          <itemPath>source/de/hackcraft/world/object/cTree.cpp</itemPath>
-          <itemPath>source/de/hackcraft/world/object/cTree.h</itemPath>
         </logicalFolder>
         <itemPath>source/de/hackcraft/world/Background.cpp</itemPath>
         <itemPath>source/de/hackcraft/world/Background.h</itemPath>

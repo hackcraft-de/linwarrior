@@ -1,7 +1,6 @@
-#include "cTree.h"
+#include "rTree.h"
 
 #include "de/hackcraft/psi3d/macros.h"
-#include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Primitive.h"
 #include "de/hackcraft/psi3d/Particle.h"
 
@@ -22,11 +21,14 @@ using std::string;
 #define ran(seed) (seed = ((seed * 1234567) % 65535))
 
 
-int cTree::sInstances = 0;
-std::map<OID, cTree::rTree*> cTree::sTrees;
-std::vector<long> cTree::sTextures;
+int rTree::sInstances = 0;
+std::map<OID, rTree::TreeType*> rTree::sTrees;
+std::vector<long> rTree::sTextures;
 
-cTree::cTree(float* pos, float* rot, int seed, int type, int age) {
+rTree::rTree(cObject* obj, float* pos, float* rot, int seed, int type, int age) {
+    this->object = obj;
+    this->role = "TREE";
+    
     sInstances++;
     if (sInstances == 1) {
         string basepath = string("data/base/decals/");
@@ -50,7 +52,12 @@ cTree::cTree(float* pos, float* rot, int seed, int type, int age) {
     }
 
     if (pos) vector_cpy(this->pos0, pos);
-    if (rot) vector_cpy(this->ori0, rot);
+    
+    if (rot) {
+        float axis[] = {0, 1, 0};
+        quat_rotaxis(this->ori0, rot[1] * PI_OVER_180, axis);
+    }
+    
     if (age == 0) {
         tree = NULL;
     } else {
@@ -58,10 +65,10 @@ cTree::cTree(float* pos, float* rot, int seed, int type, int age) {
     }
 }
 
-void cTree::animate(float spf) {
+void rTree::animate(float spf) {
 }
 
-void cTree::drawSolid() {
+void rTree::drawSolid() {
     glPushAttrib(GL_ENABLE_BIT);
     {
         GLS::glUseProgram_fglitcolor();
@@ -71,7 +78,8 @@ void cTree::drawSolid() {
         glPushMatrix();
         {
             glTranslatef(this->pos0[0], this->pos0[1], this->pos0[2]);
-            glRotatef(this->ori0[1], 0, 1, 0);
+            //glRotatef(this->ori0[1], 0, 1, 0);
+            GLS::glRotateq(this->ori0);
             glCallList(tree->list);
         }
         glPopMatrix();
@@ -79,7 +87,7 @@ void cTree::drawSolid() {
     glPopAttrib();
 }
 
-void cTree::drawEffect() {
+void rTree::drawEffect() {
     glPushMatrix();
     {
         glTranslatef(this->pos0[0], this->pos0[1], this->pos0[2]);
@@ -147,7 +155,7 @@ void cTree::drawEffect() {
     glPopMatrix();
 }
 
-float cTree::constrain(float* worldpos, float radius, float* localpos, cObject* enactor) {
+float rTree::constrain(float* worldpos, float radius, float* localpos, cObject* enactor) {
     float base[] = {this->pos0[0], this->pos0[1] - 0.0f - radius, this->pos0[2]};
     float radius_ = 0.1 + radius;
     float height = 3 + 2 * radius;
@@ -158,12 +166,12 @@ float cTree::constrain(float* worldpos, float radius, float* localpos, cObject* 
     return depth;
 }
 
-cTree::rTree* cTree::getCompiledTree(int seed, int type, int age) {
+rTree::TreeType* rTree::getCompiledTree(int seed, int type, int age) {
     // Try to find and return a cached version of the given tree.
 
     OID key = (seed << 16) | ((type & 0xFF) << 8) | (age & 0xFF);
 
-    rTree* tree = sTrees[key];
+    TreeType* tree = sTrees[key];
     if (tree != NULL) {
         //cout << "found cached tree seed: " << seed << " type: " << type << " age: " << age << "\n";
         return tree;
@@ -199,7 +207,7 @@ cTree::rTree* cTree::getCompiledTree(int seed, int type, int age) {
         glEndList();
     }
 
-    rTree* t = new rTree();
+    TreeType* t = new TreeType();
     assert(t != NULL);
     t->seed = seed;
     t->type = type;
@@ -230,7 +238,7 @@ cTree::rTree* cTree::getCompiledTree(int seed, int type, int age) {
     return t;
 }
 
-int cTree::drawTreePart(int depth, int maxdepth, float length, int seed, GLuint trunk_displaylist, GLuint leaf_displaylist, std::vector<float>* leaves, float* totalheight) {
+int rTree::drawTreePart(int depth, int maxdepth, float length, int seed, GLuint trunk_displaylist, GLuint leaf_displaylist, std::vector<float>* leaves, float* totalheight) {
     // Recursion end?
     if (depth >= maxdepth) return seed;
     //
@@ -301,7 +309,7 @@ int cTree::drawTreePart(int depth, int maxdepth, float length, int seed, GLuint 
     return r;
 }
 
-void cTree::drawRubberTreeLeaf() {
+void rTree::drawRubberTreeLeaf() {
     glBegin(GL_TRIANGLE_FAN);
     // 0 back
     glNormal3f(0, +1, 0);
@@ -343,7 +351,7 @@ void cTree::drawRubberTreeLeaf() {
     glEnd();
 }
 
-void cTree::drawCaribeanTreeLeaf() {
+void rTree::drawCaribeanTreeLeaf() {
     const float step = 6 * M_PI / 180.0f;
     float alpha = step * 0.5;
     glBegin(GL_TRIANGLES);
@@ -384,7 +392,7 @@ void cTree::drawCaribeanTreeLeaf() {
     glEnd();
 }
 
-void cTree::drawHalmTreeLeaf() {
+void rTree::drawHalmTreeLeaf() {
     return;
     glPushMatrix();
     {
@@ -394,7 +402,7 @@ void cTree::drawHalmTreeLeaf() {
     glPopMatrix();
 }
 
-void cTree::drawButterflyTreeLeaf() {
+void rTree::drawButterflyTreeLeaf() {
     glPushMatrix();
     {
         glRotatef(-30, 0, 1, 0);
@@ -406,3 +414,4 @@ void cTree::drawButterflyTreeLeaf() {
     }
     glPopMatrix();
 }
+

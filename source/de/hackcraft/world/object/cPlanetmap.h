@@ -15,7 +15,7 @@ class cPlanetmap;
 
 #include "de/hackcraft/proc/Landscape.h"
 
-#include "cTree.h"
+#include "de/hackcraft/world/comp/rTree.h"
 
 #define USE_UNORDERED_MAP
 #if defined(USE_UNORDERED_MAP)
@@ -97,7 +97,7 @@ public:
     /// LRU Surface Cache.
     maptype<unsigned long, sPatch*> patches;
     /// Tree template for drawing of all trees.
-    cTree* tree;
+    rTree* tree;
 public:
     cPlanetmap();
     /// Remove cached data - enforce recalculation (enforce cache miss).
