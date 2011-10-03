@@ -2,8 +2,16 @@ RELEASE NOTES
 
 ????_??_?? r20
 ? release:
+Enhanced AI
+- Remembering damage
+- Counter attacking attacker
+Enhanced Models
+- Added Thunderbird mech model
 Enhanced Landscape Rendering
 - Added different rendering styles for foliage
+- Added many plant types
+Enhanced Cityscape Rendering
+- Added frames to windows
 Enhanced Internals
 - Ability to configure some mech parameters.
 Enhanced Sky Model:
