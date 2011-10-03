@@ -63,7 +63,8 @@ private:
     /// Instance counter for init only.
     static int sInstances;
     /// Instance shared Textures.
-    static std::vector<long> sTextures;
+    static std::vector<long> sLeaftexs;
+    static std::vector<long> sBarktexs;
     /// Instance shared Tree cache.
     static std::map<OID,TreeType*> sTrees;
 

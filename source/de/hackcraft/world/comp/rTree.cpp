@@ -23,7 +23,8 @@ using std::string;
 
 int rTree::sInstances = 0;
 std::map<OID, rTree::TreeType*> rTree::sTrees;
-std::vector<long> rTree::sTextures;
+std::vector<long> rTree::sLeaftexs;
+std::vector<long> rTree::sBarktexs;
 
 rTree::rTree(cObject* obj, float* pos, float* rot, int seed, int type, int age) {
     this->object = obj;
@@ -37,17 +38,28 @@ rTree::rTree(cObject* obj, float* pos, float* rot, int seed, int type, int age) 
             string("strangeleafs.tga"),
             string("widowleafs.tga"),
             string("pineleafs.tga"),
+            string("oakbark.tga"),
         };
 
         loopi(4) {
             string name = string(basepath).append(filenames[i]);
-            cout << "Loading [" << name << "] ...\n";
+            cout << "Loading leaf [" << name << "] ...\n";
             unsigned int texname;
             int w, h, bpp;
             unsigned char* texels = Texfile::loadTGA(name.c_str(), &w, &h, &bpp);
             texname = GLS::glBindTexture2D(0, true, true, false, false, w, h, bpp, texels);
             delete texels;
-            sTextures.push_back(texname);
+            sLeaftexs.push_back(texname);
+        }
+        loopi(1) {
+            string name = string(basepath).append(filenames[4+i]);
+            cout << "Loading bark [" << name << "] ...\n";
+            unsigned int texname;
+            int w, h, bpp;
+            unsigned char* texels = Texfile::loadTGA(name.c_str(), &w, &h, &bpp);
+            texname = GLS::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
+            delete texels;
+            sBarktexs.push_back(texname);
         }
     }
 
@@ -112,7 +124,7 @@ void rTree::drawEffect() {
             glEnable(GL_ALPHA_TEST);
             glAlphaFunc(GL_GREATER, 0.58f);
 
-            glBindTexture(GL_TEXTURE_2D, sTextures[tree->type % sTextures.size()]);
+            glBindTexture(GL_TEXTURE_2D, sLeaftexs[tree->type % sLeaftexs.size()]);
             int m = tree->leaves.size() / 3;
             //std::cout << m << std::endl;
 
@@ -202,8 +214,12 @@ rTree::TreeType* rTree::getCompiledTree(int seed, int type, int age) {
     if ((int) trunk_displaylist == -1) {
         trunk_displaylist = glGenLists(1);
         glNewList(trunk_displaylist, GL_COMPILE);
-        glColor3f(0.1f, 0.1f, 0.0f);
-        Primitive::glCenterUnitBlock();
+        //glColor3f(0.1f, 0.1f, 0.0f);
+        glColor3f(0.2f, 0.2f, 0.2f);
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, sBarktexs[0]);
+        Primitive::glCenterUnitCylinder(5, 5);
+        //Primitive::glCenterUnitBlock();
         glEndList();
     }
 
@@ -216,8 +232,10 @@ rTree::TreeType* rTree::getCompiledTree(int seed, int type, int age) {
     t->height = log(age);
     glPushAttrib(GL_ENABLE_BIT);
     {
-        GLS::glUseProgram_fglitcolor();
-        glColor4f(0.3f, 0.3f, 0.1f, 1.0f);
+        //GLS::glUseProgram_fglitcolor();
+        //glColor4f(0.3f, 0.3f, 0.1f, 1.0f);
+        GLS::glUseProgram_fglittexture();
+        glColor3f(0.9f, 0.9f, 0.9f);
         glPushMatrix();
         {
             glLoadIdentity();

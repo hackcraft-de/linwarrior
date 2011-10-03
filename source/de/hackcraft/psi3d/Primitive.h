@@ -249,13 +249,13 @@ struct Primitive {
         glEnd();
     }
 
-    static inline void glCenterUnitCylinder(float segments = 9) {
+    static inline void glCenterUnitCylinder(float segments = 9, float vrepeat = 1) {
         float step = 1.0f / (float) segments;
         float anglestep = 2.0f * M_PI *step;
         float angle = 0.0f;
         glBegin(GL_TRIANGLE_STRIP);
         for (int i=0; i<=segments; i++) {
-            glTexCoord3f(0.5f+0.499f*sin(angle), 0.999f, 0.5f+0.499f*cos(angle));
+            glTexCoord3f(0.5f+0.499f*sin(angle), 0.999f * vrepeat, 0.5f+0.499f*cos(angle));
             glVertex3f(sin(angle), +1.0f, cos(angle));
             glTexCoord3f(0.5f+0.499f*sin(angle), 0.001f, 0.5f+0.499f*cos(angle));
             glVertex3f(sin(angle), -1.0f, cos(angle));
