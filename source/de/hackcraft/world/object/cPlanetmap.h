@@ -50,7 +50,8 @@ public:
             BILLBOARD,
             CROSS,
             STAR,
-            TRIANGLE
+            TRIANGLE,
+            LEAFS
         };
         long texture;
         float size;
@@ -119,6 +120,7 @@ protected:
     void drawStarPlant(float x, float h, float z, float scale);
     void drawTrianglePlant(float x, float h, float z, float scale);
     void drawCrossPlant(float x, float h, float z, float scale);
+    void drawLeafPlant(float x, float h, float z, float scale);
 };
 
 #endif	/* PLANETMAP_H */

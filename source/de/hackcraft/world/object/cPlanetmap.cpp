@@ -145,6 +145,7 @@ cPlanetmap::cPlanetmap() {
             string("bluishplant.tga"),
             string("bambooplant.tga"),
             string("palmplant.tga"),
+            string("farnleaf.tga"),
             string("treewood.tga"),
             string("pineleafs.tga"),
             string("strangeleafs.tga")
@@ -158,7 +159,8 @@ cPlanetmap::cPlanetmap() {
             0.7,
             0.8,
             1.2,
-            1.7,
+            2.7,
+            1.9,
             1.4,
             1.5,
             1.1
@@ -173,12 +175,13 @@ cPlanetmap::cPlanetmap() {
             Growth::BILLBOARD,
             Growth::BILLBOARD,
             Growth::CROSS,
+            Growth::LEAFS,
             Growth::STAR,
             Growth::STAR,
             Growth::STAR
         };
 
-        loopi(12) {
+        loopi(13) {
             string name = string(basepath).append(filenames[i]);
             cout << "Loading [" << name << "] ...\n";
             unsigned int texname;
@@ -730,26 +733,94 @@ void cPlanetmap::drawBillboardPlant(float x__, float h, float z__, float scale, 
     glTranslatef(x__, h - 0.2, z__);
     glMultMatrixf(unrotateMatrix);
     glScalef(scale, scale, scale);
-    Primitive::glXCenteredTextureSquare();
-    //glAxis(0.9);
+    static unsigned int dlist = 0;
+    if (dlist == 0) {
+        dlist = glGenLists(1);
+        glNewList(dlist, GL_COMPILE_AND_EXECUTE);
+        Primitive::glXCenteredTextureSquare();
+        //glAxis(0.9);
+        glEndList();
+    } else {
+        glCallList(dlist);
+    }
 }
 
 void cPlanetmap::drawStarPlant(float x__, float h, float z__, float scale) {
     glTranslatef(x__, h - 0.2-0.3, z__);
     glScalef(scale, scale, scale);
-    Primitive::glBrush();
+    static unsigned int dlist = 0;
+    if (dlist == 0) {
+        dlist = glGenLists(1);
+        glNewList(dlist, GL_COMPILE_AND_EXECUTE);
+        Primitive::glBrush();
+        glEndList();
+    } else {
+        glCallList(dlist);
+    }
 }
 
 void cPlanetmap::drawTrianglePlant(float x__, float h, float z__, float scale) {
     glTranslatef(x__, h - 0.2, z__);
     glScalef(scale, scale, scale);
-    Primitive::glSharp();
+    static unsigned int dlist = 0;
+    if (dlist == 0) {
+        dlist = glGenLists(1);
+        glNewList(dlist, GL_COMPILE_AND_EXECUTE);
+        Primitive::glSharp();
+        glEndList();
+    } else {
+        glCallList(dlist);
+    }
 }
 
 void cPlanetmap::drawCrossPlant(float x__, float h, float z__, float scale) {
     glTranslatef(x__, h - 0.2, z__);
     glScalef(scale, scale, scale);
-    Primitive::glStar();
+    static unsigned int dlist = 0;
+    if (dlist == 0) {
+        dlist = glGenLists(1);
+        glNewList(dlist, GL_COMPILE_AND_EXECUTE);
+        Primitive::glStar();
+        glEndList();
+    } else {
+        glCallList(dlist);
+    }
+}
+
+void cPlanetmap::drawLeafPlant(float x__, float h, float z__, float scale) {
+    glTranslatef(x__, h - 0.2, z__);
+    glScalef(scale, scale, scale);
+    static unsigned int dlist = 0;
+    if (dlist == 0) {
+        dlist = glGenLists(1);
+        glNewList(dlist, GL_COMPILE_AND_EXECUTE);
+        //ploth(x=0,1, sin(x)/(1+1.7*x)+0.1*x)
+        
+        for (int j = 0; j < 7; j++) {
+            
+            glRotatef(j * 135.0 + 0.10*(rand()%100), 0,1,0);
+
+            float w = (1.7 - j * 0.05) / 4.0;
+            float h = (1.0 + j * 0.01) / 4.0;
+            float l = (1.0 - j * 0.05) / 4.0;
+            glBegin(GL_TRIANGLE_STRIP);
+            for (int i = 0; i <= 6; i++) {
+                double f = double(i) / 6.0;
+                double x = 4.0 * f;
+                double y = 4.0 * (sin(x) / (1.0 + 1.7 * x) + (0.1 + 0.03 * j) * x);
+                glTexCoord2f(0.0f, 1.0-f);
+                glVertex3d(l * x, h * y, -w);
+                glTexCoord2f(1.0f, 1.0-f);
+                glVertex3d(l * x, h * y, +w);
+            }
+            glEnd();
+        }
+        
+        
+        glEndList();
+    } else {
+        glCallList(dlist);
+    }
 }
 
 void cPlanetmap::drawEffect() {
@@ -922,6 +993,9 @@ void cPlanetmap::drawEffect() {
                                 break;
                             case Growth::CROSS:
                                 drawCrossPlant(x__, h, z__, scale);
+                                break;
+                            case Growth::LEAFS:
+                                drawLeafPlant(x__, h, z__, scale);
                                 break;
                             default:
                                 drawBillboardPlant(x__, h, z__, scale, n);
