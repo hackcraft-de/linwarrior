@@ -112,8 +112,6 @@ cBuilding::cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
     vector_set(this->pos0, x + buildingRooms[0]*0.5f, y, z + buildingRooms[2]*0.5f);
     quat_set(this->ori0, 0, 0, 0, 1);
     this->radius = sqrtf(0.25f * buildingRooms[0] * buildingRooms[0] + 0.25f * buildingRooms[1] * buildingRooms[1] + 0.25f * buildingRooms[2] * buildingRooms[2]);
-
-    dirtyBase = true;
 }
 
 void cBuilding::damage(float* localpos, float damage, cObject* enactor) {

@@ -20,16 +20,12 @@ struct rDamageable;
  * Models a building of varring size.
  */
 class cBuilding : public cObject {
-public:
-    rDamageable* damageable;
 protected:
     static int sInstances;
     static std::map<int, long> sTextures;
 protected:
-    /// Need to re-setup base matrix for explosion (true/false)?
-    bool dirtyBase;
-    /// Base matrix for explosion ie. at center.
-    float baseMatrix[16];
+    /// Damage of this building using center body part hp only.
+    rDamageable* damageable;
     /// Explosion to be triggered on destruction of the building.
     rWeaponExplosion explosionObject;
     /// Dimensions of the building.
