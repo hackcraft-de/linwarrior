@@ -46,13 +46,13 @@ public: // OUTPUT
     // float splash[MAX_PARTS];
     // float heat[MAX_PARTS];
     // float sinks[MAX_PARTS];
-    /// Some object that dealt some damage to the object. (hook o) [(oid, damage)]?
+    /// Some object that dealt some damage to the object. (hook o)
     OID disturber;
     float disturbance;
 protected: // INTERNALS
     // Smarter disturbance with non-persistent memory.
-    std::map<OID,float> disturbers;
-    std::map<OID,float> damages;
+    std::map<OID,float> damageAverage;
+    std::map<OID,float> damageImpulse;
 public:
     /// Constructor.
     rDamageable(cObject* obj = NULL);

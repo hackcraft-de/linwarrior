@@ -55,13 +55,13 @@ bool rDamageable::damage(float* localpos, float damage, cObject* enactor) {
     if (enactor != NULL && damage > 0.0001f) {
         
         // Setup an averaging memory slot for that enactor.
-        if (damages.find(enactor->oid) == damages.end()) {
-            disturbers[enactor->oid] = 0;
-            damages[enactor->oid] = 0;
+        if (damageImpulse.find(enactor->oid) == damageImpulse.end()) {
+            damageAverage[enactor->oid] = 0;
+            damageImpulse[enactor->oid] = 0;
         }
         
         // Sum the disturbance (damage) for the enactor over the time of one frame.
-        damages[enactor->oid] += damage;
+        damageImpulse[enactor->oid] += damage;
     }
     return alife;
 }
@@ -75,12 +75,12 @@ void rDamageable::animate(float spf) {
     float maxDisturbance = 0;
     
     // Loop through memory, average new damage in and find biggest disturbance.
-    for (std::map<OID,float>::iterator i = disturbers.begin(); i != disturbers.end(); i++) {
+    for (std::map<OID,float>::iterator i = damageAverage.begin(); i != damageAverage.end(); i++) {
         OID enactor = (*i).first;
         float disturbanceValue = (*i).second;
         
-        disturbers[enactor] = (1-alpha) * disturbers[enactor] + alpha * damages[enactor];
-        damages[enactor] = 0;
+        damageAverage[enactor] = (1-alpha) * damageAverage[enactor] + alpha * damageImpulse[enactor];
+        damageImpulse[enactor] = 0;
         
         if (disturbanceValue > maxDisturbance) {
             maxDisturbance = disturbanceValue;
@@ -92,8 +92,8 @@ void rDamageable::animate(float spf) {
     }
 
     // If there already was a disturber then switch only if the difference is big enough.
-    if ( disturber != maxDisturber && disturber != 0 && disturbers.find(disturber) != disturbers.end()) {
-        if (maxDisturbance > disturbers[disturber] + 0.0005) {
+    if ( disturber != maxDisturber && disturber != 0 && damageAverage.find(disturber) != damageAverage.end()) {
+        if (maxDisturbance > damageAverage[disturber] + 0.0005) {
             disturber = maxDisturber;
             disturbance = maxDisturbance;
         }
