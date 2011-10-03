@@ -784,10 +784,16 @@ void OpenMission::initPentaSpaceport(World* world, cPlanetmap* planetmap) {
 
     float pos[3] = {loc[0], loc[1], loc[2] + 20};
     float rot[3] = {0, 0, 0};
+    
+    string model[] = {
+        "bug",
+        "thunderbird",
+        "ant"
+    };
 
-    loopi(2) {
+    loopi(3) {
         pos[0] += 20;
-        cMech* mech = new cMech(pos, rot, "bug");
+        cMech* mech = new cMech(pos, rot, model[i]);
         if (mech == NULL) throw "No memory for cMech in spacePortMechs.";
         mech->name = "Mech/SpacePortGuard_i";
         mech->nameable->name = "Space-Bandit";
