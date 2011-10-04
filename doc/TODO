@@ -39,15 +39,13 @@ Refactoring and cleanup:
 
 - Remove reliance on NaN for no destination (portability and fast-math problems).
 
-- rGrouping shall be handled like other object components (use message method?).
-
 - Player's jumpjet light shall be moved to a component.
 
-- Convert visual/model objects (tree, planetmap, building, etc.) to components?
+- Convert visual/model objects (planetmap, building, etc.) to component-systems.
 
 - Resolve HUD dependency on cMech-Class's weapons.
 
-- Make weapon chaining work with weapon-bindings.
+- Make weapon chaining work with weapon-bindings (use sequencer component?).
 
 - Use vec4 to utilize vector ops?
 
@@ -55,8 +53,6 @@ Refactoring and cleanup:
 Landscape:
 
 - Take slope into account for Planetmap erosion and material within second pass.
-
-- City-generator.
 
 - Biome and continents - pre-designed shape and automatic fill out?
 
@@ -69,6 +65,23 @@ Landscape:
 - Add oceans.
 
 
+Cityscape:
+
+- Non-square convex building blocks
+
+- Different floor heights
+
+- Different height and texture on ground level floor
+
+- City-generator.
+
+- Roof-top applications (fence, vents, wires, tubes, commercials)
+
+- Wall applications (commercials, air condition)
+
+- Over-the-road applications (wires, traffic-/lights)
+
+
 Immersion and FX:
 
 - Implement camera lag and shake rig
@@ -79,7 +92,7 @@ Immersion and FX:
 
 - Colored particles indicating damage inflicted (chipping off).
 
-- Dust when walking
+- Dust when walking/landing/jetting
 
 
 Gameplay:
