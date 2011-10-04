@@ -218,8 +218,9 @@ rTree::TreeType* rTree::getCompiledTree(int seed, int type, int age) {
         glColor3f(0.2f, 0.2f, 0.2f);
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, sBarktexs[0]);
-        Primitive::glCenterUnitCylinder(5, 5);
+        //Primitive::glCenterUnitCylinder(5, 5);
         //Primitive::glCenterUnitBlock();
+        drawTrunk(5, 5);
         glEndList();
     }
 
@@ -431,5 +432,24 @@ void rTree::drawButterflyTreeLeaf() {
         drawHalmTreeLeaf();
     }
     glPopMatrix();
+}
+
+void rTree::drawTrunk(float segments, float vrepeat) {
+    float step = 1.0f / (float) segments;
+    float anglestep = 2.0f * M_PI *step;
+    float angle = 0.0f;
+    float r1 = 0.75f;
+    float r2 = 1.20f;
+    glBegin(GL_TRIANGLE_STRIP);
+    for (int i=0; i<=segments; i++) {
+        float r1_ = r1 * (1.00f + (rand()%100) * 0.002f);
+        float r2_ = r2 * (1.00f + (rand()%100) * 0.004f);
+        glTexCoord3f(0.5f+0.499f*sin(angle), 0.999f * vrepeat, 0.5f+0.499f*cos(angle));
+        glVertex3f(sin(angle)*r1_, +1.0f, cos(angle)*r1_);
+        glTexCoord3f(0.5f+0.499f*sin(angle), 0.001f, 0.5f+0.499f*cos(angle));
+        glVertex3f(sin(angle)*r2_, -1.0f, cos(angle)*r2_);
+        angle += anglestep;
+    };
+    glEnd();
 }
 

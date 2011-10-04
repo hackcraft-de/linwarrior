@@ -74,6 +74,7 @@ private:
     static void drawCaribeanTreeLeaf();
     static void drawHalmTreeLeaf();
     static void drawButterflyTreeLeaf();
+    static void drawTrunk(float segments = 9, float vrepeat = 1);
 };
 
 
