@@ -133,6 +133,18 @@ cPlanetmap::cPlanetmap() {
             sTextures.push_back(texname);
             delete texels;
         }
+        
+        {
+            string basepath = string("data/base/decals/");
+            string name = string(basepath).append("grassground.tga");
+            cout << "Loading [" << name << "] ...\n";
+            unsigned int texname;
+            int w, h, bpp;
+            unsigned char* texels = Texfile::loadTGA(name.c_str(), &w, &h, &bpp);
+            texname = GLS::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
+            delete texels;
+            sTextures.push_back(texname);
+        }
 
         string basepath = string("data/base/decals/");
         string filenames[] = {
@@ -549,6 +561,8 @@ int detail = 0;
 
 #define xmin(v1,v2)          (((v1)<(v2))?(v1):(v2))
 
+#define TWODIMTEX
+
 void cPlanetmap::drawSolid() {
 
     // Get current Camera-Matrix.
@@ -591,14 +605,19 @@ void cPlanetmap::drawSolid() {
     {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
-            glDisable(GL_TEXTURE_2D);
-            glEnable(GL_TEXTURE_3D);
             glEnable(GL_LIGHTING);
             glEnable(GL_FOG);
             glEnable(GL_COLOR_MATERIAL);
             //glEnable(GL_NORMALIZE);
-
+#ifdef TWODIMTEX
+            glDisable(GL_TEXTURE_3D);
+            glEnable(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D, sTextures[1]);
+#else
+            glDisable(GL_TEXTURE_2D);
+            glEnable(GL_TEXTURE_3D);
             glBindTexture(GL_TEXTURE_3D, sTextures[0]);
+#endif
 
             float step = 64;
             int s = step * 20; // (80)
@@ -613,7 +632,11 @@ void cPlanetmap::drawSolid() {
             assert(!(x != x));
             assert(!(z != z));
             //float c[3];
+#ifdef TWODIMTEX
+            float ts = 0.13f;
+#else
             float ts = 0.3f;
+#endif
             //cout << x << " " << z << endl;
 
 
@@ -684,7 +707,11 @@ void cPlanetmap::drawSolid() {
                         //glNormal3f(0,1,0);
                         glNormal3fv(&color[4]);
                         glColor4f(fmin(1.0f, color[0]), fmin(1.0f, color[1]), fmin(1.0f, color[2]), fmin(1.0f, color[3]));
+#ifdef TWODIMTEX
+                        glTexCoord2f((i + step) * ts, j * ts);
+#else
                         glTexCoord3f((i + step) * ts, h0*ts, j * ts);
+#endif
                         glVertex3f(i + step, h0, j);
 
                         //
@@ -704,7 +731,11 @@ void cPlanetmap::drawSolid() {
                         //glNormal3f(0,1,0);
                         glNormal3fv(&color[4]);
                         glColor4f(fmin(1.0f, color[0]), fmin(1.0f, color[1]), fmin(1.0f, color[2]), fmin(1.0f, color[3]));
+#ifdef TWODIMTEX
+                        glTexCoord2f((i + 0) * ts, j * ts);
+#else
                         glTexCoord3f((i + 0) * ts, h1*ts, j * ts);
+#endif
                         glVertex3f(i + 0, h1, j);
                     }
                     glEnd();
@@ -896,8 +927,6 @@ void cPlanetmap::drawEffect() {
         float color[16];
         
         const int maxplants = sGrowth.size();
-
-        glBindTexture(GL_TEXTURE_2D, sTextures[1]);
 
         // Loop in positive or negative x direction (painters algorithm).
         float i = x - s*xlook;
