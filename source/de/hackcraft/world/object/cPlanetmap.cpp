@@ -978,7 +978,9 @@ void cPlanetmap::drawEffect() {
                         float sizef = size * 0.003906f;
                         float scale = plantscale * sGrowth[tex]->size * (0.35f + 0.65f * sizef + 0.008f * plantdensity);
 
-                        glColor4f(1, 1, 1, opacity);
+                        float shift = -0.1 + 0.2f * b2f * (((lfsr16 >> 3) ^ (lfsr16>>7) ^ a ^ b) & 0xFF);
+                        glColor4f(0.9 + shift, 1.0-fabs(shift), 0.9f-shift, opacity);
+                        //glColor4f(1, 1, 1, opacity);
                         glBindTexture(GL_TEXTURE_2D, sGrowth[tex]->texture);
 
                         switch (sGrowth[tex]->rendertype) {
