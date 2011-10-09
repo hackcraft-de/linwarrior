@@ -26,7 +26,7 @@ float sig(float x)
 
 float getAO(float d0, float dn)
 {
-	float eps = +0.0015;
+	float eps = +0.002;
 	float diff = (dn - d0) + eps;
 	return exp(-abs(diff) * 700.0);
 }
@@ -57,7 +57,7 @@ float dc[17] = float[](1.000, -0.707, 0.000, 0.707, -1.000, 0.707, 0.000, -0.707
 
 vec2 ofse(int i, float r, vec2 p)
 {
-	return vec2(ds[i]*r, dc[i]*r);
+	return vec2(1.0*ds[i]*r, (1.7*r) + 1.0*dc[i]*r);
 	//return vec2(0.5*r-noiz3(p.x,p.y, i*0.23)*r, 0.5*r-noiz3(p.x,p.y, i*0.17)*r);
 }
 
@@ -92,11 +92,11 @@ void main()
 	float cn = 1.0;//sin(nois * 3.14);
 
 	// Depth blur
-	float dalpha = 0.3;
+	float dalpha = 0.7;
 	float d0nonlin = texture2DLod(dep,pix, 0.0).x;
 	float d0 = linear(d0nonlin);
-	rd = ofs * 0.35;
-	r = rd;
+	rd = ofs * 0.33 * 1.5;
+	r = ofs * 1.0;
 	float d1_ = linear(texture2DLod(dep,pix+ofse(1,r, pix), 0.0).x);
 	float d1 = mix(d0, d1_, dalpha); r += rd;
 	float d2_ = linear(texture2DLod(dep,pix+ofse(2,r, pix), 0.0).x);
@@ -183,7 +183,8 @@ void main()
 	if (depthn < depth0 - 4.0*l) openness = 1.0;
 
 	// AO
-	float ao = getAO(depth0, depthu);
+	float ao = 0.0;
+	ao = max(ao, getAO(depth0, depthu));
 	ao = max(ao, getAO(depth0, depthv));
 	ao = max(ao, getAO(depth0, depthw));
 	ao = max(ao, getAO(depth0, depthx));
@@ -195,9 +196,14 @@ void main()
 	float lum0 = (color0.r + color0.g + color0.b);
 	float lumn = (colorn.r + colorn.g + colorn.b);
 	float bloom = 1.0*(sig((max(0,lumn - lum0) - 0.00045) * 9) - 0.1);
-	vec4 composite = color0 * (0.70 + 1.19 * bloom) + 0.1 * (blur * bluryness);
+	vec4 composite = color0 * (0.70 + 1.69 * bloom) + 0.1 * (blur * bluryness);
 
 #if 1
+	//composite = vec4(ao_,ao_,ao_,1.0);
+	//composite = nois * composite + (1-nois) * vec4(ao_,ao_,ao_,1.0) * composite;
+	//composite *= vec4(ao_,ao_,ao_,1.0);
+	ao_ = min(1.0, 1.7 * ao_);
+	composite = composite * vec4(ao_,ao_,ao_,1.0) + 0.5 * (blur * vec4(1.0-ao_,1.0-ao_,1.0-ao_,1.0));
 	vec4 result = (1.0+0.0*nois) * composite;// + d0 * pow(max(0.0,-voxel.y)*10.0,2.0) * vec4(0.0,1.0,0.0,1.0) + pow(1.0*d0, 0.9) * max(0.0,voxel.y) * vec4(1.0,0.9,0.5,1.0);
 #elif 0
 	float io = 0.0;
