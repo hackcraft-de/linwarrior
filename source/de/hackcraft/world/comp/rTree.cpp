@@ -51,12 +51,15 @@ rTree::rTree(cObject* obj, float* pos, float* rot, int seed, int type, int age) 
             sLeaftexs.push_back(texname);
         }
         
-        string barkpath = string("data/base/decals/");
+        string barkpath = string("data/base/decals/bark/");
         string barknames[] = {
             string("bark_oak.tga"),
+            string("bark_palm.tga"),
+            string("bark_birch.tga"),
+            string("bark_ash.tga"),
         };
         
-        loopi(1) {
+        loopi(4) {
             string name = string(barkpath).append(barknames[i]);
             cout << "Loading bark [" << name << "] ...\n";
             unsigned int texname;
@@ -196,7 +199,7 @@ rTree::TreeType* rTree::getCompiledTree(int seed, int type, int age) {
 
     // There was no such tree cached - so lets compile a displaylist.
 
-    static GLint leaf_displaylists[] = {-1, -1, -1, -1, -1};
+    static GLint leaf_displaylists[] = {-1, -1, -1, -1, -1, -1, -1, -1};
     if (type < 5) {
         if (leaf_displaylists[type] == -1) {
             leaf_displaylists[type] = glGenLists(1);
@@ -215,14 +218,14 @@ rTree::TreeType* rTree::getCompiledTree(int seed, int type, int age) {
         }
     }
 
-    static GLuint trunk_displaylist = -1;
-    if ((int) trunk_displaylist == -1) {
-        trunk_displaylist = glGenLists(1);
-        glNewList(trunk_displaylist, GL_COMPILE);
+    static GLuint trunk_displaylists[] = {-1, -1, -1, -1, -1, -1, -1, -1};
+    if ((int) trunk_displaylists[type] == -1) {
+        trunk_displaylists[type] = glGenLists(1);
+        glNewList(trunk_displaylists[type], GL_COMPILE);
         //glColor3f(0.1f, 0.1f, 0.0f);
         glColor3f(0.2f, 0.2f, 0.2f);
         glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, sBarktexs[0]);
+        glBindTexture(GL_TEXTURE_2D, sBarktexs[type % sBarktexs.size()]);
         //Primitive::glCenterUnitCylinder(5, 5);
         //Primitive::glCenterUnitBlock();
         drawTrunk(5, 5);
@@ -248,7 +251,7 @@ rTree::TreeType* rTree::getCompiledTree(int seed, int type, int age) {
             glNewList(t->list, GL_COMPILE_AND_EXECUTE);
             float s = 2.5f + age * 0.3;
             glScalef(s, s, s);
-            drawTreePart(0, age, 0.3f + age * 0.1, t->seed, trunk_displaylist, leaf_displaylists[type], &t->leaves, &t->height);
+            drawTreePart(0, age, 0.3f + age * 0.1, t->seed, trunk_displaylists[type], leaf_displaylists[type], &t->leaves, &t->height);
             glEndList();
         }
         glPopMatrix();
