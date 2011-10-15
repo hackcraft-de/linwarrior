@@ -534,7 +534,7 @@ void Background::drawBackground(float h) {
     if (1) {
         glFogfv(GL_FOG_COLOR, haze);
         if (1) {
-            float density = 0.008;
+            float density = 0.008*1.1;
             glFogi(GL_FOG_MODE, GL_EXP2);
             glFogf(GL_FOG_DENSITY, density);
         } else {
