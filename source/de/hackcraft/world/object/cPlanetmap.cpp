@@ -136,7 +136,7 @@ cPlanetmap::cPlanetmap() {
         
         {
             string basepath = string("data/base/decals/");
-            string name = string(basepath).append("grassground.tga");
+            string name = string(basepath).append("ground_grass.tga");
             cout << "Loading [" << name << "] ...\n";
             unsigned int texname;
             int w, h, bpp;
@@ -148,19 +148,19 @@ cPlanetmap::cPlanetmap() {
 
         string basepath = string("data/base/decals/");
         string filenames[] = {
-            string("desertblossom.tga"),
-            string("grass.tga"),
-            string("longplant.tga"),
-            string("greenplant.tga"),
-            string("desertplant.tga"),
-            string("melissa.tga"),
-            string("bluishplant.tga"),
-            string("bambooplant.tga"),
-            string("palmplant.tga"),
-            string("farnleaf.tga"),
-            string("treewood.tga"),
-            string("pineleafs.tga"),
-            string("strangeleafs.tga")
+            string("blossom_desert.tga"),
+            string("grass_bold.tga"),
+            string("plant_long.tga"),
+            string("plant_green.tga"),
+            string("plant_desert.tga"),
+            string("plant_melissa.tga"),
+            string("plant_bluish.tga"),
+            string("plant_bamboo.tga"),
+            string("plant_palm.tga"),
+            string("leaf_farn.tga"),
+            string("foliage_twigs.tga"),
+            string("foliage_pine.tga"),
+            string("foliage_strange.tga")
         };
         float sizes[] = {
             0.4,

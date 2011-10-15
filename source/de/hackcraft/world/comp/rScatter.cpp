@@ -27,7 +27,7 @@ rScatter::rScatter(cObject* obj, float radius, float density) {
         {
             unsigned int texname;
             int w, h, bpp;
-            unsigned char* texels = Texfile::loadTGA("data/base/decals/desertplant.tga", &w, &h, &bpp);
+            unsigned char* texels = Texfile::loadTGA("data/base/decals/plant_desert.tga", &w, &h, &bpp);
             texname = GLS::glBindTexture2D(0, true, true, false, false, w, h, bpp, texels);
             delete texels;
             sTextures[0] = texname;

@@ -32,17 +32,16 @@ rTree::rTree(cObject* obj, float* pos, float* rot, int seed, int type, int age) 
     
     sInstances++;
     if (sInstances == 1) {
-        string basepath = string("data/base/decals/");
-        string filenames[] = {
-            string("treeleafs.tga"),
-            string("strangeleafs.tga"),
-            string("widowleafs.tga"),
-            string("pineleafs.tga"),
-            string("oakbark.tga"),
+        string foliagepath = string("data/base/decals/");
+        string foliagenames[] = {
+            string("foliage_tree.tga"),
+            string("foliage_strange.tga"),
+            string("foliage_widow.tga"),
+            string("foliage_pine.tga"),
         };
 
         loopi(4) {
-            string name = string(basepath).append(filenames[i]);
+            string name = string(foliagepath).append(foliagenames[i]);
             cout << "Loading leaf [" << name << "] ...\n";
             unsigned int texname;
             int w, h, bpp;
@@ -51,8 +50,14 @@ rTree::rTree(cObject* obj, float* pos, float* rot, int seed, int type, int age) 
             delete texels;
             sLeaftexs.push_back(texname);
         }
+        
+        string barkpath = string("data/base/decals/");
+        string barknames[] = {
+            string("bark_oak.tga"),
+        };
+        
         loopi(1) {
-            string name = string(basepath).append(filenames[4+i]);
+            string name = string(barkpath).append(barknames[i]);
             cout << "Loading bark [" << name << "] ...\n";
             unsigned int texname;
             int w, h, bpp;
