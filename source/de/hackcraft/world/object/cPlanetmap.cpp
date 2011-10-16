@@ -135,7 +135,7 @@ cPlanetmap::cPlanetmap() {
         }
         
         {
-            string basepath = string("data/base/decals/");
+            string basepath = string("data/base/decals/ground/");
             string name = string(basepath).append("ground_grass.tga");
             cout << "Loading [" << name << "] ...\n";
             unsigned int texname;
@@ -148,19 +148,20 @@ cPlanetmap::cPlanetmap() {
 
         string basepath = string("data/base/decals/");
         string filenames[] = {
-            string("blossom_desert.tga"),
-            string("grass_bold.tga"),
-            string("plant_long.tga"),
-            string("plant_green.tga"),
-            string("plant_desert.tga"),
-            string("plant_melissa.tga"),
-            string("plant_bluish.tga"),
-            string("plant_bamboo.tga"),
-            string("plant_palm.tga"),
-            string("leaf_farn.tga"),
-            string("foliage_twigs.tga"),
-            string("foliage_pine.tga"),
-            string("foliage_strange.tga")
+            string("blossom/blossom_desert.tga"),
+            string("grass/grass_bold.tga"),
+            string("plant/plant_long.tga"),
+            string("plant/plant_green.tga"),
+            string("plant/plant_desert.tga"),
+            string("plant/plant_melissa.tga"),
+            string("plant/plant_bluish.tga"),
+            string("plant/plant_bamboo.tga"),
+            string("plant/plant_palm.tga"),
+            string("leaf/leaf_farn.tga"),
+            string("leaf/leaf_pumpkin.tga"),
+            string("foliage/foliage_twigs.tga"),
+            string("foliage/foliage_pine.tga"),
+            string("foliage/foliage_strange.tga")
         };
         float sizes[] = {
             0.4,
@@ -173,6 +174,7 @@ cPlanetmap::cPlanetmap() {
             1.2,
             2.7,
             1.9,
+            1.3,
             1.4,
             1.5,
             1.1
@@ -188,12 +190,13 @@ cPlanetmap::cPlanetmap() {
             Growth::BILLBOARD,
             Growth::CROSS,
             Growth::LEAFS,
+            Growth::LEAFS,
             Growth::STAR,
             Growth::STAR,
             Growth::STAR
         };
 
-        loopi(13) {
+        loopi(14) {
             string name = string(basepath).append(filenames[i]);
             cout << "Loading [" << name << "] ...\n";
             unsigned int texname;

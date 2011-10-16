@@ -32,7 +32,7 @@ rTree::rTree(cObject* obj, float* pos, float* rot, int seed, int type, int age) 
     
     sInstances++;
     if (sInstances == 1) {
-        string foliagepath = string("data/base/decals/");
+        string foliagepath = string("data/base/decals/foliage/");
         string foliagenames[] = {
             string("foliage_tree.tga"),
             string("foliage_strange.tga"),
