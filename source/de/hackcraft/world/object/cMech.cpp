@@ -258,6 +258,7 @@ void cMech::init(float* pos, float* rot, string modelName) {
 
         m2f["bug"] = "data/base/tanks/bug/bug.md5mesh";
         m2f["ant"] = "data/base/tanks/ant/ant.md5mesh";
+        m2f["pod"] = "data/base/tanks/pod/pod.md5mesh";
         
         m2f["flopsy"] = "data/com/blendswap/flopsy/flopsy.md5mesh";
         
