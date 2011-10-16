@@ -135,7 +135,7 @@ cPlanetmap::cPlanetmap() {
         }
         
         {
-            string basepath = string("data/base/decals/ground/");
+            string basepath = string("data/base/landscape/ground/");
             string name = string(basepath).append("ground_grass.tga");
             cout << "Loading [" << name << "] ...\n";
             unsigned int texname;
@@ -146,7 +146,7 @@ cPlanetmap::cPlanetmap() {
             sTextures.push_back(texname);
         }
 
-        string basepath = string("data/base/decals/");
+        string basepath = string("data/base/landscape/");
         string filenames[] = {
             string("blossom/blossom_desert.tga"),
             string("grass/grass_bold.tga"),
