@@ -13,6 +13,8 @@
 
 #include "de/hackcraft/io/Texfile.h"
 
+#include "de/hackcraft/proc/Ambient.h"
+
 #include <cstdio>
 #include <memory>
 #include <cstdlib>
@@ -40,68 +42,6 @@ enum Texids {
 
 unsigned int gPermutationTexture256 = 0;
 
-void ambient_galaxy(float x, float y, float z, float* color, float scale) {
-    // Normalise direction vector and scale.
-    float oolen = (0.5 * scale) / sqrtf(x * x + y * y + z * z);
-    float v[3] = {
-        0.0f + x * oolen,
-        0.0f + y * oolen,
-        0.0f + z * oolen
-    };
-    //cSolid::star_nebula(v[0], v[1], v[2], color);
-    Solid::star_fastnebula(v[0], v[1], v[2], color);
-}
-
-void ambient_clouds(float x, float y, float z, float* color) {
-    // Normalise direction vector.
-    float oolen = 1.0f / sqrtf(x * x + y * y + z * z);
-    float v[3] = {x * oolen, y * oolen, z * oolen};
-    Solid::planet_cloud(v[0], v[1], v[2], color);
-}
-
-void ambient_sky(float x, float y, float z, float* color, float hour = 24.00f) {
-    // Remember 2pi ~ 360°
-    double t = ((hour / 24.0 * 2 * M_PI) - 0.5 * M_PI); // = [-0.5pi,+1.5pi]
-
-    double light = 0.1 + 0.8 * cos((hour - 12.0) / 12.00 * 0.5 * M_PI);
-
-    // Daylight gradient.
-    // hour = [0,24]
-    // => [-90,   0, 90, 180, 270]
-    // => [ -1,   0,  1,   0,  -1] = sin
-    // => [  0, 0.5,  1, 0.5,   0] = s daylight sine-wave.
-    double s = sin(t) * 0.5 + 0.5; // = [0,1]
-    double topColor[] = {s * 0.2 + 0.1, s * 0.2 + 0.1, s * 0.8 + 0.2, light};
-    double middleColor[] = {s * 0.95 + 0.05, s * 0.95 + 0.05, s * 0.95 + 0.05, 1};
-    double bottomColor[] = {s * 0.55 + 0.05, s * 0.55 + 0.05, s * 0.55 + 0.05, 1};
-
-    // Dusk and dawn gradient.
-    // => [ 0,    1,  0,   1,   0] = c
-    double c = pow(fabs(cos(t)) * 0.5 + 0.5, 4); // = [0,1]
-    double top_[] = {c * 0.25, c * 0.25, c * 0.0, light};
-    double mid_[] = {c * 0.55, c * 0.25, c * 0.0, 1};
-    double bot_[] = {c * 0.25, c * 0.11, c * 0.0, 1};
-    vector_add(topColor, topColor, top_);
-    vector_add(middleColor, middleColor, mid_);
-    vector_add(bottomColor, bottomColor, bot_);
-
-    // Normalise direction vector.
-    double oolen = 1.0 / sqrtf(x * x + y * y + z * z);
-    double yd = y * oolen;
-
-    // top = 1 when yd > 0, top = 0 otherwise.
-    double top = 0.5 + copysign(0.5, yd);
-    double alpha = fabs(yd);
-
-    // middleColor could be factored out but it may change.
-
-    loopi(4) {
-        color[i] = float(
-                top * (alpha * topColor[i] + (1.0f - alpha) * middleColor[i]) +
-                (1.0f - top) * (alpha * bottomColor[i] + (1.0f - alpha) * middleColor[i])
-                );
-    }
-}
 
 Background::Background() {
     /*
@@ -430,7 +370,7 @@ Background::Background() {
                     v[0] = tmp;
                 }
                 float color[16];
-                ambient_galaxy(v[0], v[1], v[2], color, scale);
+                Ambient::galaxy(v[0], v[1], v[2], color, scale);
                 *p++ = 255 * color[2];
                 *p++ = 255 * color[1];
                 *p++ = 255 * color[0];
@@ -498,7 +438,7 @@ void Background::drawBackground(float h) {
             float color[16];
             vec3 n = { float(sin(alpha) * sin(beta)), float(0.99 * cos(beta)), float(sin(beta) * cos(alpha)) };
             //vector_print(n);
-            ambient_sky(n[0], n[1], n[2], color, hour);
+            Ambient::sky(n[0], n[1], n[2], color, hour);
             //quat_print(color);
 
             loopj(4) {
@@ -719,13 +659,13 @@ void Background::drawUpperDome() {
                     float c = cos(h);
 
                     rgba colour1;
-                    ambient_sky(s1*c, c1 + 0.0001f, s1 * s, colour1, hour);
+                    Ambient::sky(s1*c, c1 + 0.0001f, s1 * s, colour1, hour);
                     glColor4fv(colour1);
                     //glNormal3f(s1*c, c1, s1 * s);
                     glVertex3f(s1*c, c1, s1 * s);
 
                     rgba colour2;
-                    ambient_sky(s2*c, c2 + 0.0001f, s2 * s, colour2, hour);
+                    Ambient::sky(s2*c, c2 + 0.0001f, s2 * s, colour2, hour);
                     glColor4fv(colour2);
                     //glNormal3f(s2*c, c2, s2 * s);
                     glVertex3f(s2*c, c2, s2 * s);
@@ -777,13 +717,13 @@ void Background::drawLowerDome() {
                     float c = cos(h);
 
                     rgba colour2;
-                    ambient_sky(s2*c, c2 - 0.0001f, s2 * s, colour2, hour);
+                    Ambient::sky(s2*c, c2 - 0.0001f, s2 * s, colour2, hour);
                     glColor4fv(colour2);
                     //glNormal3f(s2*c, c2, s2 * s);
                     glVertex3f(s2*c, c2, s2 * s);
 
                     rgba colour1;
-                    ambient_sky(s1*c, c1 - 0.0001f, s1 * s, colour1, hour);
+                    Ambient::sky(s1*c, c1 - 0.0001f, s1 * s, colour1, hour);
                     glColor4fv(colour1);
                     //glNormal3f(s1*c, c1, s1 * s);
                     glVertex3f(s1*c, c1, s1 * s);
@@ -829,7 +769,7 @@ void Background::drawGround() {
             glTranslatef(0, p[1], 0);
 
             rgba color2;
-            ambient_sky(0, -1, 0, color2, hour);
+            Ambient::sky(0, -1, 0, color2, hour);
 
             //const float tdiv = 5; // original
             const float tdiv = 16;

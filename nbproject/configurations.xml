@@ -17,6 +17,8 @@
         <itemPath>source/de/hackcraft/lang/Thread.h</itemPath>
       </logicalFolder>
       <logicalFolder name="proc" displayName="proc" projectFiles="true">
+        <itemPath>source/de/hackcraft/proc/Ambient.cpp</itemPath>
+        <itemPath>source/de/hackcraft/proc/Ambient.h</itemPath>
         <itemPath>source/de/hackcraft/proc/Distortion.h</itemPath>
         <itemPath>source/de/hackcraft/proc/Facade.cpp</itemPath>
         <itemPath>source/de/hackcraft/proc/Facade.h</itemPath>
