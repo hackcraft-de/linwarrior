@@ -111,7 +111,7 @@ void rTree::drawEffect() {
     glPushMatrix();
     {
         glTranslatef(this->pos0[0], this->pos0[1], this->pos0[2]);
-        glRotatef(this->ori0[1], 0, 1, 0);
+        GLS::glRotateq(this->ori0);
 
         // Construct Billboarding Matrix.
         float n[16];
@@ -144,7 +144,7 @@ void rTree::drawEffect() {
                 float light = 0.5f + 0.4f * (1.0f - exp(-0.1f * y));
                 float shake = 0.4f * (1.0f - exp(-0.1f * y));
                 float swirl = 1.0f + 10.0f * (1.0f - exp(-0.2f * y));
-                float size = 0.5f + log(tree->age)*0.26f + 0.18f * tree->height + 0.03f * sin(seconds * 0.21f + i * 0.1f);
+                float size = 0.5f + 0.8f * ( log(tree->age)*0.26f + 0.18f * tree->height + 0.03f * sin(seconds * 0.21f + i * 0.1f) );
 
                 float dx = 1.0f * sin(seconds * 0.41f + i * 0.1f);
                 float dy = 0.3f * cos(seconds * 0.43f + i * 0.2f);
@@ -266,8 +266,6 @@ rTree::TreeType* rTree::getCompiledTree(int seed, int type, int age) {
 }
 
 int rTree::drawTreePart(int depth, int maxdepth, float length, int seed, GLuint trunk_displaylist, GLuint leaf_displaylist, std::vector<float>* leaves, float* totalheight) {
-    // Recursion end?
-    if (depth >= maxdepth) return seed;
     //
     const float height = length * (maxdepth - depth);
     const float width = 0.06 * length + (maxdepth - depth)*(maxdepth - depth) * length * 0.02f;
@@ -278,7 +276,7 @@ int rTree::drawTreePart(int depth, int maxdepth, float length, int seed, GLuint 
         glScalef(width * 0.5f, height * 0.5f, width * 0.5f);
         glTranslatef(0, 1, 0);
         glCallList(trunk_displaylist);
-        if (depth == maxdepth - 1) {
+        if (depth > 0) {
             const float s = 3.6f;
             if (draw_poly_leaves) {
                 glScalef(s * height / width, s * 0.5f, s * height / width);
@@ -289,7 +287,7 @@ int rTree::drawTreePart(int depth, int maxdepth, float length, int seed, GLuint 
                 glTranslatef(0, 0.5f, 0);
                 mat4 M;
                 glGetFloatv(GL_MODELVIEW_MATRIX, M);
-                float v[] = {0, 0.0f, 0};
+                float v[] = { 0.0f, 0.0f, 0.0f };
                 matrix_apply2(M, v);
                 //std::cout << "Leaf at: " << std::endl;
                 //matrix_print(M);
@@ -306,6 +304,9 @@ int rTree::drawTreePart(int depth, int maxdepth, float length, int seed, GLuint 
     glPopMatrix();
     // Draw Offsprings
 
+    // Recursion end?
+    if (depth + 1 >= maxdepth) return seed;
+
     const int n = 3;
     int rnums[2 * n];
     int r = seed;
@@ -321,7 +322,7 @@ int rTree::drawTreePart(int depth, int maxdepth, float length, int seed, GLuint 
 
     loopi(n) {
         const int yvar = 15;
-        angley = int(i * 360.0f / float(n)) - yvar + rnums[j++] % (2 * yvar);
+        angley = 130 * i - yvar + rnums[j++] % (2 * yvar);
         const float xvar = 27.0f;
         anglex = int(60.0f - xvar + (rnums[j++] % 100)*0.01f * (2.0f * xvar)*(1.0f - float(maxdepth - depth) / float(maxdepth)));
         glPushMatrix();
