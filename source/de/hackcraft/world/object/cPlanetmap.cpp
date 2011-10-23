@@ -972,7 +972,7 @@ void cPlanetmap::drawEffect() {
                 float plantdensity = (totaldensity * 10.00f * key) * b2f;
                 int visibleplants = plantdensity * opacity;
 
-                key = Noise::LFSR16(key);
+                key = Noise::simplex3(a, b, 0.1f, 234) * 255.0f;
                 float treedensity = (totaldensity * 1.85f * key) * b2f;
                 float visibletrees = treedensity;
 
