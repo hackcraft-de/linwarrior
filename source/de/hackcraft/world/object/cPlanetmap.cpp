@@ -20,7 +20,8 @@ using namespace std;
 #define VEGETATION 0.7f
 
 int cPlanetmap::sInstances = 0;
-std::vector<long> cPlanetmap::sTextures;
+std::vector<long> cPlanetmap::sGrounds;
+std::vector<long> cPlanetmap::sGrasses;
 std::vector<cPlanetmap::Growth*> cPlanetmap::sGrowth;
 
 
@@ -130,7 +131,7 @@ cPlanetmap::cPlanetmap() {
                 }
             }
             unsigned int texname = GLS::glBindTexture3D(0, true, true, true, true, true, size, size, size, texels);
-            sTextures.push_back(texname);
+            sGrounds.push_back(texname);
             delete texels;
         }
         
@@ -143,7 +144,19 @@ cPlanetmap::cPlanetmap() {
             unsigned char* texels = Texfile::loadTGA(name.c_str(), &w, &h, &bpp);
             texname = GLS::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
             delete texels;
-            sTextures.push_back(texname);
+            sGrounds.push_back(texname);
+        }
+
+        {
+            string basepath = string("data/base/landscape/grass/");
+            string name = string(basepath).append("grass_strip.tga");
+            cout << "Loading [" << name << "] ...\n";
+            unsigned int texname;
+            int w, h, bpp;
+            unsigned char* texels = Texfile::loadTGA(name.c_str(), &w, &h, &bpp);
+            texname = GLS::glBindTexture2D(0, true, true, true, false, w, h, bpp, texels);
+            delete texels;
+            sGrasses.push_back(texname);
         }
 
         string basepath = string("data/base/landscape/");
@@ -615,11 +628,11 @@ void cPlanetmap::drawSolid() {
 #ifdef TWODIMTEX
             glDisable(GL_TEXTURE_3D);
             glEnable(GL_TEXTURE_2D);
-            glBindTexture(GL_TEXTURE_2D, sTextures[1]);
+            glBindTexture(GL_TEXTURE_2D, sGrounds[1]);
 #else
             glDisable(GL_TEXTURE_2D);
             glEnable(GL_TEXTURE_3D);
-            glBindTexture(GL_TEXTURE_3D, sTextures[0]);
+            glBindTexture(GL_TEXTURE_3D, sGrounds[0]);
 #endif
 
             float step = 64;
@@ -976,6 +989,10 @@ void cPlanetmap::drawEffect() {
                 float treedensity = (totaldensity * 1.85f * key) * b2f;
                 float visibletrees = treedensity;
 
+                key = Noise::simplex3(a, b, 0.1f, 243) * 255.0f;
+                float grassdensity = (totaldensity * 2.00f * key);
+                float visiblegrass = grassdensity;
+
                 //cout << "opacity " << opacity << "  density " << density << endl;
 
                 // Load LFSR using position, key and some scrambling.
@@ -984,6 +1001,64 @@ void cPlanetmap::drawEffect() {
                 unsigned short lfsr16tmp = lfsr16;
                 lfsr16 = (lfsr16 == 0) ? 1 : lfsr16;
                 lfsr16 ^= 0x7493;
+                
+                if (opacity >= 0.995 && !true) {
+                        
+                    lfsr16 = Noise::LFSR16(lfsr16);
+                    a = lfsr16;
+                    b = lfsr16 >> 8;
+
+                    float x__ = x_ + step * 0.003906f * a;
+                    float z__ = z_ + step * 0.003906f * b;
+                    getCachedHeight(x__, z__, color);
+                    float h = color[Landscape::BUMP];
+                    
+                    glColor4f(0.2,0.4,0.2,opacity);
+                    glBindTexture(GL_TEXTURE_2D, sGrasses[0]);
+                    
+                    glBegin(GL_TRIANGLE_STRIP);
+                    {
+
+                        loopj(17) {
+                            float f = j * 0.0625f;
+                            x__ = x_ + step * f;
+                            z__ = z_ + step * f;
+                            
+                            unsigned char a = Noise::LFSR16((int) x__ * 123.017454);
+                            unsigned char b = Noise::LFSR16((int) z__ * 231.017454);
+                            float u = 0.003906f * a * 4 + 6 * sin(2*f * M_PI);
+                            float v = 0.003906f * b * 4 + 6 * cos(2*f * M_PI);
+                            
+                            getCachedHeight(x_ + f*step+u, z_ + f*step+v, color);
+                            h = color[Landscape::BUMP];
+
+                            glTexCoord2f(6*f,0);
+                            glVertex3f(x_ + f*step+u, h-1, z_ + f*step+v);
+                            glTexCoord2f(6*f,1);
+                            glVertex3f(x_ + f*step+u, h+7, z_ + f*step+v);
+                        }
+                        loopj(17) {
+                            float f = j * 0.0625f;
+                            x__ = x_ + step * f;
+                            z__ = z_ + step * f;
+                            
+                            unsigned char a = Noise::LFSR16((int) x__ * 71.017454);
+                            unsigned char b = Noise::LFSR16((int) z__ * 31.017454);
+                            float u = 0.003906f * a * 4 + 6 * sin(4*f * M_PI);
+                            float v = 0.003906f * b * 4 + 6 * cos(4*f * M_PI);
+                            
+                            getCachedHeight(x_ + f*step+u, z_ + step-f*step+v, color);
+                            h = color[Landscape::BUMP];
+
+                            glTexCoord2f(6*f,0);
+                            glVertex3f(x_ + f*step+u, h-1, z_ + step-f*step+v);
+                            glTexCoord2f(6*f,1);
+                            glVertex3f(x_ + f*step+u, h+7, z_ + step-f*step+v);
+                        }
+                    }
+                    glEnd();
+                    
+                }
 
                 loopi(visibleplants) {
                     glPushMatrix();

@@ -43,7 +43,8 @@ public:
     /// Instance counter.
     static int sInstances;
     /// Instance shared Textures.
-    static std::vector<long> sTextures;
+    static std::vector<long> sGrounds;
+    static std::vector<long> sGrasses;
 
     struct Growth {
         enum Rendertype {
