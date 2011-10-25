@@ -13,7 +13,7 @@ class Mission;
 
 #include "World.h"
 
-#include "de/hackcraft/world/object/cObject.h"
+#include "de/hackcraft/world/cObject.h"
 #include "de/hackcraft/world/object/cPlanetmap.h"
 
 #include "de/hackcraft/util/Pad.h"

@@ -1,6 +1,6 @@
 #include "rDamageable.h"
 
-#include "de/hackcraft/world/object/cObject.h"
+#include "de/hackcraft/world/cObject.h"
 
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/GLF.h"
@@ -36,7 +36,7 @@ rDamageable::rDamageable(rDamageable * original) {
     }
 }
 
-rComponent* rDamageable::clone() {
+Component* rDamageable::clone() {
     return new rDamageable(this);
 }
 

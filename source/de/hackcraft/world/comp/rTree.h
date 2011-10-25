@@ -10,7 +10,7 @@
 
 struct rTree;
 
-#include "rComponent.h"
+#include "de/hackcraft/world/Component.h"
 
 #include "de/hackcraft/world/OID.h"
 
@@ -25,7 +25,7 @@ class cPlanetmap;
 /**
  * Generates and caches proceduraly generated 3d tree models.
  */
-struct rTree : public rComponent {
+struct rTree : public Component {
 public: // INPUT
     /// Base position vector.
     vec3 pos0;

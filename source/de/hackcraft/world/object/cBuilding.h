@@ -12,7 +12,7 @@
 class cBuilding;
 struct rDamageable;
 
-#include "cObject.h"
+#include "de/hackcraft/world/cObject.h"
 
 #include "de/hackcraft/world/comp/weapon/rWeapon.h"
 

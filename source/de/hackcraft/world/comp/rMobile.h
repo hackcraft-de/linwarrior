@@ -9,7 +9,7 @@
 #ifndef RMOBILE_H
 #define	RMOBILE_H
 
-#include "rComponent.h"
+#include "de/hackcraft/world/Component.h"
 
 #include "de/hackcraft/world/OID.h"
 
@@ -25,7 +25,7 @@
  * 
  * TODO: Add pos1 for upper body/turret.
  */
-struct rMobile : public rComponent {
+struct rMobile : public Component {
 public: // INPUT
     /// Base position. (hook i)
     vec3 pos0;

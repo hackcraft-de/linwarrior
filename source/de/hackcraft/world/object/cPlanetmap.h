@@ -11,7 +11,7 @@
 
 class cPlanetmap;
 
-#include "cObject.h"
+#include "de/hackcraft/world/cObject.h"
 
 #include "de/hackcraft/proc/Landscape.h"
 

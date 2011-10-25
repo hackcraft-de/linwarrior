@@ -11,7 +11,7 @@
 
 class cMech;
 
-#include "cObject.h"
+#include "de/hackcraft/world/cObject.h"
 
 struct rComcom;
 struct rTarcom;

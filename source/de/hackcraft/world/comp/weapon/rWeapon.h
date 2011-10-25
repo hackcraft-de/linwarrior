@@ -11,7 +11,7 @@
 
 class rWeapon;
 
-#include "de/hackcraft/world/object/cObject.h"
+#include "de/hackcraft/world/cObject.h"
 
 #include <list>
 #include <vector>
@@ -28,7 +28,7 @@ class rWeapon;
  * their visual effects. Note that weapons are themselves responsible for
  * drawing themselves, their bullets, missiles, dust, smoke and other particles.
  */
-class rWeapon : public rComponent {
+class rWeapon : public Component {
 public:
     /// Instance counter.
     static int sInstances;

@@ -5,7 +5,7 @@
 
 #include "de/hackcraft/world/World.h"
 
-#include "de/hackcraft/world/object/cObject.h"
+#include "de/hackcraft/world/cObject.h"
 
 #include <ostream>
 using std::cout;

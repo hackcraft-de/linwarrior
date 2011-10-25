@@ -88,8 +88,6 @@
           <itemPath>source/de/hackcraft/world/comp/rCamera.h</itemPath>
           <itemPath>source/de/hackcraft/world/comp/rCollider.cpp</itemPath>
           <itemPath>source/de/hackcraft/world/comp/rCollider.h</itemPath>
-          <itemPath>source/de/hackcraft/world/comp/rComponent.cpp</itemPath>
-          <itemPath>source/de/hackcraft/world/comp/rComponent.h</itemPath>
           <itemPath>source/de/hackcraft/world/comp/rDamageable.cpp</itemPath>
           <itemPath>source/de/hackcraft/world/comp/rDamageable.h</itemPath>
           <itemPath>source/de/hackcraft/world/comp/rMobile.cpp</itemPath>
@@ -114,13 +112,13 @@
           <itemPath>source/de/hackcraft/world/object/cBuilding.h</itemPath>
           <itemPath>source/de/hackcraft/world/object/cMech.cpp</itemPath>
           <itemPath>source/de/hackcraft/world/object/cMech.h</itemPath>
-          <itemPath>source/de/hackcraft/world/object/cObject.cpp</itemPath>
-          <itemPath>source/de/hackcraft/world/object/cObject.h</itemPath>
           <itemPath>source/de/hackcraft/world/object/cPlanetmap.cpp</itemPath>
           <itemPath>source/de/hackcraft/world/object/cPlanetmap.h</itemPath>
         </logicalFolder>
         <itemPath>source/de/hackcraft/world/Background.cpp</itemPath>
         <itemPath>source/de/hackcraft/world/Background.h</itemPath>
+        <itemPath>source/de/hackcraft/world/Component.cpp</itemPath>
+        <itemPath>source/de/hackcraft/world/Component.h</itemPath>
         <itemPath>source/de/hackcraft/world/Message.cpp</itemPath>
         <itemPath>source/de/hackcraft/world/Message.h</itemPath>
         <itemPath>source/de/hackcraft/world/Mission.cpp</itemPath>
@@ -130,6 +128,8 @@
         <itemPath>source/de/hackcraft/world/Timing.h</itemPath>
         <itemPath>source/de/hackcraft/world/World.cpp</itemPath>
         <itemPath>source/de/hackcraft/world/World.h</itemPath>
+        <itemPath>source/de/hackcraft/world/cObject.cpp</itemPath>
+        <itemPath>source/de/hackcraft/world/cObject.h</itemPath>
       </logicalFolder>
       <itemPath>source/de/hackcraft/Game.cpp</itemPath>
       <itemPath>source/de/hackcraft/Game.h</itemPath>

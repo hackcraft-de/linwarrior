@@ -9,7 +9,7 @@
 #ifndef RDAMAGEABLE_H
 #define	RDAMAGEABLE_H
 
-#include "rComponent.h"
+#include "de/hackcraft/world/Component.h"
 
 #include "de/hackcraft/world/OID.h"
 
@@ -18,7 +18,7 @@
 /**
  * Encapsulates attributes related to body damage and armor state.
  */
-struct rDamageable : public rComponent {
+struct rDamageable : public Component {
 public: // INPUT
     /// Radius for hitzone calculation.
     float radius;
@@ -59,7 +59,7 @@ public:
     /// Copy Constructor.
     rDamageable(rDamageable * original);
     /// Clone this.
-    virtual rComponent * clone();
+    virtual Component * clone();
     /// Apply damage to a hitzone, and return alife.
     virtual bool damage(float* localpos, float damage, cObject * enactor);
     /// Average disturbance (damage) and find max disturbing enactor.

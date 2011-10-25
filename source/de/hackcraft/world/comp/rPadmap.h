@@ -10,14 +10,14 @@
 #ifndef CPADMAP_H
 #define	CPADMAP_H
 
-#include "rComponent.h"
+#include "de/hackcraft/world/Component.h"
 
 #include "de/hackcraft/psi3d/math3d.h"
 
 #include <vector>
 #include <map>
 
-class rPadmap : public rComponent {
+class rPadmap : public Component {
 public:
     /// Possible models of tile.
 

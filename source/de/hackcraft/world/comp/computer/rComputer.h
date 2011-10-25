@@ -9,14 +9,14 @@
 #ifndef RCOMPUTER_H
 #define	RCOMPUTER_H
 
-#include "de/hackcraft/world/comp/rComponent.h"
+#include "de/hackcraft/world/Component.h"
 
 /** Computer Component
  *  Placeholder base class for computerised components.
  *  Computers have to implement animate and drawHUD methods to be useful.
  *  The message method isn't mandatory.
  */
-struct rComputer : rComponent {
+struct rComputer : Component {
 public:
 
     virtual void message(Message * message) {

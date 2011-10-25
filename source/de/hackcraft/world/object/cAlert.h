@@ -9,7 +9,7 @@
 #ifndef _CALERT_H
 #define	_CALERT_H
 
-#include "cObject.h"
+#include "de/hackcraft/world/cObject.h"
 struct Particle;
 struct rNameable;
 

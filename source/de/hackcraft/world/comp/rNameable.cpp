@@ -26,7 +26,7 @@ rNameable::rNameable(rNameable * original) : name("Unnamed"), description("Undes
     }
 }
 
-rComponent* rNameable::clone() {
+Component* rNameable::clone() {
     return new rNameable(this);
 }
 

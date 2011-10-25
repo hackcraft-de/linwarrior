@@ -19,7 +19,7 @@ class World;
 #include "de/hackcraft/world/Timing.h"
 #include "de/hackcraft/world/Message.h"
 
-#include "de/hackcraft/world/object/cObject.h"
+#include "de/hackcraft/world/cObject.h"
 
 #include <list>
 #include <set>

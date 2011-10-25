@@ -9,7 +9,7 @@
 #ifndef RALERT_H
 #define	RALERT_H
 
-#include "rComponent.h"
+#include "de/hackcraft/world/Component.h"
 struct Particle;
 
 #include "de/hackcraft/world/OID.h"
@@ -39,7 +39,7 @@ struct Particle;
  * A cone or pyramid for detection would make a nice surveilance camera.
  *
  */
-class rAlert : public rComponent {
+class rAlert : public Component {
 public: // Static
     static bool sDrawzone;
 public: // INPUT

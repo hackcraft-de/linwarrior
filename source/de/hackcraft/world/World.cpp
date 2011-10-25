@@ -3,7 +3,7 @@
 #include "Background.h"
 #include "Mission.h"
 
-#include "de/hackcraft/world/object/cObject.h"
+#include "de/hackcraft/world/cObject.h"
 
 #include <cassert>
 

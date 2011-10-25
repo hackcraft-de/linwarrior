@@ -922,7 +922,7 @@ void cMech::drawHUD() {
                 float sx = 1.0f / w;
                 float sy = 1.0f / h;
 
-                rComponent * displays[4][5] = {
+                Component * displays[4][5] = {
                     { navcom, NULL, NULL, NULL, comcom},
                     { NULL, NULL, NULL, NULL, NULL},
                     { NULL, NULL, NULL, NULL, NULL},

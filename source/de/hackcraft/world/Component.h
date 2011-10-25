@@ -1,5 +1,5 @@
 /* 
- * File:     rComponent.h
+ * File:     Component.h
  * Project:  LinWarrior 3D
  * Home:     hackcraft.de
  *
@@ -26,7 +26,7 @@ class Message;
  * Input to and output from components should rely soley on attributes
  * or signal variables for i/o impules.
  */
-struct rComponent {
+struct Component {
     /// Represents a binding of a variable src to a variable dst of a given size.
     struct Binding {
         void* dst;
@@ -59,7 +59,7 @@ struct rComponent {
     std::vector<Binding*> postbinds;
     
 
-    rComponent(rComponent* original = NULL) {
+    Component(Component* original = NULL) {
         if (original != NULL) {
             object = original->object;
             active = original->active;
@@ -71,8 +71,8 @@ struct rComponent {
         }
     }
 
-    virtual rComponent * clone() {
-        return new rComponent(this);
+    virtual Component * clone() {
+        return new Component(this);
     }
 
     void addBinding(void* dst, void* src, unsigned int size) {

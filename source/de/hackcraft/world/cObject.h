@@ -18,7 +18,7 @@ class Object;
 #include "de/hackcraft/world/Message.h"
 #include "de/hackcraft/world/OID.h"
 
-#include "de/hackcraft/world/comp/rComponent.h"
+#include "de/hackcraft/world/Component.h"
 
 #include "de/hackcraft/util/Pad.h"
 
@@ -102,7 +102,7 @@ public: // Basic Object attributes for managing.
 
 public: // Components
 
-    std::vector<rComponent*> components;
+    std::vector<Component*> components;
 
 public: // Experimental Component "Managing"
 

@@ -79,7 +79,7 @@ public:
     virtual ~rController();
     /// Clone this.
 
-    virtual rComponent * clone() {
+    virtual Component * clone() {
         return NULL;
     }
 

@@ -16,7 +16,7 @@ struct Game;
 #include "de/hackcraft/world/Mission.h"
 #include "de/hackcraft/world/World.h"
 
-#include "de/hackcraft/world/object/cObject.h"
+#include "de/hackcraft/world/cObject.h"
 
 #define DEFAULT_FULLSCREEN true
 #define DEFAULT_FPS 29

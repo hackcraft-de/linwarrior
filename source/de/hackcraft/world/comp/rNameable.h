@@ -9,14 +9,14 @@
 #ifndef RNAMEABLE_H
 #define	RNAMEABLE_H
 
-#include "rComponent.h"
+#include "de/hackcraft/world/Component.h"
 
 #include "de/hackcraft/psi3d/math3d.h"
 
 /**
  *  Encapsulates onscreen descriptive texts about an object.
  */
-struct rNameable : public rComponent {
+struct rNameable : public Component {
 public: // INPUT
     /// Base position for rendering. (hook i)
     vec3 pos0;
@@ -44,7 +44,7 @@ public:
     /// Copy Constructor.
     rNameable(rNameable * original);
     /// Clone this.
-    virtual rComponent * clone();
+    virtual Component * clone();
 
     virtual void drawEffect();
 };

@@ -10,7 +10,7 @@
 #ifndef RSCATTER_H
 #define	RSCATTER_H
 
-#include "rComponent.h"
+#include "de/hackcraft/world/Component.h"
 
 #include "de/hackcraft/psi3d/math3d.h"
 
@@ -26,7 +26,7 @@ struct Particle;
  * environmental decal objects such as stones, flowers,
  * grass, dirt and debris.
  */
-class rScatter : public rComponent {
+class rScatter : public Component {
 protected:
     static int sInstances;
     static std::map<int, long> sTextures;

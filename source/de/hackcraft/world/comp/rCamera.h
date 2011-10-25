@@ -9,14 +9,14 @@
 #ifndef RCAMERA_H
 #define	RCAMERA_H
 
-#include "rComponent.h"
+#include "de/hackcraft/world/Component.h"
 
 #include "de/hackcraft/psi3d/math3d.h"
 
 /**
  * Camera component.
  */
-struct rCamera : public rComponent {
+struct rCamera : public Component {
 public: // INPUT
     /// Base position (hook i).
     quat ori0;

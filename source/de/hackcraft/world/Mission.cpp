@@ -8,7 +8,7 @@
 
 #include "de/hackcraft/world/comp/rPadmap.h"
 
-#include "de/hackcraft/world/object/cObject.h"
+#include "de/hackcraft/world/cObject.h"
 #include "de/hackcraft/world/object/cAlert.h"
 #include "de/hackcraft/world/object/cPlanetmap.h"
 #include "de/hackcraft/world/object/cMech.h"

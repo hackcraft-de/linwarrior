@@ -18,7 +18,7 @@ rTraceable::rTraceable(rTraceable * original) : Particle(original) {
     throttle = original->throttle;
 }
 
-rComponent* rTraceable::clone() {
+Component* rTraceable::clone() {
     return new rTraceable(this);
 }
 

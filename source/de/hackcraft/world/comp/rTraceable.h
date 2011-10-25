@@ -9,14 +9,14 @@
 #ifndef RTRACEABLE_H
 #define	RTRACEABLE_H
 
-#include "rComponent.h"
+#include "de/hackcraft/world/Component.h"
 
 #include "de/hackcraft/psi3d/Particle.h"
 
 /**
  * Encapsulates physical state as far as movement and position is concerned.
  */
-class rTraceable : public rComponent, public Particle {
+class rTraceable : public Component, public Particle {
 public: // INPUT
     /// Jetdrive throttle setting hook usually [0,1].
     float jetthrottle;
@@ -32,7 +32,7 @@ public:
     /// Copy Constructor.
     rTraceable(rTraceable * original);
     /// Clone this.
-    virtual rComponent * clone();
+    virtual Component * clone();
     /// Accumulate steering and environmental forces.
     void accumulate(float spf);
     /// Integrate position and derive velocity given forces and old state.

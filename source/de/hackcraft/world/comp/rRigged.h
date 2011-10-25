@@ -9,7 +9,7 @@
 #ifndef RRIGGED_H
 #define	RRIGGED_H
 
-#include "rComponent.h"
+#include "de/hackcraft/world/Component.h"
 
 #include "de/hackcraft/io/MD5Format.h"
 
@@ -18,7 +18,7 @@
 /**
  * Encapsulates a rigged mesh in md5mesh format.
  */
-struct rRigged : public rComponent {
+struct rRigged : public Component {
 public:
     static std::map<std::string,unsigned long> materials;
 public: // INPUT
@@ -87,7 +87,7 @@ public:
         delete joints;
     }
 
-    virtual rComponent * clone() {
+    virtual Component * clone() {
         return new rRigged(this);
     }
 

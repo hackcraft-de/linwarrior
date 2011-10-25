@@ -9,14 +9,15 @@
 #ifndef RCOLLIDER_H
 #define	RCOLLIDER_H
 
-#include "rComponent.h"
+#include "de/hackcraft/world/Component.h"
+
 #include "de/hackcraft/psi3d/math3d.h"
 
 /**
  * Component for collision and collision response.
  * Currently only for cylinder collisions.
  */
-struct rCollider : public rComponent {
+struct rCollider : public Component {
 public:
     /// Yet unused.
     enum CollisionType {

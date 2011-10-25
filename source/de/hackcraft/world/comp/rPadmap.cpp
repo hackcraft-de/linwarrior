@@ -4,7 +4,7 @@
 
 #include "de/hackcraft/io/Texfile.h"
 
-#include "de/hackcraft/world/object/cObject.h"
+#include "de/hackcraft/world/cObject.h"
 
 static void stepSpiral(int& x, int& y, int& i, int& length, bool& horizontal, int& increment) {
     if (i >= length) {
