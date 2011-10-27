@@ -32,8 +32,7 @@ void rTarcom::nextTarget() {
     bool found = false;
     OID last = 0;
 
-    foreach(i, *near) {
-        cObject* o = *i;
+    for(cObject* o: *near) {
         if (last == selected) {
             selected = o->oid;
             found = true;
@@ -54,8 +53,7 @@ void rTarcom::prevTarget() {
     bool found = false;
     OID last = 0;
 
-    foreach(i, *near) {
-        cObject* o = *i;
+    for(cObject* o: *near) {
         if (o->oid == selected) {
             selected = last;
             found = true;
@@ -170,10 +168,9 @@ void rTarcom::drawHUD() {
         }
         glEnd();
 
-        foreach(i, *far) {
+        for(cObject* o: *far) {
             glBegin(GL_POINTS);
             {
-                cObject* o = *i;
                 glColor4f(0.5, 0.5, 0.5, 1);
                 if (o->hasTag(World::instance->getGroup(FAC_RED))) glColor4f(1, 0, 0, 1);
                 else if (o->hasTag(World::instance->getGroup(FAC_GREEN))) glColor4f(0, 1, 0, 1);

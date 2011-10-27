@@ -132,8 +132,7 @@ int rWeapon::damageByParticle(float* worldpos, float radius, int roles, float da
     //cout << "damageByParticle: "  << World::instance->getNames(range) << endl;
     if (!range->empty()) {
 
-        foreach(i, *range) {
-            cObject* targetObject = *i;
+        for(cObject* targetObject: *range) {
             float localpos_[3];
             float depth = targetObject->constrain(worldpos_, radius, localpos_, NULL);
             //cout << object->nameable->name << " depth: " << depth << endl;

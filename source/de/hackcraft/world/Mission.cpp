@@ -39,14 +39,14 @@ void adjustHeight(cPlanetmap* planetmap, float* pos) {
 void Mission::checkConditions() {
     // Destroyed all necessary enemies?
     unsigned int n = 0;
-    loopiv(mVictory) if (mVictory[i]->hasTag(World::instance->getGroup(HLT_DEAD))) n++;
+    for (cObject* object: mVictory) if (object->hasTag(World::instance->getGroup(HLT_DEAD))) n++;
     if (n != 0 && n == mVictory.size()) {
         onVictory();
         return;
     }
     // Destroyed any neccessary friend?
     n = 0;
-    loopiv(mDefeat) if (mDefeat[i]->hasTag(World::instance->getGroup(HLT_DEAD))) n++;
+    for (cObject* object: mDefeat) if (object->hasTag(World::instance->getGroup(HLT_DEAD))) n++;
     if (n != 0) {
         onDefeat();
         return;

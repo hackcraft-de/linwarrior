@@ -83,21 +83,21 @@ void rNavcom::drawHUD() {
         // Draw all points of interrest (debug).
         glColor4f(0.6, 0.6, 0.6, 0.7);
 
-        loopiv(mPOIs) {
-            float u = s * (mPOIs[i][0] - x);
-            float v = s * (mPOIs[i][2] - z);
+        for (std::vector<float>& poi: mPOIs) {
+            float u = s * (poi[0] - x);
+            float v = s * (poi[2] - z);
             drawPOI(+u, -v, 0.04);
         }
 
         // Draw Route lines with gradient towards current waypoint.
         glBegin(GL_LINE_STRIP);
 
-        loopiv(mRoute) {
-            if (i != mWaypoint) glColor4f(0.6, 0.6, 0.6, 0.7);
+        int i = 0;
+        for (int route: mRoute) {
+            if (i++ != mWaypoint) glColor4f(0.6, 0.6, 0.6, 0.7);
             else glColor4f(1, 0, 0, 0.7);
-            int j = mRoute[i];
-            float u = s * (mPOIs[j][0] - x);
-            float v = s * (mPOIs[j][2] - z);
+            float u = s * (mPOIs[route][0] - x);
+            float v = s * (mPOIs[route][2] - z);
             glVertex3f(+u, -v, 0);
         }
         glEnd();
@@ -105,11 +105,11 @@ void rNavcom::drawHUD() {
         // Mark next waypoint and check if reached.
         glColor4f(1, 0, 0, 0.3);
 
-        loopiv(mRoute) {
-            if (i != mWaypoint)continue;
-            int j = mRoute[i];
-            float u = s * (mPOIs[j][0] - x);
-            float v = s * (mPOIs[j][2] - z);
+        i = 0;
+        for (int route: mRoute) {
+            if (i++ != mWaypoint)continue;
+            float u = s * (mPOIs[route][0] - x);
+            float v = s * (mPOIs[route][2] - z);
             drawPOI(+u, -v, 0.07);
             // Waypoint reached? Next waypoint.
             if ((u * u + v * v) < (s * 5)*(s * 5)) {

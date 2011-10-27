@@ -357,8 +357,8 @@ void cPlanetmap::getHeight(float x, float z, float* const color) {
         color[2] = cont[2];
     }
 
-    loopiv(mods) {
-        h = mods[i]->getModifiedHeight(x, z, h);
+    for (sMod* mod: mods) {
+        h = mod->getModifiedHeight(x, z, h);
     }
 
     color[Landscape::BUMP] = h;

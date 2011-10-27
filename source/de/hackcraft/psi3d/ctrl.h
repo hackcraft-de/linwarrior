@@ -23,10 +23,10 @@
 
 #define loopijk(in, jn, kn) loopi(in) loopj(jn) loopk(kn)
 
-#define looplist(loopvar, itemtype, listvar) \
-for (std::list<itemtype>::iterator loopvar = (listvar).begin(); loopvar != (listvar).end(); loopvar++)
+//#define looplist(loopvar, itemtype, listvar) \
+//for (std::list<itemtype>::iterator loopvar = (listvar).begin(); loopvar != (listvar).end(); loopvar++)
 
-#define foreach(loopvar, collection) \
+//#define foreach(loopvar, collection) \
 for (auto loopvar = (collection).begin(); loopvar != (collection).end(); loopvar++)
 
 //for (typeof((collection).begin()) loopvar = (collection).begin(); loopvar != (collection).end(); loopvar++)
@@ -38,7 +38,7 @@ for (auto loopvar = (collection).begin(); loopvar != (collection).end();)
 
 // Shortcut for a simple integer loop with counter i
 // through the size of a STL-vector.
-#define loopiv(v) for (int i = 0; i < (int)(v).size(); i++)
+//#define loopiv(v) for (int i = 0; i < (int)(v).size(); i++)
 
 // foldl - folding from the left
 // foldl(0.0f, listvector, sumfunc)

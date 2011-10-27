@@ -173,8 +173,7 @@ void World::clusterObjects() {
         mGeomap.clear();
         mUncluster.clear();
 
-        foreach(i, mObjects) {
-            cObject* o = *i;
+        for(cObject* o : mObjects) {
             float px = o->pos0[0];
             float pz = o->pos0[2];
             if (!finitef(px) || !finitef(pz)) {
@@ -204,8 +203,8 @@ void World::dispatchMessages() {
             Group* group = mGroupIndex[message->getReceiver()];
             if (group == NULL) continue;
 
-            foreach(i, group->members) {
-                cObject* object = mIndex[*i];
+            for(OID i: group->members) {
+                cObject* object = mIndex[i];
                 if (object != NULL) {
                     object->message(message);
                 }
@@ -352,16 +351,14 @@ string World::getNames(std::list<cObject*>* objects) {
     stringstream s;
     s << "[";
 
-    foreach(i, *objects) {
-        cObject* o = *i;
+    for(cObject* o: *objects) {
         s << " ";
         s << (o->name);
         s << "#";
         s << (o->oid);
         s << "(";
 
-        foreach(j, o->tags) {
-            OID tag = *j;
+        for(OID tag: o->tags) {
             s << " " << tag << " ";
         }
         s << ")";
@@ -376,9 +373,8 @@ std::list<cObject*>* World::filterByTags(cObject* ex, std::set<OID>* rolemask, b
     int amount = maxamount;
     if (objects == NULL) objects = &mObjects;
 
-    foreach(i, *objects) {
+    for(cObject* object: *objects) {
         if (amount == 0) break;
-        cObject *object = *i;
         if (object->oid == 0) continue;
         // Filter Condition
         if (all) {
@@ -408,9 +404,8 @@ std::list<cObject*>* World::filterByRange(cObject* ex, float* origin, float minr
         //cout << "clustered:" << objects->size() << " vs " << mObjects.size() << endl;
     }
 
-    foreach(i, *objects) {
+    for(cObject* object: *objects) {
         if (amount == 0) break;
-        cObject *object = *i;
         if (object == ex) continue;
         if (object->oid == 0) continue;
         // Filter Condition
@@ -439,9 +434,8 @@ std::list<cObject*>* World::filterByName(cObject* ex, char* name, int maxamount,
     int amount = maxamount;
     if (objects == NULL) objects = &mObjects;
 
-    foreach(i, *objects) {
+    for(cObject* object: *objects) {
         if (amount == 0) break;
-        cObject *object = *i;
         if (object == ex) continue;
         if (object->oid == 0) continue;
         // Filter Condition
@@ -460,9 +454,8 @@ std::list<cObject*>* World::filterByBeam(cObject* ex, float* pointa, float* poin
     int amount = maxamount;
     if (objects == NULL) objects = &mObjects;
 
-    foreach(i, *objects) {
+    for(cObject* object: *objects) {
         if (amount == 0) break;
-        cObject *object = *i;
         if (object == ex) continue;
         if (object->oid == 0) continue;
         // Filter Condition
@@ -514,8 +507,7 @@ float World::constrainParticle(cObject* ex, float* worldpos, float radius) {
     std::list<cObject*>* range = filterByRange(ex, worldpos, 0.0f, maxrange, -1, NULL);
     if (!range->empty()) {
 
-        foreach(i, *range) {
-            cObject* object = *i;
+        for(cObject* object: *range) {
             depth += object->constrain(worldpos, radius, NULL, ex);
         }
     }
