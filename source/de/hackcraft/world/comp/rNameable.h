@@ -40,7 +40,7 @@ public: // OUTPUT
 public: // INTERNALS
 public:
     /// Constructor.
-    rNameable(cObject* obj = NULL);
+    rNameable(Entity* obj = NULL);
     /// Copy Constructor.
     rNameable(rNameable * original);
     /// Clone this.

@@ -74,7 +74,7 @@ protected: // INTERNALS
     OID lastDisturbedBy;
 public:
     /// Initialises a en-/disabled controller for the given entity->
-    rController(cObject* entity = NULL, bool enable = true);
+    rController(Entity* entity = NULL, bool enable = true);
     /// Destructor.
     virtual ~rController();
     /// Clone this.

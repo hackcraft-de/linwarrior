@@ -44,7 +44,7 @@ public: // INPUT
 public: // OUTPUT
 protected: // INTERNALS
 public:
-    rScatter(cObject* obj, float radius = 1.0f, float density = 1.0f);
+    rScatter(Entity* obj, float radius = 1.0f, float density = 1.0f);
     rScatter(const rScatter& orig);
     virtual ~rScatter();
     

@@ -18,7 +18,7 @@
 int rScatter::sInstances = 0;
 std::map<int, long> rScatter::sTextures;
 
-rScatter::rScatter(cObject* obj, float radius, float density) {
+rScatter::rScatter(Entity* obj, float radius, float density) {
     object = obj;
     role = "SCATTER";
 

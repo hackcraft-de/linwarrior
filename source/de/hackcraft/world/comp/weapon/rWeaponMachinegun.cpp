@@ -8,7 +8,7 @@
 
 #include <cassert>
 
-rWeaponMachinegun::rWeaponMachinegun(cObject* obj) {
+rWeaponMachinegun::rWeaponMachinegun(Entity* obj) {
     role = "MACHINEGUN";
     object = obj;
 

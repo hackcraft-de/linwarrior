@@ -28,7 +28,7 @@ public: // OUTPUT
 protected: // INTERNALS
 public:
     /// Constructor.
-    rTraceable(cObject* obj = NULL);
+    rTraceable(Entity* obj = NULL);
     /// Copy Constructor.
     rTraceable(rTraceable * original);
     /// Clone this.

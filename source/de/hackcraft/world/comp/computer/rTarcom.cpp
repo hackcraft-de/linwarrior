@@ -8,17 +8,17 @@
 
 #include "de/hackcraft/world/World.h"
 
-#include "de/hackcraft/world/cObject.h"
+#include "de/hackcraft/world/Entity.h"
 
-rTarcom::rTarcom(cObject* obj) {
+rTarcom::rTarcom(Entity* obj) {
     object = obj;
     role = "TARCOM";
 
     quat_zero(ori0);
     vector_zero(pos0);
 
-    near = new std::list<cObject*>();
-    far = new std::list<cObject*>();
+    near = new std::list<Entity*>();
+    far = new std::list<Entity*>();
     enemies = NULL;
     selected = 0;
     nearbyEnemy = 0;
@@ -32,7 +32,7 @@ void rTarcom::nextTarget() {
     bool found = false;
     OID last = 0;
 
-    for(cObject* o: *near) {
+    for(Entity* o: *near) {
         if (last == selected) {
             selected = o->oid;
             found = true;
@@ -53,7 +53,7 @@ void rTarcom::prevTarget() {
     bool found = false;
     OID last = 0;
 
-    for(cObject* o: *near) {
+    for(Entity* o: *near) {
         if (o->oid == selected) {
             selected = last;
             found = true;
@@ -101,8 +101,8 @@ void rTarcom::animate(float spf) {
         enemies = World::instance->filterByTags(object, &inc_enemies, false, -1, near);
         // Filter one nearby.
         nearbyEnemy = 0;
-        for (std::list<cObject*>::iterator i = enemies->begin(); i != enemies->end(); i++) {
-            cObject* o = *i;
+        for (std::list<Entity*>::iterator i = enemies->begin(); i != enemies->end(); i++) {
+            Entity* o = *i;
             if (!o->anyTags(&exc_enemies)) {
                 nearbyEnemy = o->oid;
                 break;
@@ -168,7 +168,7 @@ void rTarcom::drawHUD() {
         }
         glEnd();
 
-        for(cObject* o: *far) {
+        for(Entity* o: *far) {
             glBegin(GL_POINTS);
             {
                 glColor4f(0.5, 0.5, 0.5, 1);

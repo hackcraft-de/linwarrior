@@ -26,7 +26,7 @@ std::map<OID, rTree::TreeType*> rTree::sTrees;
 std::vector<long> rTree::sLeaftexs;
 std::vector<long> rTree::sBarktexs;
 
-rTree::rTree(cObject* obj, float* pos, float* rot, int seed, int type, int age) {
+rTree::rTree(Entity* obj, float* pos, float* rot, int seed, int type, int age) {
     this->object = obj;
     this->role = "TREE";
     
@@ -175,7 +175,7 @@ void rTree::drawEffect() {
     glPopMatrix();
 }
 
-float rTree::constrain(float* worldpos, float radius, float* localpos, cObject* enactor) {
+float rTree::constrain(float* worldpos, float radius, float* localpos, Entity* enactor) {
     float base[] = {this->pos0[0], this->pos0[1] - 0.0f - radius, this->pos0[2]};
     float radius_ = 0.1 + radius;
     float height = 3 + 2 * radius;

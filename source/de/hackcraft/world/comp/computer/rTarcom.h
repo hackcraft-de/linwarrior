@@ -43,11 +43,11 @@ public: // INPUT
     std::set<OID> exc_enemies;
 public: // OUTPUT
     /// List of objects in far range.
-    std::list<cObject*>* far;
+    std::list<Entity*>* far;
     /// List of objects in range.
-    std::list<cObject*>* near;
+    std::list<Entity*>* near;
     /// List of (possible) enemy objects in range (only inc_enemies).
-    std::list<cObject*>* enemies;
+    std::list<Entity*>* enemies;
     /// ID of selected object (hook o)
     OID selected;
     /// Switching to next/prev target in progress.
@@ -57,7 +57,7 @@ public: // OUTPUT
 protected: // INTERNALS
 public:
     /// Constructor.
-    rTarcom(cObject* obj = NULL);
+    rTarcom(Entity* obj = NULL);
 protected:
     /// Switch to next target.
     void nextTarget();

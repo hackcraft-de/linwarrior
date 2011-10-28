@@ -16,7 +16,7 @@
  */
 struct rWepcom : public rComputer {
 public:
-    rWepcom(cObject* obj = NULL); // FIXME: Must be a cMech.
+    rWepcom(Entity* obj = NULL); // FIXME: Must be a cMech.
     virtual void animate(float spf);
     virtual void drawHUD();
 };

@@ -8,7 +8,7 @@
 
 #include "de/hackcraft/world/comp/rPadmap.h"
 
-#include "de/hackcraft/world/cObject.h"
+#include "de/hackcraft/world/Entity.h"
 #include "de/hackcraft/world/object/cAlert.h"
 #include "de/hackcraft/world/object/cPlanetmap.h"
 #include "de/hackcraft/world/object/cMech.h"
@@ -39,14 +39,14 @@ void adjustHeight(cPlanetmap* planetmap, float* pos) {
 void Mission::checkConditions() {
     // Destroyed all necessary enemies?
     unsigned int n = 0;
-    for (cObject* object: mVictory) if (object->hasTag(World::instance->getGroup(HLT_DEAD))) n++;
+    for (Entity* object: mVictory) if (object->hasTag(World::instance->getGroup(HLT_DEAD))) n++;
     if (n != 0 && n == mVictory.size()) {
         onVictory();
         return;
     }
     // Destroyed any neccessary friend?
     n = 0;
-    for (cObject* object: mDefeat) if (object->hasTag(World::instance->getGroup(HLT_DEAD))) n++;
+    for (Entity* object: mDefeat) if (object->hasTag(World::instance->getGroup(HLT_DEAD))) n++;
     if (n != 0) {
         onDefeat();
         return;
@@ -73,7 +73,7 @@ void Mission::onDefeat() {
     }
 }
 
-cObject* Mission::init(World* world) {
+Entity* Mission::init(World* world) {
     if (true) {
         world->getTiming()->setTime(12);
     } else {
@@ -82,7 +82,7 @@ cObject* Mission::init(World* world) {
         world->getTiming()->setTime(hour);
     }
 
-    cObject* player = NULL;
+    Entity* player = NULL;
 
     if (true) {
         float pos[3] = {-50, 0, -50};
@@ -170,7 +170,7 @@ void OpenMission::onDefeat() {
     }
 }
 
-cObject* OpenMission::init(World* world) {
+Entity* OpenMission::init(World* world) {
     srand(0);
 
     cout << "Setting mission date and time...\n";
@@ -235,7 +235,7 @@ cObject* OpenMission::init(World* world) {
         mod->range = 15;
         planetmap->mods.push_back(mod);
 
-        cObject* obj = new cObject();
+        Entity* obj = new Entity();
         vector_cpy(obj->pos0, loc);
         rPadmap* pm = new rPadmap(obj);
         obj->components.push_back(pm);
@@ -244,7 +244,7 @@ cObject* OpenMission::init(World* world) {
     }
 
     cout << "Initialising vehicles...\n";
-    cObject* player = NULL;
+    Entity* player = NULL;
     {
         float position[] = PLAYERPOS;
         player = initPlayerParty(world, planetmap, position);
@@ -262,7 +262,7 @@ cObject* OpenMission::init(World* world) {
             bool positive = false;
             bool posedge = true;
             OID delay = 0;
-            cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, type, message, group, &inc_sense, &exc_sense, positive, posedge, delay);
+            Entity* oob = new cAlert(pos, range, cAlert::rShape::BOX, type, message, group, &inc_sense, &exc_sense, positive, posedge, delay);
             world->spawnObject(oob);
         }
 
@@ -276,7 +276,7 @@ cObject* OpenMission::init(World* world) {
             bool positive = false;
             bool posedge = true;
             OID delay = 0;
-            cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, type, message, group, &inc_sense, &exc_sense, positive, posedge, delay);
+            Entity* oob = new cAlert(pos, range, cAlert::rShape::BOX, type, message, group, &inc_sense, &exc_sense, positive, posedge, delay);
             world->spawnObject(oob);
         }
         // Defeated when killed.
@@ -293,8 +293,8 @@ cObject* OpenMission::init(World* world) {
 #include "de/hackcraft/util/HashSet.h"
  */
 
-cObject* OpenMission::initPlayerParty(World* world, cPlanetmap* planetmap, float* position) {
-    cObject* player = NULL;
+Entity* OpenMission::initPlayerParty(World* world, cPlanetmap* planetmap, float* position) {
+    Entity* player = NULL;
 
     float* p = position;
 
@@ -428,7 +428,7 @@ void OpenMission::initSkytideCity(World* world, cPlanetmap* planetmap) {
         float pos[] = {loc[0] + 48, loc[1] + 9, loc[2] + 58};
         float range[] = {60.5, 40.5, 60.5};
         string message = string("Skytide City");
-        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
+        Entity* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
         oob->name = message;
         world->spawnObject(oob);
     }
@@ -560,7 +560,7 @@ void OpenMission::initStarcircleTown(World* world, cPlanetmap* planetmap) {
         float pos[] = {loc[0], loc[1] + 9, loc[2]};
         float range[] = {50.5, 40.5, 50.5};
         string message = string("Starcircle Town\n(currently under bandit control)");
-        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
+        Entity* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
         oob->name = message;
         world->spawnObject(oob);
     }
@@ -583,7 +583,7 @@ void OpenMission::initStarcircleTown(World* world, cPlanetmap* planetmap) {
         bool positive = true;
         bool posedge = true;
         OID delay = 0;
-        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, type, message, group, &inc_sense, &exc_sense, positive, posedge, delay);
+        Entity* oob = new cAlert(pos, range, cAlert::rShape::BOX, type, message, group, &inc_sense, &exc_sense, positive, posedge, delay);
         world->spawnObject(oob);
     }
 }
@@ -609,7 +609,7 @@ void OpenMission::initAcroloidMines(World* world, cPlanetmap* planetmap) {
         float pos[] = {loc[0], loc[1] + 9, loc[2]};
         float range[] = {0.5, 0.5, 0.5};
         string message = string("Acroloid Surface Mining Ltd. Co.\n(under construction)");
-        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
+        Entity* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
         oob->name = message;
         world->spawnObject(oob);
     }
@@ -636,7 +636,7 @@ void OpenMission::initCollapsiumFactory(World* world, cPlanetmap* planetmap) {
         float pos[] = {loc[0], loc[1] + 9, loc[2]};
         float range[] = {0.5, 0.5, 0.5};
         string message = string("Collapsium Factory Ltd.\n(under construction)");
-        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
+        Entity* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
         oob->name = message;
         world->spawnObject(oob);
     }
@@ -663,7 +663,7 @@ void OpenMission::initJurataJail(World* world, cPlanetmap* planetmap) {
         float pos[] = {loc[0], loc[1] + 9, loc[2]};
         float range[] = {0.5, 0.5, 0.5};
         string message = string("Jurata Jail Ltd.\n- Service Company -\n(under construction)");
-        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
+        Entity* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
         oob->name = message;
         world->spawnObject(oob);
     }
@@ -690,7 +690,7 @@ void OpenMission::initSpadenixFactory(World* world, cPlanetmap* planetmap) {
         float pos[] = {loc[0], loc[1] + 9, loc[2]};
         float range[] = {0.5, 0.5, 0.5};
         string message = string("Spadenix Mechanical Factory Ltd.\n(under construction)");
-        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
+        Entity* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
         oob->name = message;
         world->spawnObject(oob);
     }
@@ -717,7 +717,7 @@ void OpenMission::initPyraNanoCorp(World* world, cPlanetmap* planetmap) {
         float pos[] = {loc[0], loc[1] + 9, loc[2]};
         float range[] = {50.5, 40.5, 50.5};
         string message = string("Pyra Nano Corporation\n(currently under bandit control)");
-        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
+        Entity* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
         oob->name = message;
         world->spawnObject(oob);
     }
@@ -748,7 +748,7 @@ void OpenMission::initPentaSpaceport(World* world, cPlanetmap* planetmap) {
         float pos[] = {loc[0] + 5, loc[1] + 9, loc[2] + 3};
         float range[] = {90.5, 40.5, 90.5};
         string message = string("Penta Interstellar Spaceport\n(currently under bandit control)");
-        cObject* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
+        Entity* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
         oob->name = message;
         world->spawnObject(oob);
     }
@@ -926,7 +926,7 @@ void OpenMission::roundForrest(int wx, int wy, int wz, World* world, int r1, int
             float b = r1 + (rand() % r2);
             float pos[3] = {float(wx + sin(a) * b), float(0 + wy), float(wz + cos(a) * b)};
             float rot[3] = {0, 10.0f * (rand() % 36), 0};
-            cObject* treeobj = new cObject();
+            Entity* treeobj = new Entity();
             treeobj->components.push_back(new rTree(treeobj, pos, rot, pp[j].seed, pp[j].type, pp[j].age));
             world->spawnObject(treeobj);
         };

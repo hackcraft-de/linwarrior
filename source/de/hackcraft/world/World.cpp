@@ -3,7 +3,7 @@
 #include "Background.h"
 #include "Mission.h"
 
-#include "de/hackcraft/world/cObject.h"
+#include "de/hackcraft/world/Entity.h"
 
 #include <cassert>
 
@@ -56,7 +56,7 @@ Timing* World::getTiming() {
     return &mTiming;
 }
 
-cObject* World::getObject(OID oid) {
+Entity* World::getObject(OID oid) {
     return mIndex[oid];
 }
 
@@ -97,7 +97,7 @@ OID World::getGroup(std::string name) {
     return group->gid;
 }
 
-void World::addToGroup(OID gid, cObject* member) {
+void World::addToGroup(OID gid, Entity* member) {
     if (member == NULL) {
         cout << "No object given while trying to add object to group.\n";
     }
@@ -123,7 +123,7 @@ void World::sendMessage(OID delay, OID sender /* = 0 */, OID recvid /* = 0 */, s
 
 // Spawning And Fragging
 
-void World::spawnObject(cObject *object) {
+void World::spawnObject(Entity *object) {
     if (object == NULL) throw "Null object for spawnObject given.";
 
     OID serid = getOID();
@@ -139,7 +139,7 @@ void World::spawnObject(cObject *object) {
     // cout << serid << " spawn complete.\n";
 }
 
-void World::fragObject(cObject *object) {
+void World::fragObject(Entity *object) {
     if (object->oid == 0) return;
     mObjects.remove(object);
     mCorpses.push_back(object);
@@ -151,7 +151,7 @@ void World::fragObject(cObject *object) {
 void World::bagFragged() {
     // Finally delete objects which where fragged before.
     while (!mCorpses.empty()) {
-        cObject* object = mCorpses.front();
+        Entity* object = mCorpses.front();
         mCorpses.pop_front();
         delete object;
     };
@@ -173,7 +173,7 @@ void World::clusterObjects() {
         mGeomap.clear();
         mUncluster.clear();
 
-        for(cObject* o : mObjects) {
+        for(Entity* o : mObjects) {
             float px = o->pos0[0];
             float pz = o->pos0[2];
             if (!finitef(px) || !finitef(pz)) {
@@ -204,7 +204,7 @@ void World::dispatchMessages() {
             if (group == NULL) continue;
 
             for(OID i: group->members) {
-                cObject* object = mIndex[i];
+                Entity* object = mIndex[i];
                 if (object != NULL) {
                     object->message(message);
                 }
@@ -221,7 +221,7 @@ void World::animateObjects() {
     float spf = mTiming.getSPF();
 
     foreachNoInc(i, mObjects) {
-        cObject* object = *i++;
+        Entity* object = *i++;
         object->seconds += spf;
         object->animate(spf);
     }
@@ -231,7 +231,7 @@ void World::transformObjects() {
     //cout << "transformObjects()\n";
 
     foreachNoInc(i, mObjects) {
-        cObject* object = *i++;
+        Entity* object = *i++;
         glPushMatrix();
         object->transform();
         glPopMatrix();
@@ -243,7 +243,7 @@ void World::drawBack() {
     mBackground.drawBackground(mTiming.getTime24());
 }
 
-void World::drawSolid(cObject* camera, std::list<cObject*>* objects) {
+void World::drawSolid(Entity* camera, std::list<Entity*>* objects) {
     //cout << "drawSolid()\n";
     float* origin = camera->pos0;
     if (objects == NULL) objects = &mObjects;
@@ -252,7 +252,7 @@ void World::drawSolid(cObject* camera, std::list<cObject*>* objects) {
     float maxrange2 = maxrange*maxrange;
 
     foreachNoInc(i, *objects) {
-        cObject* object = *i++;
+        Entity* object = *i++;
         float x = object->pos0[0] - origin[0];
         float z = object->pos0[2] - origin[2];
         float d2 = x * x + z * z;
@@ -265,7 +265,7 @@ void World::drawSolid(cObject* camera, std::list<cObject*>* objects) {
     }
 }
 
-void World::drawEffect(cObject* camera, std::list<cObject*>* objects) {
+void World::drawEffect(Entity* camera, std::list<Entity*>* objects) {
     //cout << "drawEffect()\n";
     float* origin = camera->pos0;
     if (objects == NULL) objects = &mObjects;
@@ -273,7 +273,7 @@ void World::drawEffect(cObject* camera, std::list<cObject*>* objects) {
     float maxrange2 = mViewdistance * mViewdistance;
 
     foreachNoInc(i, *objects) {
-        cObject* object = *i++;
+        Entity* object = *i++;
         float x = object->pos0[0] - origin[0];
         float z = object->pos0[2] - origin[2];
         float d2 = x * x + z*z;
@@ -316,8 +316,8 @@ OID World::getGeokey(long x, long z) {
     return key;
 }
 
-std::list<cObject*>* World::getGeoInterval(float* min2f, float* max2f, bool addunclustered) {
-    std::list<cObject*>* found = new std::list<cObject*>();
+std::list<Entity*>* World::getGeoInterval(float* min2f, float* max2f, bool addunclustered) {
+    std::list<Entity*>* found = new std::list<Entity*>();
     const long f = 1 << 5;
 
     long ax = ((long) min2f[0] / f) * f;
@@ -328,7 +328,7 @@ std::list<cObject*>* World::getGeoInterval(float* min2f, float* max2f, bool addu
     int n = 0;
     for (long j = az - f * 1; j <= bz + f * 1; j += f) {
         for (long i = ax - f * 1; i <= bx + f * 1; i += f) {
-            std::list<cObject*>* l = &(mGeomap[getGeokey(i, j)]);
+            std::list<Entity*>* l = &(mGeomap[getGeokey(i, j)]);
             if (l != NULL) {
                 //cout << "found " << l->size() << endl;
                 found->insert(found->begin(), l->begin(), l->end());
@@ -346,12 +346,12 @@ std::list<cObject*>* World::getGeoInterval(float* min2f, float* max2f, bool addu
     return found;
 }
 
-string World::getNames(std::list<cObject*>* objects) {
+string World::getNames(std::list<Entity*>* objects) {
     if (objects == NULL) objects = &mObjects;
     stringstream s;
     s << "[";
 
-    for(cObject* o: *objects) {
+    for(Entity* o: *objects) {
         s << " ";
         s << (o->name);
         s << "#";
@@ -367,13 +367,13 @@ string World::getNames(std::list<cObject*>* objects) {
     return s.str();
 }
 
-std::list<cObject*>* World::filterByTags(cObject* ex, std::set<OID>* rolemask, bool all, int maxamount, std::list<cObject*>* objects) {
-    std::list<cObject*>* result = new std::list<cObject*>;
+std::list<Entity*>* World::filterByTags(Entity* ex, std::set<OID>* rolemask, bool all, int maxamount, std::list<Entity*>* objects) {
+    std::list<Entity*>* result = new std::list<Entity*>;
     assert(result != NULL);
     int amount = maxamount;
     if (objects == NULL) objects = &mObjects;
 
-    for(cObject* object: *objects) {
+    for(Entity* object: *objects) {
         if (amount == 0) break;
         if (object->oid == 0) continue;
         // Filter Condition
@@ -389,8 +389,8 @@ std::list<cObject*>* World::filterByTags(cObject* ex, std::set<OID>* rolemask, b
     return result;
 }
 
-std::list<cObject*>* World::filterByRange(cObject* ex, float* origin, float minrange, float maxrange, int maxamount, std::list<cObject*>* objects) {
-    std::list<cObject*>* result = new std::list<cObject*>;
+std::list<Entity*>* World::filterByRange(Entity* ex, float* origin, float minrange, float maxrange, int maxamount, std::list<Entity*>* objects) {
+    std::list<Entity*>* result = new std::list<Entity*>;
     assert(result != NULL);
     int amount = maxamount;
     bool all = false;
@@ -404,7 +404,7 @@ std::list<cObject*>* World::filterByRange(cObject* ex, float* origin, float minr
         //cout << "clustered:" << objects->size() << " vs " << mObjects.size() << endl;
     }
 
-    for(cObject* object: *objects) {
+    for(Entity* object: *objects) {
         if (amount == 0) break;
         if (object == ex) continue;
         if (object->oid == 0) continue;
@@ -428,13 +428,13 @@ std::list<cObject*>* World::filterByRange(cObject* ex, float* origin, float minr
     return result;
 }
 
-std::list<cObject*>* World::filterByName(cObject* ex, char* name, int maxamount, std::list<cObject*>* objects) {
-    std::list<cObject*>* result = new std::list<cObject*>;
+std::list<Entity*>* World::filterByName(Entity* ex, char* name, int maxamount, std::list<Entity*>* objects) {
+    std::list<Entity*>* result = new std::list<Entity*>;
     assert(result != NULL);
     int amount = maxamount;
     if (objects == NULL) objects = &mObjects;
 
-    for(cObject* object: *objects) {
+    for(Entity* object: *objects) {
         if (amount == 0) break;
         if (object == ex) continue;
         if (object->oid == 0) continue;
@@ -446,15 +446,15 @@ std::list<cObject*>* World::filterByName(cObject* ex, char* name, int maxamount,
     return result;
 }
 
-std::list<cObject*>* World::filterByBeam(cObject* ex, float* pointa, float* pointb, float radius, int maxamount, std::list<cObject*>* objects) {
+std::list<Entity*>* World::filterByBeam(Entity* ex, float* pointa, float* pointb, float radius, int maxamount, std::list<Entity*>* objects) {
     float* x1 = pointa;
     float* x2 = pointb;
-    std::list<cObject*>* result = new std::list<cObject*>;
+    std::list<Entity*>* result = new std::list<Entity*>;
     assert(result != NULL);
     int amount = maxamount;
     if (objects == NULL) objects = &mObjects;
 
-    for(cObject* object: *objects) {
+    for(Entity* object: *objects) {
         if (amount == 0) break;
         if (object == ex) continue;
         if (object->oid == 0) continue;
@@ -495,7 +495,7 @@ std::list<cObject*>* World::filterByBeam(cObject* ex, float* pointa, float* poin
     return result;
 }
 
-float World::constrainParticle(cObject* ex, float* worldpos, float radius) {
+float World::constrainParticle(Entity* ex, float* worldpos, float radius) {
     float depth = 0;
     float maxrange = 25;
     bool groundplane = !true;
@@ -504,10 +504,10 @@ float World::constrainParticle(cObject* ex, float* worldpos, float radius) {
             worldpos[1] = 0.0f + radius;
             depth += -(worldpos[1] - radius) + 0.000001f;
         }
-    std::list<cObject*>* range = filterByRange(ex, worldpos, 0.0f, maxrange, -1, NULL);
+    std::list<Entity*>* range = filterByRange(ex, worldpos, 0.0f, maxrange, -1, NULL);
     if (!range->empty()) {
 
-        for(cObject* object: *range) {
+        for(Entity* object: *range) {
             depth += object->constrain(worldpos, radius, NULL, ex);
         }
     }

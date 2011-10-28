@@ -38,13 +38,13 @@ public: // OUTPUT
 protected: // INTERNALS
 public:
     /// Constructor
-    rCollider(cObject * obj);
+    rCollider(Entity * obj);
     /// Destructor
 
     ~rCollider() {
     }
 
-    virtual float constrain(float* worldpos, float radius, float* localpos, cObject * enactor);
+    virtual float constrain(float* worldpos, float radius, float* localpos, Entity * enactor);
     virtual void animate(float spf);
     virtual void drawEffect();
 };

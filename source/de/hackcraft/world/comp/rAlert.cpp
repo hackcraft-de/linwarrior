@@ -5,7 +5,7 @@
 
 #include "de/hackcraft/world/World.h"
 
-#include "de/hackcraft/world/cObject.h"
+#include "de/hackcraft/world/Entity.h"
 
 #include <ostream>
 using std::cout;
@@ -14,7 +14,7 @@ using std::endl;
 
 bool rAlert::sDrawzone = !true;
 
-rAlert::rAlert(cObject* obj, float* center, float* range, int shapetype, std::string msgtype, std::string msgtext, OID receiver, std::set<OID>* include, std::set<OID>* exclude, bool positive, bool posedge, bool once, OID fusedelay) {
+rAlert::rAlert(Entity* obj, float* center, float* range, int shapetype, std::string msgtype, std::string msgtext, OID receiver, std::set<OID>* include, std::set<OID>* exclude, bool positive, bool posedge, bool once, OID fusedelay) {
     this->object = obj;
     this->role = "ALERT";
     
@@ -36,7 +36,7 @@ rAlert::rAlert(cObject* obj, float* center, float* range, int shapetype, std::st
     fusedelay = 0;
 }
 
-float rAlert::constrain(float* worldpos, float radius, float* localpos, cObject* enactor) {
+float rAlert::constrain(float* worldpos, float radius, float* localpos, Entity* enactor) {
     //std::cout << "called" << std::endl;
     // Don't react on scanning and shooting.
     if (enactor == NULL) return 0;

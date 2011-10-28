@@ -5,7 +5,7 @@
 
 #include <cassert>
 
-rWeaponPlasmagun::rWeaponPlasmagun(cObject* obj) {
+rWeaponPlasmagun::rWeaponPlasmagun(Entity* obj) {
     role = "PLASMAGUN";
     object = obj;
 

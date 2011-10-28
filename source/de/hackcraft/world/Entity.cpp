@@ -1,4 +1,4 @@
-#include "cObject.h"
+#include "Entity.h"
 
 // OBJECT
 

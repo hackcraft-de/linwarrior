@@ -19,7 +19,7 @@ class World;
 #include "de/hackcraft/world/Timing.h"
 #include "de/hackcraft/world/Message.h"
 
-#include "de/hackcraft/world/cObject.h"
+#include "de/hackcraft/world/Entity.h"
 
 #include <list>
 #include <set>
@@ -29,7 +29,7 @@ class World;
 #include <queue>
 
 class Background;
-class cObject;
+class Entity;
 class Mission;
 
 /**
@@ -69,19 +69,19 @@ private:
     float mGndfriction;
 
     /// Object-ID (OID) to Object-Reference (non-fragged).
-    std::map<OID, cObject*> mIndex;
+    std::map<OID, Entity*> mIndex;
 
     /// Contains non-fragged objects.
-    std::list<cObject*> mObjects;
+    std::list<Entity*> mObjects;
 
     /// Contains fragged objects.
-    std::list<cObject*> mCorpses;
+    std::list<Entity*> mCorpses;
 
     /// Allows searching the world in a structured manner.
-    std::map<OID, std::list<cObject*> > mGeomap;
+    std::map<OID, std::list<Entity*> > mGeomap;
 
     /// Non-Positional (NaN) and some oversize objects go here for clustering.
-    std::list<cObject*> mUncluster;
+    std::list<Entity*> mUncluster;
 
     /// Render only objects that far away.
     float mViewdistance;
@@ -125,7 +125,7 @@ public: // Accessors
 
     Timing* getTiming();
 
-    cObject* getObject(OID oid);
+    Entity* getObject(OID oid);
 
     float* getGravity();
 
@@ -143,7 +143,7 @@ public: // Grouping
     OID getGroup(std::string name);
 
     /// Adds a new member to a existing group or creates a new one, returns gid.
-    void addToGroup(OID gid, cObject* member);
+    void addToGroup(OID gid, Entity* member);
 
 public: // Messaging
 
@@ -165,7 +165,7 @@ public: // Spawning, Fragging, Garbage Collection
      * increments delta cycle,
      * finally calls object->onSpawn().
      */
-    void spawnObject(cObject *object);
+    void spawnObject(Entity *object);
 
     /**
      * Removes object from active world (mObjects & mIndex),
@@ -177,7 +177,7 @@ public: // Spawning, Fragging, Garbage Collection
      * but fragged objects are removed from the perceptible world.
      * Fragged == removed and scheduled for deletion.
      */
-    void fragObject(cObject *object);
+    void fragObject(Entity *object);
 
     /**
      * Deletes fragged objects from Corpse-List.
@@ -201,9 +201,9 @@ public: // Simulation Step - Call every frame in order to update the world/missi
     /// Draws background (skybox) by calling mBackground drawing method.
     void drawBack();
     /// Draw all Object's solid surfaces (calls their drawSolid method).
-    void drawSolid(cObject* camera, std::list<cObject*>* objects = NULL);
+    void drawSolid(Entity* camera, std::list<Entity*>* objects = NULL);
     /// Draw all Object's effects (calls their drawEffect method).
-    void drawEffect(cObject* camera, std::list<cObject*>* objects = NULL);
+    void drawEffect(Entity* camera, std::list<Entity*>* objects = NULL);
 
 public: // World-Filtering, World-Scanning, World-Sense for objects.
 
@@ -224,39 +224,39 @@ public: // World-Filtering, World-Scanning, World-Sense for objects.
      * @param addunclustered Return global unclustered objects, too.
      * @return List of found objects.
      */
-    std::list<cObject*>* getGeoInterval(float* min2f, float* max2f, bool addunclustered = false);
+    std::list<Entity*>* getGeoInterval(float* min2f, float* max2f, bool addunclustered = false);
 
     /**
      * Debug function to print out an object-list.
      * With a parameter of NULL/no parameter at all prints all objects within the world.
      * Warning: Printing all objects could lead to massive load on the console.
      */
-    std::string getNames(std::list<cObject*>* objects = NULL);
+    std::string getNames(std::list<Entity*>* objects = NULL);
 
     /**
      * Filters the given objectlist (or all mObjects if NULL) by tags (ORed Bitmask) (excluding ex Object).
      * There is the option to match all tags (true=AND) or to select any given tag (false=OR).
      * The returned list is fresh allocated - caller delete responsibility.
      */
-    std::list<cObject*>* filterByTags(cObject* ex, std::set<OID>* rolemask, bool all, int maxamount, std::list<cObject*>* objects = NULL);
+    std::list<Entity*>* filterByTags(Entity* ex, std::set<OID>* rolemask, bool all, int maxamount, std::list<Entity*>* objects = NULL);
 
     /** Returns a List of objects which are within minimum and maximum range (excluding ex Object).
      * The returned list is fresh allocated - caller delete responsibility.
      */
-    std::list<cObject*>* filterByRange(cObject* ex, float* origin, float minrange, float maxrange, int maxamount, std::list<cObject*>* objects = NULL);
+    std::list<Entity*>* filterByRange(Entity* ex, float* origin, float minrange, float maxrange, int maxamount, std::list<Entity*>* objects = NULL);
 
     /**
      * Returns a List of objects which have the specified name.
      * The returned list is fresh allocated - caller delete responsibility.
      */
-    std::list<cObject*>* filterByName(cObject* ex, char* name, int maxamount, std::list<cObject*>* objectlist = NULL);
+    std::list<Entity*>* filterByName(Entity* ex, char* name, int maxamount, std::list<Entity*>* objectlist = NULL);
 
     /**
      * Returns a List of objects whose bounding volume (approximately) intersects with the cylinder
      * described by the volume of a certain diameter around a line.
      * The returned list is fresh allocated - caller delete responsibility.
      */
-    std::list<cObject*>* filterByBeam(cObject* ex, float* pointa, float* pointb, float radius, int maxamount, std::list<cObject*>* objects = NULL);
+    std::list<Entity*>* filterByBeam(Entity* ex, float* pointa, float* pointb, float radius, int maxamount, std::list<Entity*>* objects = NULL);
 
     /**
      *
@@ -264,7 +264,7 @@ public: // World-Filtering, World-Scanning, World-Sense for objects.
      * @param radius The size of the particle in terms of a radius.
      * @return Zero if there was no collision, else the maximum impact depth.
      */
-    float constrainParticle(cObject* ex, float* worldpos, float radius);
+    float constrainParticle(Entity* ex, float* worldpos, float radius);
 };
 
 #endif

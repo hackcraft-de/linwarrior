@@ -16,7 +16,7 @@ using std::endl;
 int rWeapon::sInstances = 0;
 std::map<int, long> rWeapon::sTextures;
 
-rWeapon::rWeapon(cObject* obj) {
+rWeapon::rWeapon(Entity* obj) {
     role = "WEAPON";
     object = obj;
 
@@ -128,11 +128,11 @@ int rWeapon::damageByParticle(float* worldpos, float radius, int roles, float da
     float maxrange = 25;
     float worldpos_[3];
     vector_cpy(worldpos_, worldpos);
-    std::list<cObject*>* range = World::instance->filterByRange(object, worldpos, 0.0f, maxrange, -1, NULL);
+    std::list<Entity*>* range = World::instance->filterByRange(object, worldpos, 0.0f, maxrange, -1, NULL);
     //cout << "damageByParticle: "  << World::instance->getNames(range) << endl;
     if (!range->empty()) {
 
-        for(cObject* targetObject: *range) {
+        for(Entity* targetObject: *range) {
             float localpos_[3];
             float depth = targetObject->constrain(worldpos_, radius, localpos_, NULL);
             //cout << object->nameable->name << " depth: " << depth << endl;

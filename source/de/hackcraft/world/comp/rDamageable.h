@@ -55,13 +55,13 @@ protected: // INTERNALS
     std::map<OID,float> damageImpulse;
 public:
     /// Constructor.
-    rDamageable(cObject* obj = NULL);
+    rDamageable(Entity* obj = NULL);
     /// Copy Constructor.
     rDamageable(rDamageable * original);
     /// Clone this.
     virtual Component * clone();
     /// Apply damage to a hitzone, and return alife.
-    virtual bool damage(float* localpos, float damage, cObject * enactor);
+    virtual bool damage(float* localpos, float damage, Entity * enactor);
     /// Average disturbance (damage) and find max disturbing enactor.
     virtual void animate(float spf);
     /// Display damaging.

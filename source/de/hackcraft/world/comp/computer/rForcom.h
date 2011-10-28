@@ -25,7 +25,7 @@ public:
     vec3 twr;
     bool reticle;
 public:
-    rForcom(cObject* obj = NULL); // FIXME: Must be a cMech.
+    rForcom(Entity* obj = NULL); // FIXME: Must be a cMech.
     virtual void message(Message * message);
     virtual void animate(float spf);
     virtual void drawHUD();

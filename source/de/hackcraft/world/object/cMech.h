@@ -11,7 +11,7 @@
 
 class cMech;
 
-#include "de/hackcraft/world/cObject.h"
+#include "de/hackcraft/world/Entity.h"
 
 struct rComcom;
 struct rTarcom;
@@ -54,7 +54,7 @@ typedef std::map<std::string,std::string> Props;
  * Models Mechlike Objects.
  * 
  */
-class cMech : public cObject {
+class cMech : public Entity {
     friend class rWepcom;
     friend class rForcom;
 protected:
@@ -128,8 +128,8 @@ public:
     virtual void drawHUD();
 
     // Particle constraining
-    virtual void damage(float* localpos, float damage, cObject* enactor = NULL);
-    virtual float constrain(float* worldpos, float radius = 0.0f, float* localpos = NULL, cObject* enactor = NULL);
+    virtual void damage(float* localpos, float damage, Entity* enactor = NULL);
+    virtual float constrain(float* worldpos, float radius = 0.0f, float* localpos = NULL, Entity* enactor = NULL);
 };
 
 

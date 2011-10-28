@@ -964,7 +964,7 @@ void cMech::drawHUD() {
     glPopAttrib();
 }
 
-void cMech::damage(float* localpos, float damage, cObject* enactor) {
+void cMech::damage(float* localpos, float damage, Entity* enactor) {
     if (!damageable->alife || damage == 0.0f) return;
 
     if (!damageable->damage(localpos, damage, enactor)) {
@@ -980,7 +980,7 @@ void cMech::damage(float* localpos, float damage, cObject* enactor) {
     if (damageable->hp[body] <= 0) addTag(World::instance->getGroup(HLT_DEAD));
 }
 
-float cMech::constrain(float* worldpos, float radius, float* localpos, cObject* enactor) {
+float cMech::constrain(float* worldpos, float radius, float* localpos, Entity* enactor) {
     float maxdepth = 0.0f;
     {
         float depth = collider->constrain(worldpos, radius, localpos, enactor);

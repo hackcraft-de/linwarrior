@@ -2,7 +2,7 @@
 
 #include "de/hackcraft/world/World.h"
 
-#include "de/hackcraft/world/cObject.h"
+#include "de/hackcraft/world/Entity.h"
 #include "de/hackcraft/world/object/cMech.h"
 
 #include "rComcom.h"
@@ -24,7 +24,7 @@ using std::string;
 
 #define NEARTO 23
 
-rController::rController(cObject* entity, bool enable) {
+rController::rController(Entity* entity, bool enable) {
     object = entity;
     enabled = enable;
     role = "CONTROLLER";
@@ -55,7 +55,7 @@ void rController::doit(OID aim, float* go, bool fire, float distance) {
     } else if (aimtarget == 0) {
         vector_set(walktarget, float_NAN, float_NAN, float_NAN);
     } else {
-        cObject* tgt = World::instance->getObject(aimtarget);
+        Entity* tgt = World::instance->getObject(aimtarget);
         if (tgt != NULL) {
             vector_cpy(walktarget, tgt->pos0);
         } else {
@@ -253,7 +253,7 @@ void rController::attackEnemy() {
         return;
     }
 
-    cObject* target = World::instance->getObject(entity);
+    Entity* target = World::instance->getObject(entity);
     if (target == NULL) {
         this->doit(0, NULL, false);
         pop("Target disappeared (removed from world: fragged).");

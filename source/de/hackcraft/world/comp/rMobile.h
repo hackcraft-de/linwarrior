@@ -88,7 +88,7 @@ protected: // INTERNALS
 public:
 
     /// Constructor
-    rMobile(cObject * obj);
+    rMobile(Entity * obj);
     /// Destructor
 
     ~rMobile() {

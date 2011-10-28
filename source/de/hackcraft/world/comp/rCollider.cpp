@@ -9,7 +9,7 @@
 #include "de/hackcraft/psi3d/Particle.h"
 
 
-rCollider::rCollider(cObject * obj) {
+rCollider::rCollider(Entity * obj) {
     object = obj;
     role = "COLLIDER";
 
@@ -20,7 +20,7 @@ rCollider::rCollider(cObject * obj) {
     height = 0.1f;
 }
 
-float rCollider::constrain(float* worldpos, float radius, float* localpos, cObject* enactor) {
+float rCollider::constrain(float* worldpos, float radius, float* localpos, Entity* enactor) {
     float localpos_[3];
     { // Transform to local.
         quat ori_inv;

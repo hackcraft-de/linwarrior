@@ -16,7 +16,7 @@ struct Game;
 #include "de/hackcraft/world/Mission.h"
 #include "de/hackcraft/world/World.h"
 
-#include "de/hackcraft/world/cObject.h"
+#include "de/hackcraft/world/Entity.h"
 
 #define DEFAULT_FULLSCREEN true
 #define DEFAULT_FPS 29
@@ -38,7 +38,7 @@ struct Game {
     int* map1;
 
     /// Seeing the world through which object's eyes?
-    cObject* camera;
+    Entity* camera;
 
     /// Instance of the world we are on.
     World *world;

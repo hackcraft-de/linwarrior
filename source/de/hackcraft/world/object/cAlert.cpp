@@ -42,7 +42,7 @@ cAlert::cAlert(float* center, float* range, int shapetype, std::string msgtype, 
     fusedelay = 0;
 }
 
-float cAlert::constrain(float* worldpos, float radius, float* localpos, cObject* enactor) {
+float cAlert::constrain(float* worldpos, float radius, float* localpos, Entity* enactor) {
     //std::cout << "called" << std::endl;
     // Don't react on scanning and shooting.
     if (enactor == NULL) return 0;

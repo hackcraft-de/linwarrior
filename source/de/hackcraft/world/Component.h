@@ -16,7 +16,7 @@
 //#include <map>
 #include <vector>
 
-class cObject;
+class Entity;
 class Message;
 
 /**
@@ -48,7 +48,7 @@ struct Component {
     };
 
     /// Parent object of which this component is a part of.
-    cObject* object;
+    Entity* object;
     /// Typename/Role of this component (all uppercase letters without leading "r").
     std::string role;
     /// Indicates an active enabled component (or disabled if false).
@@ -91,11 +91,11 @@ struct Component {
     virtual void listener() {
     }
 
-    virtual float constrain(float* worldpos, float radius, float* localpos = NULL, cObject * enactor = NULL) {
+    virtual float constrain(float* worldpos, float radius, float* localpos = NULL, Entity * enactor = NULL) {
         return 0.0f;
     }
 
-    virtual bool damage(float* localpos, float damage, cObject * enactor = NULL) {
+    virtual bool damage(float* localpos, float damage, Entity * enactor = NULL) {
         return true;
     }
 

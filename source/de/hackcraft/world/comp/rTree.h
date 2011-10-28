@@ -52,13 +52,13 @@ protected: // INTERNALS
     };
     TreeType* tree;
 public:
-    rTree(cObject* obj, float* pos = NULL, float* rot = NULL, int seed = 0, int type = 0, int age = 0);
+    rTree(Entity* obj, float* pos = NULL, float* rot = NULL, int seed = 0, int type = 0, int age = 0);
     
     virtual void animate(float spf);
     virtual void drawSolid();
     virtual void drawEffect();
 
-    virtual float constrain(float* worldpos, float radius = 0.0f, float* localpos = NULL, cObject* enactor = NULL);
+    virtual float constrain(float* worldpos, float radius = 0.0f, float* localpos = NULL, Entity* enactor = NULL);
 private:
     /// Instance counter for init only.
     static int sInstances;

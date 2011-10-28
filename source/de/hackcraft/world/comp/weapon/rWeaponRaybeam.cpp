@@ -3,7 +3,7 @@
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Primitive.h"
 
-rWeaponRaybeam::rWeaponRaybeam(cObject* obj) {
+rWeaponRaybeam::rWeaponRaybeam(Entity* obj) {
     role = "RAYBEAM";
     object = obj;
 

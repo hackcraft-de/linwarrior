@@ -13,7 +13,7 @@ class Mission;
 
 #include "World.h"
 
-#include "de/hackcraft/world/cObject.h"
+#include "de/hackcraft/world/Entity.h"
 #include "de/hackcraft/world/object/cPlanetmap.h"
 
 #include "de/hackcraft/util/Pad.h"
@@ -31,8 +31,8 @@ class Mission;
 class Mission {
 protected:
     // Mission Objectives
-    std::vector<cObject*> mVictory; // Shall be destroyed
-    std::vector<cObject*> mDefeat; // May not be destroyed includes player
+    std::vector<Entity*> mVictory; // Shall be destroyed
+    std::vector<Entity*> mDefeat; // May not be destroyed includes player
     int mState;
 public:
 
@@ -44,7 +44,7 @@ public:
      * So this method should spawn objects into the world and setup
      * other mission critical data of the derived mission.
      */
-    virtual cObject* init(World* world);
+    virtual Entity* init(World* world);
 
     /**
      * Through this method mission objectives can be traced.
@@ -85,9 +85,9 @@ private:
 private:
     virtual void onVictory();
     virtual void onDefeat();
-    virtual cObject* init(World* world);
+    virtual Entity* init(World* world);
 private:
-    cObject* initPlayerParty(World* world, cPlanetmap* planetmap, float* position);
+    Entity* initPlayerParty(World* world, cPlanetmap* planetmap, float* position);
     void initSkytideCity(World* world, cPlanetmap* planetmap);
     void initStarcircleTown(World* world, cPlanetmap* planetmap);
     void initPentaSpaceport(World* world, cPlanetmap* planetmap);
@@ -103,7 +103,7 @@ private:
     static void roundForrest(int wx, int wy, int wz, World* world, int r1, int r2, int nmax = 17);
     static void capitalCity(int wx, int wy, int wz, World* world);
     static void pyramidBuilding(int x, int y, int z, World* world);
-    static void spacePort(int x, int y, int z, World* world, std::vector<cObject*>& defeat, std::vector<cObject*>& victory);
+    static void spacePort(int x, int y, int z, World* world, std::vector<Entity*>& defeat, std::vector<Entity*>& victory);
 };
 
 /** 

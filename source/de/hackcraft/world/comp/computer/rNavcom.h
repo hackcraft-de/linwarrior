@@ -28,7 +28,7 @@ public:
     std::vector< int > mRoute;
     std::vector< std::vector<float> > mPOIs;
 public:
-    rNavcom(cObject* obj = NULL);
+    rNavcom(Entity* obj = NULL);
     void drawPOI(float x, float y, float s);
     virtual void animate(float spf);
     virtual void drawHUD();

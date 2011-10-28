@@ -1,5 +1,5 @@
 /**
- * File:     cObject.h
+ * File:     Entity.h
  * Project:  LinWarrior 3D
  * Home:     hackcraft.de
  * 
@@ -10,10 +10,10 @@
  * for various World-Filtering functions (Worldsense for Objects).
  */
 
-#ifndef _COBJECT_H
-#define _COBJECT_H
+#ifndef _CENTITYOBJECT_H
+#define _CENTITYOBJECT_H
 
-class Object;
+class Entity;
 
 #include "de/hackcraft/world/Message.h"
 #include "de/hackcraft/world/OID.h"
@@ -64,7 +64,7 @@ class Object;
 #define PLR_AI "/player/ai"
 
 #define FIELDOFS(attribute)     (((OID)&attribute) - ((OID)this))
-#define ROLEPTR(attribute)      ((rRole* cObject::*) &attribute)
+#define ROLEPTR(attribute)      ((rRole* Entity::*) &attribute)
 #define GETROLE(offset)         ((rRole*) *((OID*)( ((OID)this) + offset )))
 
 class World;
@@ -80,7 +80,7 @@ class World;
  * some default value, so that callers need not care about
  * the kind of the object (roles) too much.
  */
-class cObject {
+class Entity {
     friend class World;
 
 public: // Basic Object attributes for managing.
@@ -120,7 +120,7 @@ public: // Object Tags
 
 public:
 
-    cObject() {
+    Entity() {
         oid = 0;
         pos0[0] = pos0[1] = pos0[2] = 0.0f;
         ori0[0] = ori0[1] = ori0[2] = 0.0f;
@@ -138,10 +138,10 @@ public:
         //std::cout << "TEST: " << r << " vs " << nameable << "\n";
     }
 
-    cObject(cObject* original) {
+    Entity(Entity* original) {
     }
 
-    virtual ~cObject() {
+    virtual ~Entity() {
     }
 
     /*
@@ -303,7 +303,7 @@ public:
      * @damage amount of damage to deal to the object.
      * @enactor the object dealing the damage to this object.
      */
-    virtual void damage(float* localpos, float damage, cObject* enactor = NULL) {
+    virtual void damage(float* localpos, float damage, Entity* enactor = NULL) {
         for (auto i = components.begin(); i != components.end(); i++) {
             (*i)->damage(localpos, damage, enactor);
         }
@@ -320,7 +320,7 @@ public:
      * @localpos output adjusted location vector.
      * @return the intrusion depth.
      */
-    virtual float constrain(float* worldpos, float radius = 0.0f, float* localpos = NULL, cObject* enactor = NULL) {
+    virtual float constrain(float* worldpos, float radius = 0.0f, float* localpos = NULL, Entity* enactor = NULL) {
         double maxdepth = 0.0f;
         for (auto i = components.begin(); i != components.end(); i++) {
             double depth = (*i)->constrain(worldpos, radius, localpos, enactor);

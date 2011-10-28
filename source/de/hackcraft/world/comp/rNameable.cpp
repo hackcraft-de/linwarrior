@@ -5,7 +5,7 @@
 
 #include <GL/glew.h>
 
-rNameable::rNameable(cObject* obj) : name("Unnamed"), description("Undescribed"), designation(0) {
+rNameable::rNameable(Entity* obj) : name("Unnamed"), description("Undescribed"), designation(0) {
     role = "NAMEABLE";
     object = obj;
     vector_zero(pos0);

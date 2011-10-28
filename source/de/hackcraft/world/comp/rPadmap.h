@@ -43,11 +43,11 @@ public: // INPUT
     vec3 pos0;
     quat ori0;
 public:
-    rPadmap(cObject* obj);
+    rPadmap(Entity* obj);
     /// Calculate Height of the xz position.
     inline float getHeight(float x, float z);
     virtual void animate(float spf);
-    virtual float constrain(float* worldpos, float radius = 0.0f, float* localpos = NULL, cObject* enactor = NULL);
+    virtual float constrain(float* worldpos, float radius = 0.0f, float* localpos = NULL, Entity* enactor = NULL);
     virtual void drawSolid();
 };
 

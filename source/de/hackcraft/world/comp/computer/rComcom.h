@@ -27,7 +27,7 @@ protected:
     void* mConsole;
     OID mLastMessage;
 public:
-    rComcom(cObject* obj = NULL);
+    rComcom(Entity* obj = NULL);
     virtual void animate(float spf);
     virtual void drawHUD();
 };

@@ -16,7 +16,7 @@
  */
 class rWeaponRaybeam : public rWeapon {
 public:
-    rWeaponRaybeam(cObject* obj = NULL);
+    rWeaponRaybeam(Entity* obj = NULL);
 
     virtual void fire();
     virtual void animate(float spf);

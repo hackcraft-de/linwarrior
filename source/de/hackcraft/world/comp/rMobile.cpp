@@ -10,7 +10,7 @@ using std::cout;
 using std::endl;
 
 
-rMobile::rMobile(cObject * obj) :
+rMobile::rMobile(Entity * obj) :
         jeten(0),
         driveen(0),
         immobile(false),
@@ -103,7 +103,7 @@ void rMobile::animate(float spf) {
 
     // Determine Aim-Range
     {
-        cObject* tgt = World::instance->getObject(aimtarget);
+        Entity* tgt = World::instance->getObject(aimtarget);
         if (tgt == NULL) {
             aimrange = 10000.0f;
         } else {
@@ -169,7 +169,7 @@ void rMobile::animate(float spf) {
     // Determine nearest rotation direction for aim-target and tower
     {
         bool fire = false;
-        cObject* tgt = NULL;
+        Entity* tgt = NULL;
         float* target_pos = NULL;
         if (aimtarget != 0) {
             tgt = World::instance->getObject(aimtarget);

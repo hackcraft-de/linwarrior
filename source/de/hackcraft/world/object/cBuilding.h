@@ -12,14 +12,14 @@
 class cBuilding;
 struct rDamageable;
 
-#include "de/hackcraft/world/cObject.h"
+#include "de/hackcraft/world/Entity.h"
 
 #include "de/hackcraft/world/comp/weapon/rWeapon.h"
 
 /**
  * Models a building of varring size.
  */
-class cBuilding : public cObject {
+class cBuilding : public Entity {
 protected:
     static int sInstances;
     static std::map<int, long> sTextures;
@@ -33,8 +33,8 @@ protected:
 public:
     cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z);
 
-    virtual void damage(float* localpos, float damage, cObject* enactor = NULL);
-    virtual float constrain(float* worldpos, float radius = 0.0f, float* localpos = NULL, cObject* enactor = NULL);
+    virtual void damage(float* localpos, float damage, Entity* enactor = NULL);
+    virtual float constrain(float* worldpos, float radius = 0.0f, float* localpos = NULL, Entity* enactor = NULL);
 
     virtual void spawn();
 
@@ -48,7 +48,7 @@ public:
 /**
  * Models an urban street-tile of different types.
  */
-class cTile : public cObject {
+class cTile : public Entity {
 public:
     /// Possible models of tile.
 

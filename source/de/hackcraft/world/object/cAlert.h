@@ -9,7 +9,7 @@
 #ifndef _CALERT_H
 #define	_CALERT_H
 
-#include "de/hackcraft/world/cObject.h"
+#include "de/hackcraft/world/Entity.h"
 struct Particle;
 struct rNameable;
 
@@ -38,7 +38,7 @@ struct rNameable;
  * A cone or pyramid for detection would make a nice surveilance camera.
  *
  */
-class cAlert : public cObject {
+class cAlert : public Entity {
 public:
     static bool sDrawzone;
 
@@ -77,7 +77,7 @@ public:
 
     cAlert(float* center, float* range, int shapetype, std::string msgtype, std::string msgtext, OID receiver, std::set<OID>* include, std::set<OID>* exclude, bool positive = true, bool posedge = true, bool once = false, OID fusedelay = 0);
 
-    virtual float constrain(float* worldpos, float radius = 0.0f, float* localpos = NULL, cObject* enactor = NULL);
+    virtual float constrain(float* worldpos, float radius = 0.0f, float* localpos = NULL, Entity* enactor = NULL);
     virtual void drawEffect();
 };
 

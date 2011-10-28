@@ -11,7 +11,7 @@
 
 class cPlanetmap;
 
-#include "de/hackcraft/world/cObject.h"
+#include "de/hackcraft/world/Entity.h"
 
 #include "de/hackcraft/proc/Landscape.h"
 
@@ -38,7 +38,7 @@ class cPlanetmap;
 /**
  * Procedural Landscape Rendering and Collision.
  */
-class cPlanetmap : public cObject {
+class cPlanetmap : public Entity {
 public:
     /// Instance counter.
     static int sInstances;
@@ -109,7 +109,7 @@ public:
     /// Retrieves Height and Color of the xz position and calculates on demand.
     void getCachedHeight(float x, float z, float* const color);
     /// Re-adjust particle position by making multiple downward-hemispherical checks.
-    virtual float constrain(float* worldpos, float radius, float* localpos, cObject* enactor);
+    virtual float constrain(float* worldpos, float radius, float* localpos, Entity* enactor);
     /// Animate foliage.
     virtual void animate(float spf);
     /// Draw Landscape surrounding the current camera position.

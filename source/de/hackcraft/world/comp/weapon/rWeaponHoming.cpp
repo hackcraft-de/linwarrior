@@ -7,7 +7,7 @@
 
 #include <cassert>
 
-rWeaponHoming::rWeaponHoming(cObject* obj) {
+rWeaponHoming::rWeaponHoming(Entity* obj) {
     role = "HOMING";
     object = obj;
 
@@ -105,7 +105,7 @@ void rWeaponHoming::animate(float spf) {
 
         // Now update the Missile itself
         if (s->target) {
-            cObject *targetobject = World::instance->getObject(s->target);
+            Entity *targetobject = World::instance->getObject(s->target);
             if (targetobject && true) {
                 float tgt[] = {0, 0, 0};
                 vector_cpy(tgt, targetobject->pos0);

@@ -2,7 +2,7 @@
 
 #include "de/hackcraft/world/World.h"
 
-rTraceable::rTraceable(cObject* obj) : Particle() {
+rTraceable::rTraceable(Entity* obj) : Particle() {
     role = "TRACEABLE";
     object = obj;
     grounded = true;

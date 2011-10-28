@@ -6,7 +6,7 @@
 #include "de/hackcraft/world/World.h"
 
 
-rNavcom::rNavcom(cObject* obj) {
+rNavcom::rNavcom(Entity* obj) {
     object = obj;
     role = "NAVCOM";
 

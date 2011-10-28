@@ -38,7 +38,7 @@ protected: // INTERNALS
     int camerastate;
 public:
     /// Constructor
-    rCamera(cObject * obj);
+    rCamera(Entity * obj);
     /// Mult in camera matrix.
     virtual void camera();
 

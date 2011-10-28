@@ -484,7 +484,7 @@ void cPlanetmap::getCachedHeight(float x, float z, float* const color) {
 #endif
 } // getCachedHeight
 
-float cPlanetmap::constrain(float* worldpos, float radius, float* localpos, cObject* enactor) {
+float cPlanetmap::constrain(float* worldpos, float radius, float* localpos, Entity* enactor) {
     //if (enactor == NULL) return 0.0;
     float localpos_[3];
     vector_cpy(localpos_, worldpos);

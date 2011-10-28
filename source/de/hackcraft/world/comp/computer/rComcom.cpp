@@ -14,7 +14,7 @@ using std::endl;
 using std::stringstream;
 
 
-rComcom::rComcom(cObject* obj) {
+rComcom::rComcom(Entity* obj) {
     object = obj;
     role = "COMCOM";
 

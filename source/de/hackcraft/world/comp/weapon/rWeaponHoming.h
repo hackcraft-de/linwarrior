@@ -16,7 +16,7 @@
  */
 class rWeaponHoming : public rWeapon {
 public:
-    rWeaponHoming(cObject* obj = NULL);
+    rWeaponHoming(Entity* obj = NULL);
 
     virtual void fire();
     virtual void animate(float spf);

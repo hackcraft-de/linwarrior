@@ -4,7 +4,7 @@
 
 #include "de/hackcraft/io/Texfile.h"
 
-#include "de/hackcraft/world/cObject.h"
+#include "de/hackcraft/world/Entity.h"
 
 static void stepSpiral(int& x, int& y, int& i, int& length, bool& horizontal, int& increment) {
     if (i >= length) {
@@ -27,7 +27,7 @@ int rPadmap::sInstances = 0;
 std::map<int, long> rPadmap::sTextures;
 std::vector<int> rPadmap::sSpiral[2];
 
-rPadmap::rPadmap(cObject* obj) {
+rPadmap::rPadmap(Entity* obj) {
     object = obj;
     role = "PADMAP";
 
@@ -278,7 +278,7 @@ void rPadmap::drawSolid() {
     glPopAttrib();
 }
 
-float rPadmap::constrain(float* worldpos, float radius, float* localpos, cObject* enactor) {
+float rPadmap::constrain(float* worldpos, float radius, float* localpos, Entity* enactor) {
     //return 0.0f; // !!!!!!!!!!
 
     //if (enactor == NULL) return 0.0;

@@ -114,7 +114,7 @@ cBuilding::cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
     this->radius = sqrtf(0.25f * buildingRooms[0] * buildingRooms[0] + 0.25f * buildingRooms[1] * buildingRooms[1] + 0.25f * buildingRooms[2] * buildingRooms[2]);
 }
 
-void cBuilding::damage(float* localpos, float damage, cObject* enactor) {
+void cBuilding::damage(float* localpos, float damage, Entity* enactor) {
     if (!damageable->alife) return;
 
     if (damage > 0) {
@@ -133,7 +133,7 @@ void cBuilding::damage(float* localpos, float damage, cObject* enactor) {
     }
 }
 
-float cBuilding::constrain(float* worldpos, float radius, float* localpos, cObject* enactor) {
+float cBuilding::constrain(float* worldpos, float radius, float* localpos, Entity* enactor) {
     float localpos_[3];
 
     {

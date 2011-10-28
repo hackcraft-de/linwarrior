@@ -9,7 +9,7 @@
 #include "de/hackcraft/psi3d/Primitive.h"
 
 
-rWepcom::rWepcom(cObject* obj) {
+rWepcom::rWepcom(Entity* obj) {
     object = obj;
     role = "WEPCOM";
 }

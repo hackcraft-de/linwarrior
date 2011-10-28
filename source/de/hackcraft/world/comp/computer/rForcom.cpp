@@ -6,7 +6,7 @@
 #include "de/hackcraft/world/Message.h"
 
 
-rForcom::rForcom(cObject* obj) {
+rForcom::rForcom(Entity* obj) {
     object = obj;
     role = "FORCOM";
     quat_zero(ori);

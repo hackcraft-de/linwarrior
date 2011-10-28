@@ -68,7 +68,7 @@ public:
 
     /// Constructor
 
-    rRigged(cObject* obj = NULL) : scale(1.0f), seconds(0.0f), grounded(0.0f), jetting(0.0f), joints(NULL), height(0.1f), radius(0.1f), model(NULL) {
+    rRigged(Entity* obj = NULL) : scale(1.0f), seconds(0.0f), grounded(0.0f), jetting(0.0f), joints(NULL), height(0.1f), radius(0.1f), model(NULL) {
         role = "RIGGED";
         object = obj;
         vector_zero(pos0);

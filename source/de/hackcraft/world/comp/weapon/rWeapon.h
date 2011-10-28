@@ -11,7 +11,7 @@
 
 class rWeapon;
 
-#include "de/hackcraft/world/cObject.h"
+#include "de/hackcraft/world/Entity.h"
 
 #include <list>
 #include <vector>
@@ -90,7 +90,7 @@ protected: // INTERNALS
     std::list<Particle*> damageParticles;
 
 public:
-    rWeapon(cObject* obj = NULL);
+    rWeapon(Entity* obj = NULL);
 
     /**
      * Start playback of audio source.

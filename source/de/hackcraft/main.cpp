@@ -393,7 +393,7 @@ void Main::drawFrame() {
         float maxrange = game.world->getViewdistance();
         float min[] = {origin[0] - maxrange, origin[2] - maxrange};
         float max[] = {origin[0] + maxrange, origin[2] + maxrange};
-        std::list<cObject*>* visobjects = game.world->getGeoInterval(min, max, true);
+        std::list<Entity*>* visobjects = game.world->getGeoInterval(min, max, true);
         assert(visobjects != NULL);
         //cout << "vis:" << objects->size() << " vs " << mObjects.size() << endl;
 

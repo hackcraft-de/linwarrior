@@ -5,7 +5,7 @@
 
 #include <cassert>
 
-rWeaponExplosion::rWeaponExplosion(cObject* obj) {
+rWeaponExplosion::rWeaponExplosion(Entity* obj) {
     role = "EXPLOSION";
     object = obj;
 

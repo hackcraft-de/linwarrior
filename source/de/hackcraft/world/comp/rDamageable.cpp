@@ -1,6 +1,6 @@
 #include "rDamageable.h"
 
-#include "de/hackcraft/world/cObject.h"
+#include "de/hackcraft/world/Entity.h"
 
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/GLF.h"
@@ -9,7 +9,7 @@
 #include <GL/glew.h>
 
 
-rDamageable::rDamageable(cObject* obj) {
+rDamageable::rDamageable(Entity* obj) {
     role = "DAMAGEABLE";
     object = obj;
 
@@ -40,7 +40,7 @@ Component* rDamageable::clone() {
     return new rDamageable(this);
 }
 
-bool rDamageable::damage(float* localpos, float damage, cObject* enactor) {
+bool rDamageable::damage(float* localpos, float damage, Entity* enactor) {
     int hitzone = rDamageable::BODY;
     if (localpos[1] < 0.66 * height && hp[rDamageable::LEGS] > 0) hitzone = rDamageable::LEGS;
     else if (localpos[0] < -0.33 * radius && hp[rDamageable::LEFT] > 0) hitzone = rDamageable::LEFT;

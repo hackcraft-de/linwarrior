@@ -16,7 +16,7 @@
  */
 class rWeaponPlasmagun : public rWeapon {
 public:
-    rWeaponPlasmagun(cObject* obj = NULL);
+    rWeaponPlasmagun(Entity* obj = NULL);
 
     virtual void fire();
     virtual void animate(float spf);
