@@ -15,7 +15,7 @@ class cPlanetmap;
 
 #include "de/hackcraft/proc/Landscape.h"
 
-#include "de/hackcraft/world/comp/rTree.h"
+#include "de/hackcraft/world/comp/model/rTree.h"
 
 #define USE_UNORDERED_MAP
 #if defined(USE_UNORDERED_MAP)

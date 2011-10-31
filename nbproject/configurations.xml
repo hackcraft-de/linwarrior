@@ -50,6 +50,20 @@
       </logicalFolder>
       <logicalFolder name="world" displayName="world" projectFiles="true">
         <logicalFolder name="comp" displayName="comp" projectFiles="true">
+          <logicalFolder name="behavior" displayName="behavior" projectFiles="true">
+            <itemPath>source/de/hackcraft/world/comp/behavior/rAlert.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/behavior/rAlert.h</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/behavior/rCamera.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/behavior/rCamera.h</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/behavior/rCollider.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/behavior/rCollider.h</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/behavior/rDamageable.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/behavior/rDamageable.h</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/behavior/rMobile.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/behavior/rMobile.h</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/behavior/rTraceable.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/behavior/rTraceable.h</itemPath>
+          </logicalFolder>
           <logicalFolder name="computer" displayName="computer" projectFiles="true">
             <itemPath>source/de/hackcraft/world/comp/computer/rComcom.cpp</itemPath>
             <itemPath>source/de/hackcraft/world/comp/computer/rComcom.h</itemPath>
@@ -65,6 +79,18 @@
             <itemPath>source/de/hackcraft/world/comp/computer/rTarcom.h</itemPath>
             <itemPath>source/de/hackcraft/world/comp/computer/rWepcom.cpp</itemPath>
             <itemPath>source/de/hackcraft/world/comp/computer/rWepcom.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="model" displayName="model" projectFiles="true">
+            <itemPath>source/de/hackcraft/world/comp/model/rNameable.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/model/rNameable.h</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/model/rPadmap.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/model/rPadmap.h</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/model/rRigged.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/model/rRigged.h</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/model/rScatter.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/model/rScatter.h</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/model/rTree.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/comp/model/rTree.h</itemPath>
           </logicalFolder>
           <logicalFolder name="weapon" displayName="weapon" projectFiles="true">
             <itemPath>source/de/hackcraft/world/comp/weapon/rWeapon.cpp</itemPath>
@@ -82,28 +108,6 @@
             <itemPath>source/de/hackcraft/world/comp/weapon/rWeaponSparkgun.cpp</itemPath>
             <itemPath>source/de/hackcraft/world/comp/weapon/rWeaponSparkgun.h</itemPath>
           </logicalFolder>
-          <itemPath>source/de/hackcraft/world/comp/rAlert.cpp</itemPath>
-          <itemPath>source/de/hackcraft/world/comp/rAlert.h</itemPath>
-          <itemPath>source/de/hackcraft/world/comp/rCamera.cpp</itemPath>
-          <itemPath>source/de/hackcraft/world/comp/rCamera.h</itemPath>
-          <itemPath>source/de/hackcraft/world/comp/rCollider.cpp</itemPath>
-          <itemPath>source/de/hackcraft/world/comp/rCollider.h</itemPath>
-          <itemPath>source/de/hackcraft/world/comp/rDamageable.cpp</itemPath>
-          <itemPath>source/de/hackcraft/world/comp/rDamageable.h</itemPath>
-          <itemPath>source/de/hackcraft/world/comp/rMobile.cpp</itemPath>
-          <itemPath>source/de/hackcraft/world/comp/rMobile.h</itemPath>
-          <itemPath>source/de/hackcraft/world/comp/rNameable.cpp</itemPath>
-          <itemPath>source/de/hackcraft/world/comp/rNameable.h</itemPath>
-          <itemPath>source/de/hackcraft/world/comp/rPadmap.cpp</itemPath>
-          <itemPath>source/de/hackcraft/world/comp/rPadmap.h</itemPath>
-          <itemPath>source/de/hackcraft/world/comp/rRigged.cpp</itemPath>
-          <itemPath>source/de/hackcraft/world/comp/rRigged.h</itemPath>
-          <itemPath>source/de/hackcraft/world/comp/rScatter.cpp</itemPath>
-          <itemPath>source/de/hackcraft/world/comp/rScatter.h</itemPath>
-          <itemPath>source/de/hackcraft/world/comp/rTraceable.cpp</itemPath>
-          <itemPath>source/de/hackcraft/world/comp/rTraceable.h</itemPath>
-          <itemPath>source/de/hackcraft/world/comp/rTree.cpp</itemPath>
-          <itemPath>source/de/hackcraft/world/comp/rTree.h</itemPath>
         </logicalFolder>
         <logicalFolder name="object" displayName="object" projectFiles="true">
           <itemPath>source/de/hackcraft/world/object/cAlert.cpp</itemPath>

@@ -2,7 +2,7 @@
 
 #include "cBuilding.h"
 
-#include "de/hackcraft/world/comp/rDamageable.h"
+#include "de/hackcraft/world/comp/behavior/rDamageable.h"
 #include "de/hackcraft/world/World.h"
 
 #include "de/hackcraft/psi3d/macros.h"

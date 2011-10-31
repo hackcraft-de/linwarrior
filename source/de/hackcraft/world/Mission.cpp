@@ -6,7 +6,7 @@
 
 #include "de/hackcraft/world/comp/weapon/rWeapon.h"
 
-#include "de/hackcraft/world/comp/rPadmap.h"
+#include "de/hackcraft/world/comp/model/rPadmap.h"
 
 #include "de/hackcraft/world/Entity.h"
 #include "de/hackcraft/world/object/cAlert.h"
@@ -15,7 +15,7 @@
 #include "de/hackcraft/world/object/cBuilding.h"
 
 #include "de/hackcraft/world/comp/computer/rComcom.h"
-#include "de/hackcraft/world/comp/rNameable.h"
+#include "de/hackcraft/world/comp/model/rNameable.h"
 
 #include <list>
 #include <vector>

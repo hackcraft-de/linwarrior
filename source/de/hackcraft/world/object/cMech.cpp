@@ -11,13 +11,14 @@
 #include "de/hackcraft/world/comp/computer/rComcom.h"
 #include "de/hackcraft/world/comp/computer/rController.h"
 
-#include "de/hackcraft/world/comp/rNameable.h"
-#include "de/hackcraft/world/comp/rTraceable.h"
-#include "de/hackcraft/world/comp/rDamageable.h"
-#include "de/hackcraft/world/comp/rRigged.h"
-#include "de/hackcraft/world/comp/rCamera.h"
-#include "de/hackcraft/world/comp/rCollider.h"
-#include "de/hackcraft/world/comp/rMobile.h"
+#include "de/hackcraft/world/comp/model/rNameable.h"
+#include "de/hackcraft/world/comp/model/rRigged.h"
+
+#include "de/hackcraft/world/comp/behavior/rTraceable.h"
+#include "de/hackcraft/world/comp/behavior/rDamageable.h"
+#include "de/hackcraft/world/comp/behavior/rCamera.h"
+#include "de/hackcraft/world/comp/behavior/rCollider.h"
+#include "de/hackcraft/world/comp/behavior/rMobile.h"
 
 #include "de/hackcraft/psi3d/macros.h"
 #include "de/hackcraft/psi3d/GLS.h"
