@@ -2,8 +2,10 @@
 
 #include "de/hackcraft/world/World.h"
 
+std::string rTraceable::cname = "TRACEABLE";
+unsigned int rTraceable::cid = 6891;
+
 rTraceable::rTraceable(Entity* obj) : Particle() {
-    role = "TRACEABLE";
     object = obj;
     grounded = true;
     jetthrottle = 0.0f;
@@ -11,7 +13,6 @@ rTraceable::rTraceable(Entity* obj) : Particle() {
 }
 
 rTraceable::rTraceable(rTraceable * original) : Particle(original) {
-    role = "TRACEABLE";
     object = original->object;
     grounded = original->grounded;
     jetthrottle = original->jetthrottle;

@@ -17,6 +17,11 @@
  * Encapsulates physical state as far as movement and position is concerned.
  */
 class rTraceable : public Component, public Particle {
+public: // SYSTEM
+    /// Identifier for this component.
+    static std::string cname;
+    /// Just a unique random number (0-9999) to identify this component.
+    static unsigned int cid;
 public: // INPUT
     /// Jetdrive throttle setting hook usually [0,1].
     float jetthrottle;

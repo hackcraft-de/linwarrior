@@ -20,6 +20,8 @@ using std::string;
 
 #define ran(seed) (seed = ((seed * 1234567) % 65535))
 
+std::string rTree::cname = "TREE";
+unsigned int rTree::cid = 4715;
 
 int rTree::sInstances = 0;
 std::map<OID, rTree::TreeType*> rTree::sTrees;
@@ -28,7 +30,6 @@ std::vector<long> rTree::sBarktexs;
 
 rTree::rTree(Entity* obj, float* pos, float* rot, int seed, int type, int age) {
     this->object = obj;
-    this->role = "TREE";
     
     sInstances++;
     if (sInstances == 1) {

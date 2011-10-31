@@ -8,8 +8,10 @@
 
 #include <cassert>
 
+std::string rWeaponMachinegun::cname = "MACHINEGUN";
+unsigned int rWeaponMachinegun::cid = 7743;
+
 rWeaponMachinegun::rWeaponMachinegun(Entity* obj) {
-    role = "MACHINEGUN";
     object = obj;
 
     //cout << "cMachineGun()\n";

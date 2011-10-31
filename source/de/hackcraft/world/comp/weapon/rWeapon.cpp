@@ -17,7 +17,6 @@ int rWeapon::sInstances = 0;
 std::map<int, long> rWeapon::sTextures;
 
 rWeapon::rWeapon(Entity* obj) {
-    role = "WEAPON";
     object = obj;
 
     sInstances++;

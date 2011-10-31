@@ -3,8 +3,10 @@
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Primitive.h"
 
+std::string rWeaponRaybeam::cname = "RAYBEAM";
+unsigned int rWeaponRaybeam::cid = 5357;
+
 rWeaponRaybeam::rWeaponRaybeam(Entity* obj) {
-    role = "RAYBEAM";
     object = obj;
 
     clipSize = 12;

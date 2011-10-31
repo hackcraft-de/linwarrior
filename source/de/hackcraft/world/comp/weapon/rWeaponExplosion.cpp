@@ -5,8 +5,10 @@
 
 #include <cassert>
 
+std::string rWeaponExplosion::cname = "EXPLOSION";
+unsigned int rWeaponExplosion::cid = 4370;
+
 rWeaponExplosion::rWeaponExplosion(Entity* obj) {
-    role = "EXPLOSION";
     object = obj;
 
     if (EXPLOSIONSOUND) {

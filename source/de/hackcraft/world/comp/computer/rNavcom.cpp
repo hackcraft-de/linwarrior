@@ -5,10 +5,11 @@
 
 #include "de/hackcraft/world/World.h"
 
+std::string rNavcom::cname = "NAVCOM";
+unsigned int rNavcom::cid = 4660;
 
 rNavcom::rNavcom(Entity* obj) {
     object = obj;
-    role = "NAVCOM";
 
     vector_zero(pos0);
     quat_zero(ori0);

@@ -8,10 +8,11 @@
 
 #include "de/hackcraft/psi3d/Primitive.h"
 
+std::string rWepcom::cname = "WEPCOM";
+unsigned int rWepcom::cid = 4280;
 
 rWepcom::rWepcom(Entity* obj) {
     object = obj;
-    role = "WEPCOM";
 }
 
 void rWepcom::animate(float spf) {

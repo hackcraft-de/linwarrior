@@ -5,8 +5,10 @@
 
 #include <cassert>
 
+std::string rWeaponPlasmagun::cname = "PLASMAGUN";
+unsigned int rWeaponPlasmagun::cid = 3768;
+
 rWeaponPlasmagun::rWeaponPlasmagun(Entity* obj) {
-    role = "PLASMAGUN";
     object = obj;
 
     clipSize = 19;

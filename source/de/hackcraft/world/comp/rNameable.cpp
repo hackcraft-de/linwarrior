@@ -5,8 +5,10 @@
 
 #include <GL/glew.h>
 
+std::string rNameable::cname = "NAMEABLE";
+unsigned int rNameable::cid = 8730;
+
 rNameable::rNameable(Entity* obj) : name("Unnamed"), description("Undescribed"), designation(0) {
-    role = "NAMEABLE";
     object = obj;
     vector_zero(pos0);
     vector_zero(pos1);
@@ -17,7 +19,6 @@ rNameable::rNameable(Entity* obj) : name("Unnamed"), description("Undescribed"),
 }
 
 rNameable::rNameable(rNameable * original) : name("Unnamed"), description("Undescribed"), designation(0) {
-    role = "NAMEABLE";
     if (original != NULL) {
         object = original->object;
         name = original->name;

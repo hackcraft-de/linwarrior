@@ -8,10 +8,11 @@
 #include "de/hackcraft/psi3d/Primitive.h"
 #include "de/hackcraft/psi3d/Particle.h"
 
+std::string rCollider::cname = "COLLIDER";
+unsigned int rCollider::cid = 4109;
 
 rCollider::rCollider(Entity * obj) {
     object = obj;
-    role = "COLLIDER";
 
     quat_zero(ori0);
     vector_zero(pos0);

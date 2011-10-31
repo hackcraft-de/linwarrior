@@ -24,10 +24,12 @@ using std::string;
 
 #define NEARTO 23
 
+std::string rController::cname = "CONTROLLER";
+unsigned int rController::cid = 3637;
+
 rController::rController(Entity* entity, bool enable) {
     object = entity;
     enabled = enable;
-    role = "CONTROLLER";
 
     lastDisturbedBy = 0;
     disturbedBy = 0;

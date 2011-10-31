@@ -23,13 +23,15 @@ static void stepSpiral(int& x, int& y, int& i, int& length, bool& horizontal, in
     }
 }
 
+std::string rPadmap::cname = "PADMAP";
+unsigned int rPadmap::cid = 7855;
+
 int rPadmap::sInstances = 0;
 std::map<int, long> rPadmap::sTextures;
 std::vector<int> rPadmap::sSpiral[2];
 
 rPadmap::rPadmap(Entity* obj) {
     object = obj;
-    role = "PADMAP";
 
     sInstances++;
     if (sInstances == 1) {

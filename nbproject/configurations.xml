@@ -42,6 +42,7 @@
         <itemPath>source/de/hackcraft/psi3d/math3d.h</itemPath>
       </logicalFolder>
       <logicalFolder name="util" displayName="util" projectFiles="true">
+        <itemPath>source/de/hackcraft/util/Binding.h</itemPath>
         <itemPath>source/de/hackcraft/util/GapBuffer.h</itemPath>
         <itemPath>source/de/hackcraft/util/KDTree.h</itemPath>
         <itemPath>source/de/hackcraft/util/Pad.h</itemPath>
@@ -118,6 +119,8 @@
         <itemPath>source/de/hackcraft/world/Background.h</itemPath>
         <itemPath>source/de/hackcraft/world/Component.cpp</itemPath>
         <itemPath>source/de/hackcraft/world/Component.h</itemPath>
+        <itemPath>source/de/hackcraft/world/Entity.cpp</itemPath>
+        <itemPath>source/de/hackcraft/world/Entity.h</itemPath>
         <itemPath>source/de/hackcraft/world/Message.cpp</itemPath>
         <itemPath>source/de/hackcraft/world/Message.h</itemPath>
         <itemPath>source/de/hackcraft/world/Mission.cpp</itemPath>
@@ -127,8 +130,6 @@
         <itemPath>source/de/hackcraft/world/Timing.h</itemPath>
         <itemPath>source/de/hackcraft/world/World.cpp</itemPath>
         <itemPath>source/de/hackcraft/world/World.h</itemPath>
-        <itemPath>source/de/hackcraft/world/cObject.cpp</itemPath>
-        <itemPath>source/de/hackcraft/world/cObject.h</itemPath>
       </logicalFolder>
       <itemPath>source/de/hackcraft/Game.cpp</itemPath>
       <itemPath>source/de/hackcraft/Game.h</itemPath>
@@ -172,6 +173,10 @@
           </ccTool>
         </makeTool>
       </makefileType>
+      <item path="source/de/hackcraft/util/KDTree.h" ex="true" tool="3" flavor="0">
+      </item>
+      <item path="source/de/hackcraft/util/String.h" ex="true" tool="3" flavor="0">
+      </item>
     </conf>
     <conf name="Release" type="1">
       <toolsSet>
@@ -189,6 +194,10 @@
           <developmentMode>5</developmentMode>
         </fortranCompilerTool>
       </compileType>
+      <item path="source/de/hackcraft/world/Entity.cpp" ex="true" tool="1" flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/Entity.h" ex="true" tool="3" flavor="0">
+      </item>
     </conf>
   </confs>
 </configurationDescriptor>

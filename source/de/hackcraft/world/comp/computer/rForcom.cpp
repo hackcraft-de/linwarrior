@@ -5,10 +5,12 @@
 
 #include "de/hackcraft/world/Message.h"
 
+std::string rForcom::cname = "FORCOM";
+unsigned int rForcom::cid = 1032;
 
 rForcom::rForcom(Entity* obj) {
     object = obj;
-    role = "FORCOM";
+    
     quat_zero(ori);
     vector_zero(twr);
 }

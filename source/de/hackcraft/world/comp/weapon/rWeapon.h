@@ -29,7 +29,7 @@ class rWeapon;
  * drawing themselves, their bullets, missiles, dust, smoke and other particles.
  */
 class rWeapon : public Component {
-public:
+public: // SYSTEM
     /// Instance counter.
     static int sInstances;
     /// Texture Binds shared between instances.
@@ -134,8 +134,7 @@ public:
     /**
      * Update weapon animation cycles, trigger, particle trajectories and timers.
      */
-    virtual void animate(float spf) {
-    };
+    virtual void animate(float spf) = 0;
 
     /**
      * Calculate transformations for painting called between animate and draw*.
@@ -147,14 +146,12 @@ public:
     /**
      * Draw the weapon model itself and non-translucent particles.
      */
-    virtual void drawSolid() {
-    };
+    virtual void drawSolid() = 0;
 
     /**
      * Draw translucent effects like weapon flares and particles.
      */
-    virtual void drawEffect() {
-    };
+    virtual void drawEffect() = 0;
 
     /**
      * Paints an iconic display of the weapon type and

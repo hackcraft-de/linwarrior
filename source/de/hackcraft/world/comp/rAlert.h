@@ -40,7 +40,12 @@ struct Particle;
  *
  */
 class rAlert : public Component {
-public: // Static
+public: // SYSTEM
+    /// Identifier for this component (all uppercase letters without leading "r").
+    static std::string cname;
+    /// A unique random number (0-9999) to identify this component.
+    static unsigned int cid;
+    /// Draw zones for debugging.
     static bool sDrawzone;
 public: // INPUT
     /// The group of receivers.

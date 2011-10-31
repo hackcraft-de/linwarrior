@@ -9,6 +9,8 @@
 using std::cout;
 using std::endl;
 
+std::string rMobile::cname = "MOBILE";
+unsigned int rMobile::cid = 6337;
 
 rMobile::rMobile(Entity * obj) :
         jeten(0),
@@ -34,7 +36,6 @@ rMobile::rMobile(Entity * obj) :
         aimrange(0),
         walkrange(0)
 {
-    role = "MOBILE";
     object = obj;
     vector_zero(pos0);
     vector_zero(twr);

@@ -28,6 +28,11 @@ struct rController;
  * and plan execution.
  */
 struct rController : public rComputer {
+public: // SYSTEM
+    /// Identifier for this component (all uppercase letters without leading "r").
+    static std::string cname;
+    /// A unique random number (0-9999) to identify this component.
+    static unsigned int cid;
 public: // INPUT
     /// Whether control is enabled (autopilot/ai enabled/disabled).
     bool enabled;

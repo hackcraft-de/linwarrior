@@ -8,9 +8,10 @@
 
 #include <GL/glew.h>
 
+std::string rDamageable::cname = "DAMAGEABLE";
+unsigned int rDamageable::cid = 5704;
 
 rDamageable::rDamageable(Entity* obj) {
-    role = "DAMAGEABLE";
     object = obj;
 
     radius = 0.25;
@@ -22,7 +23,6 @@ rDamageable::rDamageable(Entity* obj) {
 }
 
 rDamageable::rDamageable(rDamageable * original) {
-    role = "DAMAGEABLE";
     if (original == NULL) {
         rDamageable();
     } else {

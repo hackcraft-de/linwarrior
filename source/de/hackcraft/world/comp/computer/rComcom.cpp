@@ -13,10 +13,13 @@ using std::endl;
 #include <sstream>
 using std::stringstream;
 
+#include <cassert>
+
+std::string rComcom::cname = "COMCOM";
+unsigned int rComcom::cid = 5007;
 
 rComcom::rComcom(Entity* obj) {
     object = obj;
-    role = "COMCOM";
 
     int w = 20;
     int h = 10;

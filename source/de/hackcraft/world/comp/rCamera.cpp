@@ -6,9 +6,11 @@
 
 #define grand() ((rand()%100 + rand()%100 + rand()%100 + rand()%100 + rand()%100) * 0.01f * 0.2f - 0.5f)
 
+std::string rCamera::cname = "CAMERA";
+unsigned int rCamera::cid = 3311;
+
 rCamera::rCamera(Entity * obj) : cameraswitch(0), camerashake(0), firstperson(true), camerastate(1) {
     object = obj;
-    role = "CAMERA";
 
     quat_zero(ori1);
     vector_zero(pos1);

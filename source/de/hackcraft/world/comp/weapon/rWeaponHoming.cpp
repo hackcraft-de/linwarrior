@@ -7,8 +7,10 @@
 
 #include <cassert>
 
+std::string rWeaponHoming::cname = "HOMING";
+unsigned int rWeaponHoming::cid = 9956;
+
 rWeaponHoming::rWeaponHoming(Entity* obj) {
-    role = "HOMING";
     object = obj;
 
     clipSize = 4;

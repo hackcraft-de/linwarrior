@@ -11,12 +11,13 @@
 using std::cout;
 using std::endl;
 
+std::string rAlert::cname = "ALERT";
+unsigned int rAlert::cid = 5688;
 
 bool rAlert::sDrawzone = !true;
 
 rAlert::rAlert(Entity* obj, float* center, float* range, int shapetype, std::string msgtype, std::string msgtext, OID receiver, std::set<OID>* include, std::set<OID>* exclude, bool positive, bool posedge, bool once, OID fusedelay) {
     this->object = obj;
-    this->role = "ALERT";
     
     vector_cpy(shape.center, center);
     vector_cpy(shape.range, range);

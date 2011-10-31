@@ -14,13 +14,16 @@
 
 #include "de/hackcraft/io/Texfile.h"
 
+#include <cassert>
+
+std::string rScatter::cname = "SCATTER";
+unsigned int rScatter::cid = 8412;
 
 int rScatter::sInstances = 0;
 std::map<int, long> rScatter::sTextures;
 
 rScatter::rScatter(Entity* obj, float radius, float density) {
     object = obj;
-    role = "SCATTER";
 
     sInstances++;
     if (sInstances == 1) {

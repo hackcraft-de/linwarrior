@@ -15,6 +15,9 @@ using std::string;
 
 #define DRAWJOINTS !true
 
+std::string rRigged::cname = "RIGGED";
+unsigned int rRigged::cid = 4900;
+
 std::map<std::string,unsigned long> rRigged::materials;
 
 void rRigged::drawBones() {

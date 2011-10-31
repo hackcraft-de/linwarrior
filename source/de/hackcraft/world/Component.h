@@ -9,11 +9,9 @@
 #ifndef RCOMPONENT_H
 #define	RCOMPONENT_H
 
-#include <cassert>
+#include "de/hackcraft/util/Binding.h"
+
 #include <string>
-#include <string.h>
-//#include <set>
-//#include <map>
 #include <vector>
 
 class Entity;
@@ -27,30 +25,13 @@ class Message;
  * or signal variables for i/o impules.
  */
 struct Component {
-    /// Represents a binding of a variable src to a variable dst of a given size.
-    struct Binding {
-        void* dst;
-        void* src;
-        unsigned int size;
-        Binding(void* dst, void* src, unsigned int size) {
-            this->dst = dst;
-            this->src = src;
-            this->size = size;
-        }
-        /// Store from destination to source.
-        void write() {
-            memcpy(src, dst, size);
-        }
-        /// Load from source to destination.
-        void read() {
-            memcpy(dst, src, size);
-        }
-    };
+    /// Identifier for this component (all uppercase letters without leading "r").
+    static std::string cname;
+    /// A unique random number (0-9999) to identify this component.
+    static unsigned int cid;
 
     /// Parent object of which this component is a part of.
     Entity* object;
-    /// Typename/Role of this component (all uppercase letters without leading "r").
-    std::string role;
     /// Indicates an active enabled component (or disabled if false).
     bool active;
     /// Bindings to be executed before animation.
@@ -63,11 +44,9 @@ struct Component {
         if (original != NULL) {
             object = original->object;
             active = original->active;
-            role = original->role;
         } else {
             object = NULL;
             active = true;
-            role = "";
         }
     }
 
@@ -103,8 +82,8 @@ struct Component {
     }
 
     void prebind() {
-        for (auto i = prebinds.begin(); i != prebinds.end(); i++) {
-            (*i)->read();
+        for (Binding* binding : prebinds) {
+            binding->read();
         }
     }
 
@@ -112,8 +91,8 @@ struct Component {
     }
 
     void postbind() {
-        for (auto i = prebinds.begin(); i != prebinds.end(); i++) {
-            (*i)->read();
+        for (Binding* binding : prebinds) {
+            binding->read();
         }
     }
 

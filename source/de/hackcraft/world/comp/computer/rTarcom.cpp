@@ -10,9 +10,11 @@
 
 #include "de/hackcraft/world/Entity.h"
 
+std::string rTarcom::cname = "TARCOM";
+unsigned int rTarcom::cid = 5293;
+
 rTarcom::rTarcom(Entity* obj) {
     object = obj;
-    role = "TARCOM";
 
     quat_zero(ori0);
     vector_zero(pos0);

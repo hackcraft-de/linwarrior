@@ -24,6 +24,11 @@ struct rTarcom;
  * includes Radar, target-selection and -display.
  */
 struct rTarcom : public rComputer {
+public: // SYSTEM
+    /// Identifier for this component (all uppercase letters without leading "r").
+    static std::string cname;
+    /// A unique random number (0-9999) to identify this component.
+    static unsigned int cid;
 public: // INPUT
     /// Sensor orientation. (hook i)
     quat ori0;

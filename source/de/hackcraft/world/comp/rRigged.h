@@ -19,7 +19,12 @@
  * Encapsulates a rigged mesh in md5mesh format.
  */
 struct rRigged : public Component {
-public:
+public: // SYSTEM
+    /// Identifier for this component (all uppercase letters without leading "r").
+    static std::string cname;
+    /// A unique random number (0-9999) to identify this component.
+    static unsigned int cid;
+    /// Shared material bindings.
     static std::map<std::string,unsigned long> materials;
 public: // INPUT
     /// Model scale. (1.0f, unused/removed now)
@@ -69,7 +74,6 @@ public:
     /// Constructor
 
     rRigged(Entity* obj = NULL) : scale(1.0f), seconds(0.0f), grounded(0.0f), jetting(0.0f), joints(NULL), height(0.1f), radius(0.1f), model(NULL) {
-        role = "RIGGED";
         object = obj;
         vector_zero(pos0);
         vector_zero(vel);
