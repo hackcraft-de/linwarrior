@@ -5,6 +5,13 @@
                    displayName="hackcraft"
                    projectFiles="true"
                    root="source/de/hackcraft">
+      <logicalFolder name="game" displayName="game" projectFiles="true">
+        <itemPath>source/de/hackcraft/game/Game.cpp</itemPath>
+        <itemPath>source/de/hackcraft/game/Game.h</itemPath>
+        <itemPath>source/de/hackcraft/game/GameMain.cpp</itemPath>
+        <itemPath>source/de/hackcraft/game/GameMain.h</itemPath>
+        <itemPath>source/de/hackcraft/game/userkeys.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="io" displayName="io" projectFiles="true">
         <itemPath>source/de/hackcraft/io/MD5Format.h</itemPath>
         <itemPath>source/de/hackcraft/io/Texfile.cpp</itemPath>
@@ -135,11 +142,7 @@
         <itemPath>source/de/hackcraft/world/World.cpp</itemPath>
         <itemPath>source/de/hackcraft/world/World.h</itemPath>
       </logicalFolder>
-      <itemPath>source/de/hackcraft/Game.cpp</itemPath>
-      <itemPath>source/de/hackcraft/Game.h</itemPath>
       <itemPath>source/de/hackcraft/main.cpp</itemPath>
-      <itemPath>source/de/hackcraft/main.h</itemPath>
-      <itemPath>source/de/hackcraft/userkeys.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"

@@ -6,8 +6,8 @@
  * Created on March 28, 2008, 21:25 PM (1999)
  */
 
-#ifndef _MAIN_H
-#define _MAIN_H
+#ifndef _GAMEMAIN_H
+#define _GAMEMAIN_H
 
 #include "de/hackcraft/util/GapBuffer.h"
 
@@ -38,11 +38,11 @@ public:
  * Encapsulates low level system-, startup- and io-code.
  * Actually it is just a collection of what would be functions otherwise.
  */
-class Main {
+class GameMain {
 public:
     friend class Minion;
     /// Points to the main instance, necessary because of c-callbacks/threads.
-    static Main* instance;
+    static GameMain* instance;
     
 private:
     /// Current game configuration.
@@ -100,7 +100,7 @@ private:
 
 public:
     /// Constructor sets instance pointer among other things.
-    Main();
+    GameMain();
 
     /// Called directly by the main entry point.
     int run(int argc, char** args);

@@ -1,6 +1,6 @@
 #include "Game.h"
 
-#include "de/hackcraft/userkeys.h"
+#include "de/hackcraft/game/userkeys.h"
 
 #include "de/hackcraft/psi3d/macros.h"
 

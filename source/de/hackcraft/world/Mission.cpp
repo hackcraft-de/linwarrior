@@ -1,7 +1,5 @@
 #include "Mission.h"
 
-#include "de/hackcraft/Game.h"
-
 #include "de/hackcraft/world/comp/computer/rController.h"
 
 #include "de/hackcraft/world/comp/weapon/rWeapon.h"
