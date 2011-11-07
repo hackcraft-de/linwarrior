@@ -16,7 +16,7 @@ class Mission;
 #include "de/hackcraft/world/Entity.h"
 #include "de/hackcraft/world/object/cPlanetmap.h"
 
-#include "de/hackcraft/util/Pad.h"
+#include "de/hackcraft/io/Pad.h"
 
 #include <vector>
 #include <string>

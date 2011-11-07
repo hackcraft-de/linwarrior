@@ -20,7 +20,7 @@ class Entity;
 
 #include "de/hackcraft/world/Component.h"
 
-#include "de/hackcraft/util/Pad.h"
+#include "de/hackcraft/io/Pad.h"
 
 #include "de/hackcraft/psi3d/math3d.h"
 

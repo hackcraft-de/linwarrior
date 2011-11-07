@@ -4,7 +4,7 @@
 
 #include "de/hackcraft/world/World.h"
 
-#include "de/hackcraft/util/Pad.h"
+#include "de/hackcraft/io/Pad.h"
 
 #include "de/hackcraft/world/comp/weapon/rWeapon.h"
 
