@@ -10,6 +10,7 @@ void Facade::getVStrings(float x, float y, float* color4f, unsigned char seed) {
     float x_ = fmod(x, 1.0f);
     float sinx = Noise::simplex3(((x_ < 0.5f) ? (x_) : (1.0f - x_))*16.0, 0, 0, seed);
     float sx = 0.8 + 0.2 * sinx;
+    sx *= sx;
     float grain = 0.9f + 0.1f * (0.5f + 0.5f * Noise::simplex3(x * 256.0f, y * 256.0f, 0, seed));
     color4f[0] = color4f[1] = color4f[2] = grain * sx;
     color4f[3] = 1.0f;
@@ -19,16 +20,49 @@ void Facade::getHStrings(float x, float y, float* color4f, unsigned char seed) {
     float y_ = fmod(y, 1.0f);
     float siny = Noise::simplex3(0, y_ * 8.0f, 0, seed);
     float sy = 0.8 + 0.2 * siny;
+    sy *= sy;
     float grain = 0.9f + 0.1f * (0.5f + 0.5f * Noise::simplex3(x * 256.0f, y * 256.0f, 0, seed));
     color4f[0] = color4f[1] = color4f[2] = grain * sy;
     color4f[3] = 1.0f;
 }
 
 void Facade::getInterrior(float x, float y, float* color4fv, unsigned char seed) {
+    float x_ = fmod(x, 1.0f);
+    float y_ = fmod(y, 1.0f);
+    
+    bool bk = (x_ > 0.3f) && (x_ < 0.7f) && (y_ > 0.3f) && (y_ < 0.7f);
+    bool d1 = x_ > y_;
+    bool d2 = (1-x_) > y_;
+    
+    float t = (d1 && d2 && !bk) ? 1.0f : 0.0f;
+    float r = (d1 && !d2 && !bk) ? 1.0f : 0.0f;
+    float b = (!d1 && !d2 && !bk) ? 1.0f : 0.0f;
+    float l = (!d1 && d2 && !bk) ? 1.0f : 0.0f;
+    float f = t * 0.8 + (l + r) * 0.7 + b * 0.5 + bk * 0.9;
+    
     float alpha = 0.3f + 0.7f * (0.5f + 0.5f * Noise::samplex3(x * 63, y * 63, 0, seed));
-    float dark[] = {0.2f, 0.2f, 0.2f, 1.0f};
-    float lite[] = {0.99f, 0.99f, 0.7f, 1.0f};
+    alpha *= f;
+    
+    float dark[] = {0.05f, 0.05f, 0.05f, 1.0f};
+    float lite[] = {0.99f, 0.99f, 0.70f, 1.0f};
     Distortion::fade4(alpha, dark, lite, color4fv);
+}
+
+void getBlinds(float x, float y, float* color4fv, unsigned char seed) {
+    float y_ = fmod(y, 1.0f);
+    
+    unsigned char h = (3*((unsigned char)(x))) + (7*((unsigned char)(y)));
+    unsigned char n = Noise::LFSR8(seed + h) ^ h;
+    n &= 0x0F;
+
+    float y__ = y_ * 16;
+    float f = fmod(y__, 1.0f);
+    f = (y__ > n) ? 0 : f;
+    float alpha = 1.0f - (1.0f - f) * (1.0f - f);
+    float dark[] = {0.2f, 0.2f, 0.0f, 1.0f};
+    float lite[] = {0.99f, 0.99f, 0.99f, 1.0f};
+    Distortion::fade4(alpha, dark, lite, color4fv);
+    color4fv[3] = (f <= 0.0) ? 0 : color4fv[3];
 }
 
 void Facade::getExterrior(float x, float y, float* color4fv, unsigned char seed) {
@@ -177,6 +211,7 @@ void Facade::getFacade(float x, float y, int gx, int gy, float age, float* c3f, 
     }
 
     float chma = 2.0f * 0.1f;
+    chma *= rowmajor ? 0.1f : 1.0f;
     float cr = r = Noise::LFSR8(r);
     float cg = r = Noise::LFSR8(r);
     float cb = r = Noise::LFSR8(r);
@@ -187,6 +222,7 @@ void Facade::getFacade(float x, float y, int gx, int gy, float age, float* c3f, 
     float c0[] = {cl + chma*cr, cl + chma*cg, cl + chma*cb, 1.0f};
 
     chma = 2.0f * 0.1f;
+    chma *= rowmajor ? 1.0f : 0.1f;
     cr = r = Noise::LFSR8(r);
     cg = r = Noise::LFSR8(r);
     cb = r = Noise::LFSR8(r);
@@ -216,17 +252,17 @@ void Facade::getFacade(float x, float y, int gx, int gy, float age, float* c3f, 
     }
 
     // Glass distortion
-    float dx = 0.01f * Noise::simplex3((gx + x)*63, (gy + y)*63, 0, seed + 43);
-    float dy = 0.01f * Noise::simplex3((gx + x)*63, (gy + y)*63, 0, seed + 31);
+    float dx = 0.02f * Noise::simplex3((gx + x)*27, (gy + y)*27, 0, seed + 43);
+    float dy = 0.02f * Noise::simplex3((gx + x)*27, (gy + y)*27, 0, seed + 31);
 
     // Interrior Room Pattern.
     float interrior[4];
     getInterrior(gx + x + dx, gy + y + dy, interrior);
-    float innerwalls = 0.6f + fmin(0.4, fmax(0.0f, Distortion::rampPyramid(0, 0.1, 1, 0.9, x + dx, y + dy)));
-
-    loopi(4) {
-        interrior[i] *= innerwalls;
-    }
+    
+    // Blinds
+    float blinds[4];
+    getBlinds(gx + x + 0.0*dy, gy + y + 0.0*dy, blinds, r);
+    Distortion::fade4(blinds[3], interrior, blinds, interrior);
 
     // Exterrior Scene Reflection Pattern.
     float exterrior[4];
@@ -245,7 +281,7 @@ void Facade::getFacade(float x, float y, int gx, int gy, float age, float* c3f, 
     int colpart = ((!rowmajor || v == 1) && u != 1) ? 1 : 0;
     int rowpart = ((rowmajor || u == 1) && v != 1) ? 1 : 0;
 
-    float mirror = 0.8f;
+    float mirror = 0.7f;
     mirror *= smear;
 
     float shade[4];
