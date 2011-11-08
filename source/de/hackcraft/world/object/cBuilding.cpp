@@ -90,7 +90,7 @@ cBuilding::cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
                 if (0) {
                     try {
                         char numb[3] = { char('0' + (k / 10)), char('0' + (k % 10)), '\0' };
-                        std::string fname = std::string("data/base/urban/facade/facade_") + std::string(numb) + std::string(".tga");
+                        std::string fname = std::string("data/base/cityscape/facade/facade_") + std::string(numb) + std::string(".tga");
                         if (Texfile::saveTGA(fname.c_str(), w, h, bpp, texels)) {
                             cout << "Could not save image" << endl;
                         }
