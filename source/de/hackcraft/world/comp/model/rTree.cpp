@@ -190,7 +190,7 @@ float rTree::constrain(float* worldpos, float radius, float* localpos, Entity* e
 rTree::TreeType* rTree::getCompiledTree(int seed, int type, int age) {
     // Try to find and return a cached version of the given tree.
 
-    OID key = (seed << 16) | ((type & 0xFF) << 8) | (age & 0xFF);
+    OID key = (seed << 16) ^ ((type & 0xFF) << 8) ^ (age & 0xFF);
 
     TreeType* tree = sTrees[key];
     if (tree != NULL) {
@@ -269,7 +269,7 @@ rTree::TreeType* rTree::getCompiledTree(int seed, int type, int age) {
 int rTree::drawTreePart(int depth, int maxdepth, float length, int seed, GLuint trunk_displaylist, GLuint leaf_displaylist, std::vector<float>* leaves, float* totalheight) {
     //
     const float height = length * (maxdepth - depth);
-    const float width = 0.06 * length + (maxdepth - depth)*(maxdepth - depth) * length * 0.02f;
+    const float width = 1.25f * (0.06 * length + (maxdepth - depth)*(maxdepth - depth) * length * 0.02f);
     bool draw_poly_leaves = !true;
     // Draw Trunk and leaf if at max depth.
     glPushMatrix();
