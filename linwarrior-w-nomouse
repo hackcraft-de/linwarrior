@@ -1,5 +1,5 @@
 #!/bin/sh
 
 # Run LinWarrior
-./dist/linwarrior -r 800 -m 0 -s 0 -l 0 -w
+./dist/linwarrior game -r 800 -m 0 -s 0 -l 0 -w
 
