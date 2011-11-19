@@ -11,6 +11,9 @@
 
 #include <iostream>
 
+using std::cout;
+using std::endl;
+
 /**
  * Models a Textbuffer by implementing a Gap-Buffer.
  */
@@ -180,9 +183,9 @@ public: // Output
                 rows[i] = NULL;
                 continue;
             }
-            do {
+            while (pos > 0 && bufferData[pos] != nl) {
                 pos--;
-            } while (pos > 0 && bufferData[pos] != nl);
+            }
             rows[i] = &bufferData[pos] + ((pos==0)?0:1);
             //cout << "Row " << i << ": " << pos << endl;
             pos--;

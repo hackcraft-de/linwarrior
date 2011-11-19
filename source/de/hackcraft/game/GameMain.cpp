@@ -493,17 +493,28 @@ void GameMain::updateKey(Uint8 keysym) {
     if (overlayEnabled) {
         GapBuffer* text = &cmdline;
         if (keysym == SDLK_LEFT) text->stepLeft();
-        if (keysym == SDLK_RIGHT) text->stepRight();
-        if (keysym == SDLK_UP) text->stepUp();
-        if (keysym == SDLK_DOWN) text->stepDown();
-        if (keysym == SDLK_RETURN) text->write('\n');
-        if (keysym == SDLK_BACKSPACE) text->deleteLeft();
-        if (keysym == SDLK_SPACE) text->write(' ');
-
-        if (keysym >= SDLK_a && keysym <= SDLK_z) {
-            //text->write('#');
+        else if (keysym == SDLK_RIGHT) text->stepRight();
+        else if (keysym == SDLK_UP) text->stepUp();
+        else if (keysym == SDLK_DOWN) text->stepDown();
+        else if (keysym == SDLK_RETURN) text->write('\n');
+        else if (keysym == SDLK_BACKSPACE) text->deleteLeft();
+        else if (keysym == SDLK_SPACE) text->write(' ');
+        else if (keysym == SDLK_COLON) text->write(':');
+        else if (keysym == SDLK_SEMICOLON) text->write(';');
+        else if (keysym == SDLK_MINUS) text->write('-');
+        else if (keysym == SDLK_SLASH) text->write('/');
+        else if (keysym == SDLK_BACKSLASH) text->write('\\');
+        else if (keysym == SDLK_LESS) text->write('<');
+        else if (keysym == SDLK_EQUALS) text->write('=');
+        else if (keysym == SDLK_GREATER) text->write('>');
+        else if (keysym == SDLK_AT) text->write('@');
+        else if (keysym >= SDLK_a && keysym <= SDLK_z) {
             text->write('a' + (keysym-SDLK_a));
+        } else {
+            //text->write("?");
         }
+        //text->print();
+        //text->printState(false);
 
         return;
     }
