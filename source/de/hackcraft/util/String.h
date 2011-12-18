@@ -42,6 +42,14 @@ public:
         }
         return code;
     }
+    
+    String* toString() {
+        return this;
+    }
+    
+    const char* c_str() {
+        return value.c_str();
+    }
 };
 
 #endif	/* STRING_H */

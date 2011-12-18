@@ -16,11 +16,44 @@ using namespace std;
 
 #include "de/hackcraft/game/GameMain.h"
 
+#include <de/hackcraft/util/HashMap.h>
+#include <de/hackcraft/util/String.h>
+
+void testHM1() {
+    HashMap<Object*,Object*>* h = new HashMap<Object*,Object*>();
+    
+    Object a;
+    Object b;
+    h->put(&a, &b);
+}
+
+void testHM2() {
+    HashMap<String*,String*>* h = new HashMap<String*,String*>();
+    
+    for (int i = 0; i <= ('z'-'a'); i++) {
+        //std::cout << i << "\n";
+        char x[] = { char('a' + i), '\0' };
+        char y[] = { char('A' + i), '\0' };
+        h->put(new String(x), new String(y));
+    }
+    for (int i = 0; i <= ('z'-'a'); i++) {
+        char x[] = { char('a' + i), '\0' };
+        String* y = h->get(new String(x));
+        std::cout << y->c_str();
+    }
+}
+
+void testHM() {
+    //testHM1();
+    testHM2();
+}
+
 static int test(int argc, char **args) {
     cout << "Arguments for test module:\n";
     for (int i = 0; i < argc; i++) {
         cout << args[i] << "\n";
     }
+    testHM();
     return 0;
 }
 

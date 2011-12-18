@@ -19,8 +19,8 @@ class cPlanetmap;
 
 #define USE_UNORDERED_MAP
 #if defined(USE_UNORDERED_MAP)
-#include <tr1/unordered_map>
-#define maptype std::tr1::unordered_map
+#include <unordered_map>
+#define maptype std::unordered_map
 #else
 #include <map>
 #define maptype std::map
