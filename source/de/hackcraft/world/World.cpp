@@ -170,7 +170,9 @@ void World::advanceTime(int deltamsec) {
 void World::clusterObjects() {
     try {
         int j = 0;
+        unsigned long geosize = mGeomap.size();
         mGeomap.clear();
+        mGeomap.reserve(geosize * 2);
         mUncluster.clear();
 
         for(Entity* o : mObjects) {

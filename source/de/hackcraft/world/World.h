@@ -27,6 +27,7 @@ class World;
 #include <string>
 #include <vector>
 #include <queue>
+#include <unordered_map>
 
 class Background;
 class Entity;
@@ -78,7 +79,7 @@ private:
     std::list<Entity*> mCorpses;
 
     /// Allows searching the world in a structured manner.
-    std::map<OID, std::list<Entity*> > mGeomap;
+    std::unordered_map<OID, std::list<Entity*> > mGeomap;
 
     /// Non-Positional (NaN) and some oversize objects go here for clustering.
     std::list<Entity*> mUncluster;
