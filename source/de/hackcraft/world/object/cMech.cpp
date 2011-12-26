@@ -260,11 +260,16 @@ void cMech::init(float* pos, float* rot, string modelName) {
         m2f["bug"] = "data/base/tanks/bug/bug.md5mesh";
         m2f["ant"] = "data/base/tanks/ant/ant.md5mesh";
         m2f["pod"] = "data/base/tanks/pod/pod.md5mesh";
+        m2f["warbuggy"] = "data/base/tanks/warbuggy/warbuggy.md5mesh";
         
         m2f["flopsy"] = "data/com/blendswap/flopsy/flopsy.md5mesh";
         
         m2f["scorpion"] = "data/org/opengameart/scorpion/scorpion.md5mesh";
         m2f["thunderbird"] = "data/org/opengameart/thunderbird/thunderbird.md5mesh";
+
+        m2f["gausscan"] = "data/org/opengameart/gausscan/gausscan.md5mesh";
+        m2f["twinblaster"] = "data/org/opengameart/twinblaster/twinblaster.md5mesh";
+        m2f["reactor"] = "data/org/opengameart/reactor/reactor.md5mesh";
         
         m2f["soldier"] = "/media/44EA-7693/workspaces/mm3d/soldier/soldier.md5mesh";
         
