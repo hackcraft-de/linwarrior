@@ -7,15 +7,21 @@ Enhanced AI
 - Counter attacking attacker
 Enhanced Models
 - Added Thunderbird mech model
+- Added Gausscan turret model
+- Added Twinblaster turret model
+- Added Warbuggy mech/tank model
 Enhanced Landscape Rendering
 - Added different rendering styles for foliage
 - Added many plant types
 Enhanced Cityscape Rendering
 - Added frames to windows
-Enhanced Internals
-- Ability to configure some mech parameters.
+- Added blinds to window frames
 Enhanced Sky Model:
 - Moving sun/moon light
+Enhanced Internals
+- Ability to configure some mech parameters.
+- Enhanced framework library
+- Added multiple main support
 
 
 2011_04_17 r19

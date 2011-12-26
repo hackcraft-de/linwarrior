@@ -15,8 +15,6 @@ Inspector-/Edit-Mode:
 
 AI and behavior:
 
-- Fix reaction to ai being fired at (state transitions in controller).
-
 - Reintroduce some random walking pattern when in close range combat (or in line of sight).
 
 - Think about blocked-left/-front/-right detectors for collision avoidance.
