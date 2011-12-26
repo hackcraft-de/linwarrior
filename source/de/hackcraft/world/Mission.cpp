@@ -7,6 +7,7 @@
 #include "de/hackcraft/world/comp/model/rPadmap.h"
 
 #include "de/hackcraft/world/Entity.h"
+#include "comp/behavior/rMobile.h"
 #include "de/hackcraft/world/object/cAlert.h"
 #include "de/hackcraft/world/object/cPlanetmap.h"
 #include "de/hackcraft/world/object/cMech.h"
@@ -567,9 +568,10 @@ void OpenMission::initStarcircleTown(World* world, cPlanetmap* planetmap) {
     roundForrest(loc[0], loc[1], loc[2], world, 7 * 2, 22 * 2, 3);
 
     if (true) {
-        smallArmy(loc[0], loc[1] + 5, loc[2], world, "Bandit Leader", 1, false, 1, "frogger");
-        smallArmy(loc[0] - 48, loc[1] + 5, loc[2] + 17, world, "Bandits A", 2, false, 3, "bug");
-        smallArmy(loc[0] - 50, loc[1] + 5, loc[2] - 50, world, "Bandits B", 5, false, 2, "lemur");
+        smallArmy(loc[0], loc[1] + 5, loc[2], world, "Bandit Leader", 1, false, 1, false, "frogger");
+        smallArmy(loc[0] - 48, loc[1] + 5, loc[2] + 17, world, "Bandits A", 2, false, 3, false, "bug");
+        //smallArmy(loc[0] - 50, loc[1] + 5, loc[2] - 50, world, "Bandits B", 5, false, 2, true, "twinblaster");
+        smallArmy(loc[0] - 50, loc[1] + 5, loc[2] - 50, world, "Bandits B", 5, false, 2, false, "lemur");
     }
 
     {
@@ -722,7 +724,7 @@ void OpenMission::initPyraNanoCorp(World* world, cPlanetmap* planetmap) {
 
     pyramidBuilding(loc[0], loc[1], loc[2], world);
     roundForrest(loc[0], loc[1], loc[2], world, 28, 50, 3);
-    smallArmy(loc[0] + 15, loc[1], loc[2] - 30, world, "Bandito", 3, false, 0, "flopsy");
+    smallArmy(loc[0] + 15, loc[1], loc[2] - 30, world, "Bandito", 3, false, 0, false, "flopsy");
 }
 
 void OpenMission::initPentaSpaceport(World* world, cPlanetmap* planetmap) {
@@ -847,7 +849,7 @@ void OpenMission::battleField(World* world) {
     }
 }
 
-void OpenMission::smallArmy(int wx, int wy, int wz, World* world, const char* name, int n, bool blue, int wpn, string model) {
+void OpenMission::smallArmy(int wx, int wy, int wz, World* world, const char* name, int n, bool blue, int wpn, bool immobile, string model) {
     float r = 2;
     float a = 0;
 
@@ -881,6 +883,8 @@ void OpenMission::smallArmy(int wx, int wy, int wz, World* world, const char* na
         } else if (wpn == 3) {
             mech->mountWeapon((char*) "LLoArm", new rWeaponMachinegun);
         }
+        
+        mech->mobile->immobile = immobile;
 
         a += M_PI * 0.2f;
         r += 0.4f * 6;

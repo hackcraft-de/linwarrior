@@ -98,7 +98,7 @@ private:
     void initSpadenixFactory(World* world, cPlanetmap* planetmap);
 private:
     static void battleField(World* world);
-    static void smallArmy(int wx, int wy, int wz, World* world, const char* name, int n, bool blue, int wpn /*0*/, std::string model);
+    static void smallArmy(int wx, int wy, int wz, World* world, const char* name, int n, bool blue, int wpn /*0*/, bool immobile, std::string model);
     static void smallSettling(int wx, int wy, int wz, World* world, int n);
     static void roundForrest(int wx, int wy, int wz, World* world, int r1, int r2, int nmax = 17);
     static void capitalCity(int wx, int wy, int wz, World* world);

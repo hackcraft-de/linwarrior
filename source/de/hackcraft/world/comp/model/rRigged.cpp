@@ -4,6 +4,8 @@
 #include "de/hackcraft/psi3d/Primitive.h"
 #include "de/hackcraft/psi3d/GLF.h"
 
+#include "de/hackcraft/proc/Solid.h"
+
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -15,11 +17,96 @@ using std::string;
 
 #define DRAWJOINTS !true
 
+#define MECHDETAIL 0
+
 std::string rRigged::cname = "RIGGED";
 unsigned int rRigged::cid = 4900;
 
 std::map<std::string,unsigned long> rRigged::materials;
 
+
+void rRigged::initMaterials() {
+    if (materials.empty()) {
+        if (1) {
+
+            cout << "Generating Camoflage..." << endl;
+
+            const int SIZE = 1 << (7 + MECHDETAIL);
+            unsigned char* texels = new unsigned char[SIZE * SIZE * SIZE * 3];
+
+            enum {
+                WOOD,
+                RUSTY,
+                URBAN,
+                DESERT,
+                SNOW,
+                CAMO,
+                GLASS,
+                RUBBER,
+                STEEL,
+                WARN,
+                MAX_TEX
+            };
+
+            const char* names[] = {
+                "wood",
+                "rusty",
+                "urban",
+                "desert",
+                "snow",
+                "camo",
+                "glass",
+                "rubber",
+                "steel",
+                "warn"
+            };
+
+            for (int l = 0; l < MAX_TEX; l++) {
+                long t = 0;
+
+                loopijk(SIZE, SIZE, SIZE) {
+                    float color[16];
+                    const float f = 0.25f * 0.25f * 64.0f / SIZE;
+                    float x = f*i, y = f*j, z = f*k;
+                    switch (l) {
+                        case WOOD: Solid::camo_wood(x, y, z, color); 
+                            break;
+                        case RUSTY: Solid::camo_rust(x, y, z, color);
+                            break;
+                        case URBAN: Solid::camo_urban(x, y, z, color);
+                            break;
+                        case DESERT: Solid::camo_desert(x, y, z, color);
+                            break;
+                        case SNOW: Solid::camo_snow(x, y, z, color);
+                            break;
+                        case CAMO: Solid::camo_desert(x, y, z, color); // camo
+                            break;
+                        case GLASS: Solid::metal_damast(x, y, z, color); // glass
+                            break;
+                        case RUBBER: //Solid::stone_lava(x, y, z, color); // rubber
+                            color[0] = color[1] = color[2] = 0.2f;
+                            color[3] = 1.0f;
+                            break;
+                        case STEEL: Solid::metal_sheets(x, y, z, color); // steel
+                            break;
+                        case WARN: Solid::pattern_warning(x, y, z, color); // warn
+                            break;
+                        default:
+                            Solid::camo_rust(x, y, z, color);
+                    }
+                    texels[t++] = 255.0f * color[0];
+                    texels[t++] = 255.0f * color[1];
+                    texels[t++] = 255.0f * color[2];
+                }
+                unsigned int texname = GLS::glBindTexture3D(0, true, true, true, true, true, SIZE, SIZE, SIZE, texels);
+                materials[string(names[l])] = texname;
+            }
+            delete texels;
+        }
+    }
+}
+
+    
 void rRigged::drawBones() {
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
@@ -82,7 +169,17 @@ void rRigged::drawMeshes() {
             //float co = colors[msh->shader[0]];
             //glColor3f(co,co,co);
             
-            glBindTexture(GL_TEXTURE_3D, materials[string(msh->shader)]);
+            string shader = string(msh->shader);
+            if (shader.compare("camo") == 0) {
+                switch(basetexture3d) {
+                    case 0: shader = "wood"; break;
+                    case 1: shader = "rusty"; break;
+                    case 2: shader = "urban"; break;
+                    case 3: shader = "snow"; break;
+                    default: break;
+                }
+            }
+            glBindTexture(GL_TEXTURE_3D, materials[shader]);
 
             //cout << curr->numverts << " " << curr->numtris << " " << curr->numweights << endl;
             float* vtx = new float[msh->numverts * 3];
@@ -421,9 +518,6 @@ void rRigged::drawSolid() {
         glTranslatef(pos0[0], pos0[1], pos0[2]);
         GLS::glRotateq(ori0);
         //cPrimitives::glAxis(3.0f);
-        if (basetexture3d > 0) {
-            glBindTexture(GL_TEXTURE_3D, basetexture3d);
-        }
         drawMeshes();
     }
     glPopMatrix();
