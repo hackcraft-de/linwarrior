@@ -36,6 +36,8 @@ using std::string;
 #define JURATA      { 400, 0, +100 }
 #define SPADENIX    { 300, 0, +150 }
 
+#define FORTIFY     { 300, 0, 330 }
+
 #define PLAYERPOS SKYTIDE
 
 void adjustHeight(cPlanetmap* planetmap, float* pos) {
@@ -112,6 +114,8 @@ Entity* OpenMission::init(World* world) {
 
     cout << "Initialising Pyra Nano Corp...\n";
     initPyraNanoCorp(world, planetmap);
+
+    initFortifyDefense(world, planetmap);
 
     //initAcroloidMines(world, planetmap);
     //initCollapsiumFactory(world, planetmap);
@@ -594,6 +598,72 @@ void OpenMission::initSpadenixFactory(World* world, cPlanetmap* planetmap) {
         Entity* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
         oob->name = message;
         world->spawnObject(oob);
+    }
+}
+
+void OpenMission::initFortifyDefense(World* world, cPlanetmap* planetmap) {
+    float loc[] = FORTIFY;
+
+    // Get natural height.
+    float color[16];
+    planetmap->getHeight(loc[0], loc[2], color);
+    loc[1] = color[3];
+    
+    cPlanetmap::sMod* mod = new cPlanetmap::sMod();
+    mod->pos[0] = loc[0];
+    mod->pos[1] = loc[1];
+    mod->pos[2] = loc[2];
+    mod->height = loc[1] - 3.5f - 0.009f;
+    mod->range = 5;
+    planetmap->mods.push_back(mod);
+    
+    {
+        OID group = group_alliance_player;
+        float pos[] = {loc[0], loc[1] + 9, loc[2]};
+        float range[] = {20.5, 20.5, 20.5};
+        string message = string("Fortify and Defend!\n(under construction)");
+        Entity* oob = new cAlert(pos, range, cAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
+        oob->name = message;
+        world->spawnObject(oob);
+    }
+    
+    {
+        float pos[3] = {loc[0], loc[1], loc[2]};
+        adjustHeight(planetmap, pos);
+        cMech* mech = new cMech(pos, NULL, "reactor");
+        mech->nameable->name = "Hit Me !!";
+        assert(mech != NULL);
+        world->spawnObject(mech);
+    }
+    
+    for (int i = 0; i < 5; i++) {
+        float r = 30;
+        float pos[3] = {loc[0]-float(r*sin((18+72 * i) * 0.017454)), loc[1], loc[2]-float(r*cos((18+72 * i) * 0.017454))};
+        adjustHeight(planetmap, pos);
+        cMech* mech = new cMech(pos, NULL, "gausscan");
+        assert(mech != NULL);
+        mech->nameable->name = "Gausscan";
+        mech->mobile->immobile = true;
+        world->spawnObject(mech);
+        mech->mountWeapon((char*) "CTMOUNT", new rWeaponPlasmagun);
+        mech->addTag(World::instance->getGroup(FAC_BLUE));
+        mech->tarcom->addEnemy(World::instance->getGroup(FAC_RED));
+        mech->tarcom->addEnemy(World::instance->getGroup(HLT_DEAD), false);
+    }
+    for (int i = 0; i < 10; i++) {
+        float r = 45;
+        float pos[3] = {loc[0]-float(r*sin(36 * i * 0.017454)), loc[1], loc[2]-float(r*cos(36 * i * 0.017454))};
+        adjustHeight(planetmap, pos);
+        cMech* mech = new cMech(pos, NULL, "twinblaster");
+        assert(mech != NULL);
+        mech->nameable->name = "Twinblaster";
+        mech->mobile->immobile = true;
+        world->spawnObject(mech);
+        mech->mountWeapon((char*) "LAMOUNT", new rWeaponRaybeam);
+        mech->mountWeapon((char*) "RAMOUNT", new rWeaponRaybeam);
+        mech->addTag(World::instance->getGroup(FAC_BLUE));
+        mech->tarcom->addEnemy(World::instance->getGroup(FAC_RED));
+        mech->tarcom->addEnemy(World::instance->getGroup(HLT_DEAD), false);
     }
 }
 

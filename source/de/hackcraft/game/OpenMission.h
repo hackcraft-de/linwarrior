@@ -37,6 +37,7 @@ private:
     void initCollapsiumFactory(World* world, cPlanetmap* planetmap);
     void initJurataJail(World* world, cPlanetmap* planetmap);
     void initSpadenixFactory(World* world, cPlanetmap* planetmap);
+    void initFortifyDefense(World* world, cPlanetmap* planetmap);
 private:
     static void battleField(World* world);
     static void smallArmy(int wx, int wy, int wz, World* world, const char* name, int n, bool blue, int wpn /*0*/, bool immobile, std::string model);
