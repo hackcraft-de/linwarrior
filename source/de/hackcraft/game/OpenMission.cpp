@@ -321,7 +321,7 @@ void OpenMission::initSkytideCity(World* world, cPlanetmap* planetmap) {
     //cout << "height before: " << loc[1] << "  height after: " << color[3] << endl;
 
     capitalCity(loc[0], loc[1], loc[2], world);
-    roundForrest(loc[0] + 50, loc[1], loc[2] + 50, world, 65, 150, 1);
+    //roundForrest(loc[0] + 50, loc[1], loc[2] + 50, world, 65, 150, 1);
 
     {
         OID group = group_alliance_player;
@@ -466,7 +466,7 @@ void OpenMission::initStarcircleTown(World* world, cPlanetmap* planetmap) {
     }
 
     smallSettling(loc[0], loc[1], loc[2], world, 15);
-    roundForrest(loc[0], loc[1], loc[2], world, 7 * 2, 22 * 2, 3);
+    //roundForrest(loc[0], loc[1], loc[2], world, 7 * 2, 22 * 2, 3);
 
     if (true) {
         smallArmy(loc[0], loc[1] + 5, loc[2], world, "Bandit Leader", 1, false, 1, false, "frogger");
@@ -624,7 +624,7 @@ void OpenMission::initPyraNanoCorp(World* world, cPlanetmap* planetmap) {
     }
 
     pyramidBuilding(loc[0], loc[1], loc[2], world);
-    roundForrest(loc[0], loc[1], loc[2], world, 28, 50, 3);
+    //roundForrest(loc[0], loc[1], loc[2], world, 28, 50, 3);
     smallArmy(loc[0] + 15, loc[1], loc[2] - 30, world, "Bandito", 3, false, 0, false, "flopsy");
 }
 
