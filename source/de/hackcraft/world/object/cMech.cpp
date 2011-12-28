@@ -170,47 +170,11 @@ void cMech::init(float* pos, float* rot, string modelName) {
         }
     }
 
-    try {
-        
-        map<string,string> m2f;
-        
-        m2f["frogger"] = "data/base/wanzers/frogger/frogger.md5mesh";
-        m2f["gorilla_ii"] = "data/base/wanzers/gorilla/gorilla_ii.md5mesh";
-        m2f["lemur"] = "data/base/wanzers/lemur/lemur.md5mesh";
-        m2f["kibitz"] = "data/base/wanzers/kibitz/kibitz.md5mesh";
-        
-        m2f["pod"] = "data/base/tanks/pod/pod.md5mesh";
-
-        m2f["bug"] = "data/base/tanks/bug/bug.md5mesh";
-        m2f["ant"] = "data/base/tanks/ant/ant.md5mesh";
-        m2f["pod"] = "data/base/tanks/pod/pod.md5mesh";
-        m2f["warbuggy"] = "data/base/tanks/warbuggy/warbuggy.md5mesh";
-        
-        m2f["flopsy"] = "data/com/blendswap/flopsy/flopsy.md5mesh";
-        
-        m2f["scorpion"] = "data/org/opengameart/scorpion/scorpion.md5mesh";
-        m2f["thunderbird"] = "data/org/opengameart/thunderbird/thunderbird.md5mesh";
-
-        m2f["gausscan"] = "data/org/opengameart/gausscan/gausscan.md5mesh";
-        m2f["twinblaster"] = "data/org/opengameart/twinblaster/twinblaster.md5mesh";
-        m2f["reactor"] = "data/org/opengameart/reactor/reactor.md5mesh";
-        
-        m2f["soldier"] = "/media/44EA-7693/workspaces/mm3d/soldier/soldier.md5mesh";
-        
-        string name = modelName;
-        if (m2f.find(name) == m2f.end()) {
-            int n = rand() % m2f.size();
-            for (auto i = m2f.begin(); i != m2f.end(); i++) {
-                if (n == 0) {
-                    name = i->first;
-                }
-                n--;
-            }
-        }
-        rigged->loadModel(m2f[name]);
+    try {                
+        rigged->loadModel(rigged->resolveFilename(modelName));
     } catch (const char* s) {
         cout << "CATCHING: " << s << endl;
-        rigged->loadModel(string("data/base/wanzers/frogger/frogger.md5mesh"));
+        rigged->loadModel(rigged->resolveFilename("frogger"));
     }
 
     traceable->radius = 1.75f;

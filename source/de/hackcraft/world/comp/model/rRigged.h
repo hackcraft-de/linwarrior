@@ -133,6 +133,7 @@ public:
 
     void transformJoints();
 
+    std::string resolveFilename(std::string modelname);
     void loadModel(std::string filename);
 
     virtual void animate(float spf);

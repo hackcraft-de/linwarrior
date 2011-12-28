@@ -423,6 +423,34 @@ void rRigged::transformJoints() {
     delete manipulators;
 }
 
+std::string rRigged::resolveFilename(std::string modelname) {
+    std::map<string,string> m2f;
+    
+    m2f["frogger"] = "data/base/device/wanzer/frogger/frogger.md5mesh";
+    m2f["gorilla_ii"] = "data/base/device/wanzer/gorilla/gorilla_ii.md5mesh";
+    m2f["lemur"] = "data/base/device/wanzer/lemur/lemur.md5mesh";
+    m2f["kibitz"] = "data/base/device/wanzer/kibitz/kibitz.md5mesh";
+
+    m2f["pod"] = "data/base/device/turret/pod/pod.md5mesh";
+
+    m2f["bug"] = "data/base/device/tank/bug/bug.md5mesh";
+    m2f["ant"] = "data/base/device/tank/ant/ant.md5mesh";
+    m2f["warbuggy"] = "data/base/device/tank/warbuggy/warbuggy.md5mesh";
+
+    m2f["flopsy"] = "data/com/blendswap/flopsy/flopsy.md5mesh";
+
+    m2f["scorpion"] = "data/org/opengameart/scorpion/scorpion.md5mesh";
+    m2f["thunderbird"] = "data/org/opengameart/thunderbird/thunderbird.md5mesh";
+
+    m2f["gausscan"] = "data/org/opengameart/gausscan/gausscan.md5mesh";
+    m2f["twinblaster"] = "data/org/opengameart/twinblaster/twinblaster.md5mesh";
+    m2f["reactor"] = "data/org/opengameart/reactor/reactor.md5mesh";
+
+    m2f["soldier"] = "/media/44EA-7693/workspaces/mm3d/soldier/soldier.md5mesh";
+
+    return m2f[modelname];
+}
+
 void rRigged::loadModel(std::string filename) {
     model = MD5Format::mapMD5Mesh(filename.c_str());
 
