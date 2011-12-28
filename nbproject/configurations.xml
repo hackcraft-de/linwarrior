@@ -10,6 +10,8 @@
         <itemPath>source/de/hackcraft/game/Game.h</itemPath>
         <itemPath>source/de/hackcraft/game/GameMain.cpp</itemPath>
         <itemPath>source/de/hackcraft/game/GameMain.h</itemPath>
+        <itemPath>source/de/hackcraft/game/OpenMission.cpp</itemPath>
+        <itemPath>source/de/hackcraft/game/OpenMission.h</itemPath>
         <itemPath>source/de/hackcraft/game/userkeys.h</itemPath>
       </logicalFolder>
       <logicalFolder name="io" displayName="io" projectFiles="true">

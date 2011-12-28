@@ -18,6 +18,8 @@ struct Game;
 
 #include "de/hackcraft/world/Entity.h"
 
+#include "OpenMission.h"
+
 #define DEFAULT_FULLSCREEN true
 #define DEFAULT_FPS 29
 #define DEFAULT_XRES 800
