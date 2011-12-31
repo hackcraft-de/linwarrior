@@ -76,9 +76,6 @@ private:
     bool overlayEnabled;
 
 private:
-    /// For loading post-processing filter.
-    char* loadTextFile(const char* filename);
-
     /// Apply post-processing filter right after drawing frame.
     void applyFilter(int width, int height);
     

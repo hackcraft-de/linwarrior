@@ -15,6 +15,8 @@
         <itemPath>source/de/hackcraft/game/userkeys.h</itemPath>
       </logicalFolder>
       <logicalFolder name="io" displayName="io" projectFiles="true">
+        <itemPath>source/de/hackcraft/io/Filesystem.cpp</itemPath>
+        <itemPath>source/de/hackcraft/io/Filesystem.h</itemPath>
         <itemPath>source/de/hackcraft/io/MD5Format.h</itemPath>
         <itemPath>source/de/hackcraft/io/Pad.h</itemPath>
         <itemPath>source/de/hackcraft/io/Texfile.cpp</itemPath>

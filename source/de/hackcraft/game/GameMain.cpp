@@ -8,6 +8,8 @@
 // To dis-/enable zone drawing.
 #include "de/hackcraft/world/object/cAlert.h"
 
+#include "de/hackcraft/io/Filesystem.h"
+
 #include <iostream>
 #include <cassert>
 
@@ -214,32 +216,14 @@ void GameMain::initGL(int width, int height) {
 }
 
 
-char* GameMain::loadTextFile(const char* filename) {
-    FILE* f = fopen(filename, "rb");
-    if (f == NULL) {
-        char* cstr = new char[1];
-        cstr[0] = 0;
-        return cstr;
-    }
-    fseek(f, 0, SEEK_END);
-    unsigned long s = ftell(f);
-    char* cstr = new char[s + 1];
-    rewind(f);
-    if (fread(cstr, s, 1, f) != 1) cstr[0] = 0;
-    cstr[s] = 0;
-    fclose(f);
-    return cstr;
-}
-
-
 void GameMain::applyFilter(int width, int height) {
     static bool fail = false;
     static GLenum postprocess = 0;
 
     if (postprocess == 0 && !fail) {
-        char* vtx = loadTextFile("data/base/prgs/post.v");
+        char* vtx = Filesystem::loadTextFile("data/base/prgs/post.v");
         if (vtx) cout << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
-        char* fgm = loadTextFile("data/base/prgs/post.f");
+        char* fgm = Filesystem::loadTextFile("data/base/prgs/post.f");
         if (fgm) cout << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
         fail = (vtx[0] == 0 && fgm[0] == 0);
         if (!fail) {
