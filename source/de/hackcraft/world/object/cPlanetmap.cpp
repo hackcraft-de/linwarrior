@@ -9,6 +9,7 @@
 #include "de/hackcraft/proc/Solid.h"
 
 #include "de/hackcraft/io/Texfile.h"
+#include "de/hackcraft/io/Filesystem.h"
 
 #include <cassert>
 
@@ -579,6 +580,27 @@ int detail = 0;
 
 #define TWODIMTEX
 
+static GLenum loadMaterial() {
+    static bool fail = false;
+    static GLenum prog = 0;
+
+    if (prog == 0 && !fail) {
+        char* vtx = Filesystem::loadTextFile("data/base/material/base.v");
+        if (vtx) cout << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
+        char* fgm = Filesystem::loadTextFile("data/base/material/base2d.f");
+        if (fgm) cout << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
+        fail = (vtx[0] == 0 && fgm[0] == 0);
+        if (!fail) {
+            prog = GLS::glCompileProgram(vtx, fgm, cout);
+        }
+        delete vtx;
+        delete fgm;
+    }
+
+    if (fail) return 0;
+    return prog;
+}
+
 void cPlanetmap::drawSolid() {
 
     // Get current Camera-Matrix.
@@ -621,6 +643,8 @@ void cPlanetmap::drawSolid() {
     {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
+            glUseProgramObjectARB(loadMaterial());
+            
             glEnable(GL_LIGHTING);
             glEnable(GL_FOG);
             glEnable(GL_COLOR_MATERIAL);
@@ -634,7 +658,7 @@ void cPlanetmap::drawSolid() {
             glEnable(GL_TEXTURE_3D);
             glBindTexture(GL_TEXTURE_3D, sGrounds[0]);
 #endif
-
+            
             float step = 64;
             int s = step * 20; // (80)
 
@@ -762,6 +786,7 @@ void cPlanetmap::drawSolid() {
 
             } // for k rings
 
+            glUseProgramObjectARB(0);
         }
         glPopAttrib();
     }

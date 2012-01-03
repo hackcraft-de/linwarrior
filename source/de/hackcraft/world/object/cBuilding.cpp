@@ -14,6 +14,7 @@
 #include "de/hackcraft/proc/Facade.h"
 
 #include "de/hackcraft/io/Texfile.h"
+#include "de/hackcraft/io/Filesystem.h"
 
 #include <cassert>
 
@@ -22,6 +23,28 @@ using std::cout;
 using std::endl;
 
 #define BUILDINGDETAIL 0
+
+static GLenum loadMaterial() {
+    static bool fail = false;
+    static GLenum prog = 0;
+
+    if (prog == 0 && !fail) {
+        char* vtx = Filesystem::loadTextFile("data/base/material/base.v");
+        if (vtx) cout << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
+        char* fgm = Filesystem::loadTextFile("data/base/material/base2d.f");
+        if (fgm) cout << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
+        fail = (vtx[0] == 0 && fgm[0] == 0);
+        if (!fail) {
+            prog = GLS::glCompileProgram(vtx, fgm, cout);
+        }
+        delete vtx;
+        delete fgm;
+    }
+
+    if (fail) return 0;
+    return prog;
+}
+
 
 
 int cBuilding::sInstances = 0;
@@ -200,6 +223,7 @@ void cBuilding::drawSolid() {
     glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_TEXTURE_BIT);
     {
         GLS::glUseProgram_fglittexture();
+        glUseProgramObjectARB(loadMaterial());
 
         long roof = sTextures[0];
         long wall = 0;
@@ -304,6 +328,7 @@ void cBuilding::drawSolid() {
             if (!true) Primitive::glAxis();
         }
         glPopMatrix();
+        glUseProgramObjectARB(0);
     }
     glPopAttrib();
 }
@@ -697,6 +722,7 @@ void cTile::drawSolid() {
     glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_TEXTURE_BIT);
     {
         GLS::glUseProgram_fglittexture();
+        glUseProgramObjectARB(loadMaterial());
 
         long ground = sTextures[tileKind];
         glColor4f(1, 1, 1, 1);
@@ -732,6 +758,7 @@ void cTile::drawSolid() {
             glEnd();
         }
         glPopMatrix();
+        glUseProgramObjectARB(0);
     }
     glPopAttrib();
 }

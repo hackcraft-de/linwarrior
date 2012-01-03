@@ -6,6 +6,8 @@
 
 #include "de/hackcraft/proc/Solid.h"
 
+#include "de/hackcraft/io/Filesystem.h"
+
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -14,6 +16,28 @@ using std::endl;
 using std::string;
 
 #include <GL/glew.h>
+
+static GLenum loadMaterial() {
+    static bool fail = false;
+    static GLenum prog = 0;
+
+    if (prog == 0 && !fail) {
+        char* vtx = Filesystem::loadTextFile("data/base/material/base.v");
+        if (vtx) cout << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
+        char* fgm = Filesystem::loadTextFile("data/base/material/base3d.f");
+        if (fgm) cout << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
+        fail = (vtx[0] == 0 && fgm[0] == 0);
+        if (!fail) {
+            prog = GLS::glCompileProgram(vtx, fgm, cout);
+        }
+        delete vtx;
+        delete fgm;
+    }
+
+    if (fail) return 0;
+    return prog;
+}
+
 
 #define DRAWJOINTS !true
 
@@ -139,6 +163,7 @@ void rRigged::drawMeshes() {
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
         GLS::glUseProgram_fglittexture3d();
+        glUseProgramObjectARB(loadMaterial());
         glColor4f(1, 1, 1, 1);
         glFrontFace(GL_CW);
 
@@ -239,6 +264,7 @@ void rRigged::drawMeshes() {
         radius = sqrt(radius);
         //cout << " Model-Dimensions: r = " << radius << " h = " << height << "\n";
         //cout << " Model-Dimensions: (" << mins[0] << " " << mins[1] << " " << mins[2] << ") (" << maxs[0] << " " << maxs[1] << " " << maxs[2] << ")\n";
+        glUseProgramObjectARB(0);
     }
     glPopAttrib();
 }
