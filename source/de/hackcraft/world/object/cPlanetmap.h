@@ -35,6 +35,8 @@ class cPlanetmap;
 // Submetre detail (2 => 4th of a metre).
 #define PLANETMAP_DIVISIONS 2
 
+typedef std::map<std::string,std::string> PlanetmapProps;
+
 /**
  * Procedural Landscape Rendering and Collision.
  */
@@ -100,8 +102,15 @@ public:
     maptype<unsigned long, sPatch*> patches;
     /// Tree template for drawing of all trees.
     rTree* tree;
+    /// Landscape type 0-4: grassland, desert etc.
+    int landtype;
+    /// Vegetation density use small values near or below one (eg. 0.7).
+    double vegetation;
+    /// Ground texture number used in rendering
+    int groundtype;
 public:
     cPlanetmap();
+    cPlanetmap(PlanetmapProps* properties);
     /// Remove cached data - enforce recalculation (enforce cache miss).
     void invalidateCache();
     /// Calculate Height and Color of the xz position.
@@ -117,6 +126,7 @@ public:
     /// Draw Decals surrounding the current camera position.
     virtual void drawEffect();
 protected:
+    void init(PlanetmapProps* properties);
     void drawBillboardPlant(float x, float h, float z, float scale, float* unrotateMatrix);
     void drawStarPlant(float x, float h, float z, float scale);
     void drawTrianglePlant(float x, float h, float z, float scale);

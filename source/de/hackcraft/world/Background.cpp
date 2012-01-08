@@ -44,6 +44,18 @@ unsigned int gPermutationTexture256 = 0;
 
 
 Background::Background() {
+    BackgroundProps properties;
+    properties["rain"] = "0.0";
+    init(&properties);
+}
+
+
+Background::Background(BackgroundProps* properties) {
+    init(properties);
+}
+
+
+void Background::init(BackgroundProps* properties) {
     /*
     struct Texture {
         const char* filename;
@@ -396,8 +408,13 @@ Background::Background() {
     }
 
     heightshift = -3;
-    rainstrength = 0;
     vector_set(light, 0.7, 0.9, -0.3);
+
+    rainstrength = 0;
+    if (properties->find("rain") != properties->end()) {
+        double value = atof(properties->at("rain").c_str());
+        rainstrength = fmax(0, fmin(value, 100));
+    }
 }
 
 void Background::drawBackground(float h) {

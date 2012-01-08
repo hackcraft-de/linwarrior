@@ -19,6 +19,7 @@ class Background;
 
 #include "de/hackcraft/psi3d/Particle.h"
 
+typedef std::map<std::string,std::string> BackgroundProps;
 
 /**
  * A background in form of a SkySphere just like
@@ -36,6 +37,8 @@ public:
     vec3 light;
 public:
     Background();
+    Background(BackgroundProps* properties);
+    void init(BackgroundProps* properties);
     void drawBackground(float h = 12.00f); // Calls other draw*()
     void drawGalaxy();
     void drawUpperDome();

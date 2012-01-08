@@ -18,7 +18,6 @@
 using namespace std;
 
 #define GROUNDDETAIL 0
-#define VEGETATION 0.7f
 
 int cPlanetmap::sInstances = 0;
 std::vector<long> cPlanetmap::sGrounds;
@@ -95,6 +94,18 @@ inline float cPlanetmap::sMod::getModifiedHeight(float x, float z, float h) {
 }
 
 cPlanetmap::cPlanetmap() {
+    PlanetmapProps properties;
+    properties["landscape.type"] = "grass";
+    properties["landscape.vegetation"] = "0.7";
+    properties["landscape.ground"] = "grass";
+    init(&properties);
+}
+
+cPlanetmap::cPlanetmap(PlanetmapProps* properties) {
+    init(properties);
+}
+
+void cPlanetmap::init(PlanetmapProps* properties) {
     sInstances++;
     if (sInstances == 1) {
         {
@@ -136,9 +147,15 @@ cPlanetmap::cPlanetmap() {
             delete texels;
         }
         
-        {
+        for (int i = 0; i < 4; i++) {
             string basepath = string("data/base/landscape/ground/");
-            string name = string(basepath).append("ground_grass.tga");
+            string names[] = { 
+                string("ground_grass"), 
+                string("ground_rock"), 
+                string("ground_stones"), 
+                string("ground_snow") 
+            };
+            string name = string(basepath).append(names[i]).append(".tga");
             cout << "Loading [" << name << "] ...\n";
             unsigned int texname;
             int w, h, bpp;
@@ -227,6 +244,43 @@ cPlanetmap::cPlanetmap() {
 
     name = "PLANETMAP";
     tree = new rTree(NULL, NULL, NULL, 0, 0, 0);
+    
+    landtype = 0;
+    if (properties->find("landscape.type") != properties->end()) {
+        std::string value = properties->at("landscape.type");
+        if (value.compare("grass") == 0) {
+            landtype = 4;
+        } else if (value.compare("desert") == 0) {
+            landtype = 3;
+        } else if (value.compare("mars") == 0) {
+            landtype = 2;
+        } else if (value.compare("lava") == 0) {
+            landtype = 1;
+        } else if (value.compare("snow") == 0) {
+            landtype = 0;
+        }
+    }
+    
+    vegetation = 0.7;
+    if (properties->find("landscape.vegetation") != properties->end()) {
+        std::string value = properties->at("landscape.vegetation");
+        double v = atof(value.c_str());
+        vegetation = fminf(3.0f, fmaxf(0.0f, v));
+    }
+    
+    groundtype = 0;
+    if (properties->find("landscape.ground") != properties->end()) {
+        std::string value = properties->at("landscape.ground");
+        if (value.compare("grass") == 0) {
+            groundtype = 1;
+        } else if (value.compare("rock") == 0) {
+            groundtype = 2;
+        } else if (value.compare("stones") == 0) {
+            groundtype = 3;
+        } else if (value.compare("snow") == 0) {
+            groundtype = 4;
+        }
+    }
 }
 
 void cPlanetmap::invalidateCache() {
@@ -260,58 +314,73 @@ void cPlanetmap::getHeight(float x, float z, float* const color) {
 
         float h1 = 0;
         float h0 = 0;
-#if 0
-        // Snowset
-        if (o1 > 0.005f) {
-            Landscape::land_snow(x, y, z, snow);
-            h1 = 1 * snow[Landscape::BUMP];
+        
+        switch (landtype) {
+            
+            case 0: {
+                // Snowset
+                if (o1 > 0.005f) {
+                    Landscape::land_snow(x, y, z, snow);
+                    h1 = 1 * snow[Landscape::BUMP];
+                }
+                if (o1 < 0.995f) {
+                    Landscape::land_snow(x, y, z, grass);
+                    h0 = 10 * grass[Landscape::BUMP];
+                }
+            } break;
+            
+            case 1: {
+                // Lavaset
+                if (o1 > 0.005f) {
+                    Landscape::mashup_lava(x, y, z, snow);
+                    h1 = 1 * snow[Landscape::BUMP];
+                }
+                if (o1 < 0.995f) {
+                    Landscape::land_lava(x, y, z, grass);
+                    h0 = 10 * grass[Landscape::BUMP];
+                }
+            } break;
+            
+            case 2: {
+                // Duneset Red
+                if (o1 > 0.005f) {
+                    Landscape::land_dunes_red(x, y, z, snow);
+                    h1 = 1 * snow[Landscape::BUMP];
+                }
+                if (o1 < 0.995f) {
+                    Landscape::land_rockies(x * 0.5f, y * 0.5f, z * 0.5f, grass);
+                    h0 = 25 * grass[Landscape::BUMP];
+                }
+            } break;
+            
+            case 3: {
+                // Duneset
+                if (o1 > 0.005f) {
+                    Landscape::land_dunes(x, y, z, snow);
+                    h1 = 5.0f * snow[Landscape::BUMP];
+                }
+                if (o1 < 0.995f) {
+                    Landscape::land_dunes(x * 0.5f, y * 0.5f, z * 0.5f, grass);
+                    h0 = 18.0f * grass[Landscape::BUMP];
+                }
+            } break;
+            
+            case 4: {
+                // Grassset
+                if (o1 > 0.005f) {
+                    Landscape::land_grass(x, y, z, snow);
+                    h1 = 5.0f * snow[Landscape::BUMP];
+                }
+                if (o1 < 0.995f) {
+                    Landscape::land_grass(x, y, z, grass);
+                    //cLandscape::land_snow(x, y, z, grass);
+                    h0 = 40 * grass[Landscape::BUMP];
+                }
+            } break;
+            
+            default: {
+            } break;
         }
-        if (o1 < 0.995f) {
-            Landscape::land_snow(x, y, z, grass);
-            h0 = 10 * grass[Landscape::BUMP];
-        }
-#elif 0
-        // Lavaset
-        if (o1 > 0.005f) {
-            Landscape::mashup_lava(x, y, z, snow);
-            h1 = 1 * snow[Landscape::BUMP];
-        }
-        if (o1 < 0.995f) {
-            Landscape::land_lava(x, y, z, grass);
-            h0 = 10 * grass[Landscape::BUMP];
-        }
-#elif 0
-        // Duneset Red
-        if (o1 > 0.005f) {
-            Landscape::land_dunes_red(x, y, z, snow);
-            h1 = 1 * snow[Landscape::BUMP];
-        }
-        if (o1 < 0.995f) {
-            Landscape::land_rockies(x * 0.5f, y * 0.5f, z * 0.5f, grass);
-            h0 = 25 * grass[Landscape::BUMP];
-        }
-#elif 0
-        // Duneset
-        if (o1 > 0.005f) {
-            Landscape::land_dunes(x, y, z, snow);
-            h1 = 5.0f * snow[Landscape::BUMP];
-        }
-        if (o1 < 0.995f) {
-            Landscape::land_dunes(x * 0.5f, y * 0.5f, z * 0.5f, grass);
-            h0 = 18.0f * grass[Landscape::BUMP];
-        }
-#else
-        // Grassset
-        if (o1 > 0.005f) {
-            Landscape::land_grass(x, y, z, snow);
-            h1 = 5.0f * snow[Landscape::BUMP];
-        }
-        if (o1 < 0.995f) {
-            Landscape::land_grass(x, y, z, grass);
-            //cLandscape::land_snow(x, y, z, grass);
-            h0 = 40 * grass[Landscape::BUMP];
-        }
-#endif
 
         // Original 1:1 mix
         //h = (1.0f - o1) * h0 + o1 * h1 - 9.0f;
@@ -345,10 +414,11 @@ void cPlanetmap::getHeight(float x, float z, float* const color) {
     }
 
     if (0) {
-        float f = 0.5;
+        float f = 0.005;
+        float f2 = 0.5;
         float cont[16];
         Landscape::experimental_continents(x*f, y*f, z*f, cont);
-        float hx = 15.0f / f * (cont[Landscape::BUMP] - 0.5f);
+        float hx = 15.0f / f2 * (cont[Landscape::BUMP] - 0.5f);
         //if (hx > 0.0) h += 2.0f*hx;
         //else h = hx;
         //h = hx+h;
@@ -652,7 +722,7 @@ void cPlanetmap::drawSolid() {
 #ifdef TWODIMTEX
             glDisable(GL_TEXTURE_3D);
             glEnable(GL_TEXTURE_2D);
-            glBindTexture(GL_TEXTURE_2D, sGrounds[1]);
+            glBindTexture(GL_TEXTURE_2D, sGrounds[groundtype]);
 #else
             glDisable(GL_TEXTURE_2D);
             glEnable(GL_TEXTURE_3D);
@@ -896,7 +966,7 @@ void cPlanetmap::drawLeafPlant(float x__, float h, float z__, float scale) {
 }
 
 void cPlanetmap::drawEffect() {
-    const float totaldensity = VEGETATION;
+    const float totaldensity = vegetation;
 
     // Pseudorandom Permutation.
     static unsigned char perms[3 * 256];
