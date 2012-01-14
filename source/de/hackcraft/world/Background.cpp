@@ -46,6 +46,7 @@ unsigned int gPermutationTexture256 = 0;
 Background::Background() {
     BackgroundProps properties;
     properties["rain"] = "0.0";
+    properties["heightshift"] = "-10.0";
     init(&properties);
 }
 
@@ -407,9 +408,14 @@ void Background::init(BackgroundProps* properties) {
         delete texels;
     }
 
-    heightshift = -3;
     vector_set(light, 0.7, 0.9, -0.3);
 
+    heightshift = 0;
+    if (properties->find("heightshift") != properties->end()) {
+        double value = atof(properties->at("heightshift").c_str());
+        heightshift = fmax(-20, fmin(value, 0));
+    }
+    
     rainstrength = 0;
     if (properties->find("rain") != properties->end()) {
         double value = atof(properties->at("rain").c_str());
