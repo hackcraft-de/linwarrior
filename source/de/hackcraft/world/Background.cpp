@@ -45,8 +45,10 @@ unsigned int gPermutationTexture256 = 0;
 
 Background::Background() {
     BackgroundProps properties;
-    properties["rain"] = "0.0";
+    properties["windspeed"] = "0.1";
+    properties["raininess"] = "0.0";
     properties["heightshift"] = "-10.0";
+    properties["cloudiness"] = "0.1";
     init(&properties);
 }
 
@@ -415,11 +417,23 @@ void Background::init(BackgroundProps* properties) {
         double value = atof(properties->at("heightshift").c_str());
         heightshift = fmax(-20, fmin(value, 0));
     }
+
+    windspeed = 0;
+    if (properties->find("windspeed") != properties->end()) {
+        double value = atof(properties->at("windspeed").c_str());
+        windspeed = fmax(0, fmin(value, 10000));
+    }
     
-    rainstrength = 0;
-    if (properties->find("rain") != properties->end()) {
-        double value = atof(properties->at("rain").c_str());
-        rainstrength = fmax(0, fmin(value, 100));
+    raininess = 0;
+    if (properties->find("raininess") != properties->end()) {
+        double value = atof(properties->at("raininess").c_str());
+        raininess = fmax(0, fmin(value, 1));
+    }
+    
+    cloudiness = 0;
+    if (properties->find("cloudiness") != properties->end()) {
+        double value = atof(properties->at("cloudiness").c_str());
+        cloudiness = fmax(0, fmin(value, 1));
     }
 }
 
@@ -848,57 +862,62 @@ void Background::drawClouds() {
             glScalef(100, 100 * 0.24, 100);
             //glScalef(100, 100 * 0.125, 100); // original
 
-            float windspeed = 2;
-            float trad = windspeed * 24.0f * (hour / 24.00f) * 2 * M_PI;
             float light = 0.3 + 0.7 * cos((hour - 12.0f) / 12.00f * 0.5f * M_PI);
-            glRotatef(trad / 0.017453f, 1, 0.1, 1);
-
+            
             //cout << hour << endl;
             srand(12421);
-            int n = 5;
-            float density = 3.0f / float(1.0f + n);
-            density = 0.999f;
-            for (int i = 0; i < n; i++) {
-                //float xrad = -(rand() % 157) * 0.01f;
-                float xrad = -(157 - (rand() % 314)) * 0.01f;
-                float yrad = (rand() % 628) * 0.01f;
+            int n = 50 * cloudiness;
+            float density = 1.0 / (1.0 + 0.01 * n);
+            //density = 0.999f;
+            
+            for (int j = 1; j <= 2; j++) {
+                
+                float trad = j * 0.5 * windspeed * 24.0f * (hour / 24.00f) * 2 * M_PI;
+                glRotatef(trad / 0.017453f, 1, 0.1, 1);
 
-                /*
-                float xaxis[] = { 1,0,0 };
-                quat qx;
-                quat_rotaxis(qx, xrad, xaxis);
+                for (int i = 0; i < n; i++) {
+                    //float xrad = -(rand() % 157) * 0.01f;
+                    float xrad = -(157 - (rand() % 314)) * 0.01f;
+                    float yrad = (rand() % 628) * 0.01f;
 
-                float yaxis[] = { 0,1,0 };
-                quat qy;
-                quat_rotaxis(qy, yrad, yaxis);
+                    /*
+                    float xaxis[] = { 1,0,0 };
+                    quat qx;
+                    quat_rotaxis(qx, xrad, xaxis);
 
-                quat qxy;
-                quat_mul(qxy, qx, qy);
+                    float yaxis[] = { 0,1,0 };
+                    quat qy;
+                    quat_rotaxis(qy, yrad, yaxis);
 
-                vec3 x = {1,0,0};
-                vec3 y = {0,1,0};
-                vec3 z = {0,0,1};
-                quat_apply(x, qxy, x);
-                quat_apply(y, qxy, y);
-                quat_apply(z, qxy, z);
+                    quat qxy;
+                    quat_mul(qxy, qx, qy);
 
-                glColor4f(1,1,1,1);
-                glVertex3f(1*x[0]+z[0], 1+z[1], 0+z[2]);
-                glVertex3f(0, 1, 0);
-                glVertex3f(0, 0, 0);
-                glVertex3f(1, 0, 0);
-                glEnd();
-                 */
+                    vec3 x = {1,0,0};
+                    vec3 y = {0,1,0};
+                    vec3 z = {0,0,1};
+                    quat_apply(x, qxy, x);
+                    quat_apply(y, qxy, y);
+                    quat_apply(z, qxy, z);
 
-                glPushMatrix();
-                {
-                    glRotatef(yrad / PI_OVER_180, 0, 1, 0);
-                    glRotatef(xrad / PI_OVER_180, 1, 0, 0);
-                    glTranslatef(0, 0, 1.7);
-                    glColor4f(light, light, light, density);
-                    Primitive::glXYCenteredTextureSquare(1);
+                    glColor4f(1,1,1,1);
+                    glVertex3f(1*x[0]+z[0], 1+z[1], 0+z[2]);
+                    glVertex3f(0, 1, 0);
+                    glVertex3f(0, 0, 0);
+                    glVertex3f(1, 0, 0);
+                    glEnd();
+                    */
+
+                    glPushMatrix();
+                    {
+                        glRotatef(yrad / PI_OVER_180, 0, 1, 0);
+                        glRotatef(xrad / PI_OVER_180, 1, 0, 0);
+                        glTranslatef(0, 0, 1.7);
+                        glColor4f(light, light, light, density);
+                        Primitive::glXYCenteredTextureSquare(1);
+                    }
+                    glPopMatrix();
                 }
-                glPopMatrix();
+                density *= density;
             }
 
         }
@@ -1097,24 +1116,42 @@ void Background::drawRain() {
     srand(seed);
     seed = rand();
 
-    if (rainstrength > 0) {
+    // Get current Camera-Matrix.
+    float m[16];
+    glGetFloatv(GL_MODELVIEW_MATRIX, m);
+    // Position from 4th Col.
+    float pnt[3];
+    loop3i(pnt[i] = m[12 + i]);
+    // Reset Position on 4th Col.
+    loop3i(m[12 + i] = 0);
+    // Apply transpose-inverse to position.
+    float n[16];
+    memcpy(n, m, sizeof (float) *16);
+    matrix_transpose(m);
+    matrix_apply2(m, pnt);
+    //cout << "height over ground: " << pnt[1] << "\n";
+    //cout << "Position: " << pnt[0] << " " << pnt[2] << "\n";
+    
+    if (raininess > 0) {
 
-        loopi(rand() % rainstrength) {
+        int n = 200 * raininess;
+        
+        loopi(rand() % n) {
             if (rain.size() >= 1000) break;
             float dx = 0.25f;
             float dz = 0.10f;
             Particle* p = new Particle();
             float alpha = (rand() % 628) * 0.01;
-            float dist = 0.2 + 0.1 * (rand() % 75);
+            float dist = 0.2 + 0.8 * (rand() % 75);
             float h = 15;
-            vector_set(p->pos, sin(alpha) * dist - 0.3 * dx*h, h, cos(alpha) * dist - 0.3 * dz * h);
+            vector_set(p->pos, -pnt[0]+sin(alpha) * dist - 0.3 * dx*h, -pnt[1]+h, -pnt[2]+cos(alpha) * dist - 0.3 * dz * h);
             vector_cpy(p->old, p->pos);
-            vector_set(p->vel, dx, -2 - 0.03f * (rand() % 100), dz);
+            vector_set(p->vel, dx, -8 - 0.03f * (rand() % 100), dz);
             vector_set(p->fce, 0, 0, 0);
             rain.push_back(p);
         }
     }
-
+    
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
         GLS::glUseProgram_fgplaincolor();
@@ -1122,11 +1159,8 @@ void Background::drawRain() {
 
         glPushMatrix();
         {
-            float m[16];
-            glGetFloatv(GL_MODELVIEW_MATRIX, m);
-            loop3i(m[12 + i] = 0);
-            glLoadIdentity();
-            glMultMatrixf(m);
+            //glLoadIdentity();
+            //glMultMatrixf(n);
 
             glBegin(GL_LINES);
 
@@ -1141,7 +1175,7 @@ void Background::drawRain() {
                 glVertex3fv(p->pos);
                 p->stepEuler(0.1, 0);
                 //std::cout << p->pos[0] << " " << p->pos[1] << " " << p->pos[2] << "\n";
-                if (p->pos[1] < -10) rain.remove(p);
+                if (p->pos[1] < -pnt[1]-10) rain.remove(p);
             }
             glEnd();
         }

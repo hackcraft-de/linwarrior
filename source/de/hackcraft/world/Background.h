@@ -31,9 +31,16 @@ public:
     float hour;
     std::map<int, unsigned int> textures;
     std::list<Particle*> rain;
-    int rainstrength;
     int seed;
+    /** Total amount of rain drops at a time. */
+    int raininess;
+    /** Zero to negative shift (upward) makes horizontal curvature visible. */
     float heightshift;
+    /** Relative amount of clouds [0,1]. */
+    float cloudiness;
+    /** Windspeed for cloud movement per (scaled) time. */
+    float windspeed;
+    /** Light direction according to celestial bodies and time (sun/moon). */
     vec3 light;
 public:
     Background();
