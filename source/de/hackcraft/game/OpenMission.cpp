@@ -15,6 +15,8 @@
 
 #include "de/hackcraft/world/comp/weapon/rWeapon.h"
 
+#include "de/hackcraft/world/Propmap.h"
+
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -209,7 +211,7 @@ Entity* OpenMission::initPlayerParty(World* world, cPlanetmap* planetmap, float*
 
         adjustHeight(planetmap, pos);
 
-        Props c;
+        Propmap c;
 
         stringstream pos_;
         pos_ << "(" << pos[0] << "," << pos[1] << "," << pos[2] << ")";
@@ -235,7 +237,7 @@ Entity* OpenMission::initPlayerParty(World* world, cPlanetmap* planetmap, float*
         c["LLoArm"] = "Machinegun";
         c["RLoArm"] = "Machinegun";
 
-        cMech* mech = new cMech(c);
+        cMech* mech = new cMech(&c);
         if (mech == NULL) throw "No memory for player mech!";
         player = mech;
         

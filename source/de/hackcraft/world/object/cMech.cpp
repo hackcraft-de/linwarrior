@@ -48,7 +48,9 @@ using std::map;
 int cMech::sInstances = 0;
 std::map<int, long> cMech::sTextures;
 
-cMech::cMech(Props& cnf) {
+cMech::cMech(Propmap* props) {
+    
+    Propmap& cnf = *props;
     
     int n;
     float x, y, z;
