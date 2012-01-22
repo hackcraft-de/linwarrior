@@ -17,6 +17,8 @@ class cPlanetmap;
 
 #include "de/hackcraft/world/comp/model/rTree.h"
 
+#include "de/hackcraft/world/Propmap.h"
+
 #define USE_UNORDERED_MAP
 #if defined(USE_UNORDERED_MAP)
 #include <unordered_map>
@@ -34,8 +36,6 @@ class cPlanetmap;
 
 // Submetre detail (2 => 4th of a metre).
 #define PLANETMAP_DIVISIONS 2
-
-typedef std::map<std::string,std::string> PlanetmapProps;
 
 /**
  * Procedural Landscape Rendering and Collision.
@@ -110,7 +110,7 @@ public:
     int groundtype;
 public:
     cPlanetmap();
-    cPlanetmap(PlanetmapProps* properties);
+    cPlanetmap(Propmap* properties);
     /// Remove cached data - enforce recalculation (enforce cache miss).
     void invalidateCache();
     /// Calculate Height and Color of the xz position.
@@ -126,7 +126,7 @@ public:
     /// Draw Decals surrounding the current camera position.
     virtual void drawEffect();
 protected:
-    void init(PlanetmapProps* properties);
+    void init(Propmap* properties);
     void drawBillboardPlant(float x, float h, float z, float scale, float* unrotateMatrix);
     void drawStarPlant(float x, float h, float z, float scale);
     void drawTrianglePlant(float x, float h, float z, float scale);

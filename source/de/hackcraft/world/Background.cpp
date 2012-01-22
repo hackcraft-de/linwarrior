@@ -44,21 +44,21 @@ unsigned int gPermutationTexture256 = 0;
 
 
 Background::Background() {
-    BackgroundProps properties;
-    properties["windspeed"] = "0.1";
-    properties["raininess"] = "0.0";
-    properties["heightshift"] = "-10.0";
-    properties["cloudiness"] = "0.1";
+    Propmap properties;
+    properties["backscape.windspeed"] = "0.1";
+    properties["backscape.raininess"] = "0.0";
+    properties["backscape.heightshift"] = "-10.0";
+    properties["backscape.cloudiness"] = "0.1";
     init(&properties);
 }
 
 
-Background::Background(BackgroundProps* properties) {
+Background::Background(Propmap* properties) {
     init(properties);
 }
 
 
-void Background::init(BackgroundProps* properties) {
+void Background::init(Propmap* properties) {
     /*
     struct Texture {
         const char* filename;
@@ -411,30 +411,11 @@ void Background::init(BackgroundProps* properties) {
     }
 
     vector_set(light, 0.7, 0.9, -0.3);
-
-    heightshift = 0;
-    if (properties->find("heightshift") != properties->end()) {
-        double value = atof(properties->at("heightshift").c_str());
-        heightshift = fmax(-20, fmin(value, 0));
-    }
-
-    windspeed = 0;
-    if (properties->find("windspeed") != properties->end()) {
-        double value = atof(properties->at("windspeed").c_str());
-        windspeed = fmax(0, fmin(value, 10000));
-    }
     
-    raininess = 0;
-    if (properties->find("raininess") != properties->end()) {
-        double value = atof(properties->at("raininess").c_str());
-        raininess = fmax(0, fmin(value, 1));
-    }
-    
-    cloudiness = 0;
-    if (properties->find("cloudiness") != properties->end()) {
-        double value = atof(properties->at("cloudiness").c_str());
-        cloudiness = fmax(0, fmin(value, 1));
-    }
+    heightshift = fmax(-20, fmin(properties->getProperty("backscape.heightshift", 0), 0));
+    windspeed = fmax(0, fmin(properties->getProperty("backscape.windspeed", 0), 10000));
+    raininess = fmax(0, fmin(properties->getProperty("backscape.raininess", 0), 1));
+    cloudiness = fmax(0, fmin(properties->getProperty("backscape.cloudiness", 0), 1));
 }
 
 void Background::drawBackground(float h) {
