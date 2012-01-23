@@ -215,27 +215,27 @@ Entity* OpenMission::initPlayerParty(World* world, cPlanetmap* planetmap, float*
 
         stringstream pos_;
         pos_ << "(" << pos[0] << "," << pos[1] << "," << pos[2] << ")";
-        c["pos"] = pos_.str();
+        c["mech.pos"] = pos_.str();
 
         stringstream rot_;
         rot_ << "(" << rot[0] << "," << rot[1] << "," << rot[2] << ")";
-        c["rot"] = rot_.str();
+        c["mech.rot"] = rot_.str();
 
-        c["name"] = "Playermech";
-        c["displayname"] = "Alpha";
-        c["model"] = "frogger";
-        c["ai"] = "false";
-        //c["tags"] = "{FAC_BLUE,PLR_HUMAN}";
-        //c["enemies"] = "{FAC_RED}";
-        //c["notenemies"] = "{HLT_DEAD}";
+        c["mech.name"] = "Playermech";
+        c["mech.displayname"] = "Alpha";
+        c["mech.model"] = "frogger";
+        c["mech.ai"] = "false";
+        //c["mech.tags"] = "{FAC_BLUE,PLR_HUMAN}";
+        //c["mech.enemies"] = "{FAC_RED}";
+        //c["mech.notenemies"] = "{HLT_DEAD}";
         
-        c["Center"] = "none";
-        c["LTorsor"] = "Plasma";
-        c["RTorsor"] = "Raybeam";
-        c["LUpArm"] = "Homing";
-        c["RUpArm"] = "Homing";
-        c["LLoArm"] = "Machinegun";
-        c["RLoArm"] = "Machinegun";
+        c["mech.Center"] = "none";
+        c["mech.LTorsor"] = "Plasma";
+        c["mech.RTorsor"] = "Raybeam";
+        c["mech.LUpArm"] = "Homing";
+        c["mech.RUpArm"] = "Homing";
+        c["mech.LLoArm"] = "Machinegun";
+        c["mech.RLoArm"] = "Machinegun";
 
         cMech* mech = new cMech(&c);
         if (mech == NULL) throw "No memory for player mech!";

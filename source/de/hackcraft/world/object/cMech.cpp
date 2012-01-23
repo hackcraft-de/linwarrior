@@ -35,6 +35,9 @@ using std::endl;
 #include <string>
 using std::string;
 
+#include <sstream>
+using std::stringstream;
+
 #include <map>
 using std::map;
 
@@ -55,19 +58,19 @@ cMech::cMech(Propmap* props) {
     int n;
     float x, y, z;
     
-    cout << cnf["model"] << "\n";
+    cout << cnf["mech.model"] << "\n";
     
-    cout << cnf["pos"] << "\n";
-    n = sscanf(cnf["pos"].c_str(), " ( %f , %f , %f ) ", &x, &y, &z);
+    cout << cnf["mech.pos"] << "\n";
+    n = sscanf(cnf["mech.pos"].c_str(), " ( %f , %f , %f ) ", &x, &y, &z);
     vec3 pos;
     vector_set(pos, x, y, z);
     
-    cout << cnf["rot"] << "\n";
-    n = sscanf(cnf["rot"].c_str(), " ( %f , %f , %f ) ", &x, &y, &z);
+    cout << cnf["mech.rot"] << "\n";
+    n = sscanf(cnf["mech.rot"].c_str(), " ( %f , %f , %f ) ", &x, &y, &z);
     vec3 rot;
     vector_set(rot, x, y, z);
     
-    init(pos, rot, cnf["model"]);
+    init(pos, rot, cnf["mech.model"]);
     
     // Mount weapons
     
@@ -80,7 +83,9 @@ cMech::cMech(Propmap* props) {
     
     for (int i = 0; i < 7; i++) {
         
-        string wpn = cnf[mpts[i]];
+        stringstream s;
+        s << "mech." << mpts[i];
+        string wpn = cnf[s.str()];
         
         if (wpn.compare("Plasma") == 0) {
             cout << wpn << " selected for " << mpts[i] << "\n";
@@ -107,10 +112,10 @@ cMech::cMech(Propmap* props) {
         }
     }
 
-    name = cnf["name"];
-    nameable->name = cnf["displayname"];
-    controller->enabled = (cnf["ai"].compare("true") == 0);
-    mobile->immobile = (cnf["immobile"].compare("true") == 0);
+    name = cnf["mech.name"];
+    nameable->name = cnf["mech.displayname"];
+    controller->enabled = (cnf["mech.ai"].compare("true") == 0);
+    mobile->immobile = (cnf["mech.immobile"].compare("true") == 0);
 }
 
 cMech::cMech(float* pos, float* rot, string modelName) {
