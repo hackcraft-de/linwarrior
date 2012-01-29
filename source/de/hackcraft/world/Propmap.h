@@ -11,7 +11,8 @@
 
 #include <string>
 
-class Propmap : public std::map<std::string, std::string> {
+class Propmap {
+    std::map<std::string, std::string> contents;
 public:
 
     bool contains(const char* s) {
@@ -27,9 +28,24 @@ public:
     }
     
     bool contains(std::string* s) {
-        return (find(*s) != end());
+        return (contents.find(*s) != contents.end());
     }
 
+    std::string getProperty(const char* k, const char* v) {
+        return getProperty(std::string(k), std::string(v));
+    }
+
+    std::string getProperty(std::string k, std::string v) {
+        return getProperty(&k, &v);
+    }
+    
+    std::string getProperty(std::string* k, std::string* v) {
+        if (!contains(*k)) {
+            return *v;
+        } else {
+            return contents.at(*k);
+        }
+    }
     
     double getProperty(const char* s, double defaultValue) {
         return getProperty(std::string(s), defaultValue);
@@ -47,8 +63,24 @@ public:
         if (!contains(s)) {
             return defaultValue;
         } else {
-            return atof(at(*s).c_str());
+            return atof(contents.at(*s).c_str());
         }
+    }
+    
+    void put(const char* k, const char* v) {
+        put(std::string(k), std::string(v));
+    }
+    
+    void put(char* k, char* v) {
+        put(std::string(k), std::string(v));
+    }
+    
+    void put(std::string k, std::string v) {
+        put(&k, &v);
+    }
+    
+    void put(std::string* k, std::string* v) {
+        contents[*k] = *v;
     }
 };
 

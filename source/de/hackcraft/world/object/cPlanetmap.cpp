@@ -95,9 +95,9 @@ inline float cPlanetmap::sMod::getModifiedHeight(float x, float z, float h) {
 
 cPlanetmap::cPlanetmap() {
     Propmap properties;
-    properties["landscape.type"] = "grass";
-    properties["landscape.vegetation"] = "0.7";
-    properties["landscape.ground"] = "grass";
+    properties.put("landscape.type", "grass");
+    properties.put("landscape.vegetation", "0.7");
+    properties.put("landscape.ground", "grass");
     init(&properties);
 }
 
@@ -247,7 +247,7 @@ void cPlanetmap::init(Propmap* properties) {
     
     landtype = 0;
     if (properties->contains("landscape.type")) {
-        std::string value = properties->at("landscape.type");
+        std::string value = properties->getProperty("landscape.type", "grass");
         if (value.compare("grass") == 0) {
             landtype = 4;
         } else if (value.compare("desert") == 0) {
@@ -263,14 +263,14 @@ void cPlanetmap::init(Propmap* properties) {
     
     vegetation = 0.7;
     if (properties->contains("landscape.vegetation")) {
-        std::string value = properties->at("landscape.vegetation");
+        std::string value = properties->getProperty("landscape.vegetation", "1");
         double v = atof(value.c_str());
         vegetation = fminf(3.0f, fmaxf(0.0f, v));
     }
     
     groundtype = 0;
     if (properties->contains("landscape.ground")) {
-        std::string value = properties->at("landscape.ground");
+        std::string value = properties->getProperty("landscape.ground", "grass");
         if (value.compare("grass") == 0) {
             groundtype = 1;
         } else if (value.compare("rock") == 0) {

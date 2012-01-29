@@ -58,19 +58,19 @@ cMech::cMech(Propmap* props) {
     int n;
     float x, y, z;
     
-    cout << cnf["mech.model"] << "\n";
+    cout << cnf.getProperty("mech.model", "no model") << "\n";
     
-    cout << cnf["mech.pos"] << "\n";
-    n = sscanf(cnf["mech.pos"].c_str(), " ( %f , %f , %f ) ", &x, &y, &z);
+    cout << cnf.getProperty("mech.pos", "no position") << "\n";
+    n = sscanf(cnf.getProperty("mech.pos", "0 0 0").c_str(), " ( %f , %f , %f ) ", &x, &y, &z);
     vec3 pos;
     vector_set(pos, x, y, z);
     
-    cout << cnf["mech.rot"] << "\n";
-    n = sscanf(cnf["mech.rot"].c_str(), " ( %f , %f , %f ) ", &x, &y, &z);
+    cout << cnf.getProperty("mech.rot", "no rotation") << "\n";
+    n = sscanf(cnf.getProperty("mech.rot", "0 0 0").c_str(), " ( %f , %f , %f ) ", &x, &y, &z);
     vec3 rot;
     vector_set(rot, x, y, z);
     
-    init(pos, rot, cnf["mech.model"]);
+    init(pos, rot, cnf.getProperty("mech.model", "frogger"));
     
     // Mount weapons
     
@@ -83,9 +83,13 @@ cMech::cMech(Propmap* props) {
     
     for (int i = 0; i < 7; i++) {
         
-        stringstream s;
-        s << "mech." << mpts[i];
-        string wpn = cnf[s.str()];
+        stringstream sstr;
+        sstr << "mech." << mpts[i];
+        string s = sstr.str();
+        
+        if (!cnf.contains(s)) continue;
+        
+        string wpn = cnf.getProperty(s, std::string(""));
         
         if (wpn.compare("Plasma") == 0) {
             cout << wpn << " selected for " << mpts[i] << "\n";
@@ -112,10 +116,10 @@ cMech::cMech(Propmap* props) {
         }
     }
 
-    name = cnf["mech.name"];
-    nameable->name = cnf["mech.displayname"];
-    controller->enabled = (cnf["mech.ai"].compare("true") == 0);
-    mobile->immobile = (cnf["mech.immobile"].compare("true") == 0);
+    name = cnf.getProperty("mech.name", "unnamed");
+    nameable->name = cnf.getProperty("mech.displayname", "???");
+    controller->enabled = (cnf.getProperty("mech.ai", "false").compare("true") == 0);
+    mobile->immobile = (cnf.getProperty("mech.immobile", "false").compare("true") == 0);
 }
 
 cMech::cMech(float* pos, float* rot, string modelName) {

@@ -45,10 +45,10 @@ unsigned int gPermutationTexture256 = 0;
 
 Background::Background() {
     Propmap properties;
-    properties["backscape.windspeed"] = "0.1";
-    properties["backscape.raininess"] = "0.0";
-    properties["backscape.heightshift"] = "-10.0";
-    properties["backscape.cloudiness"] = "0.1";
+    properties.put("backscape.windspeed", "0.1");
+    properties.put("backscape.raininess", "0.0");
+    properties.put("backscape.heightshift", "-10.0");
+    properties.put("backscape.cloudiness", "0.1");
     init(&properties);
 }
 
@@ -412,10 +412,10 @@ void Background::init(Propmap* properties) {
 
     vector_set(light, 0.7, 0.9, -0.3);
     
-    heightshift = fmax(-20, fmin(properties->getProperty("backscape.heightshift", 0), 0));
-    windspeed = fmax(0, fmin(properties->getProperty("backscape.windspeed", 0), 10000));
-    raininess = fmax(0, fmin(properties->getProperty("backscape.raininess", 0), 1));
-    cloudiness = fmax(0, fmin(properties->getProperty("backscape.cloudiness", 0), 1));
+    heightshift = fmax(-20, fmin(properties->getProperty("backscape.heightshift", 0.0f), 0));
+    windspeed = fmax(0, fmin(properties->getProperty("backscape.windspeed", 0.0f), 10000));
+    raininess = fmax(0, fmin(properties->getProperty("backscape.raininess", 0.0f), 1));
+    cloudiness = fmax(0, fmin(properties->getProperty("backscape.cloudiness", 0.0f), 1));
 }
 
 void Background::drawBackground(float h) {
