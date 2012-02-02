@@ -142,6 +142,7 @@
         <itemPath>source/de/hackcraft/world/Mission.cpp</itemPath>
         <itemPath>source/de/hackcraft/world/Mission.h</itemPath>
         <itemPath>source/de/hackcraft/world/OID.h</itemPath>
+        <itemPath>source/de/hackcraft/world/Propmap.cpp</itemPath>
         <itemPath>source/de/hackcraft/world/Propmap.h</itemPath>
         <itemPath>source/de/hackcraft/world/Timing.cpp</itemPath>
         <itemPath>source/de/hackcraft/world/Timing.h</itemPath>

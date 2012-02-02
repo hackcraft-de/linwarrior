@@ -10,10 +10,13 @@
 #define	PROPMAP_H
 
 #include <string>
+#include <map>
 
 class Propmap {
     std::map<std::string, std::string> contents;
 public:
+    
+    void load(const char* filename);
 
     bool contains(const char* s) {
         return contains(std::string(s));

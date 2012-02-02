@@ -22,6 +22,8 @@ Enhanced Internals
 - Ability to configure some mech parameters.
 - Enhanced framework library
 - Added multiple main support
+Enhanced Mod-ability
+- Added global property file
 
 
 2011_04_17 r19

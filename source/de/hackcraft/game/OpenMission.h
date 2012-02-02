@@ -11,6 +11,7 @@
 #define	OPENMISSION_H
 
 #include "de/hackcraft/world/Mission.h"
+#include "de/hackcraft/world/Propmap.h"
 
 /**
  * Mission for testing new Mission features.
@@ -23,6 +24,7 @@ private:
     OID group_enemies_all;
     std::set<OID> inc_sense;
     std::set<OID> exc_sense;
+    Propmap globalProperties;
 private:
     virtual void onVictory();
     virtual void onDefeat();

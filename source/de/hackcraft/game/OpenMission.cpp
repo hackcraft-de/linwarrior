@@ -77,6 +77,13 @@ void OpenMission::onDefeat() {
 Entity* OpenMission::init(World* world) {
     srand(0);
 
+    cout << "Loading global properties...\n";
+    //try {
+        globalProperties.load("data/base/global.properties");
+    //} catch (...) {
+    //    cout << "Could not load global properties.\n";
+    //}
+    
     cout << "Setting mission date and time...\n";
     if (!true) {
         world->getTiming()->setTime(12);
@@ -88,7 +95,7 @@ Entity* OpenMission::init(World* world) {
     }
 
     cout << "Initialising planetary maps...\n";
-    cPlanetmap* planetmap = new cPlanetmap();
+    cPlanetmap* planetmap = new cPlanetmap(&globalProperties);
     world->spawnObject(planetmap);
 
     cout << "Initialising call groups...\n";
