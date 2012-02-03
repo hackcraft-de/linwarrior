@@ -43,9 +43,9 @@ public:
     /// only affect that current instance.
     static World* instance;
 
-    /// Mission Setup and Objective-Controller.
-    Mission* mMission;
-
+    /// Mission Subsystem (world setup and objective-controller).
+    Mission* mission;
+    
 private:
     /// Not yet dispatched messages (because they are not yet overdue).
     std::priority_queue<Message*, std::vector<Message*>, Message> mMessages;
@@ -53,8 +53,8 @@ private:
     /// Messages already delivered to group participants.
     std::list<Message*> mDispatchedMessages;
 
-    /// Background Object
-    Background mBackground;
+    /// Background Subsystem (sky, env-lighting and fog).
+    Background background;
 
     // Not Yet, may be merged with Background:
     // Overlays weather effects like rain, snow or dust.

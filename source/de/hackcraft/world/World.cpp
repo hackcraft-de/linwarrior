@@ -23,8 +23,8 @@ World* World::instance = NULL;
 World::World() {
     World::instance = this;
 
-    mMission = NULL;
-
+    mission = NULL;
+    
     // Earth
     vector_set(mGravity, 0.0f, -9.80665f, 0.0f);
     // Mars
@@ -162,7 +162,7 @@ void World::bagFragged() {
 
 void World::advanceTime(int deltamsec) {
     //cout << "advanceTime()\n";
-    if (mMission) mMission->checkConditions();
+    if (mission) mission->checkConditions();
     mTiming.advanceTime(deltamsec);
     //cout << getSerial() << ": " << mHour << " " << mMinute << " " << mSecond << " " << mDeltacycle << endl;
 }
@@ -242,7 +242,11 @@ void World::transformObjects() {
 
 void World::drawBack() {
     //cout << "drawBack()\n";
-    mBackground.drawBackground(mTiming.getTime24());
+    if (true) {
+        background.drawBackground(mTiming.getTime24());
+    } else {
+        glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    }
 }
 
 void World::drawSolid(Entity* camera, std::list<Entity*>* objects) {

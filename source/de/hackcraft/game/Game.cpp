@@ -133,14 +133,14 @@ void Game::initMission() {
     this->world = new World();
     assert(this->world != NULL);
     if (this->mission == 1) {
-        this->world->mMission = new Mission();
-        assert(this->world->mMission != NULL);
-        this->camera = this->world->mMission->init(this->world);
+        this->world->mission = new Mission();
+        assert(this->world->mission != NULL);
+        this->camera = this->world->mission->init(this->world);
         this->pad1 = this->camera->pad;
     } else {
-        this->world->mMission = new OpenMission();
-        assert(this->world->mMission != NULL);
-        this->camera = this->world->mMission->init(this->world);
+        this->world->mission = new OpenMission();
+        assert(this->world->mission != NULL);
+        this->camera = this->world->mission->init(this->world);
         this->pad1 = this->camera->pad;
     }
     assert(this->camera != NULL);
