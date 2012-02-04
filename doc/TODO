@@ -48,6 +48,13 @@ Refactoring and cleanup:
 - Use vec4 to utilize vector ops?
 
 
+Backscape:
+
+- Particle snow with brownian motion.
+
+- Dark (rainy) / White (snowy) overcast sky.
+
+
 Landscape:
 
 - Take slope into account for Planetmap erosion and material within second pass.
@@ -106,8 +113,6 @@ Gameplay:
 - First real mission.
 
 - Radar LOS and Disturbances?
-
-- Turrets
 
 - Weapon-Engage and -Disengage time. (necessary?)
 
