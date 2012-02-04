@@ -24,6 +24,7 @@ World::World() {
     World::instance = this;
 
     mission = NULL;
+    background = NULL;
     
     // Earth
     vector_set(mGravity, 0.0f, -9.80665f, 0.0f);
@@ -43,8 +44,6 @@ World::World() {
     mViewdistance = 150;
 
     //getSystemHour(mTime);
-    
-    background = new Background();
 }
 
 
@@ -244,7 +243,7 @@ void World::transformObjects() {
 
 void World::drawBack() {
     //cout << "drawBack()\n";
-    if (true) {
+    if (background != NULL) {
         background->drawBackground(mTiming.getTime24());
     } else {
         glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);

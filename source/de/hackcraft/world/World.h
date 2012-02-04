@@ -45,6 +45,9 @@ public:
 
     /// Mission Subsystem (world setup and objective-controller).
     Mission* mission;
+
+    /// Background Subsystem (sky, env-lighting and fog).
+    Background* background;
     
 private:
     /// Not yet dispatched messages (because they are not yet overdue).
@@ -52,9 +55,6 @@ private:
 
     /// Messages already delivered to group participants.
     std::list<Message*> mDispatchedMessages;
-
-    /// Background Subsystem (sky, env-lighting and fog).
-    Background* background;
 
     // Not Yet, may be merged with Background:
     // Overlays weather effects like rain, snow or dust.

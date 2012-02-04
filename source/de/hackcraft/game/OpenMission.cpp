@@ -85,8 +85,8 @@ Entity* OpenMission::init(World* world) {
     //}
 
     cout << "Initialising background...\n";
-    //world->background = new Background();
-    //world->background = new Background(&globalProperties);
+    delete world->background;
+    world->background = new Background(&globalProperties);
     
     cout << "Setting mission date and time...\n";
     if (!true) {

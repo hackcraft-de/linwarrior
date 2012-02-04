@@ -42,6 +42,8 @@ enum Texids {
 
 unsigned int gPermutationTexture256 = 0;
 
+std::map<int, unsigned int> Background::textures;
+
 
 Background::Background() {
     Propmap properties;
@@ -59,6 +61,22 @@ Background::Background(Propmap* properties) {
 
 
 void Background::init(Propmap* properties) {
+
+    vector_set(light, 0.7, 0.9, -0.3);
+    light[3] = 0.0f;
+    
+    heightshift = fmax(-20, fmin(properties->getProperty("backscape.heightshift", 0.0f), 0));
+    windspeed = fmax(0, fmin(properties->getProperty("backscape.windspeed", 0.0f), 10000));
+    raininess = fmax(0, fmin(properties->getProperty("backscape.raininess", 0.0f), 1));
+    cloudiness = fmax(0, fmin(properties->getProperty("backscape.cloudiness", 0.0f), 1));
+    
+    if (textures.size() == 0) {
+        initTextures();
+    }
+}
+
+
+void Background::initTextures() {
     /*
     struct Texture {
         const char* filename;
@@ -409,14 +427,6 @@ void Background::init(Propmap* properties) {
         }
         delete texels;
     }
-
-    vector_set(light, 0.7, 0.9, -0.3);
-    light[3] = 0.0f;
-    
-    heightshift = fmax(-20, fmin(properties->getProperty("backscape.heightshift", 0.0f), 0));
-    windspeed = fmax(0, fmin(properties->getProperty("backscape.windspeed", 0.0f), 10000));
-    raininess = fmax(0, fmin(properties->getProperty("backscape.raininess", 0.0f), 1));
-    cloudiness = fmax(0, fmin(properties->getProperty("backscape.cloudiness", 0.0f), 1));
 }
 
 void Background::drawBackground(float h) {

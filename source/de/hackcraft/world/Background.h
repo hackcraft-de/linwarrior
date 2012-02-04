@@ -27,9 +27,10 @@ class Background;
  * Sets lightsource 0 as skylight according to time.
  */
 class Background {
+private:
+    static std::map<int, unsigned int> textures;
 public:
     float hour;
-    std::map<int, unsigned int> textures;
     std::list<Particle*> rain;
     int seed;
     /** Total amount of rain drops at a time. */
@@ -46,6 +47,7 @@ public:
     Background();
     Background(Propmap* properties);
     void init(Propmap* properties);
+    void initTextures();
     void drawBackground(float h = 12.00f); // Calls other draw*()
     void drawGalaxy();
     void drawUpperDome();
