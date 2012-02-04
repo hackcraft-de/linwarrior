@@ -54,7 +54,7 @@ private:
     std::list<Message*> mDispatchedMessages;
 
     /// Background Subsystem (sky, env-lighting and fog).
-    Background background;
+    Background* background;
 
     // Not Yet, may be merged with Background:
     // Overlays weather effects like rain, snow or dust.

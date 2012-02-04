@@ -41,7 +41,7 @@ public:
     /** Windspeed for cloud movement per (scaled) time. */
     float windspeed;
     /** Light direction according to celestial bodies and time (sun/moon). */
-    vec3 light;
+    vec4 light;
 public:
     Background();
     Background(Propmap* properties);

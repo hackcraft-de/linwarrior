@@ -21,7 +21,7 @@
 #include <iostream>
 using namespace std;
 
-#define BKGDETAIL +1
+#define BKGDETAIL +0
 
 #define DOME_XRES 2*6
 #define DOME_YRES 7
@@ -411,6 +411,7 @@ void Background::init(Propmap* properties) {
     }
 
     vector_set(light, 0.7, 0.9, -0.3);
+    light[3] = 0.0f;
     
     heightshift = fmax(-20, fmin(properties->getProperty("backscape.heightshift", 0.0f), 0));
     windspeed = fmax(0, fmin(properties->getProperty("backscape.windspeed", 0.0f), 10000));

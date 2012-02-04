@@ -43,6 +43,8 @@ World::World() {
     mViewdistance = 150;
 
     //getSystemHour(mTime);
+    
+    background = new Background();
 }
 
 
@@ -243,7 +245,7 @@ void World::transformObjects() {
 void World::drawBack() {
     //cout << "drawBack()\n";
     if (true) {
-        background.drawBackground(mTiming.getTime24());
+        background->drawBackground(mTiming.getTime24());
     } else {
         glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     }
