@@ -1,19 +1,19 @@
 #include "OpenMission.h"
 
-#include "de/hackcraft/world/comp/model/rPadmap.h"
+#include "de/hackcraft/world/sub/model/rPadmap.h"
 
 #include "de/hackcraft/world/object/cAlert.h"
 #include "de/hackcraft/world/object/cMech.h"
 #include "de/hackcraft/world/object/cBuilding.h"
 
-#include "de/hackcraft/world/comp/computer/rComputer.h"
-#include "de/hackcraft/world/comp/computer/rController.h"
+#include "de/hackcraft/world/sub/computer/rComputer.h"
+#include "de/hackcraft/world/sub/computer/rController.h"
 
-#include "de/hackcraft/world/comp/model/rNameable.h"
+#include "de/hackcraft/world/sub/model/rNameable.h"
 
-#include "de/hackcraft/world/comp/behavior/rMobile.h"
+#include "de/hackcraft/world/sub/behavior/rMobile.h"
 
-#include "de/hackcraft/world/comp/weapon/rWeapon.h"
+#include "de/hackcraft/world/sub/weapon/rWeapon.h"
 
 #include "de/hackcraft/world/Propmap.h"
 

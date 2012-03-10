@@ -1,6 +1,5 @@
 #include "World.h"
 
-#include "Background.h"
 #include "Mission.h"
 
 #include "de/hackcraft/world/Entity.h"
@@ -42,6 +41,8 @@ World::World() {
     mTiming.setTime(01, 01, 01);
 
     mViewdistance = 150;
+    mVisobjects = NULL;
+    mVisorigin[0] = mVisorigin[1] = mVisorigin[2] = 0;
 
     //getSystemHour(mTime);
 }
@@ -165,6 +166,9 @@ void World::advanceTime(int deltamsec) {
     //cout << "advanceTime()\n";
     if (mission) mission->checkConditions();
     mTiming.advanceTime(deltamsec);
+    if (background != NULL) {
+        background->advanceTime(deltamsec);
+    }
     //cout << getSerial() << ": " << mHour << " " << mMinute << " " << mSecond << " " << mDeltacycle << endl;
 }
 
@@ -241,19 +245,39 @@ void World::transformObjects() {
     }
 }
 
+void World::setupView(float* pos, float* ori) {
+    // Find objects in visible range.
+    float* origin = pos;
+    float maxrange = getViewdistance();
+    float min[] = {origin[0] - maxrange, origin[2] - maxrange};
+    float max[] = {origin[0] + maxrange, origin[2] + maxrange};
+    
+    if (mVisobjects != NULL) {
+        delete mVisobjects;
+    }
+    
+    mVisobjects = getGeoInterval(min, max, true);
+    assert(mVisobjects != NULL);
+    //cout << "vis:" << objects->size() << " vs " << mObjects.size() << endl;
+    
+    mVisorigin[0] = pos[0];
+    mVisorigin[1] = pos[1];
+    mVisorigin[2] = pos[2];
+}
+
 void World::drawBack() {
     //cout << "drawBack()\n";
     if (background != NULL) {
-        background->drawBackground(mTiming.getTime24());
+        background->drawBack();
     } else {
         glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     }
 }
 
-void World::drawSolid(Entity* camera, std::list<Entity*>* objects) {
+void World::drawSolid() {
     //cout << "drawSolid()\n";
-    float* origin = camera->pos0;
-    if (objects == NULL) objects = &mObjects;
+    float* origin = mVisorigin;
+    std::list<Entity*>* objects = (mVisobjects == NULL) ? &mObjects : mVisobjects;
 
     float maxrange = mViewdistance;
     float maxrange2 = maxrange*maxrange;
@@ -272,10 +296,10 @@ void World::drawSolid(Entity* camera, std::list<Entity*>* objects) {
     }
 }
 
-void World::drawEffect(Entity* camera, std::list<Entity*>* objects) {
+void World::drawEffect() {
     //cout << "drawEffect()\n";
-    float* origin = camera->pos0;
-    if (objects == NULL) objects = &mObjects;
+    float* origin = mVisorigin;
+    std::list<Entity*>* objects = (mVisobjects == NULL) ? &mObjects : mVisobjects;
 
     float maxrange2 = mViewdistance * mViewdistance;
 

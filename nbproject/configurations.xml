@@ -59,68 +59,9 @@
         <itemPath>source/de/hackcraft/util/HashMap.h</itemPath>
         <itemPath>source/de/hackcraft/util/KDTree.h</itemPath>
         <itemPath>source/de/hackcraft/util/String.h</itemPath>
+        <itemPath>source/de/hackcraft/util/string.h</itemPath>
       </logicalFolder>
       <logicalFolder name="world" displayName="world" projectFiles="true">
-        <logicalFolder name="comp" displayName="comp" projectFiles="true">
-          <logicalFolder name="behavior" displayName="behavior" projectFiles="true">
-            <itemPath>source/de/hackcraft/world/comp/behavior/rAlert.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/behavior/rAlert.h</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/behavior/rCamera.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/behavior/rCamera.h</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/behavior/rCollider.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/behavior/rCollider.h</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/behavior/rDamageable.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/behavior/rDamageable.h</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/behavior/rMobile.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/behavior/rMobile.h</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/behavior/rTraceable.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/behavior/rTraceable.h</itemPath>
-          </logicalFolder>
-          <logicalFolder name="computer" displayName="computer" projectFiles="true">
-            <itemPath>source/de/hackcraft/world/comp/computer/rComcom.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/computer/rComcom.h</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/computer/rComputer.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/computer/rComputer.h</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/computer/rController.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/computer/rController.h</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/computer/rForcom.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/computer/rForcom.h</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/computer/rNavcom.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/computer/rNavcom.h</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/computer/rTarcom.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/computer/rTarcom.h</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/computer/rWepcom.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/computer/rWepcom.h</itemPath>
-          </logicalFolder>
-          <logicalFolder name="model" displayName="model" projectFiles="true">
-            <itemPath>source/de/hackcraft/world/comp/model/rNameable.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/model/rNameable.h</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/model/rPadmap.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/model/rPadmap.h</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/model/rRigged.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/model/rRigged.h</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/model/rScatter.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/model/rScatter.h</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/model/rTree.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/model/rTree.h</itemPath>
-          </logicalFolder>
-          <logicalFolder name="weapon" displayName="weapon" projectFiles="true">
-            <itemPath>source/de/hackcraft/world/comp/weapon/rWeapon.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/weapon/rWeapon.h</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/weapon/rWeaponExplosion.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/weapon/rWeaponExplosion.h</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/weapon/rWeaponHoming.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/weapon/rWeaponHoming.h</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/weapon/rWeaponMachinegun.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/weapon/rWeaponMachinegun.h</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/weapon/rWeaponPlasmagun.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/weapon/rWeaponPlasmagun.h</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/weapon/rWeaponRaybeam.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/weapon/rWeaponRaybeam.h</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/weapon/rWeaponSparkgun.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/comp/weapon/rWeaponSparkgun.h</itemPath>
-          </logicalFolder>
-        </logicalFolder>
         <logicalFolder name="object" displayName="object" projectFiles="true">
           <itemPath>source/de/hackcraft/world/object/cAlert.cpp</itemPath>
           <itemPath>source/de/hackcraft/world/object/cAlert.h</itemPath>
@@ -131,8 +72,56 @@
           <itemPath>source/de/hackcraft/world/object/cPlanetmap.cpp</itemPath>
           <itemPath>source/de/hackcraft/world/object/cPlanetmap.h</itemPath>
         </logicalFolder>
-        <itemPath>source/de/hackcraft/world/Background.cpp</itemPath>
-        <itemPath>source/de/hackcraft/world/Background.h</itemPath>
+        <logicalFolder name="sub" displayName="sub" projectFiles="true">
+          <logicalFolder name="background" displayName="background" projectFiles="true">
+            <itemPath>source/de/hackcraft/world/sub/background/Background.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/background/Background.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="behavior" displayName="behavior" projectFiles="true">
+            <itemPath>source/de/hackcraft/world/sub/behavior/rAlert.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/behavior/rAlert.h</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/behavior/rCamera.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/behavior/rCamera.h</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/behavior/rDamageable.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/behavior/rDamageable.h</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/behavior/rMobile.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/behavior/rMobile.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="cityscape" displayName="cityscape" projectFiles="true">
+          </logicalFolder>
+          <logicalFolder name="computer" displayName="computer" projectFiles="true">
+          </logicalFolder>
+          <logicalFolder name="landscape" displayName="landscape" projectFiles="true">
+          </logicalFolder>
+          <logicalFolder name="model" displayName="model" projectFiles="true">
+          </logicalFolder>
+          <logicalFolder name="physics" displayName="physics" projectFiles="true">
+            <itemPath>source/de/hackcraft/world/sub/physics/rCollider.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/physics/rCollider.h</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/physics/rTraceable.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/physics/rTraceable.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="rigged" displayName="rigged" projectFiles="true">
+            <itemPath>source/de/hackcraft/world/sub/rigged/rRigged.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/rigged/rRigged.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="weapon" displayName="weapon" projectFiles="true">
+            <itemPath>source/de/hackcraft/world/sub/weapon/rWeapon.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/weapon/rWeapon.h</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/weapon/rWeaponExplosion.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/weapon/rWeaponExplosion.h</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/weapon/rWeaponHoming.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/weapon/rWeaponHoming.h</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/weapon/rWeaponMachinegun.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/weapon/rWeaponMachinegun.h</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/weapon/rWeaponPlasmagun.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/weapon/rWeaponPlasmagun.h</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/weapon/rWeaponRaybeam.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/weapon/rWeaponRaybeam.h</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/weapon/rWeaponSparkgun.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/weapon/rWeaponSparkgun.h</itemPath>
+          </logicalFolder>
+        </logicalFolder>
         <itemPath>source/de/hackcraft/world/Component.cpp</itemPath>
         <itemPath>source/de/hackcraft/world/Component.h</itemPath>
         <itemPath>source/de/hackcraft/world/Entity.cpp</itemPath>
@@ -144,6 +133,8 @@
         <itemPath>source/de/hackcraft/world/OID.h</itemPath>
         <itemPath>source/de/hackcraft/world/Propmap.cpp</itemPath>
         <itemPath>source/de/hackcraft/world/Propmap.h</itemPath>
+        <itemPath>source/de/hackcraft/world/Subsystem.cpp</itemPath>
+        <itemPath>source/de/hackcraft/world/Subsystem.h</itemPath>
         <itemPath>source/de/hackcraft/world/Timing.cpp</itemPath>
         <itemPath>source/de/hackcraft/world/Timing.h</itemPath>
         <itemPath>source/de/hackcraft/world/World.cpp</itemPath>
@@ -189,7 +180,126 @@
       </makefileType>
       <item path="source/de/hackcraft/util/KDTree.h" ex="true" tool="3" flavor="0">
       </item>
-      <item path="source/de/hackcraft/util/String.h" ex="true" tool="3" flavor="0">
+      <item path="source/de/hackcraft/world/sub/computer/rComcom.cpp"
+            ex="false"
+            tool="1"
+            flavor="0">
+        <ccTool>
+          <incDir>
+            <pElem>source</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/computer/rComputer.cpp"
+            ex="false"
+            tool="1"
+            flavor="0">
+        <ccTool>
+          <incDir>
+            <pElem>source</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/computer/rController.cpp"
+            ex="false"
+            tool="1"
+            flavor="0">
+        <ccTool>
+          <incDir>
+            <pElem>source</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/computer/rForcom.cpp"
+            ex="false"
+            tool="1"
+            flavor="0">
+        <ccTool>
+          <incDir>
+            <pElem>source</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/computer/rNavcom.cpp"
+            ex="false"
+            tool="1"
+            flavor="0">
+        <ccTool>
+          <incDir>
+            <pElem>source</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/computer/rTarcom.cpp"
+            ex="false"
+            tool="1"
+            flavor="0">
+        <ccTool>
+          <incDir>
+            <pElem>source</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/computer/rWepcom.cpp"
+            ex="false"
+            tool="1"
+            flavor="0">
+        <ccTool>
+          <incDir>
+            <pElem>source</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/model/rNameable.cpp"
+            ex="false"
+            tool="1"
+            flavor="0">
+        <ccTool>
+          <incDir>
+            <pElem>source</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/model/rPadmap.cpp"
+            ex="false"
+            tool="1"
+            flavor="0">
+        <ccTool>
+          <incDir>
+            <pElem>source</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/model/rScatter.cpp"
+            ex="false"
+            tool="1"
+            flavor="0">
+        <ccTool>
+          <incDir>
+            <pElem>source</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/model/rTree.cpp"
+            ex="false"
+            tool="1"
+            flavor="0">
+        <ccTool>
+          <incDir>
+            <pElem>source</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
       </item>
     </conf>
     <conf name="Release" type="1">
@@ -208,9 +318,111 @@
           <developmentMode>5</developmentMode>
         </fortranCompilerTool>
       </compileType>
+      <item path="source/de/hackcraft/util/string.h" ex="true" tool="3" flavor="0">
+      </item>
       <item path="source/de/hackcraft/world/Entity.cpp" ex="true" tool="1" flavor="0">
       </item>
       <item path="source/de/hackcraft/world/Entity.h" ex="true" tool="3" flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/computer/rComcom.cpp"
+            ex="true"
+            tool="1"
+            flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/computer/rComcom.h"
+            ex="true"
+            tool="3"
+            flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/computer/rComputer.cpp"
+            ex="true"
+            tool="1"
+            flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/computer/rComputer.h"
+            ex="true"
+            tool="3"
+            flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/computer/rController.cpp"
+            ex="true"
+            tool="1"
+            flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/computer/rController.h"
+            ex="true"
+            tool="3"
+            flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/computer/rForcom.cpp"
+            ex="true"
+            tool="1"
+            flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/computer/rForcom.h"
+            ex="true"
+            tool="3"
+            flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/computer/rNavcom.cpp"
+            ex="true"
+            tool="1"
+            flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/computer/rNavcom.h"
+            ex="true"
+            tool="3"
+            flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/computer/rTarcom.cpp"
+            ex="true"
+            tool="1"
+            flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/computer/rTarcom.h"
+            ex="true"
+            tool="3"
+            flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/computer/rWepcom.h"
+            ex="true"
+            tool="3"
+            flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/model/rNameable.cpp"
+            ex="true"
+            tool="1"
+            flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/model/rNameable.h"
+            ex="true"
+            tool="3"
+            flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/model/rPadmap.cpp"
+            ex="true"
+            tool="1"
+            flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/model/rPadmap.h"
+            ex="true"
+            tool="3"
+            flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/model/rScatter.h"
+            ex="true"
+            tool="3"
+            flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/model/rTree.cpp"
+            ex="true"
+            tool="1"
+            flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/model/rTree.h"
+            ex="true"
+            tool="3"
+            flavor="0">
       </item>
     </conf>
   </confs>

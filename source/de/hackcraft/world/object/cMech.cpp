@@ -6,19 +6,21 @@
 
 #include "de/hackcraft/io/Pad.h"
 
-#include "de/hackcraft/world/comp/weapon/rWeapon.h"
+#include "de/hackcraft/world/sub/weapon/rWeapon.h"
 
-#include "de/hackcraft/world/comp/computer/rComcom.h"
-#include "de/hackcraft/world/comp/computer/rController.h"
+#include "de/hackcraft/world/sub/rigged/rRigged.h"
 
-#include "de/hackcraft/world/comp/model/rNameable.h"
-#include "de/hackcraft/world/comp/model/rRigged.h"
+#include "de/hackcraft/world/sub/computer/rComcom.h"
+#include "de/hackcraft/world/sub/computer/rController.h"
 
-#include "de/hackcraft/world/comp/behavior/rTraceable.h"
-#include "de/hackcraft/world/comp/behavior/rDamageable.h"
-#include "de/hackcraft/world/comp/behavior/rCamera.h"
-#include "de/hackcraft/world/comp/behavior/rCollider.h"
-#include "de/hackcraft/world/comp/behavior/rMobile.h"
+#include "de/hackcraft/world/sub/model/rNameable.h"
+
+#include "de/hackcraft/world/sub/behavior/rDamageable.h"
+#include "de/hackcraft/world/sub/behavior/rCamera.h"
+#include "de/hackcraft/world/sub/behavior/rMobile.h"
+
+#include "de/hackcraft/world/sub/physics/rTraceable.h"
+#include "de/hackcraft/world/sub/physics/rCollider.h"
 
 #include "de/hackcraft/psi3d/macros.h"
 #include "de/hackcraft/psi3d/GLS.h"

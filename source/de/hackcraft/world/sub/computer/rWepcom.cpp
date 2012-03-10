@@ -4,7 +4,7 @@
 #include "de/hackcraft/world/object/cMech.h"
 
 // FIXME? Wepcom rely on weapon.
-#include "de/hackcraft/world/comp/weapon/rWeapon.h"
+#include "de/hackcraft/world/sub/weapon/rWeapon.h"
 
 #include "de/hackcraft/psi3d/Primitive.h"
 

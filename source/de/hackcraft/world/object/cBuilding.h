@@ -14,7 +14,7 @@ struct rDamageable;
 
 #include "de/hackcraft/world/Entity.h"
 
-#include "de/hackcraft/world/comp/weapon/rWeapon.h"
+#include "de/hackcraft/world/sub/weapon/rWeapon.h"
 
 /**
  * Models a building of varring size.

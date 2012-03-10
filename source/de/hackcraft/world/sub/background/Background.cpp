@@ -1,7 +1,5 @@
 #include "Background.h"
 
-#include "World.h"
-
 #include "de/hackcraft/proc/Noise.h"
 #include "de/hackcraft/proc/Distortion.h"
 #include "de/hackcraft/proc/Landscape.h"
@@ -429,13 +427,7 @@ void Background::initTextures() {
     }
 }
 
-void Background::drawBackground(float h) {
-    // Reference: dawn sunrise daylight sunset dusk darkness
-
-    // Push random seed because the current seed is going to be
-    // replaced by a (deterministic) constant value for clouds.
-    unsigned int seed = rand();
-
+void Background::advanceTime(int deltamsec) {
     float speed = 1;
     // every hour
     speed *= 24;
@@ -447,10 +439,18 @@ void Background::drawBackground(float h) {
     //speed *= 3;
     // every minute
     //speed *= 5;
-    hour = fmod(speed*h, 24.00f);
+    hour = fmod(hour + speed*deltamsec * 0.001 / 3600.00, 24.00);
     //hour = rand()%24;
     //hour = 0;
     //hour = 12;
+}
+
+void Background::drawBack() {
+    // Reference: dawn sunrise daylight sunset dusk darkness
+
+    // Push random seed because the current seed is going to be
+    // replaced by a (deterministic) constant value for clouds.
+    unsigned int seed = rand();
 
     // Sample and set unlit base ambient haze color.
     rgba haze = {0, 0, 0, 0};

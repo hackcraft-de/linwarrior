@@ -15,7 +15,7 @@ class cPlanetmap;
 
 #include "de/hackcraft/proc/Landscape.h"
 
-#include "de/hackcraft/world/comp/model/rTree.h"
+#include "de/hackcraft/world/sub/model/rTree.h"
 
 #include "de/hackcraft/world/Propmap.h"
 

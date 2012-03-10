@@ -14,12 +14,14 @@ class World;
 
 #include "de/hackcraft/psi3d/macros.h"
 
-#include "de/hackcraft/world/Background.h"
 #include "de/hackcraft/world/OID.h"
 #include "de/hackcraft/world/Timing.h"
 #include "de/hackcraft/world/Message.h"
 
 #include "de/hackcraft/world/Entity.h"
+#include "de/hackcraft/world/Subsystem.h"
+
+#include "de/hackcraft/world/sub/background/Background.h"
 
 #include <list>
 #include <set>
@@ -37,7 +39,7 @@ class Mission;
  * The Game-Object-Managing World-Database-Class.
  * Cares about spawning, indexing, searching, messaging, updating, rendering.
  */
-class World {
+class World : public Subsystem {
 public:
     /// The current World instance (singleton) other objects may
     /// only affect that current instance.
@@ -86,6 +88,12 @@ private:
 
     /// Render only objects that far away.
     float mViewdistance;
+    
+    /// Rendering origin or camera position.
+    float mVisorigin[3];
+    
+    /// Visible objects for next rendering - (re-)set in setupView.
+    std::list<Entity*>* mVisobjects;
 
     /*
      * Key-Value-Pairs for world state and progress indication.
@@ -199,12 +207,14 @@ public: // Simulation Step - Call every frame in order to update the world/missi
     void animateObjects();
     /// Let all objects calculate transformation matrices etc.
     void transformObjects();
+    /// Setup structures for rendering
+    void setupView(float* pos, float* ori);
     /// Draws background (skybox) by calling mBackground drawing method.
     void drawBack();
     /// Draw all Object's solid surfaces (calls their drawSolid method).
-    void drawSolid(Entity* camera, std::list<Entity*>* objects = NULL);
+    void drawSolid();
     /// Draw all Object's effects (calls their drawEffect method).
-    void drawEffect(Entity* camera, std::list<Entity*>* objects = NULL);
+    void drawEffect();
 
 public: // World-Filtering, World-Scanning, World-Sense for objects.
 

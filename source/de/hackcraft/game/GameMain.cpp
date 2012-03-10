@@ -371,26 +371,17 @@ void GameMain::drawFrame() {
             game.camera->listener();
         }
 
-        // Find objects in visible range.
-        float* origin = game.camera->pos0;
-        float maxrange = game.world->getViewdistance();
-        float min[] = {origin[0] - maxrange, origin[2] - maxrange};
-        float max[] = {origin[0] + maxrange, origin[2] + maxrange};
-        std::list<Entity*>* visobjects = game.world->getGeoInterval(min, max, true);
-        assert(visobjects != NULL);
-        //cout << "vis:" << objects->size() << " vs " << mObjects.size() << endl;
+        // Find objects in visible range and prepare rendering for POV.
+        game.world->setupView(game.camera->pos0, game.camera->ori0);
 
-        // Draw the surounding Sky- and Ground-Dome/Box
+        // Draw the surrounding Sky- and Ground-Dome/Box
         game.world->drawBack();
 
         // Draw the Objects themselves.
-        game.world->drawSolid(game.camera, visobjects);
+        game.world->drawSolid();
 
         // Draw the Object's translucent effects.
-        game.world->drawEffect(game.camera, visobjects);
-
-        // Delete list of visible objects.
-        delete visobjects;
+        game.world->drawEffect();
 
         bool postprocessing = true;
         if (postprocessing) applyFilter(game.width, game.height);

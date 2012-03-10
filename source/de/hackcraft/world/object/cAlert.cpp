@@ -2,7 +2,7 @@
 
 #include "de/hackcraft/world/World.h"
 
-#include "de/hackcraft/world/comp/model/rNameable.h"
+#include "de/hackcraft/world/sub/model/rNameable.h"
 
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Particle.h"

@@ -143,5 +143,6 @@ public:
     //virtual void drawHUD() { }
 };
 
+
 #endif	/* RRIGGED_H */
 

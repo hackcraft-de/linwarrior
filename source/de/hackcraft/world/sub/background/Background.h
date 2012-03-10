@@ -20,16 +20,17 @@ class Background;
 #include "de/hackcraft/psi3d/Particle.h"
 
 #include "de/hackcraft/world/Propmap.h"
+#include "de/hackcraft/world/Subsystem.h"
 
 /**
  * A background in form of a SkySphere just like
  * those virtual horizons found in aviation instruments.
  * Sets lightsource 0 as skylight according to time.
  */
-class Background {
+class Background : Subsystem {
 private:
     static std::map<int, unsigned int> textures;
-public:
+private:
     float hour;
     std::list<Particle*> rain;
     int seed;
@@ -48,7 +49,10 @@ public:
     Background(Propmap* properties);
     void init(Propmap* properties);
     void initTextures();
-    void drawBackground(float h = 12.00f); // Calls other draw*()
+public:
+    void advanceTime(int deltamsec);
+    void drawBack(); // Calls other draw*()
+private:
     void drawGalaxy();
     void drawUpperDome();
     void drawLowerDome();

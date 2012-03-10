@@ -1,14 +1,14 @@
 #include "Mission.h"
 
-#include "de/hackcraft/world/comp/computer/rController.h"
+#include "de/hackcraft/world/sub/computer/rController.h"
 
-#include "de/hackcraft/world/comp/weapon/rWeapon.h"
+#include "de/hackcraft/world/sub/weapon/rWeapon.h"
 
 #include "de/hackcraft/world/Entity.h"
 #include "de/hackcraft/world/object/cMech.h"
 #include "de/hackcraft/world/object/cBuilding.h"
 
-#include "de/hackcraft/world/comp/model/rNameable.h"
+#include "de/hackcraft/world/sub/model/rNameable.h"
 
 #include <cassert>
 
