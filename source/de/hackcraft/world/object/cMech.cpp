@@ -8,14 +8,14 @@
 
 #include "de/hackcraft/world/sub/weapon/rWeapon.h"
 
-#include "de/hackcraft/world/sub/rigged/rRigged.h"
+#include "de/hackcraft/world/sub/model/rRigged.h"
 
 #include "de/hackcraft/world/sub/computer/rComcom.h"
 #include "de/hackcraft/world/sub/computer/rController.h"
 
 #include "de/hackcraft/world/sub/model/rNameable.h"
 
-#include "de/hackcraft/world/sub/behavior/rDamageable.h"
+#include "de/hackcraft/world/sub/weapon/rDamageable.h"
 #include "de/hackcraft/world/sub/behavior/rCamera.h"
 #include "de/hackcraft/world/sub/behavior/rMobile.h"
 

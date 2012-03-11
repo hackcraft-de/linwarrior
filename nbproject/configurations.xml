@@ -82,12 +82,12 @@
             <itemPath>source/de/hackcraft/world/sub/behavior/rAlert.h</itemPath>
             <itemPath>source/de/hackcraft/world/sub/behavior/rCamera.cpp</itemPath>
             <itemPath>source/de/hackcraft/world/sub/behavior/rCamera.h</itemPath>
-            <itemPath>source/de/hackcraft/world/sub/behavior/rDamageable.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/sub/behavior/rDamageable.h</itemPath>
             <itemPath>source/de/hackcraft/world/sub/behavior/rMobile.cpp</itemPath>
             <itemPath>source/de/hackcraft/world/sub/behavior/rMobile.h</itemPath>
           </logicalFolder>
           <logicalFolder name="cityscape" displayName="cityscape" projectFiles="true">
+            <itemPath>source/de/hackcraft/world/sub/cityscape/rPadmap.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/cityscape/rPadmap.h</itemPath>
           </logicalFolder>
           <logicalFolder name="computer" displayName="computer" projectFiles="true">
             <itemPath>source/de/hackcraft/world/sub/computer/rComcom.cpp</itemPath>
@@ -110,8 +110,8 @@
           <logicalFolder name="model" displayName="model" projectFiles="true">
             <itemPath>source/de/hackcraft/world/sub/model/rNameable.cpp</itemPath>
             <itemPath>source/de/hackcraft/world/sub/model/rNameable.h</itemPath>
-            <itemPath>source/de/hackcraft/world/sub/model/rPadmap.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/sub/model/rPadmap.h</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/model/rRigged.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/model/rRigged.h</itemPath>
             <itemPath>source/de/hackcraft/world/sub/model/rScatter.cpp</itemPath>
             <itemPath>source/de/hackcraft/world/sub/model/rScatter.h</itemPath>
             <itemPath>source/de/hackcraft/world/sub/model/rTree.cpp</itemPath>
@@ -123,11 +123,9 @@
             <itemPath>source/de/hackcraft/world/sub/physics/rTraceable.cpp</itemPath>
             <itemPath>source/de/hackcraft/world/sub/physics/rTraceable.h</itemPath>
           </logicalFolder>
-          <logicalFolder name="rigged" displayName="rigged" projectFiles="true">
-            <itemPath>source/de/hackcraft/world/sub/rigged/rRigged.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/sub/rigged/rRigged.h</itemPath>
-          </logicalFolder>
           <logicalFolder name="weapon" displayName="weapon" projectFiles="true">
+            <itemPath>source/de/hackcraft/world/sub/weapon/rDamageable.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/weapon/rDamageable.h</itemPath>
             <itemPath>source/de/hackcraft/world/sub/weapon/rWeapon.cpp</itemPath>
             <itemPath>source/de/hackcraft/world/sub/weapon/rWeapon.h</itemPath>
             <itemPath>source/de/hackcraft/world/sub/weapon/rWeaponExplosion.cpp</itemPath>
@@ -193,28 +191,6 @@
           <executablePath>dist/linwarrior</executablePath>
           <ccTool>
             <incDir>
-              <pElem>source</pElem>
-              <pElem>.</pElem>
-              <pElem>source</pElem>
-              <pElem>.</pElem>
-              <pElem>source</pElem>
-              <pElem>.</pElem>
-              <pElem>source</pElem>
-              <pElem>.</pElem>
-              <pElem>source</pElem>
-              <pElem>.</pElem>
-              <pElem>source</pElem>
-              <pElem>.</pElem>
-              <pElem>source</pElem>
-              <pElem>.</pElem>
-              <pElem>source</pElem>
-              <pElem>.</pElem>
-              <pElem>source</pElem>
-              <pElem>.</pElem>
-              <pElem>source</pElem>
-              <pElem>.</pElem>
-              <pElem>source</pElem>
-              <pElem>.</pElem>
               <pElem>source</pElem>
               <pElem>.</pElem>
             </incDir>

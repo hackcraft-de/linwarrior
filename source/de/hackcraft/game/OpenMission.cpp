@@ -1,6 +1,6 @@
 #include "OpenMission.h"
 
-#include "de/hackcraft/world/sub/model/rPadmap.h"
+#include "de/hackcraft/world/sub/cityscape/rPadmap.h"
 
 #include "de/hackcraft/world/object/cAlert.h"
 #include "de/hackcraft/world/object/cMech.h"
