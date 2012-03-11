@@ -90,10 +90,32 @@
           <logicalFolder name="cityscape" displayName="cityscape" projectFiles="true">
           </logicalFolder>
           <logicalFolder name="computer" displayName="computer" projectFiles="true">
+            <itemPath>source/de/hackcraft/world/sub/computer/rComcom.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/computer/rComcom.h</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/computer/rComputer.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/computer/rComputer.h</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/computer/rController.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/computer/rController.h</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/computer/rForcom.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/computer/rForcom.h</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/computer/rNavcom.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/computer/rNavcom.h</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/computer/rTarcom.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/computer/rTarcom.h</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/computer/rWepcom.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/computer/rWepcom.h</itemPath>
           </logicalFolder>
           <logicalFolder name="landscape" displayName="landscape" projectFiles="true">
           </logicalFolder>
           <logicalFolder name="model" displayName="model" projectFiles="true">
+            <itemPath>source/de/hackcraft/world/sub/model/rNameable.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/model/rNameable.h</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/model/rPadmap.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/model/rPadmap.h</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/model/rScatter.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/model/rScatter.h</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/model/rTree.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/model/rTree.h</itemPath>
           </logicalFolder>
           <logicalFolder name="physics" displayName="physics" projectFiles="true">
             <itemPath>source/de/hackcraft/world/sub/physics/rCollider.cpp</itemPath>
@@ -173,133 +195,34 @@
             <incDir>
               <pElem>source</pElem>
               <pElem>.</pElem>
+              <pElem>source</pElem>
+              <pElem>.</pElem>
+              <pElem>source</pElem>
+              <pElem>.</pElem>
+              <pElem>source</pElem>
+              <pElem>.</pElem>
+              <pElem>source</pElem>
+              <pElem>.</pElem>
+              <pElem>source</pElem>
+              <pElem>.</pElem>
+              <pElem>source</pElem>
+              <pElem>.</pElem>
+              <pElem>source</pElem>
+              <pElem>.</pElem>
+              <pElem>source</pElem>
+              <pElem>.</pElem>
+              <pElem>source</pElem>
+              <pElem>.</pElem>
+              <pElem>source</pElem>
+              <pElem>.</pElem>
+              <pElem>source</pElem>
+              <pElem>.</pElem>
             </incDir>
             <commandLine>-O1 -funroll-loops</commandLine>
           </ccTool>
         </makeTool>
       </makefileType>
       <item path="source/de/hackcraft/util/KDTree.h" ex="true" tool="3" flavor="0">
-      </item>
-      <item path="source/de/hackcraft/world/sub/computer/rComcom.cpp"
-            ex="false"
-            tool="1"
-            flavor="0">
-        <ccTool>
-          <incDir>
-            <pElem>source</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="source/de/hackcraft/world/sub/computer/rComputer.cpp"
-            ex="false"
-            tool="1"
-            flavor="0">
-        <ccTool>
-          <incDir>
-            <pElem>source</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="source/de/hackcraft/world/sub/computer/rController.cpp"
-            ex="false"
-            tool="1"
-            flavor="0">
-        <ccTool>
-          <incDir>
-            <pElem>source</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="source/de/hackcraft/world/sub/computer/rForcom.cpp"
-            ex="false"
-            tool="1"
-            flavor="0">
-        <ccTool>
-          <incDir>
-            <pElem>source</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="source/de/hackcraft/world/sub/computer/rNavcom.cpp"
-            ex="false"
-            tool="1"
-            flavor="0">
-        <ccTool>
-          <incDir>
-            <pElem>source</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="source/de/hackcraft/world/sub/computer/rTarcom.cpp"
-            ex="false"
-            tool="1"
-            flavor="0">
-        <ccTool>
-          <incDir>
-            <pElem>source</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="source/de/hackcraft/world/sub/computer/rWepcom.cpp"
-            ex="false"
-            tool="1"
-            flavor="0">
-        <ccTool>
-          <incDir>
-            <pElem>source</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="source/de/hackcraft/world/sub/model/rNameable.cpp"
-            ex="false"
-            tool="1"
-            flavor="0">
-        <ccTool>
-          <incDir>
-            <pElem>source</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="source/de/hackcraft/world/sub/model/rPadmap.cpp"
-            ex="false"
-            tool="1"
-            flavor="0">
-        <ccTool>
-          <incDir>
-            <pElem>source</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="source/de/hackcraft/world/sub/model/rScatter.cpp"
-            ex="false"
-            tool="1"
-            flavor="0">
-        <ccTool>
-          <incDir>
-            <pElem>source</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
-      <item path="source/de/hackcraft/world/sub/model/rTree.cpp"
-            ex="false"
-            tool="1"
-            flavor="0">
-        <ccTool>
-          <incDir>
-            <pElem>source</pElem>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
       </item>
     </conf>
     <conf name="Release" type="1">
@@ -323,106 +246,6 @@
       <item path="source/de/hackcraft/world/Entity.cpp" ex="true" tool="1" flavor="0">
       </item>
       <item path="source/de/hackcraft/world/Entity.h" ex="true" tool="3" flavor="0">
-      </item>
-      <item path="source/de/hackcraft/world/sub/computer/rComcom.cpp"
-            ex="true"
-            tool="1"
-            flavor="0">
-      </item>
-      <item path="source/de/hackcraft/world/sub/computer/rComcom.h"
-            ex="true"
-            tool="3"
-            flavor="0">
-      </item>
-      <item path="source/de/hackcraft/world/sub/computer/rComputer.cpp"
-            ex="true"
-            tool="1"
-            flavor="0">
-      </item>
-      <item path="source/de/hackcraft/world/sub/computer/rComputer.h"
-            ex="true"
-            tool="3"
-            flavor="0">
-      </item>
-      <item path="source/de/hackcraft/world/sub/computer/rController.cpp"
-            ex="true"
-            tool="1"
-            flavor="0">
-      </item>
-      <item path="source/de/hackcraft/world/sub/computer/rController.h"
-            ex="true"
-            tool="3"
-            flavor="0">
-      </item>
-      <item path="source/de/hackcraft/world/sub/computer/rForcom.cpp"
-            ex="true"
-            tool="1"
-            flavor="0">
-      </item>
-      <item path="source/de/hackcraft/world/sub/computer/rForcom.h"
-            ex="true"
-            tool="3"
-            flavor="0">
-      </item>
-      <item path="source/de/hackcraft/world/sub/computer/rNavcom.cpp"
-            ex="true"
-            tool="1"
-            flavor="0">
-      </item>
-      <item path="source/de/hackcraft/world/sub/computer/rNavcom.h"
-            ex="true"
-            tool="3"
-            flavor="0">
-      </item>
-      <item path="source/de/hackcraft/world/sub/computer/rTarcom.cpp"
-            ex="true"
-            tool="1"
-            flavor="0">
-      </item>
-      <item path="source/de/hackcraft/world/sub/computer/rTarcom.h"
-            ex="true"
-            tool="3"
-            flavor="0">
-      </item>
-      <item path="source/de/hackcraft/world/sub/computer/rWepcom.h"
-            ex="true"
-            tool="3"
-            flavor="0">
-      </item>
-      <item path="source/de/hackcraft/world/sub/model/rNameable.cpp"
-            ex="true"
-            tool="1"
-            flavor="0">
-      </item>
-      <item path="source/de/hackcraft/world/sub/model/rNameable.h"
-            ex="true"
-            tool="3"
-            flavor="0">
-      </item>
-      <item path="source/de/hackcraft/world/sub/model/rPadmap.cpp"
-            ex="true"
-            tool="1"
-            flavor="0">
-      </item>
-      <item path="source/de/hackcraft/world/sub/model/rPadmap.h"
-            ex="true"
-            tool="3"
-            flavor="0">
-      </item>
-      <item path="source/de/hackcraft/world/sub/model/rScatter.h"
-            ex="true"
-            tool="3"
-            flavor="0">
-      </item>
-      <item path="source/de/hackcraft/world/sub/model/rTree.cpp"
-            ex="true"
-            tool="1"
-            flavor="0">
-      </item>
-      <item path="source/de/hackcraft/world/sub/model/rTree.h"
-            ex="true"
-            tool="3"
-            flavor="0">
       </item>
     </conf>
   </confs>
