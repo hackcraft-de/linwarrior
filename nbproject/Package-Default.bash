@@ -7,12 +7,12 @@
 # Macros
 TOP=`pwd`
 CND_PLATFORM=GNU-Linux-x86
-CND_CONF=Release
+CND_CONF=Default
 CND_DISTDIR=dist
 CND_BUILDDIR=build
 NBTMPDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tmp-packaging
 TMPDIRNAME=tmp-packaging
-OUTPUT_PATH=${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/linwarrior
+OUTPUT_PATH=dist/linwarrior
 OUTPUT_BASENAME=linwarrior
 PACKAGE_TOP_DIR=linwarrior/
 

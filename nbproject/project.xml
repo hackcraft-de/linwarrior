@@ -4,7 +4,6 @@
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
             <name>linwarrior</name>
-            <make-project-type>0</make-project-type>
             <c-extensions/>
             <cpp-extensions>cpp</cpp-extensions>
             <header-extensions>h</header-extensions>
@@ -12,20 +11,14 @@
             <make-dep-projects/>
             <sourceRootList>
                 <sourceRootElem>source</sourceRootElem>
+                <sourceRootElem>data</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>
-                    <name>Debug</name>
+                    <name>Default</name>
                     <type>0</type>
-                </confElem>
-                <confElem>
-                    <name>Release</name>
-                    <type>1</type>
                 </confElem>
             </confList>
         </data>
-        <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
-            <word>hackcraft</word>
-        </spellchecker-wordlist>
     </configuration>
 </project>
