@@ -11,7 +11,7 @@
 
 struct rForcom;
 
-#include "rComputer.h"
+#include "de/hackcraft/world/sub/computer/rComputer.h"
 
 #include "de/hackcraft/psi3d/math3d.h"
 

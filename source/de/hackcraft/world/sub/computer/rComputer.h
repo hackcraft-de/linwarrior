@@ -26,9 +26,9 @@ public:
 };
 
 #include "rComcom.h"
-#include "rTarcom.h"
-#include "rWepcom.h"
-#include "rForcom.h"
+#include "de/hackcraft/world/sub/weapon/rTarcom.h"
+#include "de/hackcraft/world/sub/weapon/rWepcom.h"
+#include "de/hackcraft/world/sub/mobile/rForcom.h"
 #include "rNavcom.h"
 
 #endif	/* RCOMPUTER_H */

@@ -11,7 +11,7 @@
 
 #include "de/hackcraft/world/sub/model/rNameable.h"
 
-#include "de/hackcraft/world/sub/behavior/rMobile.h"
+#include "de/hackcraft/world/sub/mobile/rMobile.h"
 
 #include "de/hackcraft/world/sub/weapon/rWeapon.h"
 

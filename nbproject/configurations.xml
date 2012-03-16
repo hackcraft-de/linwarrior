@@ -77,14 +77,6 @@
             <itemPath>source/de/hackcraft/world/sub/background/Background.cpp</itemPath>
             <itemPath>source/de/hackcraft/world/sub/background/Background.h</itemPath>
           </logicalFolder>
-          <logicalFolder name="behavior" displayName="behavior" projectFiles="true">
-            <itemPath>source/de/hackcraft/world/sub/behavior/rAlert.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/sub/behavior/rAlert.h</itemPath>
-            <itemPath>source/de/hackcraft/world/sub/behavior/rCamera.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/sub/behavior/rCamera.h</itemPath>
-            <itemPath>source/de/hackcraft/world/sub/behavior/rMobile.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/sub/behavior/rMobile.h</itemPath>
-          </logicalFolder>
           <logicalFolder name="cityscape" displayName="cityscape" projectFiles="true">
             <itemPath>source/de/hackcraft/world/sub/cityscape/rPadmap.cpp</itemPath>
             <itemPath>source/de/hackcraft/world/sub/cityscape/rPadmap.h</itemPath>
@@ -96,16 +88,18 @@
             <itemPath>source/de/hackcraft/world/sub/computer/rComputer.h</itemPath>
             <itemPath>source/de/hackcraft/world/sub/computer/rController.cpp</itemPath>
             <itemPath>source/de/hackcraft/world/sub/computer/rController.h</itemPath>
-            <itemPath>source/de/hackcraft/world/sub/computer/rForcom.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/sub/computer/rForcom.h</itemPath>
             <itemPath>source/de/hackcraft/world/sub/computer/rNavcom.cpp</itemPath>
             <itemPath>source/de/hackcraft/world/sub/computer/rNavcom.h</itemPath>
-            <itemPath>source/de/hackcraft/world/sub/computer/rTarcom.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/sub/computer/rTarcom.h</itemPath>
-            <itemPath>source/de/hackcraft/world/sub/computer/rWepcom.cpp</itemPath>
-            <itemPath>source/de/hackcraft/world/sub/computer/rWepcom.h</itemPath>
           </logicalFolder>
           <logicalFolder name="landscape" displayName="landscape" projectFiles="true">
+          </logicalFolder>
+          <logicalFolder name="mobile" displayName="mobile" projectFiles="true">
+            <itemPath>source/de/hackcraft/world/sub/mobile/rCamera.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/mobile/rCamera.h</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/mobile/rForcom.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/mobile/rForcom.h</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/mobile/rMobile.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/mobile/rMobile.h</itemPath>
           </logicalFolder>
           <logicalFolder name="model" displayName="model" projectFiles="true">
             <itemPath>source/de/hackcraft/world/sub/model/rNameable.cpp</itemPath>
@@ -123,9 +117,15 @@
             <itemPath>source/de/hackcraft/world/sub/physics/rTraceable.cpp</itemPath>
             <itemPath>source/de/hackcraft/world/sub/physics/rTraceable.h</itemPath>
           </logicalFolder>
+          <logicalFolder name="trigger" displayName="trigger" projectFiles="true">
+            <itemPath>source/de/hackcraft/world/sub/trigger/rAlert.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/trigger/rAlert.h</itemPath>
+          </logicalFolder>
           <logicalFolder name="weapon" displayName="weapon" projectFiles="true">
             <itemPath>source/de/hackcraft/world/sub/weapon/rDamageable.cpp</itemPath>
             <itemPath>source/de/hackcraft/world/sub/weapon/rDamageable.h</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/weapon/rTarcom.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/weapon/rTarcom.h</itemPath>
             <itemPath>source/de/hackcraft/world/sub/weapon/rWeapon.cpp</itemPath>
             <itemPath>source/de/hackcraft/world/sub/weapon/rWeapon.h</itemPath>
             <itemPath>source/de/hackcraft/world/sub/weapon/rWeaponExplosion.cpp</itemPath>
@@ -140,6 +140,8 @@
             <itemPath>source/de/hackcraft/world/sub/weapon/rWeaponRaybeam.h</itemPath>
             <itemPath>source/de/hackcraft/world/sub/weapon/rWeaponSparkgun.cpp</itemPath>
             <itemPath>source/de/hackcraft/world/sub/weapon/rWeaponSparkgun.h</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/weapon/rWepcom.cpp</itemPath>
+            <itemPath>source/de/hackcraft/world/sub/weapon/rWepcom.h</itemPath>
           </logicalFolder>
         </logicalFolder>
         <itemPath>source/de/hackcraft/world/Component.cpp</itemPath>
@@ -200,6 +202,8 @@
       </makefileType>
       <item path="source/de/hackcraft/util/KDTree.h" ex="true" tool="3" flavor="0">
       </item>
+      <item path="source/de/hackcraft/util/string.h" ex="true" tool="3" flavor="0">
+      </item>
     </conf>
     <conf name="Release" type="1">
       <toolsSet>
@@ -222,6 +226,36 @@
       <item path="source/de/hackcraft/world/Entity.cpp" ex="true" tool="1" flavor="0">
       </item>
       <item path="source/de/hackcraft/world/Entity.h" ex="true" tool="3" flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/mobile/rCamera.cpp"
+            ex="true"
+            tool="1"
+            flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/mobile/rCamera.h"
+            ex="true"
+            tool="3"
+            flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/mobile/rForcom.cpp"
+            ex="true"
+            tool="1"
+            flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/mobile/rForcom.h"
+            ex="true"
+            tool="3"
+            flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/mobile/rMobile.cpp"
+            ex="true"
+            tool="1"
+            flavor="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/mobile/rMobile.h"
+            ex="true"
+            tool="3"
+            flavor="0">
       </item>
     </conf>
   </confs>

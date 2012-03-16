@@ -6,6 +6,7 @@
 
 #include "de/hackcraft/io/Pad.h"
 
+#include "de/hackcraft/world/sub/weapon/rDamageable.h"
 #include "de/hackcraft/world/sub/weapon/rWeapon.h"
 
 #include "de/hackcraft/world/sub/model/rRigged.h"
@@ -15,9 +16,8 @@
 
 #include "de/hackcraft/world/sub/model/rNameable.h"
 
-#include "de/hackcraft/world/sub/weapon/rDamageable.h"
-#include "de/hackcraft/world/sub/behavior/rCamera.h"
-#include "de/hackcraft/world/sub/behavior/rMobile.h"
+#include "de/hackcraft/world/sub/mobile/rCamera.h"
+#include "de/hackcraft/world/sub/mobile/rMobile.h"
 
 #include "de/hackcraft/world/sub/physics/rTraceable.h"
 #include "de/hackcraft/world/sub/physics/rCollider.h"
