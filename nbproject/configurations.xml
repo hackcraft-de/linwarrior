@@ -4,153 +4,83 @@
     <df name="data" root="data">
       <df name="base">
         <df name="cityscape">
+          <df name="roads">
+          </df>
         </df>
         <df name="device">
           <df name="tank">
             <df name="ant">
-              <in>ant.md5mesh</in>
-              <in>ant.mm3d</in>
             </df>
             <df name="bug">
-              <in>bug.md5mesh</in>
-              <in>bug.mm3d</in>
             </df>
             <df name="warbuggy">
-              <in>warbuggy.md5mesh</in>
-              <in>warbuggy.mm3d</in>
             </df>
           </df>
           <df name="turret">
             <df name="pod">
-              <in>pod.md5mesh</in>
-              <in>pod.mm3d</in>
             </df>
           </df>
           <df name="wanzer">
             <df name="frogger">
-              <in>frogger.md5mesh</in>
-              <in>frogger.mm3d</in>
             </df>
             <df name="goranga">
-              <in>goranga.md5mesh</in>
-              <in>goranga.mm3d</in>
             </df>
             <df name="gorilla">
-              <in>gorilla_ii.md5mesh</in>
-              <in>gorilla_ii.mm3d</in>
             </df>
             <df name="kibitz">
-              <in>kibitz.md5mesh</in>
-              <in>kibitz.mm3d</in>
             </df>
             <df name="lemur">
-              <in>lemur.md5mesh</in>
-              <in>lemur.mm3d</in>
             </df>
           </df>
         </df>
         <df name="landscape">
           <df name="bark">
-            <in>bark_ash.tga</in>
-            <in>bark_birch.tga</in>
-            <in>bark_oak.tga</in>
-            <in>bark_palm.tga</in>
           </df>
           <df name="blossom">
-            <in>blossom_desert.tga</in>
           </df>
           <df name="foliage">
-            <in>foliage_pine.tga</in>
-            <in>foliage_strange.tga</in>
-            <in>foliage_tree.tga</in>
-            <in>foliage_twigs.tga</in>
-            <in>foliage_widow.tga</in>
           </df>
           <df name="grass">
-            <in>grass_bold.tga</in>
-            <in>grass_strip.tga</in>
           </df>
           <df name="ground">
-            <in>ground_grass.tga</in>
-            <in>ground_rock.tga</in>
-            <in>ground_snow.tga</in>
-            <in>ground_stones.tga</in>
           </df>
           <df name="leaf">
-            <in>leaf_farn.tga</in>
-            <in>leaf_pumpkin.tga</in>
           </df>
           <df name="plant">
-            <in>plant_bamboo.tga</in>
-            <in>plant_bluish.tga</in>
-            <in>plant_desert.tga</in>
-            <in>plant_green.tga</in>
-            <in>plant_long.tga</in>
-            <in>plant_melissa.tga</in>
-            <in>plant_palm.tga</in>
           </df>
         </df>
         <df name="materials">
-          <in>base.v</in>
           <in>base2d.f</in>
           <in>base3d.f</in>
           <in>noise.f</in>
         </df>
         <df name="messages">
-          <in>commands.txt</in>
-          <in>status.txt</in>
         </df>
         <df name="prg">
           <in>post (copy).f</in>
           <in>post.f</in>
-          <in>post.v</in>
         </df>
-        <in>ATTENTION</in>
-        <in>COPYING</in>
-        <in>global.properties</in>
       </df>
       <df name="com">
         <df name="blendswap">
           <df name="flopsy">
-            <in>flopsy.md5mesh</in>
-            <in>flopsy.mm3d</in>
           </df>
-          <in>COPYING</in>
         </df>
       </df>
       <df name="org">
         <df name="freesound">
-          <in>COPYING</in>
-          <in>ambient.wav</in>
-          <in>explosion.wav</in>
-          <in>homingmissile.wav</in>
-          <in>machinegun.wav</in>
-          <in>plasmagun.wav</in>
-          <in>raybeam.wav</in>
-          <in>sparkgun.wav</in>
         </df>
         <df name="opengameart">
           <df name="gausscan">
-            <in>gausscan.md5mesh</in>
-            <in>gausscan.mm3d</in>
           </df>
           <df name="reactor">
-            <in>reactor.md5mesh</in>
-            <in>reactor.mm3d</in>
           </df>
           <df name="scorpion">
-            <in>scorpion.md5mesh</in>
-            <in>scorpion.mm3d</in>
           </df>
           <df name="thunderbird">
-            <in>thunderbird.md5mesh</in>
-            <in>thunderbird.mm3d</in>
           </df>
           <df name="twinblaster">
-            <in>twinblaster.md5mesh</in>
-            <in>twinblaster.mm3d</in>
           </df>
-          <in>COPYING</in>
         </df>
       </df>
     </df>

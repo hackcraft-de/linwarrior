@@ -39,15 +39,15 @@ rPadmap::rPadmap(Entity* obj) {
         unsigned int texname;
         int w, h, bpp;
 
-        texels = Texfile::loadTGA("data/base/roads/roadNEWS.tga", &w, &h, &bpp);
+        texels = Texfile::loadTGA("data/base/cityscape/roads/roadNEWS.tga", &w, &h, &bpp);
         texname = GLS::glBindTexture2D(0, true, false, true, true, w, h, bpp, texels);
         sTextures[KIND_ROAD_JUNKTION] = texname;
 
-        texels = Texfile::loadTGA("data/base/roads/roadNS.tga", &w, &h, &bpp);
+        texels = Texfile::loadTGA("data/base/cityscape/roads/roadPLAZA.tga", &w, &h, &bpp);
         texname = GLS::glBindTexture2D(0, true, false, true, true, w, h, bpp, texels);
         sTextures[KIND_ROAD_NORTHSOUTH] = texname;
 
-        texels = Texfile::loadTGA("data/base/roads/roadEW.tga", &w, &h, &bpp);
+        texels = Texfile::loadTGA("data/base/cityscape/roads/roadPLAZA.tga", &w, &h, &bpp);
         texname = GLS::glBindTexture2D(0, true, false, true, true, w, h, bpp, texels);
         sTextures[KIND_ROAD_EASTWEST] = texname;
 

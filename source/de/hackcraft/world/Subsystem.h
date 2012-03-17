@@ -22,7 +22,7 @@ class Subsystem {
     void transformObjects() {};
     /// Setup structures for rendering
     void setupView(float* pos, float* ori);
-    /// Draws background (skybox) by calling mBackground drawing method.
+    /// Draws background (skybox).
     void drawBack() {};
     /// Draw all Object's solid surfaces (calls their drawSolid method).
     void drawSolid() {};
