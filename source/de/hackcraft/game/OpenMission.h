@@ -10,7 +10,7 @@
 #ifndef OPENMISSION_H
 #define	OPENMISSION_H
 
-#include "de/hackcraft/world/Mission.h"
+#include "de/hackcraft/world/sub/mission/Mission.h"
 #include "de/hackcraft/world/Propmap.h"
 
 /**

@@ -27,7 +27,7 @@ class Background;
  * those virtual horizons found in aviation instruments.
  * Sets lightsource 0 as skylight according to time.
  */
-class Background : Subsystem {
+class Background : public Subsystem {
 private:
     static std::map<int, unsigned int> textures;
 private:
@@ -51,7 +51,7 @@ public:
     void initTextures();
 public:
     void advanceTime(int deltamsec);
-    void drawBack(); // Calls other draw*()
+    bool drawBack(); // Calls other draw*()
 private:
     void drawGalaxy();
     void drawUpperDome();

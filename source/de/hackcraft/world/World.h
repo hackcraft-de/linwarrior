@@ -45,11 +45,8 @@ public:
     /// only affect that current instance.
     static World* instance;
 
-    /// Mission Subsystem (world setup and objective-controller).
-    Mission* mission;
-
-    /// Background Subsystem (sky, env-lighting and fog).
-    Background* background;
+    /// List of subsystems which serve components to model slices of the world.
+    std::list<Subsystem*> subsystems;
     
 private:
     /// Not yet dispatched messages (because they are not yet overdue).
@@ -210,7 +207,7 @@ public: // Simulation Step - Call every frame in order to update the world/missi
     /// Setup structures for rendering
     void setupView(float* pos, float* ori);
     /// Draws background (skybox) by calling mBackground drawing method.
-    void drawBack();
+    bool drawBack();
     /// Draw all Object's solid surfaces (calls their drawSolid method).
     void drawSolid();
     /// Draw all Object's effects (calls their drawEffect method).

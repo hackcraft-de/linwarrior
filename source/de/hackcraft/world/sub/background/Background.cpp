@@ -445,7 +445,7 @@ void Background::advanceTime(int deltamsec) {
     //hour = 12;
 }
 
-void Background::drawBack() {
+bool Background::drawBack() {
     // Reference: dawn sunrise daylight sunset dusk darkness
 
     // Push random seed because the current seed is going to be
@@ -535,6 +535,8 @@ void Background::drawBack() {
 
     // Pop a seed.
     srand(seed);
+    
+    return true;
 }
 
 void Background::drawGalaxy() {

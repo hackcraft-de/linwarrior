@@ -1,7 +1,5 @@
 #include "World.h"
 
-#include "Mission.h"
-
 #include "de/hackcraft/world/Entity.h"
 
 #include <cassert>
@@ -22,9 +20,6 @@ World* World::instance = NULL;
 World::World() {
     World::instance = this;
 
-    mission = NULL;
-    background = NULL;
-    
     // Earth
     vector_set(mGravity, 0.0f, -9.80665f, 0.0f);
     // Mars
@@ -164,10 +159,10 @@ void World::bagFragged() {
 
 void World::advanceTime(int deltamsec) {
     //cout << "advanceTime()\n";
-    if (mission) mission->checkConditions();
     mTiming.advanceTime(deltamsec);
-    if (background != NULL) {
-        background->advanceTime(deltamsec);
+    
+    for (Subsystem* sub : subsystems) {
+        sub->advanceTime(deltamsec);
     }
     //cout << getSerial() << ": " << mHour << " " << mMinute << " " << mSecond << " " << mDeltacycle << endl;
 }
@@ -189,6 +184,10 @@ void World::clusterObjects() {
                 mGeomap[getGeokey(px, pz)].push_back(o);
             }
             j++;
+        }
+        
+        for (Subsystem* sub : subsystems) {
+            sub->clusterObjects();
         }
     } catch (char* s) {
         cout << "Could not cluster world: " << s << endl;
@@ -221,6 +220,10 @@ void World::dispatchMessages() {
             break;
         }
     }
+    
+    for (Subsystem* sub : subsystems) {
+        sub->dispatchMessages();
+    }
 }
 
 void World::animateObjects() {
@@ -232,6 +235,10 @@ void World::animateObjects() {
         object->seconds += spf;
         object->animate(spf);
     }
+
+    for (Subsystem* sub : subsystems) {
+        sub->animateObjects();
+    }
 }
 
 void World::transformObjects() {
@@ -242,6 +249,10 @@ void World::transformObjects() {
         glPushMatrix();
         object->transform();
         glPopMatrix();
+    }
+
+    for (Subsystem* sub : subsystems) {
+        sub->transformObjects();
     }
 }
 
@@ -263,15 +274,24 @@ void World::setupView(float* pos, float* ori) {
     mVisorigin[0] = pos[0];
     mVisorigin[1] = pos[1];
     mVisorigin[2] = pos[2];
+
+    for (Subsystem* sub : subsystems) {
+        sub->setupView(pos, ori);
+    }
 }
 
-void World::drawBack() {
+bool World::drawBack() {
     //cout << "drawBack()\n";
-    if (background != NULL) {
-        background->drawBack();
-    } else {
+    bool any = false;
+    for (Subsystem* sub : subsystems) {
+        any |= sub->drawBack();
+    }
+    
+    if (!any) {
         glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     }
+    
+    return true;
 }
 
 void World::drawSolid() {
@@ -293,6 +313,10 @@ void World::drawSolid() {
             object->drawSolid();
         }
         glPopMatrix();
+    }
+
+    for (Subsystem* sub : subsystems) {
+        sub->drawSolid();
     }
 }
 
@@ -332,6 +356,10 @@ void World::drawEffect() {
             glPopMatrix();
         }
         glPopAttrib();
+    }
+
+    for (Subsystem* sub : subsystems) {
+        sub->drawEffect();
     }
 }
 

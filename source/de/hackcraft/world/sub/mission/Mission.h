@@ -11,9 +11,11 @@
 
 class Mission;
 
-#include "World.h"
+#include "de/hackcraft/world/World.h"
 
 #include "de/hackcraft/world/Entity.h"
+#include "de/hackcraft/world/Subsystem.h"
+
 #include "de/hackcraft/world/object/cPlanetmap.h"
 
 #include "de/hackcraft/io/Pad.h"
@@ -28,7 +30,7 @@ class Mission;
  * Future: support for timetriggers like onTime().
  *
  */
-class Mission {
+class Mission : public Subsystem {
 protected:
     // Mission Objectives
     std::vector<Entity*> mVictory; // Shall be destroyed
@@ -45,6 +47,8 @@ public:
      * other mission critical data of the derived mission.
      */
     virtual Entity* init(World* world);
+
+    virtual void advanceTime(int deltamsec) { checkConditions(); };
 
     /**
      * Through this method mission objectives can be traced.

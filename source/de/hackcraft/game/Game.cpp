@@ -130,20 +130,17 @@ int Game::parseArgs(int argc, char** args) {
 }
 
 void Game::initMission() {
-    this->world = new World();
-    assert(this->world != NULL);
+    world = new World();
+    Mission* mission = NULL;
+    
     if (this->mission == 1) {
-        this->world->mission = new Mission();
-        assert(this->world->mission != NULL);
-        this->camera = this->world->mission->init(this->world);
-        this->pad1 = this->camera->pad;
+        mission = new Mission();
     } else {
-        this->world->mission = new OpenMission();
-        assert(this->world->mission != NULL);
-        this->camera = this->world->mission->init(this->world);
-        this->pad1 = this->camera->pad;
+        mission = new OpenMission();
     }
-    assert(this->camera != NULL);
-    assert(this->pad1 != NULL);
+    
+    world->subsystems.push_back(mission);
+    camera = mission->init(world);
+    pad1 = camera->pad;
 }
 

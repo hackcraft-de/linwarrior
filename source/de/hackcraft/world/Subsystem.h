@@ -10,24 +10,25 @@
 #define	SUBSYSTEM_H
 
 class Subsystem {
+public:
     /// Advance simulation time for one frame.
-    void advanceTime(int deltamsec) {};
+    virtual void advanceTime(int deltamsec) {};
     /// Re-build spatial clustering of objects.
-    void clusterObjects() {};
+    virtual void clusterObjects() {};
     /// Deliver overdue messages to objects.
-    void dispatchMessages() {};
+    virtual void dispatchMessages() {};
     /// Let all objects process input, adjust pose and calculate physics.
-    void animateObjects() {};
+    virtual void animateObjects() {};
     /// Let all objects calculate transformation matrices etc.
-    void transformObjects() {};
+    virtual void transformObjects() {};
     /// Setup structures for rendering
-    void setupView(float* pos, float* ori);
+    virtual void setupView(float* pos, float* ori) {};
     /// Draws background (skybox).
-    void drawBack() {};
+    virtual bool drawBack() { return false; };
     /// Draw all Object's solid surfaces (calls their drawSolid method).
-    void drawSolid() {};
+    virtual void drawSolid() {};
     /// Draw all Object's effects (calls their drawEffect method).
-    void drawEffect() {};
+    virtual void drawEffect() {};
 };
 
 #endif	/* SUBSYSTEM_H */

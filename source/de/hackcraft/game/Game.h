@@ -13,7 +13,7 @@ struct Game;
 
 #include "de/hackcraft/io/Pad.h"
 
-#include "de/hackcraft/world/Mission.h"
+#include "de/hackcraft/world/sub/mission/Mission.h"
 #include "de/hackcraft/world/World.h"
 
 #include "de/hackcraft/world/Entity.h"
