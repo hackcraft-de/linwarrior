@@ -6,8 +6,8 @@
  * Created on April 3, 2011, 8:49 PM
  */
 
-#ifndef RDAMAGEABLE_H
-#define	RDAMAGEABLE_H
+#ifndef RTARGET_H
+#define	RTARGET_H
 
 #include "de/hackcraft/world/Component.h"
 
@@ -18,7 +18,7 @@
 /**
  * Encapsulates attributes related to body damage and armor state.
  */
-struct rDamageable : public Component {
+struct rTarget : public Component {
 public: // SYSTEM
     /// Identifier for this component (all uppercase letters without leading "r").
     static std::string cname;
@@ -60,9 +60,9 @@ protected: // INTERNALS
     std::map<OID,float> damageImpulse;
 public:
     /// Constructor.
-    rDamageable(Entity* obj = NULL);
+    rTarget(Entity* obj = NULL);
     /// Copy Constructor.
-    rDamageable(rDamageable * original);
+    rTarget(rTarget * original);
     /// Clone this.
     virtual Component * clone();
     /// Apply damage to a hitzone, and return alife.

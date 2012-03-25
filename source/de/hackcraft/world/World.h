@@ -21,7 +21,7 @@ class World;
 #include "de/hackcraft/world/Entity.h"
 #include "de/hackcraft/world/Subsystem.h"
 
-#include "de/hackcraft/world/sub/background/Background.h"
+#include "de/hackcraft/world/sub/background/BackgroundSystem.h"
 
 #include <list>
 #include <set>
@@ -31,9 +31,9 @@ class World;
 #include <queue>
 #include <unordered_map>
 
-class Background;
+class BackgroundSystem;
 class Entity;
-class Mission;
+class MissionSystem;
 
 /**
  * The Game-Object-Managing World-Database-Class.

@@ -10,13 +10,13 @@
 #ifndef OPENMISSION_H
 #define	OPENMISSION_H
 
-#include "de/hackcraft/world/sub/mission/Mission.h"
+#include "de/hackcraft/world/sub/mission/MissionSystem.h"
 #include "de/hackcraft/world/Propmap.h"
 
 /**
  * Mission for testing new Mission features.
  */
-class OpenMission : public Mission {
+class OpenMission : public MissionSystem {
 private:
     OID group_alliance_player;
     OID group_alliance_wingmen;

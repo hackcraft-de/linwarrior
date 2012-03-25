@@ -11,7 +11,7 @@
 
 #include "de/hackcraft/world/Entity.h"
 struct Particle;
-struct rNameable;
+struct rBillboard;
 
 #include <string>
 #include <hash_set>
@@ -51,7 +51,7 @@ public:
         float center[3];
         float range[3];
     };
-    rNameable* nameable;
+    rBillboard* nameable;
 private:
     rShape shape;
     std::string msgtype;

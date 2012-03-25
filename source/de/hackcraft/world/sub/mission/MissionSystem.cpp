@@ -1,4 +1,4 @@
-#include "Mission.h"
+#include "MissionSystem.h"
 
 #include "de/hackcraft/world/sub/computer/rController.h"
 
@@ -8,12 +8,12 @@
 #include "de/hackcraft/world/object/cMech.h"
 #include "de/hackcraft/world/object/cBuilding.h"
 
-#include "de/hackcraft/world/sub/model/rNameable.h"
+#include "de/hackcraft/world/sub/model/rBillboard.h"
 
 #include <cassert>
 
 
-void Mission::checkConditions() {
+void MissionSystem::checkConditions() {
     // Destroyed all necessary enemies?
     unsigned int n = 0;
     for (Entity* object: mVictory) if (object->hasTag(World::instance->getGroup(HLT_DEAD))) n++;
@@ -30,7 +30,7 @@ void Mission::checkConditions() {
     }
 }
 
-void Mission::onVictory() {
+void MissionSystem::onVictory() {
     if (mState != -1) {
         mState = -1;
         World::instance->sendMessage(0, 0, 0,
@@ -40,7 +40,7 @@ void Mission::onVictory() {
     }
 }
 
-void Mission::onDefeat() {
+void MissionSystem::onDefeat() {
     if (mState != -2) {
         mState = -2;
         World::instance->sendMessage(0, 0, 0,
@@ -50,7 +50,7 @@ void Mission::onDefeat() {
     }
 }
 
-Entity* Mission::init(World* world) {
+Entity* MissionSystem::init(World* world) {
     if (true) {
         world->getTiming()->setTime(12);
     } else {

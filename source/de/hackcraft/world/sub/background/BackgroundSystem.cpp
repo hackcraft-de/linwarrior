@@ -1,4 +1,4 @@
-#include "Background.h"
+#include "BackgroundSystem.h"
 
 #include "de/hackcraft/proc/Noise.h"
 #include "de/hackcraft/proc/Distortion.h"
@@ -40,10 +40,10 @@ enum Texids {
 
 unsigned int gPermutationTexture256 = 0;
 
-std::map<int, unsigned int> Background::textures;
+std::map<int, unsigned int> BackgroundSystem::textures;
 
 
-Background::Background() {
+BackgroundSystem::BackgroundSystem() {
     Propmap properties;
     properties.put("backscape.windspeed", "0.1");
     properties.put("backscape.raininess", "0.0");
@@ -53,12 +53,12 @@ Background::Background() {
 }
 
 
-Background::Background(Propmap* properties) {
+BackgroundSystem::BackgroundSystem(Propmap* properties) {
     init(properties);
 }
 
 
-void Background::init(Propmap* properties) {
+void BackgroundSystem::init(Propmap* properties) {
 
     vector_set(light, 0.7, 0.9, -0.3);
     light[3] = 0.0f;
@@ -74,7 +74,7 @@ void Background::init(Propmap* properties) {
 }
 
 
-void Background::initTextures() {
+void BackgroundSystem::initTextures() {
     /*
     struct Texture {
         const char* filename;
@@ -427,7 +427,7 @@ void Background::initTextures() {
     }
 }
 
-void Background::advanceTime(int deltamsec) {
+void BackgroundSystem::advanceTime(int deltamsec) {
     float speed = 1;
     // every hour
     speed *= 24;
@@ -445,7 +445,7 @@ void Background::advanceTime(int deltamsec) {
     //hour = 12;
 }
 
-bool Background::drawBack() {
+bool BackgroundSystem::drawBack() {
     // Reference: dawn sunrise daylight sunset dusk darkness
 
     // Push random seed because the current seed is going to be
@@ -539,7 +539,7 @@ bool Background::drawBack() {
     return true;
 }
 
-void Background::drawGalaxy() {
+void BackgroundSystem::drawGalaxy() {
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_TEXTURE_BIT);
     {
         GLS::glUseProgram_bkplaintexture();
@@ -653,7 +653,7 @@ void Background::drawGalaxy() {
     glPopAttrib();
 }
 
-void Background::drawUpperDome() {
+void BackgroundSystem::drawUpperDome() {
     glPushAttrib(GL_ALL_ATTRIB_BITS | GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
         GLS::glUseProgram_bkplaincolor();
@@ -712,7 +712,7 @@ void Background::drawUpperDome() {
     glPopAttrib();
 }
 
-void Background::drawLowerDome() {
+void BackgroundSystem::drawLowerDome() {
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
         GLS::glUseProgram_bkplaincolor();
@@ -770,7 +770,7 @@ void Background::drawLowerDome() {
     glPopAttrib();
 }
 
-void Background::drawGround() {
+void BackgroundSystem::drawGround() {
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_TEXTURE_BIT);
     {
         GLS::glUseProgram_bkplaintexture();
@@ -833,7 +833,7 @@ void Background::drawGround() {
     glPopAttrib();
 }
 
-void Background::drawClouds() {
+void BackgroundSystem::drawClouds() {
     glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
         GLS::glUseProgram_bkplaintexture();
@@ -975,7 +975,7 @@ void cDomeBackground::drawMountains() {
  */
 
 
-void Background::drawSun() {
+void BackgroundSystem::drawSun() {
     if (hour < 5.00 || hour > 22.00) return;
 
     // Setup rotation only matrix.
@@ -1053,7 +1053,7 @@ void Background::drawSun() {
     glPopAttrib();
 }
 
-void Background::drawOrbit() {
+void BackgroundSystem::drawOrbit() {
     if (hour > 10.00 && hour < 16.00) return;
 
     // Setup rotation only matrix.
@@ -1106,7 +1106,7 @@ void Background::drawOrbit() {
     glPopAttrib();
 }
 
-void Background::drawRain() {
+void BackgroundSystem::drawRain() {
     srand(seed);
     seed = rand();
 

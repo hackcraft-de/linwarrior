@@ -2,7 +2,7 @@
 
 #include "de/hackcraft/world/World.h"
 
-#include "de/hackcraft/world/sub/model/rNameable.h"
+#include "de/hackcraft/world/sub/model/rBillboard.h"
 
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Particle.h"
@@ -26,7 +26,7 @@ cAlert::cAlert(float* center, float* range, int shapetype, std::string msgtype, 
         vector_cpy(pos0, center);
     }
 
-    nameable = new rNameable(this);
+    nameable = new rBillboard(this);
 
     this->positive = positive;
     this->posedge = posedge;

@@ -2,7 +2,7 @@
 
 #include "cBuilding.h"
 
-#include "de/hackcraft/world/sub/weapon/rDamageable.h"
+#include "de/hackcraft/world/sub/weapon/rTarget.h"
 #include "de/hackcraft/world/World.h"
 
 #include "de/hackcraft/psi3d/macros.h"
@@ -126,7 +126,7 @@ cBuilding::cBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
         }
     }
 
-    damageable = new rDamageable;
+    damageable = new rTarget;
 
     buildingRooms[0] = 3 * rooms_x;
     buildingRooms[1] = 3 * rooms_y;
@@ -141,7 +141,7 @@ void cBuilding::damage(float* localpos, float damage, Entity* enactor) {
     if (!damageable->alife) return;
 
     if (damage > 0) {
-        int body = rDamageable::BODY;
+        int body = rTarget::BODY;
         damageable->hp[body] -= damage;
         if (damageable->hp[body] < 0) damageable->hp[body] = 0;
         if (damageable->hp[body] <= 0) {
@@ -227,9 +227,9 @@ void cBuilding::drawSolid() {
 
         long roof = sTextures[0];
         long wall = 0;
-        if (this->damageable->hp[rDamageable::BODY] <= 0) {
+        if (this->damageable->hp[rTarget::BODY] <= 0) {
             glColor3f(0.6f, 0.5f, 0.4f);
-        } else if (this->damageable->hp[rDamageable::BODY] <= 50) {
+        } else if (this->damageable->hp[rTarget::BODY] <= 50) {
             glColor3f(0.6f, 0.7f, 0.8f);
         } else {
             glColor3f(0.7f, 0.8f, 0.9f);
@@ -237,7 +237,7 @@ void cBuilding::drawSolid() {
 
         wall = sTextures[1 + (((int) (p[0]*1.234567 + p[2]*7.654321)) % (sTextures.size() - 1))];
 
-        float hp = this->damageable->hp[rDamageable::BODY] * 0.01;
+        float hp = this->damageable->hp[rTarget::BODY] * 0.01;
         hp = hp < 0 ? 0 : hp;
         float d = 0.5f + hp * 0.5f;
         glColor3f(d, d, d);

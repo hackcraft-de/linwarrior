@@ -6,7 +6,7 @@
 
 #include "de/hackcraft/io/Pad.h"
 
-#include "de/hackcraft/world/sub/weapon/rDamageable.h"
+#include "de/hackcraft/world/sub/weapon/rTarget.h"
 #include "de/hackcraft/world/sub/weapon/rWeapon.h"
 
 #include "de/hackcraft/world/sub/model/rRigged.h"
@@ -14,7 +14,7 @@
 #include "de/hackcraft/world/sub/computer/rComcom.h"
 #include "de/hackcraft/world/sub/computer/rController.h"
 
-#include "de/hackcraft/world/sub/model/rNameable.h"
+#include "de/hackcraft/world/sub/model/rBillboard.h"
 
 #include "de/hackcraft/world/sub/mobile/rCamera.h"
 #include "de/hackcraft/world/sub/mobile/rMobile.h"
@@ -141,9 +141,9 @@ void cMech::init(float* pos, float* rot, string modelName) {
 
     collider = new rCollider(this);
     rigged = new rRigged(this);
-    damageable = new rDamageable(this);
+    damageable = new rTarget(this);
     controller = new rController(this);
-    nameable = new rNameable(this);
+    nameable = new rBillboard(this);
     traceable = new rTraceable(this);
     camra = new rCamera(this);
     mobile = new rMobile(this);
@@ -880,7 +880,7 @@ void cMech::damage(float* localpos, float damage, Entity* enactor) {
         explosion->triggeren = true;
         explosion->trigger = true;
     }
-    int body = rDamageable::BODY;
+    int body = rTarget::BODY;
     if (damageable->hp[body] <= 75) addTag(World::instance->getGroup(HLT_WOUNDED));
     if (damageable->hp[body] <= 50) addTag(World::instance->getGroup(HLT_SERIOUS));
     if (damageable->hp[body] <= 25) addTag(World::instance->getGroup(HLT_CRITICAL));

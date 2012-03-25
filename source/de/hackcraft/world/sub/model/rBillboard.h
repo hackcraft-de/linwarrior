@@ -6,17 +6,17 @@
  * Created on April 3, 2011, 9:00 PM
  */
 
-#ifndef RNAMEABLE_H
-#define	RNAMEABLE_H
+#ifndef RBILLBOARD_H
+#define	RBILLBOARD_H
 
 #include "de/hackcraft/world/Component.h"
 
 #include "de/hackcraft/psi3d/math3d.h"
 
 /**
- *  Encapsulates onscreen descriptive texts about an object.
+ *  Encapsulates on-screen descriptive texts about an object.
  */
-struct rNameable : public Component {
+struct rBillboard : public Component {
 public: // SYSTEM
     /// Identifier for this component (all uppercase letters without leading "r").
     static std::string cname;
@@ -45,9 +45,9 @@ public: // OUTPUT
 public: // INTERNALS
 public:
     /// Constructor.
-    rNameable(Entity* obj = NULL);
+    rBillboard(Entity* obj = NULL);
     /// Copy Constructor.
-    rNameable(rNameable * original);
+    rBillboard(rBillboard * original);
     /// Clone this.
     virtual Component * clone();
 

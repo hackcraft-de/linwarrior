@@ -6,10 +6,10 @@
  * Created on March 28, 2008, 10:23 PM
  */
 
-#ifndef _CMISSION_H
-#define _CMISSION_H
+#ifndef _CMISSIONSYSTEM_H
+#define _CMISSIONSYSTEM_H
 
-class Mission;
+class MissionSystem;
 
 #include "de/hackcraft/world/World.h"
 
@@ -30,7 +30,7 @@ class Mission;
  * Future: support for timetriggers like onTime().
  *
  */
-class Mission : public Subsystem {
+class MissionSystem : public Subsystem {
 protected:
     // Mission Objectives
     std::vector<Entity*> mVictory; // Shall be destroyed
@@ -38,7 +38,7 @@ protected:
     int mState;
 public:
 
-    Mission() : mState(0) {
+    MissionSystem() : mState(0) {
     };
 
     /**

@@ -1,14 +1,14 @@
-#include "rNameable.h"
+#include "rBillboard.h"
 
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/GLF.h"
 
 #include <GL/glew.h>
 
-std::string rNameable::cname = "NAMEABLE";
-unsigned int rNameable::cid = 8730;
+std::string rBillboard::cname = "NAMEABLE";
+unsigned int rBillboard::cid = 8730;
 
-rNameable::rNameable(Entity* obj) : name("Unnamed"), description("Undescribed"), designation(0) {
+rBillboard::rBillboard(Entity* obj) : name("Unnamed"), description("Undescribed"), designation(0) {
     object = obj;
     vector_zero(pos0);
     vector_zero(pos1);
@@ -18,7 +18,7 @@ rNameable::rNameable(Entity* obj) : name("Unnamed"), description("Undescribed"),
     effect = true;
 }
 
-rNameable::rNameable(rNameable * original) : name("Unnamed"), description("Undescribed"), designation(0) {
+rBillboard::rBillboard(rBillboard * original) : name("Unnamed"), description("Undescribed"), designation(0) {
     if (original != NULL) {
         object = original->object;
         name = original->name;
@@ -27,11 +27,11 @@ rNameable::rNameable(rNameable * original) : name("Unnamed"), description("Undes
     }
 }
 
-Component* rNameable::clone() {
-    return new rNameable(this);
+Component* rBillboard::clone() {
+    return new rBillboard(this);
 }
 
-void rNameable::drawEffect() {
+void rBillboard::drawEffect() {
     if (!effect) return;
 
     glPushMatrix();

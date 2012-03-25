@@ -9,10 +9,10 @@
  * (SkySphere / SkyBox).
  */
 
-#ifndef _CBACKGROUND_H
-#define _CBACKGROUND_H
+#ifndef _CBACKGROUNDSYSTEM_H
+#define _CBACKGROUNDSYSTEM_H
 
-class Background;
+class BackgroundSystem;
 
 #include <map>
 #include <list>
@@ -27,7 +27,7 @@ class Background;
  * those virtual horizons found in aviation instruments.
  * Sets lightsource 0 as skylight according to time.
  */
-class Background : public Subsystem {
+class BackgroundSystem : public Subsystem {
 private:
     static std::map<int, unsigned int> textures;
 private:
@@ -45,8 +45,8 @@ private:
     /** Light direction according to celestial bodies and time (sun/moon). */
     vec4 light;
 public:
-    Background();
-    Background(Propmap* properties);
+    BackgroundSystem();
+    BackgroundSystem(Propmap* properties);
     void init(Propmap* properties);
     void initTextures();
 public:

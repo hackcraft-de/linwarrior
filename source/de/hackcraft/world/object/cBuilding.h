@@ -10,7 +10,7 @@
 #define BUILDING_H
 
 class cBuilding;
-struct rDamageable;
+struct rTarget;
 
 #include "de/hackcraft/world/Entity.h"
 
@@ -25,7 +25,7 @@ protected:
     static std::map<int, long> sTextures;
 protected:
     /// Damage of this building using center body part hp only.
-    rDamageable* damageable;
+    rTarget* damageable;
     /// Explosion to be triggered on destruction of the building.
     rWeaponExplosion explosionObject;
     /// Dimensions of the building.

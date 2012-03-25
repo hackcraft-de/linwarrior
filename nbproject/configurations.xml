@@ -155,8 +155,8 @@
             </df>
             <df name="sub">
               <df name="background">
-                <in>Background.cpp</in>
-                <in>Background.h</in>
+                <in>BackgroundSystem.cpp</in>
+                <in>BackgroundSystem.h</in>
               </df>
               <df name="cityscape">
                 <in>rPadmap.cpp</in>
@@ -174,6 +174,10 @@
               </df>
               <df name="landscape">
               </df>
+              <df name="mission">
+                <in>MissionSystem.cpp</in>
+                <in>MissionSystem.h</in>
+              </df>
               <df name="mobile">
                 <in>rCamera.cpp</in>
                 <in>rCamera.h</in>
@@ -183,8 +187,10 @@
                 <in>rMobile.h</in>
               </df>
               <df name="model">
-                <in>rNameable.cpp</in>
-                <in>rNameable.h</in>
+                <in>ModelSystem.cpp</in>
+                <in>ModelSystem.h</in>
+                <in>rBillboard.cpp</in>
+                <in>rBillboard.h</in>
                 <in>rRigged.cpp</in>
                 <in>rRigged.h</in>
                 <in>rScatter.cpp</in>
@@ -193,20 +199,28 @@
                 <in>rTree.h</in>
               </df>
               <df name="physics">
+                <in>PhysicsSystem.cpp</in>
+                <in>PhysicsSystem.h</in>
                 <in>rCollider.cpp</in>
                 <in>rCollider.h</in>
                 <in>rTraceable.cpp</in>
                 <in>rTraceable.h</in>
               </df>
               <df name="trigger">
+                <in>TriggerSystem.cpp</in>
+                <in>TriggerSystem.h</in>
                 <in>rAlert.cpp</in>
                 <in>rAlert.h</in>
+                <in>rTrigger.cpp</in>
+                <in>rTrigger.h</in>
               </df>
               <df name="weapon">
-                <in>rDamageable.cpp</in>
-                <in>rDamageable.h</in>
+                <in>WeaponSystem.cpp</in>
+                <in>WeaponSystem.h</in>
                 <in>rTarcom.cpp</in>
                 <in>rTarcom.h</in>
+                <in>rTarget.cpp</in>
+                <in>rTarget.h</in>
                 <in>rWeapon.cpp</in>
                 <in>rWeapon.h</in>
                 <in>rWeaponExplosion.cpp</in>
@@ -231,8 +245,6 @@
             <in>Entity.h</in>
             <in>Message.cpp</in>
             <in>Message.h</in>
-            <in>Mission.cpp</in>
-            <in>Mission.h</in>
             <in>OID.h</in>
             <in>Propmap.cpp</in>
             <in>Propmap.h</in>

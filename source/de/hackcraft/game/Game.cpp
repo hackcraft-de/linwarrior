@@ -131,10 +131,10 @@ int Game::parseArgs(int argc, char** args) {
 
 void Game::initMission() {
     world = new World();
-    Mission* mission = NULL;
+    MissionSystem* mission = NULL;
     
     if (this->mission == 1) {
-        mission = new Mission();
+        mission = new MissionSystem();
     } else {
         mission = new OpenMission();
     }

@@ -6,6 +6,7 @@
 #include "de/hackcraft/world/World.h"
 
 #include "de/hackcraft/world/Entity.h"
+#include "rTrigger.h"
 
 #include <ostream>
 using std::cout;
@@ -37,12 +38,15 @@ rAlert::rAlert(Entity* obj, float* center, float* range, int shapetype, std::str
     fusedelay = 0;
 }
 
-float rAlert::constrain(float* worldpos, float radius, float* localpos, Entity* enactor) {
+
+float rAlert::detect(rTrigger* trigger) {
     //std::cout << "called" << std::endl;
     // Don't react on scanning and shooting.
-    if (enactor == NULL) return 0;
+    if (trigger == NULL) return 0;
     if (once && fired) return 0;
-    if (!enactor->anyTags(&inc_sense) || enactor->anyTags(&exc_sense)) return 0;
+    if (!trigger->anyTags(&inc_sense) || trigger->anyTags(&exc_sense)) return 0;
+    
+    float* worldpos = trigger->pos0;
 
     rShape* s = &shape;
     float depth = 0;
@@ -83,10 +87,10 @@ float rAlert::constrain(float* worldpos, float radius, float* localpos, Entity* 
     }
     //std::cout << depth << std::endl;
     // Is that possible intruder yet unknown.
-    if (intruders.find(enactor->oid) == intruders.end()) {
+    if (intruders.find(trigger->id) == intruders.end()) {
         // The intruder was outside and now there is an intrusion.
         if ((depth != 0) == positive) {
-            intruders.insert(enactor->oid);
+            intruders.insert(trigger->id);
             if (posedge) {
                 fired = true;
                 //cout << "fusedelay=" << fusedelay << endl;
@@ -96,7 +100,7 @@ float rAlert::constrain(float* worldpos, float radius, float* localpos, Entity* 
     } else {
         // The intruder was inside and now the intruder left the zone.
         if ((depth == 0) == positive) {
-            intruders.erase(enactor->oid);
+            intruders.erase(trigger->id);
             if (!posedge) {
                 fired = true;
                 World::instance->sendMessage(fusedelay, object->oid, receiver, msgtype, msgtext, NULL);
@@ -107,6 +111,7 @@ float rAlert::constrain(float* worldpos, float radius, float* localpos, Entity* 
     //return depth;
     return 0.0f;
 }
+
 
 void rAlert::drawEffect() {
     if (!sDrawzone) return;

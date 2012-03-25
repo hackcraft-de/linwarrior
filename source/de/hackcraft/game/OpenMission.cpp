@@ -9,11 +9,21 @@
 #include "de/hackcraft/world/sub/computer/rComputer.h"
 #include "de/hackcraft/world/sub/computer/rController.h"
 
-#include "de/hackcraft/world/sub/model/rNameable.h"
+#include "de/hackcraft/world/sub/model/ModelSystem.h"
+#include "de/hackcraft/world/sub/model/rBillboard.h"
 
 #include "de/hackcraft/world/sub/mobile/rMobile.h"
 
+#include "de/hackcraft/world/sub/weapon/WeaponSystem.h"
 #include "de/hackcraft/world/sub/weapon/rWeapon.h"
+
+#include "de/hackcraft/world/sub/trigger/TriggerSystem.h"
+
+#include "de/hackcraft/world/sub/landscape/LandscapeSystem.h"
+
+#include "de/hackcraft/world/sub/cityscape/CityscapeSystem.h"
+
+#include "de/hackcraft/world/sub/physics/PhysicsSystem.h"
 
 #include "de/hackcraft/world/Propmap.h"
 
@@ -84,8 +94,16 @@ Entity* OpenMission::init(World* world) {
     //    cout << "Could not load global properties.\n";
     //}
 
-    cout << "Initialising background...\n";
-    world->subsystems.push_back(new Background(&globalProperties));
+    cout << "Initialising background subsystem...\n";
+    world->subsystems.push_back(new BackgroundSystem(&globalProperties));
+    
+    cout << "Initialising experimental or preliminary subsystems...\n";
+    world->subsystems.push_back(new LandscapeSystem());
+    world->subsystems.push_back(new CityscapeSystem());
+    world->subsystems.push_back(new PhysicsSystem());
+    world->subsystems.push_back(new TriggerSystem());
+    world->subsystems.push_back(new WeaponSystem());
+    world->subsystems.push_back(new ModelSystem());
     
     cout << "Setting mission date and time...\n";
     if (!true) {

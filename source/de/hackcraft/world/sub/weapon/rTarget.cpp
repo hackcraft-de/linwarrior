@@ -1,4 +1,4 @@
-#include "rDamageable.h"
+#include "rTarget.h"
 
 #include "de/hackcraft/world/Entity.h"
 
@@ -8,10 +8,10 @@
 
 #include <GL/glew.h>
 
-std::string rDamageable::cname = "DAMAGEABLE";
-unsigned int rDamageable::cid = 5704;
+std::string rTarget::cname = "DAMAGEABLE";
+unsigned int rTarget::cid = 5704;
 
-rDamageable::rDamageable(Entity* obj) {
+rTarget::rTarget(Entity* obj) {
     object = obj;
 
     radius = 0.25;
@@ -22,9 +22,9 @@ rDamageable::rDamageable(Entity* obj) {
     disturber = 0;
 }
 
-rDamageable::rDamageable(rDamageable * original) {
+rTarget::rTarget(rTarget * original) {
     if (original == NULL) {
-        rDamageable();
+        rTarget();
     } else {
         object = original->object;
         radius = original->radius;
@@ -36,15 +36,15 @@ rDamageable::rDamageable(rDamageable * original) {
     }
 }
 
-Component* rDamageable::clone() {
-    return new rDamageable(this);
+Component* rTarget::clone() {
+    return new rTarget(this);
 }
 
-bool rDamageable::damage(float* localpos, float damage, Entity* enactor) {
-    int hitzone = rDamageable::BODY;
-    if (localpos[1] < 0.66 * height && hp[rDamageable::LEGS] > 0) hitzone = rDamageable::LEGS;
-    else if (localpos[0] < -0.33 * radius && hp[rDamageable::LEFT] > 0) hitzone = rDamageable::LEFT;
-    else if (localpos[0] > +0.33 * radius && hp[rDamageable::RIGHT] > 0) hitzone = rDamageable::RIGHT;
+bool rTarget::damage(float* localpos, float damage, Entity* enactor) {
+    int hitzone = rTarget::BODY;
+    if (localpos[1] < 0.66 * height && hp[rTarget::LEGS] > 0) hitzone = rTarget::LEGS;
+    else if (localpos[0] < -0.33 * radius && hp[rTarget::LEFT] > 0) hitzone = rTarget::LEFT;
+    else if (localpos[0] > +0.33 * radius && hp[rTarget::RIGHT] > 0) hitzone = rTarget::RIGHT;
 
     hp[hitzone] -= damage;
     if (hp[hitzone] < 0.0f) hp[hitzone] = 0.0f;
@@ -66,7 +66,7 @@ bool rDamageable::damage(float* localpos, float damage, Entity* enactor) {
     return alife;
 }
 
-void rDamageable::animate(float spf) {
+void rTarget::animate(float spf) {
 
     // Average the disturbance (damage) for the enactor over time.
     float alpha = 0.01;
@@ -107,7 +107,7 @@ void rDamageable::animate(float spf) {
     //}
 }
 
-void rDamageable::drawHUD() {
+void rTarget::drawHUD() {
     if (!active) return;
 
     //glColor4f(0,0.1,0,0.2);
@@ -129,25 +129,25 @@ void rDamageable::drawHUD() {
             //glTranslatef(0.8, 0.1, 0);
             //glScalef(0.06, 0.08, 1.0);
             // Left Arm
-            int left = rDamageable::LEFT;
+            int left = rTarget::LEFT;
             if (i != 1) glColor4f(1 - hp[left]*0.01, hp[left]*0.01, 0.4, 0.2);
             Primitive::glLineSquare(0.1f);
             // Torsor&Head
             glTranslatef(1, 0, 0);
             glScalef(1, 1.5, 1);
-            int body = rDamageable::BODY;
+            int body = rTarget::BODY;
             if (i != 1) glColor4f(1 - hp[body]*0.01, hp[body]*0.01, 0.4, 0.2);
             Primitive::glLineSquare(0.1f);
             // Right Arm&Shoulder
             glTranslatef(1, 0, 0);
             glScalef(1, 1.0f / 1.5f, 1);
-            int right = rDamageable::RIGHT;
+            int right = rTarget::RIGHT;
             if (i != 1) glColor4f(1 - hp[right]*0.01, hp[right]*0.01, 0.4, 0.2);
             Primitive::glLineSquare(0.1f);
             // Legs
             glTranslatef(-1.6, -1, 0);
             glScalef(2.2, 1, 1);
-            int legs = rDamageable::LEGS;
+            int legs = rTarget::LEGS;
             if (i != 1) glColor4f(1 - hp[legs]*0.01, hp[legs]*0.01, 0.4, 0.2);
             Primitive::glLineSquare(0.1f);
         }
@@ -161,10 +161,10 @@ void rDamageable::drawHUD() {
         glTranslatef(0, 1, 0);
         GLF::glprint("hackcraft.de");
         glTranslatef(0, 9, 0);
-        int left = rDamageable::LEFT;
-        int body = rDamageable::BODY;
-        int right = rDamageable::RIGHT;
-        int legs = rDamageable::LEGS;
+        int left = rTarget::LEFT;
+        int body = rTarget::BODY;
+        int right = rTarget::RIGHT;
+        int legs = rTarget::LEGS;
         GLF::glprintf("L %3.0f  T %3.0f  R %3.0f\n       B %3.0f", hp[left], hp[body], hp[right], hp[legs]);
     }
     glPopMatrix();

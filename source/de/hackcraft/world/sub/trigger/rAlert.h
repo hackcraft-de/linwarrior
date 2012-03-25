@@ -10,9 +10,10 @@
 #define	RALERT_H
 
 #include "de/hackcraft/world/Component.h"
-struct Particle;
 
 #include "de/hackcraft/world/OID.h"
+
+#include "rTrigger.h"
 
 #include <string>
 #include <hash_set>
@@ -58,9 +59,9 @@ public: // INPUT
     bool once;
     /// Delay for the delivery of the notification message.
     OID fusedelay;
-    /// Reacting only on objects with such Tags:
+    /// Reacting only on triggers with such Tags:
     std::set<OID> inc_sense;
-    /// But not reacting on objects with such Tags:
+    /// But not reacting on triggers with such Tags:
     std::set<OID> exc_sense;
     /// Type of the message to be sent when triggered.
     std::string msgtype;
@@ -88,8 +89,8 @@ public:
 
     rAlert(Entity* obj, float* center, float* range, int shapetype, std::string msgtype, std::string msgtext, OID receiver, std::set<OID>* include, std::set<OID>* exclude, bool positive = true, bool posedge = true, bool once = false, OID fusedelay = 0);
 
-    virtual float constrain(float* worldpos, float radius = 0.0f, float* localpos = NULL, Entity* enactor = NULL);
-    virtual void drawEffect();
+    float detect(rTrigger* trigger);
+    virtual void drawEffect();    
 };
 
 #endif	/* RALERT_H */

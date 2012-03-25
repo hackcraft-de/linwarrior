@@ -19,8 +19,8 @@ struct rWepcom;
 struct rForcom;
 struct rNavcom;
 
-struct rNameable;
-struct rDamageable;
+struct rBillboard;
+struct rTarget;
 struct rTraceable;
 struct rController;
 struct rCamera;
@@ -82,8 +82,8 @@ public:
     rForcom* forcom;
     rNavcom* navcom;
 
-    rNameable* nameable;
-    rDamageable* damageable;
+    rBillboard* nameable;
+    rTarget* damageable;
     rTraceable* traceable;
     rController* controller;
     rCamera* camra;
