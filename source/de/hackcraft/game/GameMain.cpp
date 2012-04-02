@@ -6,7 +6,7 @@
 #include "de/hackcraft/psi3d/GLF.h"
 
 // To dis-/enable zone drawing.
-#include "de/hackcraft/world/object/cAlert.h"
+#include "de/hackcraft/world/sub/trigger/rAlert.h"
 
 #include "de/hackcraft/io/Filesystem.h"
 
@@ -337,7 +337,7 @@ void GameMain::drawFrame() {
     }
 
     // Draw area zones while paused (debug/editmode kind of).
-    cAlert::sDrawzone = game.paused;
+    rAlert::sDrawzone = game.paused;
 
     // Draw fewer frames? Only every n'th frame.
     int nthframe = 1;

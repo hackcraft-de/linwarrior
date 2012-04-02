@@ -28,9 +28,10 @@ public:
     /// Tags (IDs, Social-Roles, Parties, States...) this trigger belongs to.
     std::set<OID> tags;
 public:
-    rTrigger();
-    rTrigger(const rTrigger& orig);
-    virtual ~rTrigger();
+    rTrigger(Entity* obj = NULL);
+    //rTrigger();
+    //rTrigger(const rTrigger& orig);
+    //virtual ~rTrigger();
 
     /** Check wether this Object has at least one of the given tags. */
     bool anyTags(std::set<OID>* tagset) {

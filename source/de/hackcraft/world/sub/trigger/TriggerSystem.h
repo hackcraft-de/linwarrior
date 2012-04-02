@@ -23,6 +23,8 @@ public:
     TriggerSystem(const TriggerSystem& orig);
     virtual ~TriggerSystem();
     virtual void animateObjects();
+    void addAlert(rAlert* alert) { alerts[alert->id] = alert; };
+    void addTrigger(rTrigger* trigger) { triggers[trigger->id] = trigger; };
 private:
     std::map<OID,rAlert*> alerts;
     std::map<OID,rTrigger*> triggers;

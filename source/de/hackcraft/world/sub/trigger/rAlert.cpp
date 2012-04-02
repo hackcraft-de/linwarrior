@@ -20,6 +20,8 @@ bool rAlert::sDrawzone = !true;
 rAlert::rAlert(Entity* obj, float* center, float* range, int shapetype, std::string msgtype, std::string msgtext, OID receiver, std::set<OID>* include, std::set<OID>* exclude, bool positive, bool posedge, bool once, OID fusedelay) {
     this->object = obj;
     
+    id = (OID) this;
+    
     vector_cpy(shape.center, center);
     vector_cpy(shape.range, range);
 
@@ -45,8 +47,9 @@ float rAlert::detect(rTrigger* trigger) {
     if (trigger == NULL) return 0;
     if (once && fired) return 0;
     if (!trigger->anyTags(&inc_sense) || trigger->anyTags(&exc_sense)) return 0;
-    
+
     float* worldpos = trigger->pos0;
+    //cout << "detect: " << worldpos[0] << " " << worldpos[2] << "\n";
 
     rShape* s = &shape;
     float depth = 0;

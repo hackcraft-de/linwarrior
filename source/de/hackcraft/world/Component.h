@@ -92,7 +92,7 @@ struct Component {
     }
 
     void postbind() {
-        for (Binding* binding : prebinds) {
+        for (Binding* binding : postbinds) {
             binding->read();
         }
     }

@@ -720,6 +720,12 @@ void cMech::animate(float spf) {
         explosion->transform();
     }
 
+    for (auto i = components.begin(); i != components.end(); i++) {
+        (*i)->prebind();
+        (*i)->animate(spf);
+        (*i)->postbind();
+    }
+    
     // Pad
     if (pad) {
         // from MOBILE

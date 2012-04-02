@@ -23,6 +23,7 @@ class Entity;
 #include "de/hackcraft/io/Pad.h"
 
 #include "de/hackcraft/psi3d/math3d.h"
+#include "de/hackcraft/psi3d/macros.h"
 
 #include <vector>
 #include <set>
@@ -122,7 +123,7 @@ public:
 
     Entity() {
         oid = 0;
-        pos0[0] = pos0[1] = pos0[2] = 0.0f;
+        pos0[0] = pos0[1] = pos0[2] = float_NAN;
         ori0[0] = ori0[1] = ori0[2] = 0.0f;
         ori0[3] = 1.0f;
         seconds = 0;

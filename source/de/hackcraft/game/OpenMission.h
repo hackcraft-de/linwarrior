@@ -12,6 +12,7 @@
 
 #include "de/hackcraft/world/sub/mission/MissionSystem.h"
 #include "de/hackcraft/world/Propmap.h"
+#include "de/hackcraft/world/sub/trigger/TriggerSystem.h"
 
 /**
  * Mission for testing new Mission features.
@@ -25,6 +26,7 @@ private:
     std::set<OID> inc_sense;
     std::set<OID> exc_sense;
     Propmap globalProperties;
+    TriggerSystem* triggerSystem;
 private:
     virtual void onVictory();
     virtual void onDefeat();

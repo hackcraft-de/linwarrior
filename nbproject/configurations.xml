@@ -144,8 +144,6 @@
           </df>
           <df name="world">
             <df name="object">
-              <in>cAlert.cpp</in>
-              <in>cAlert.h</in>
               <in>cBuilding.cpp</in>
               <in>cBuilding.h</in>
               <in>cMech.cpp</in>
@@ -159,6 +157,8 @@
                 <in>BackgroundSystem.h</in>
               </df>
               <df name="cityscape">
+                <in>CityscapeSystem.cpp</in>
+                <in>CityscapeSystem.h</in>
                 <in>rPadmap.cpp</in>
                 <in>rPadmap.h</in>
               </df>
@@ -173,6 +173,8 @@
                 <in>rNavcom.h</in>
               </df>
               <df name="landscape">
+                <in>LandscapeSystem.cpp</in>
+                <in>LandscapeSystem.h</in>
               </df>
               <df name="mission">
                 <in>MissionSystem.cpp</in>

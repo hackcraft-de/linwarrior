@@ -48,6 +48,8 @@ public: // SYSTEM
     static unsigned int cid;
     /// Draw zones for debugging.
     static bool sDrawzone;
+    /// Id
+    OID id;
 public: // INPUT
     /// The group of receivers.
     OID receiver;
@@ -74,7 +76,7 @@ public: // OUTPUT
     bool fired;
     /// Lists object currently inside the tracked zone.
     std::set<OID> intruders;
-protected: // INTERNALS
+public:
     struct rShape {
 
         enum Shapes {
@@ -84,6 +86,7 @@ protected: // INTERNALS
         float center[3];
         float range[3];
     };
+protected: // INTERNALS
     rShape shape;
 public:
 
