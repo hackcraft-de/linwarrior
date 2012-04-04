@@ -18,3 +18,11 @@ void TriggerSystem::animateObjects() {
     }
 }
 
+void TriggerSystem::drawEffect() {
+    for (std::pair<OID,rAlert*> alert : alerts) {
+        alert.second->drawSystemEffect();
+    }
+    for (std::pair<OID,rTrigger*> trigger : triggers) {
+        trigger.second->drawSystemEffect();
+    }
+}

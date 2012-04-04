@@ -32,6 +32,8 @@ public:
     //rTrigger();
     //rTrigger(const rTrigger& orig);
     //virtual ~rTrigger();
+    
+    void drawSystemEffect() {};
 
     /** Check wether this Object has at least one of the given tags. */
     bool anyTags(std::set<OID>* tagset) {

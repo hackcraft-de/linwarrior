@@ -93,7 +93,7 @@ public:
     rAlert(Entity* obj, float* center, float* range, int shapetype, std::string msgtype, std::string msgtext, OID receiver, std::set<OID>* include, std::set<OID>* exclude, bool positive = true, bool posedge = true, bool once = false, OID fusedelay = 0);
 
     float detect(rTrigger* trigger);
-    virtual void drawEffect();    
+    virtual void drawSystemEffect();    
 };
 
 #endif	/* RALERT_H */

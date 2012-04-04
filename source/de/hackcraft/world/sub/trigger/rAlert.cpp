@@ -116,7 +116,7 @@ float rAlert::detect(rTrigger* trigger) {
 }
 
 
-void rAlert::drawEffect() {
+void rAlert::drawSystemEffect() {
     if (!sDrawzone) return;
 
     float edge = posedge ? 1.0f : 0.0f;
