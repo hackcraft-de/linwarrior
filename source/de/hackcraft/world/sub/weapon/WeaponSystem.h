@@ -17,7 +17,7 @@
 
 #include "de/hackcraft/world/Subsystem.h"
 
-#include <vector>
+#include <map>
 
 
 class WeaponSystem : public Subsystem {
@@ -26,10 +26,10 @@ public:
     WeaponSystem(const WeaponSystem& orig);
     virtual ~WeaponSystem();
 private:
-    std::vector<rTarcom> targetComputers;
-    std::vector<rWepcom> weaponComputers;
-    std::vector<rWeapon> weapons;
-    std::vector<rTarget> targets;
+    std::map<OID,rTarcom*> targetComputers;
+    std::map<OID,rWepcom*> weaponComputers;
+    std::map<OID,rWeapon*> weapons;
+    std::map<OID,rTarget*> targets;
 };
 
 #endif	/* WEAPONSYSTEM_H */
