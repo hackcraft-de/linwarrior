@@ -13,9 +13,10 @@
 #include "rCollider.h"
 #include "rTraceable.h"
 
+#include "de/hackcraft/world/OID.h"
 #include "de/hackcraft/world/Subsystem.h"
 
-#include <vector>
+#include <map>
 
 class PhysicsSystem : public Subsystem {
 public:
@@ -23,8 +24,8 @@ public:
     PhysicsSystem(const PhysicsSystem& orig);
     virtual ~PhysicsSystem();
 private:
-    std::vector<rCollider> colliders;
-    std::vector<rTraceable> traceables;
+    std::map<OID,rCollider*> colliders;
+    std::map<OID,rTraceable*> traceables;
 };
 
 #endif	/* PHYSICSSYSTEM_H */
