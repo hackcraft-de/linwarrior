@@ -83,16 +83,6 @@ private:
     /// Visible objects for next rendering - (re-)set in setupView.
     std::list<Entity*>* mVisobjects;
 
-    /*
-     * Key-Value-Pairs for world state and progress indication.
-     * Interpretation is not fixed and may vary, samples:
-     * "ImportantThingHappened" = "true" [boolean value]
-     * "CurrentChapter" = "1" [integer value]
-     * "ObjectOfInterest" = "20280809120000001" [OID]
-     * "JustAFlagOrKeyitem" = "" [flag]
-     */
-    //std::map<std::string, std::string> mValues;
-
     /// Timing, simulation stepping, deltacycles, date, fps, etc.
     Timing mTiming;
     
