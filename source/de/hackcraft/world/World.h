@@ -59,15 +59,6 @@ private:
     // Overlays weather effects like rain, snow or dust.
     //cWeather mWeather;
 
-    /// Gravity acceleration vector [m/s²]. space = (0,0,0), earth = (0,-9.8,0).
-    vec3 mGravity;
-
-    /// Air density in kg per cubic meter (default 1.204 kg/m3 Air at 20°C).
-    float mAirdensity;
-
-    /// Velocity "damping" when on ground (0.14 ok).
-    float mGndfriction;
-
     /// Object-ID (OID) to Object-Reference (non-fragged).
     std::map<OID, Entity*> mIndex;
 
@@ -132,12 +123,6 @@ public: // Accessors
     Timing* getTiming();
 
     Entity* getObject(OID oid);
-
-    float* getGravity();
-
-    float getGndfriction();
-
-    float getAirdensity();
 
     void setViewdistance(float viewdistance);
 

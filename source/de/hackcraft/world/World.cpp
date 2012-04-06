@@ -20,17 +20,6 @@ World* World::instance = NULL;
 World::World() {
     World::instance = this;
 
-    // Earth
-    vector_set(mGravity, 0.0f, -9.80665f, 0.0f);
-    // Mars
-    //vector_set(mGravity, 0.0f, -3.69f, 0.0f);
-
-    //mAirdensity = 0.1785; // Loose Helium Space
-    //mAirdensity = 1.204f / 3.0f; // Terraformed Mars Air
-    mAirdensity = 1.204f; // Earth Air
-    //mAirdensity = 1000.0f; // Water
-    mGndfriction = 0.13;
-
     mTiming.setFPS(30);
     mTiming.setDate(2010, 350);
     mTiming.setTime(01, 01, 01);
@@ -55,18 +44,6 @@ Timing* World::getTiming() {
 
 Entity* World::getObject(OID oid) {
     return mIndex[oid];
-}
-
-float* World::getGravity() {
-    return mGravity;
-}
-
-float World::getGndfriction() {
-    return mGndfriction;
-}
-
-float World::getAirdensity() {
-    return mAirdensity;
 }
 
 void World::setViewdistance(float viewdistance) {

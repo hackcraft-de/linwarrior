@@ -1,5 +1,7 @@
 #include "rTraceable.h"
 
+#include "PhysicsSystem.h"
+
 #include "de/hackcraft/world/World.h"
 
 std::string rTraceable::cname = "TRACEABLE";
@@ -36,9 +38,9 @@ void rTraceable::accumulate(float spf) {
     }
 
     // Accumulate environmental forces
-    applyGravityForce(World::instance->getGravity());
+    applyGravityForce(PhysicsSystem::getGravity());
     applyFrictionForce(spf);
-    applyAirdragForce(World::instance->getAirdensity());
+    applyAirdragForce(PhysicsSystem::getAirdensity());
 }
 
 void rTraceable::integrate(float spf) {
@@ -88,7 +90,7 @@ void rTraceable::collide(float spf) {
     // Average groundedness to decide on friction.
     grounded += 0.1 * (onground - grounded);
     // Set friction for next frame.
-    friction = ((grounded > 0.1) ? 1.0f : 0.0f) * World::instance->getGndfriction();
+    friction = ((grounded > 0.1) ? 1.0f : 0.0f) * PhysicsSystem::getGndfriction();
 }
 
 void rTraceable::animate(float spf) {
