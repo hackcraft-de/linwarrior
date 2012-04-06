@@ -57,7 +57,7 @@ void rController::doit(OID aim, float* go, bool fire, float distance) {
     } else if (aimtarget == 0) {
         vector_set(walktarget, float_NAN, float_NAN, float_NAN);
     } else {
-        Entity* tgt = World::instance->getObject(aimtarget);
+        Entity* tgt = World::getInstance()->getObject(aimtarget);
         if (tgt != NULL) {
             vector_cpy(walktarget, tgt->pos0);
         } else {
@@ -206,7 +206,7 @@ void rController::waitEvent() {
                 OID self = object->oid;
                 std::stringstream s;
                 s << self << ": Intruder!\n";
-                World::instance->sendMessage(0, self, 0, "DEBUG", s.str());
+                World::getInstance()->sendMessage(0, self, 0, "DEBUG", s.str());
             }
             this->doit(enemy, NULL, false, NEARTO);
             pushAttackEnemy(enemy);
@@ -231,7 +231,7 @@ void rController::pushAttackEnemy(OID entity) {
     }
     {
         //OID self = mDevice->mSerial;
-        //World::instance->sendMessage("@%llu: All ur base belongs to us.\n", entity);
+        //World::getInstance()->sendMessage("@%llu: All ur base belongs to us.\n", entity);
     }
     push(entity);
     push(ATTACK);
@@ -255,7 +255,7 @@ void rController::attackEnemy() {
         return;
     }
 
-    Entity* target = World::instance->getObject(entity);
+    Entity* target = World::getInstance()->getObject(entity);
     if (target == NULL) {
         this->doit(0, NULL, false);
         pop("Target disappeared (removed from world: fragged).");

@@ -143,7 +143,7 @@ void rNavcom::drawHUD() {
     // Overlay information text: time, date, direction, location.
     glPushMatrix();
     {
-        World* world = World::instance;
+        World* world = World::getInstance();
 
         glColor4f(0.99, 0.99, 0.19, 1);
         glTranslatef(0, 1, 0);

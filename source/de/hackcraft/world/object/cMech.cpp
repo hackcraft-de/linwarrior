@@ -294,7 +294,7 @@ void cMech::message(Message* message) {
 void cMech::spawn() {
     //cout << "cMech::onSpawn()\n";
     ALuint soundsource = traceable->sound;
-    if (hasTag(World::instance->getGroup(PLR_HUMAN)) && alIsSource(soundsource)) alSourcePlay(soundsource);
+    if (hasTag(World::getInstance()->getGroup(PLR_HUMAN)) && alIsSource(soundsource)) alSourcePlay(soundsource);
     //cout << "Mech spawned " << oid << "\n";
 }
 
@@ -304,7 +304,7 @@ void cMech::camera() {
 
 void cMech::listener() {
     float s = -0.1;
-    float step = s * World::instance->getTiming()->getSPF();
+    float step = s * World::getInstance()->getTiming()->getSPF();
     float vel[] = {
         traceable->vel[0] * step,
         traceable->vel[1] * step,
@@ -615,10 +615,10 @@ void cMech::animate(float spf) {
         {
             // Group-to-texture.
             int texture = 0;
-            texture = hasTag(World::instance->getGroup(FAC_RED)) ? 0 : texture;
-            texture = hasTag(World::instance->getGroup(FAC_BLUE)) ? 1 : texture;
-            texture = hasTag(World::instance->getGroup(FAC_GREEN)) ? 2 : texture;
-            texture = hasTag(World::instance->getGroup(FAC_YELLOW)) ? 3 : texture;
+            texture = hasTag(World::getInstance()->getGroup(FAC_RED)) ? 0 : texture;
+            texture = hasTag(World::getInstance()->getGroup(FAC_BLUE)) ? 1 : texture;
+            texture = hasTag(World::getInstance()->getGroup(FAC_GREEN)) ? 2 : texture;
+            texture = hasTag(World::getInstance()->getGroup(FAC_YELLOW)) ? 3 : texture;
             rigged->basetexture3d = texture;
         }
 
@@ -630,10 +630,10 @@ void cMech::animate(float spf) {
     {
         // from Object
         {
-            nameable->color[0] = hasTag(World::instance->getGroup(FAC_RED)) ? 1.0f : 0.0f;
-            nameable->color[1] = hasTag(World::instance->getGroup(FAC_GREEN)) ? 1.0f : 0.0f;
-            nameable->color[2] = hasTag(World::instance->getGroup(FAC_BLUE)) ? 1.0f : 0.0f;
-            nameable->effect = !hasTag(World::instance->getGroup(PLR_HUMAN)) && !hasTag(World::instance->getGroup(HLT_DEAD));
+            nameable->color[0] = hasTag(World::getInstance()->getGroup(FAC_RED)) ? 1.0f : 0.0f;
+            nameable->color[1] = hasTag(World::getInstance()->getGroup(FAC_GREEN)) ? 1.0f : 0.0f;
+            nameable->color[2] = hasTag(World::getInstance()->getGroup(FAC_BLUE)) ? 1.0f : 0.0f;
+            nameable->effect = !hasTag(World::getInstance()->getGroup(PLR_HUMAN)) && !hasTag(World::getInstance()->getGroup(HLT_DEAD));
         }
         // from RIGGED
         {
@@ -751,7 +751,7 @@ void cMech::transform() {
 
 void cMech::drawSolid() {
     // Setup jumpjet light source - for player only so far. move to rLightsource?
-    if (hasTag(World::instance->getGroup(PLR_HUMAN))) {
+    if (hasTag(World::getInstance()->getGroup(PLR_HUMAN))) {
         int light = GL_LIGHT1;
         if (mobile->jetthrottle > 0.001f) {
             float p[] = {traceable->pos[0], traceable->pos[1] + 1.2f, traceable->pos[2], 1.0f};
@@ -887,10 +887,10 @@ void cMech::damage(float* localpos, float damage, Entity* enactor) {
         explosion->trigger = true;
     }
     int body = rTarget::BODY;
-    if (damageable->hp[body] <= 75) addTag(World::instance->getGroup(HLT_WOUNDED));
-    if (damageable->hp[body] <= 50) addTag(World::instance->getGroup(HLT_SERIOUS));
-    if (damageable->hp[body] <= 25) addTag(World::instance->getGroup(HLT_CRITICAL));
-    if (damageable->hp[body] <= 0) addTag(World::instance->getGroup(HLT_DEAD));
+    if (damageable->hp[body] <= 75) addTag(World::getInstance()->getGroup(HLT_WOUNDED));
+    if (damageable->hp[body] <= 50) addTag(World::getInstance()->getGroup(HLT_SERIOUS));
+    if (damageable->hp[body] <= 25) addTag(World::getInstance()->getGroup(HLT_CRITICAL));
+    if (damageable->hp[body] <= 0) addTag(World::getInstance()->getGroup(HLT_DEAD));
 }
 
 float cMech::constrain(float* worldpos, float radius, float* localpos, Entity* enactor) {

@@ -16,14 +16,14 @@
 void MissionSystem::checkConditions() {
     // Destroyed all necessary enemies?
     unsigned int n = 0;
-    for (Entity* object: mVictory) if (object->hasTag(World::instance->getGroup(HLT_DEAD))) n++;
+    for (Entity* object: mVictory) if (object->hasTag(World::getInstance()->getGroup(HLT_DEAD))) n++;
     if (n != 0 && n == mVictory.size()) {
         onVictory();
         return;
     }
     // Destroyed any neccessary friend?
     n = 0;
-    for (Entity* object: mDefeat) if (object->hasTag(World::instance->getGroup(HLT_DEAD))) n++;
+    for (Entity* object: mDefeat) if (object->hasTag(World::getInstance()->getGroup(HLT_DEAD))) n++;
     if (n != 0) {
         onDefeat();
         return;
@@ -33,7 +33,7 @@ void MissionSystem::checkConditions() {
 void MissionSystem::onVictory() {
     if (mState != -1) {
         mState = -1;
-        World::instance->sendMessage(0, 0, 0,
+        World::getInstance()->sendMessage(0, 0, 0,
                 "DISPLAY",
                 std::string("   (+) Primary target fullfilled.\n   (+) You Won!\n   (+) Hit ESC to finish Mission\n")
                 );
@@ -43,7 +43,7 @@ void MissionSystem::onVictory() {
 void MissionSystem::onDefeat() {
     if (mState != -2) {
         mState = -2;
-        World::instance->sendMessage(0, 0, 0,
+        World::getInstance()->sendMessage(0, 0, 0,
                 "DISPLAY",
                 std::string("   (-) You Lost!\n   (+) Hit ESC to finish Mission\n")
                 );
@@ -70,10 +70,10 @@ Entity* MissionSystem::init(World* world) {
         mech->nameable->name = "Alpha";
 
         mech->controller->enabled = false; // Disable Autopilot.
-        mech->addTag(World::instance->getGroup(FAC_BLUE));
-        mech->addTag(World::instance->getGroup(PLR_HUMAN));
-        mech->tarcom->addEnemy(World::instance->getGroup(FAC_RED));
-        mech->tarcom->addEnemy(World::instance->getGroup(HLT_DEAD), false);
+        mech->addTag(World::getInstance()->getGroup(FAC_BLUE));
+        mech->addTag(World::getInstance()->getGroup(PLR_HUMAN));
+        mech->tarcom->addEnemy(World::getInstance()->getGroup(FAC_RED));
+        mech->tarcom->addEnemy(World::getInstance()->getGroup(HLT_DEAD), false);
 
         player = mech;
 

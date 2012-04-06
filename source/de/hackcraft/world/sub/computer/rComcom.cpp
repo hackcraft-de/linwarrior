@@ -37,7 +37,7 @@ rComcom::rComcom(Entity* obj) {
 }
 
 void rComcom::animate(float spf) {
-    Message* message = NULL; //World::instance->recvMessage(0, mLastMessage);
+    Message* message = NULL; //World::getInstance()->recvMessage(0, mLastMessage);
     if (message != NULL) {
         mLastMessage = message->getTimestamp();
     }

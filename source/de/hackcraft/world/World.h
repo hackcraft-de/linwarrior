@@ -116,6 +116,8 @@ public: // Constructor, Object-Management and Drawing:
     World();
 
 public: // Accessors
+    
+    static World* getInstance();
 
     /// Returns the Object ID valid for this instant's time & deltacycle.
     OID getOID();

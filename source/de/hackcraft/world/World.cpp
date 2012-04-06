@@ -34,6 +34,10 @@ World::World() {
 
 // Accessors
 
+World* World::getInstance() {
+    return instance;
+}
+
 OID World::getOID() {
     return mTiming.getTimekey();
 }

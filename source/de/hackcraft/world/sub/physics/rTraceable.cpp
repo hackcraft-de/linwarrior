@@ -55,7 +55,7 @@ void rTraceable::collide(float spf) {
         float center[3];
         vector_cpy(center, pos);
         center[1] += radius;
-        depth = World::instance->constrainParticle(object, center, radius);
+        depth = World::getInstance()->constrainParticle(object, center, radius);
         if (depth > 0.0f) {
             // There was a collision.
             // Set current position to corrected position.

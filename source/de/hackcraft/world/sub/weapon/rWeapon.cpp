@@ -127,8 +127,8 @@ int rWeapon::damageByParticle(float* worldpos, float radius, int roles, float da
     float maxrange = 25;
     float worldpos_[3];
     vector_cpy(worldpos_, worldpos);
-    std::list<Entity*>* range = World::instance->filterByRange(object, worldpos, 0.0f, maxrange, -1, NULL);
-    //cout << "damageByParticle: "  << World::instance->getNames(range) << endl;
+    std::list<Entity*>* range = World::getInstance()->filterByRange(object, worldpos, 0.0f, maxrange, -1, NULL);
+    //cout << "damageByParticle: "  << World::getInstance()->getNames(range) << endl;
     if (!range->empty()) {
 
         for(Entity* targetObject: *range) {

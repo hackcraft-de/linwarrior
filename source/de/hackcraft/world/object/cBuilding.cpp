@@ -149,10 +149,10 @@ void cBuilding::damage(float* localpos, float damage, Entity* enactor) {
             cout << "cBuilding::damageByParticle(): DEAD\n";
             explosionObject.trigger = true;
         }
-        if (damageable->hp[body] <= 75) addTag(World::instance->getGroup(HLT_WOUNDED));
-        if (damageable->hp[body] <= 50) addTag(World::instance->getGroup(HLT_SERIOUS));
-        if (damageable->hp[body] <= 25) addTag(World::instance->getGroup(HLT_CRITICAL));
-        if (damageable->hp[body] <= 0) addTag(World::instance->getGroup(HLT_DEAD));
+        if (damageable->hp[body] <= 75) addTag(World::getInstance()->getGroup(HLT_WOUNDED));
+        if (damageable->hp[body] <= 50) addTag(World::getInstance()->getGroup(HLT_SERIOUS));
+        if (damageable->hp[body] <= 25) addTag(World::getInstance()->getGroup(HLT_CRITICAL));
+        if (damageable->hp[body] <= 0) addTag(World::getInstance()->getGroup(HLT_DEAD));
     }
 }
 

@@ -87,7 +87,7 @@ void rTarcom::animate(float spf) {
         switching = (switchnext || switchprev);
     }
 
-    unsigned long frame = World::instance->getTiming()->getFrame();
+    unsigned long frame = World::getInstance()->getTiming()->getFrame();
     unsigned long key = (((unsigned long) this) >> 1) * 174763;
     //cout << "RANGING KEY CODE IS " << key << " !!\n";
     //unsigned int m = 3;
@@ -96,11 +96,11 @@ void rTarcom::animate(float spf) {
     //if (key0 == framekey) {
     if ((key % 23) == (frame % 23)) {
         delete far;
-        far = World::instance->filterByRange(object, pos0, 0, 100, -1, NULL);
+        far = World::getInstance()->filterByRange(object, pos0, 0, 100, -1, NULL);
         delete near;
-        near = World::instance->filterByRange(object, pos0, 0, 55, -1, far);
+        near = World::getInstance()->filterByRange(object, pos0, 0, 55, -1, far);
         delete enemies;
-        enemies = World::instance->filterByTags(object, &inc_enemies, false, -1, near);
+        enemies = World::getInstance()->filterByTags(object, &inc_enemies, false, -1, near);
         // Filter one nearby.
         nearbyEnemy = 0;
         for (std::list<Entity*>::iterator i = enemies->begin(); i != enemies->end(); i++) {
@@ -119,12 +119,12 @@ void rTarcom::animate(float spf) {
     // Find all objects in near range.
     if (key1 == framekey) {
         delete near;
-        near = World::instance->filterByRange(object, pos, 0, 50, -1, far);
+        near = World::getInstance()->filterByRange(object, pos, 0, 50, -1, far);
     }
     // Find all objects belonging to any enemy party/role.
     if (key2 == framekey) {
         delete enemies;
-        enemies = World::instance->filterByTags(object, &inc_enemies, false, -1, near);
+        enemies = World::getInstance()->filterByTags(object, &inc_enemies, false, -1, near);
     }
      */
 }
@@ -174,10 +174,10 @@ void rTarcom::drawHUD() {
             glBegin(GL_POINTS);
             {
                 glColor4f(0.5, 0.5, 0.5, 1);
-                if (o->hasTag(World::instance->getGroup(FAC_RED))) glColor4f(1, 0, 0, 1);
-                else if (o->hasTag(World::instance->getGroup(FAC_GREEN))) glColor4f(0, 1, 0, 1);
-                else if (o->hasTag(World::instance->getGroup(FAC_BLUE))) glColor4f(0, 0, 1, 1);
-                else if (o->hasTag(World::instance->getGroup(FAC_YELLOW))) glColor4f(0, 1, 0, 1);
+                if (o->hasTag(World::getInstance()->getGroup(FAC_RED))) glColor4f(1, 0, 0, 1);
+                else if (o->hasTag(World::getInstance()->getGroup(FAC_GREEN))) glColor4f(0, 1, 0, 1);
+                else if (o->hasTag(World::getInstance()->getGroup(FAC_BLUE))) glColor4f(0, 0, 1, 1);
+                else if (o->hasTag(World::getInstance()->getGroup(FAC_YELLOW))) glColor4f(0, 1, 0, 1);
                 if (o->oid == selected) glColor4f(1, 0, 1, 1);
                 float dx = o->pos0[0] - pos0[0];
                 float dz = o->pos0[2] - pos0[2];

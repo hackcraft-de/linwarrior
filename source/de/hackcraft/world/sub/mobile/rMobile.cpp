@@ -104,7 +104,7 @@ void rMobile::animate(float spf) {
 
     // Determine Aim-Range
     {
-        Entity* tgt = World::instance->getObject(aimtarget);
+        Entity* tgt = World::getInstance()->getObject(aimtarget);
         if (tgt == NULL) {
             aimrange = 10000.0f;
         } else {
@@ -173,7 +173,7 @@ void rMobile::animate(float spf) {
         Entity* tgt = NULL;
         float* target_pos = NULL;
         if (aimtarget != 0) {
-            tgt = World::instance->getObject(aimtarget);
+            tgt = World::getInstance()->getObject(aimtarget);
             if (tgt != NULL) target_pos = tgt->pos0;
         }
         if (target_pos == NULL) {

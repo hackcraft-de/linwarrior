@@ -107,7 +107,7 @@ void rWeaponHoming::animate(float spf) {
 
         // Now update the Missile itself
         if (s->target) {
-            Entity *targetobject = World::instance->getObject(s->target);
+            Entity *targetobject = World::getInstance()->getObject(s->target);
             if (targetobject && true) {
                 float tgt[] = {0, 0, 0};
                 vector_cpy(tgt, targetobject->pos0);

@@ -501,8 +501,8 @@ void GameMain::updateKey(Uint8 keysym) {
     } else if (keysym == _PAUSE_KEY) {
         game.paused = !game.paused;
     } else {
-        if (keysym == SDLK_MINUS) World::instance->setViewdistance(fmax(100, World::instance->getViewdistance() - 50));
-        else if (keysym == SDLK_PLUS) World::instance->setViewdistance(fmin(3000, World::instance->getViewdistance() + 50));
+        if (keysym == SDLK_MINUS) World::getInstance()->setViewdistance(fmax(100, World::getInstance()->getViewdistance() - 50));
+        else if (keysym == SDLK_PLUS) World::getInstance()->setViewdistance(fmin(3000, World::getInstance()->getViewdistance() + 50));
     }
 }
 

@@ -97,7 +97,7 @@ float rAlert::detect(rTrigger* trigger) {
             if (posedge) {
                 fired = true;
                 //cout << "fusedelay=" << fusedelay << endl;
-                World::instance->sendMessage(fusedelay, object->oid, receiver, msgtype, msgtext, NULL);
+                World::getInstance()->sendMessage(fusedelay, object->oid, receiver, msgtype, msgtext, NULL);
             }
         }
     } else {
@@ -106,7 +106,7 @@ float rAlert::detect(rTrigger* trigger) {
             intruders.erase(trigger->id);
             if (!posedge) {
                 fired = true;
-                World::instance->sendMessage(fusedelay, object->oid, receiver, msgtype, msgtext, NULL);
+                World::getInstance()->sendMessage(fusedelay, object->oid, receiver, msgtype, msgtext, NULL);
             }
         }
     }
