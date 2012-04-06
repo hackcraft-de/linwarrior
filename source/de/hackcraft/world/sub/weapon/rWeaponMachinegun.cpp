@@ -109,10 +109,12 @@ void rWeaponMachinegun::animate(float spf) {
             delete s;
         }
     }
+    
+    float gravity = -9.80665f;
 
     foreachNoInc(i, castoffParticles) {
         Particle* s = *i++;
-        s->vel[1] += World::instance->getGravity()[1] * spf;
+        s->vel[1] += gravity * spf;
         vector_muladd(s->pos, s->pos, s->vel, spf);
         s->fuel -= spf;
         if (s->fuel < 0) {
