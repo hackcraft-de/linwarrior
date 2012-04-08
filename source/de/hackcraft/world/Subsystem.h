@@ -9,8 +9,20 @@
 #ifndef SUBSYSTEM_H
 #define	SUBSYSTEM_H
 
+class Entity;
+
 class Subsystem {
-public:
+
+public: // Interaction
+    /**
+     *
+     * @param worldpos The particle position to be constrained given in world coordinates.
+     * @param radius The size of the particle in terms of a radius.
+     * @return Zero if there was no collision, else the maximum impact depth.
+     */
+    virtual float constrainParticle(Entity* ex, float* worldpos, float radius) { return 0.0f; };
+    
+public: // Frame cycle
     /// Advance simulation time for one frame.
     virtual void advanceTime(int deltamsec) {};
     /// Re-build spatial clustering of objects.

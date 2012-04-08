@@ -148,8 +148,6 @@
               <in>cBuilding.h</in>
               <in>cMech.cpp</in>
               <in>cMech.h</in>
-              <in>cPlanetmap.cpp</in>
-              <in>cPlanetmap.h</in>
             </df>
             <df name="sub">
               <df name="background">
@@ -175,6 +173,8 @@
               <df name="landscape">
                 <in>LandscapeSystem.cpp</in>
                 <in>LandscapeSystem.h</in>
+                <in>rPlanetmap.cpp</in>
+                <in>rPlanetmap.h</in>
               </df>
               <df name="mission">
                 <in>MissionSystem.cpp</in>

@@ -538,12 +538,17 @@ std::list<Entity*>* World::filterByBeam(Entity* ex, float* pointa, float* pointb
 float World::constrainParticle(Entity* ex, float* worldpos, float radius) {
     float depth = 0;
     float maxrange = 25;
+
     bool groundplane = !true;
-    if (groundplane)
-        if (worldpos[1] - radius < 0.0f) {
-            worldpos[1] = 0.0f + radius;
-            depth += -(worldpos[1] - radius) + 0.000001f;
-        }
+    if (groundplane && (worldpos[1] - radius < 0.0f)) {
+        worldpos[1] = 0.0f + radius;
+        depth += -(worldpos[1] - radius) + 0.000001f;
+    }
+    
+    for (Subsystem* sub : subsystems) {
+        depth += sub->constrainParticle(ex, worldpos, radius);
+    }
+    
     std::list<Entity*>* range = filterByRange(ex, worldpos, 0.0f, maxrange, -1, NULL);
     if (!range->empty()) {
 

@@ -13,6 +13,7 @@
 #include "de/hackcraft/world/sub/mission/MissionSystem.h"
 #include "de/hackcraft/world/Propmap.h"
 #include "de/hackcraft/world/sub/trigger/TriggerSystem.h"
+#include "de/hackcraft/world/sub/landscape/rPlanetmap.h"
 
 /**
  * Mission for testing new Mission features.

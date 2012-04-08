@@ -11,7 +11,7 @@
 
 class cPlanetmap;
 
-#include "de/hackcraft/world/Entity.h"
+#include "de/hackcraft/world/Component.h"
 
 #include "de/hackcraft/proc/Landscape.h"
 
@@ -40,7 +40,7 @@ class cPlanetmap;
 /**
  * Procedural Landscape Rendering and Collision.
  */
-class cPlanetmap : public Entity {
+class cPlanetmap : public Component {
 public:
     /// Instance counter.
     static int sInstances;

@@ -119,7 +119,10 @@ Entity* OpenMission::init(World* world) {
 
     cout << "Initialising planetary maps...\n";
     cPlanetmap* planetmap = new cPlanetmap(&globalProperties);
-    world->spawnObject(planetmap);
+    LandscapeSystem* landscapeSystem = new LandscapeSystem();
+    landscapeSystem->setPlanetmap(planetmap);
+    world->subsystems.push_front(landscapeSystem);
+    //world->spawnObject(planetmap);
 
     cout << "Initialising call groups...\n";
     {

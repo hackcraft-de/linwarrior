@@ -16,8 +16,6 @@ class MissionSystem;
 #include "de/hackcraft/world/Entity.h"
 #include "de/hackcraft/world/Subsystem.h"
 
-#include "de/hackcraft/world/object/cPlanetmap.h"
-
 #include "de/hackcraft/io/Pad.h"
 
 #include <vector>

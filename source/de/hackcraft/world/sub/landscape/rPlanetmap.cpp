@@ -1,4 +1,4 @@
-#include "cPlanetmap.h"
+#include "rPlanetmap.h"
 
 #include "de/hackcraft/psi3d/macros.h"
 #include "de/hackcraft/psi3d/GLS.h"
@@ -14,6 +14,7 @@
 #include <cassert>
 
 #include <ostream>
+#include <iostream>
 
 using namespace std;
 
@@ -239,10 +240,10 @@ void cPlanetmap::init(Propmap* properties) {
         }
     }
 
-    this->radius = 10;
-    vector_set(this->pos0, float_NAN, float_NAN, float_NAN);
+    //this->radius = 10;
+    //vector_set(this->pos0, float_NAN, float_NAN, float_NAN);
 
-    name = "PLANETMAP";
+    //name = "PLANETMAP";
     tree = new rTree(NULL, NULL, NULL, 0, 0, 0);
     
     landtype = 0;
