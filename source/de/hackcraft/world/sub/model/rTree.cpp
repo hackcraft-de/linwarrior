@@ -84,6 +84,8 @@ rTree::rTree(Entity* obj, float* pos, float* rot, int seed, int type, int age) {
     } else {
         tree = getCompiledTree(seed, type, age);
     }
+    
+    seconds = 0;
 }
 
 void rTree::animate(float spf) {
