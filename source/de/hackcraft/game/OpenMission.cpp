@@ -3,7 +3,6 @@
 #include "de/hackcraft/world/sub/cityscape/rPadmap.h"
 
 #include "de/hackcraft/world/object/cMech.h"
-#include "de/hackcraft/world/object/cBuilding.h"
 
 #include "de/hackcraft/world/sub/computer/rComputer.h"
 #include "de/hackcraft/world/sub/computer/rController.h"
@@ -100,9 +99,12 @@ Entity* OpenMission::init(World* world) {
     triggerSystem = new TriggerSystem();
     world->subsystems.push_back(triggerSystem);
 
+    cout << "Initialising city subsystem...\n";
+    cityscapeSystem = new CityscapeSystem();
+    world->subsystems.push_back(cityscapeSystem);
+
     cout << "Initialising experimental or preliminary subsystems...\n";
     world->subsystems.push_back(new LandscapeSystem());
-    world->subsystems.push_back(new CityscapeSystem());
     world->subsystems.push_back(new PhysicsSystem());
     world->subsystems.push_back(new WeaponSystem());
     world->subsystems.push_back(new ModelSystem());
@@ -807,17 +809,17 @@ void OpenMission::initPentaSpaceport(World* world, cPlanetmap* planetmap) {
 
     // The Space-Ship Port
 
-    cBuilding* port = new cBuilding(-3 + loc[0], 3 + loc[1], 0 + loc[2], 9, 1, 3);
-    world->spawnObject(port);
+    rBuilding* port = new rBuilding(-3 + loc[0], 3 + loc[1], 0 + loc[2], 9, 1, 3);
+    cityscapeSystem->add(port);
     //mDefeat.push_back(port);
-    port = new cBuilding(-4 + loc[0], 0 + loc[1], -3 + loc[2], 12, 1, 5);
-    world->spawnObject(port);
+    port = new rBuilding(-4 + loc[0], 0 + loc[1], -3 + loc[2], 12, 1, 5);
+    cityscapeSystem->add(port);
     //mDefeat.push_back(port);
 
     // Bay-Road
 
     loopi(6) {
-        world->spawnObject(new cTile(9 * i + loc[0], 0 + loc[1], 0 + loc[2], cTile::KIND_ROAD_EW));
+        cityscapeSystem->add(new rTile(9 * i + loc[0], 0 + loc[1], 0 + loc[2], rTile::KIND_ROAD_EW));
     }
 
     // Generators
@@ -825,8 +827,8 @@ void OpenMission::initPentaSpaceport(World* world, cPlanetmap* planetmap) {
     loopi(5) {
         float a = (360 / 5) * i * 0.017453f;
         float r = 26;
-        cBuilding* hub = new cBuilding(3 * r * sin(a) + loc[0], 0 + loc[1], 3 * r * cos(a) + loc[2], 3, 1, 2);
-        world->spawnObject(hub);
+        rBuilding* hub = new rBuilding(3 * r * sin(a) + loc[0], 0 + loc[1], 3 * r * cos(a) + loc[2], 3, 1, 2);
+        cityscapeSystem->add(hub);
         //mVictory.push_back(hub);
     }
 
@@ -949,7 +951,7 @@ void OpenMission::smallSettling(int wx, int wy, int wz, World* world, int n) {
         float x = wx + 3 * r * sin(a);
         float y = wy;
         float z = wz + 3 * r * cos(a);
-        world->spawnObject(new cBuilding(x, y, z, 1, 1 + (n / (3 * (i + 1))), 2));
+        cityscapeSystem->add(new rBuilding(x, y, z, 1, 1 + (n / (3 * (i + 1))), 2));
         a += M_PI * 0.2;
         r += 0.4;
     }
@@ -1031,11 +1033,11 @@ void OpenMission::capitalCity(int wx, int wy, int wz, World* world) {
             if (center == 1) {
                 //if (east == 1 && west == 1 && north == 1 && south == 1) {
                 if (east + west >= 1 && north + south >= 1) {
-                    world->spawnObject(new cTile(9 * i + wx, 0 + wy, 9 * j + wz, cTile::KIND_ROAD_NEWS));
+                    cityscapeSystem->add(new rTile(9 * i + wx, 0 + wy, 9 * j + wz, rTile::KIND_ROAD_NEWS));
                 } else if (west == 1 || east == 1) {
-                    world->spawnObject(new cTile(9 * i + wx, 0 + wy, 9 * j + wz, cTile::KIND_ROAD_EW));
+                    cityscapeSystem->add(new rTile(9 * i + wx, 0 + wy, 9 * j + wz, rTile::KIND_ROAD_EW));
                 } else if (south == 1 || north == 1) {
-                    world->spawnObject(new cTile(9 * i + wx, 0 + wy, 9 * j + wz, cTile::KIND_ROAD_NS));
+                    cityscapeSystem->add(new rTile(9 * i + wx, 0 + wy, 9 * j + wz, rTile::KIND_ROAD_NS));
                 }
 
             } else {
@@ -1078,7 +1080,7 @@ void OpenMission::capitalCity(int wx, int wy, int wz, World* world) {
                         //cout << old << " => " << buildings[x][y] << " " << (old + h*100 -h) << "\n";
                     }
                 }
-                world->spawnObject(new cBuilding(i * 3 * 3 + wx, h_ * 3 + wy, j * 3 * 3 + wz, (a - i + 1)*3, h, (b - j + 1)*3));
+                cityscapeSystem->add(new rBuilding(i * 3 * 3 + wx, h_ * 3 + wy, j * 3 * 3 + wz, (a - i + 1)*3, h, (b - j + 1)*3));
             }
         }
     }
@@ -1088,7 +1090,7 @@ void OpenMission::pyramidBuilding(int x, int y, int z, World* world) {
     int n = 5;
 
     loopi(n) {
-        world->spawnObject(new cBuilding(i * 3 + x, i * 3 + y, i * 3 + z, (n * 2) - 2 * i, 1, (n * 2) - 2 * i));
+        cityscapeSystem->add(new rBuilding(i * 3 + x, i * 3 + y, i * 3 + z, (n * 2) - 2 * i, 1, (n * 2) - 2 * i));
     }
 }
 

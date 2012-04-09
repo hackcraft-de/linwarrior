@@ -6,7 +6,6 @@
 
 #include "de/hackcraft/world/Entity.h"
 #include "de/hackcraft/world/object/cMech.h"
-#include "de/hackcraft/world/object/cBuilding.h"
 
 #include "de/hackcraft/world/sub/model/rBillboard.h"
 
@@ -99,7 +98,7 @@ Entity* MissionSystem::init(World* world) {
         }
     }
 
-    world->spawnObject(new cBuilding(0, 0, 0, 10, 3, 10));
+    //world->spawnObject(new rBuilding(0, 0, 0, 10, 3, 10));
 
     mVictory.push_back(player);
     return player;

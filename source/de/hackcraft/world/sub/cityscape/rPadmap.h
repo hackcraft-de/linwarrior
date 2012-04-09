@@ -11,6 +11,7 @@
 #define	CPADMAP_H
 
 #include "de/hackcraft/world/Component.h"
+#include "de/hackcraft/world/OID.h"
 
 #include "de/hackcraft/psi3d/math3d.h"
 
@@ -40,7 +41,8 @@ public:
 
         MAX_KINDS
     };
-protected:
+public:
+    OID id;
     int dims[2];
     float heights[16 * 16];
 public: // INPUT

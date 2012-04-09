@@ -113,6 +113,8 @@ rPadmap::rPadmap(Entity* obj) {
     mapscale[0] = 2.4;
     mapscale[1] = mapscale[0];
     mapscale[2] = mapscale[0];
+    
+    id = (OID) this;
 }
 
 float rPadmap::getHeight(float x, float z) {

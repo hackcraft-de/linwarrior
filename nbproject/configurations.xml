@@ -144,8 +144,6 @@
           </df>
           <df name="world">
             <df name="object">
-              <in>cBuilding.cpp</in>
-              <in>cBuilding.h</in>
               <in>cMech.cpp</in>
               <in>cMech.h</in>
             </df>
@@ -157,8 +155,12 @@
               <df name="cityscape">
                 <in>CityscapeSystem.cpp</in>
                 <in>CityscapeSystem.h</in>
+                <in>rBuilding.cpp</in>
+                <in>rBuilding.h</in>
                 <in>rPadmap.cpp</in>
                 <in>rPadmap.h</in>
+                <in>rTile.cpp</in>
+                <in>rTile.h</in>
               </df>
               <df name="computer">
                 <in>rComcom.cpp</in>

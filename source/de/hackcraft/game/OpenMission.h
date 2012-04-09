@@ -14,6 +14,7 @@
 #include "de/hackcraft/world/Propmap.h"
 #include "de/hackcraft/world/sub/trigger/TriggerSystem.h"
 #include "de/hackcraft/world/sub/landscape/rPlanetmap.h"
+#include "de/hackcraft/world/sub/cityscape/CityscapeSystem.h"
 
 /**
  * Mission for testing new Mission features.
@@ -28,6 +29,7 @@ private:
     std::set<OID> exc_sense;
     Propmap globalProperties;
     TriggerSystem* triggerSystem;
+    CityscapeSystem* cityscapeSystem;
 private:
     virtual void onVictory();
     virtual void onDefeat();
@@ -44,13 +46,13 @@ private:
     void initSpadenixFactory(World* world, cPlanetmap* planetmap);
     void initFortifyDefense(World* world, cPlanetmap* planetmap);
 private:
-    static void battleField(World* world);
-    static void smallArmy(int wx, int wy, int wz, World* world, const char* name, int n, bool blue, int wpn /*0*/, bool immobile, std::string model);
-    static void smallSettling(int wx, int wy, int wz, World* world, int n);
-    static void roundForrest(int wx, int wy, int wz, World* world, int r1, int r2, int nmax = 17);
-    static void capitalCity(int wx, int wy, int wz, World* world);
-    static void pyramidBuilding(int x, int y, int z, World* world);
-    static void spacePort(int x, int y, int z, World* world, std::vector<Entity*>& defeat, std::vector<Entity*>& victory);
+    void battleField(World* world);
+    void smallArmy(int wx, int wy, int wz, World* world, const char* name, int n, bool blue, int wpn /*0*/, bool immobile, std::string model);
+    void smallSettling(int wx, int wy, int wz, World* world, int n);
+    void roundForrest(int wx, int wy, int wz, World* world, int r1, int r2, int nmax = 17);
+    void capitalCity(int wx, int wy, int wz, World* world);
+    void pyramidBuilding(int x, int y, int z, World* world);
+    void spacePort(int x, int y, int z, World* world, std::vector<Entity*>& defeat, std::vector<Entity*>& victory);
 };
 
 /** 
