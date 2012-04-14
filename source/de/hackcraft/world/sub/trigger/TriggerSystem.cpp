@@ -1,12 +1,20 @@
 #include "TriggerSystem.h"
 
+TriggerSystem* TriggerSystem::instance = NULL;
+
+
 TriggerSystem::TriggerSystem() {
+    instance = this;
 }
 
 TriggerSystem::TriggerSystem(const TriggerSystem& orig) {
 }
 
 TriggerSystem::~TriggerSystem() {
+}
+
+TriggerSystem* TriggerSystem::getInstance() {
+    return instance;
 }
 
 void TriggerSystem::animateObjects() {
