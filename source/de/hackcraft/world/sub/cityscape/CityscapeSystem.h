@@ -34,10 +34,14 @@ public:
     
     /// Draw all Object's effects (calls their drawEffect method).
     virtual void drawEffect();
+    
+    static CityscapeSystem* getInstance();
 private:
     std::map<OID,rBuilding*> buildings;
     std::map<OID,rTile*> tiles;
     std::map<OID,rPadmap*> padmaps;
+    
+    static CityscapeSystem* instance;
 };
 
 #endif	/* CITYSCAPESYSTEM_H */

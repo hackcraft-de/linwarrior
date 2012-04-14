@@ -1,6 +1,10 @@
 #include "CityscapeSystem.h"
 
+CityscapeSystem* CityscapeSystem::instance = NULL;
+
+
 CityscapeSystem::CityscapeSystem() {
+    instance = this;
 }
 
 CityscapeSystem::CityscapeSystem(const CityscapeSystem& orig) {
@@ -51,3 +55,9 @@ void CityscapeSystem::drawEffect() {
         padmap.second->drawEffect();
     }
 }
+
+
+CityscapeSystem* CityscapeSystem::getInstance() {
+    return instance;
+}
+
