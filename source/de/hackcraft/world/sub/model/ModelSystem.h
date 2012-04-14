@@ -24,11 +24,14 @@ public:
     ModelSystem();
     ModelSystem(const ModelSystem& orig);
     virtual ~ModelSystem();
+    static ModelSystem* getInstance();
 private:
     std::vector<rBillboard> billboardModels;
     std::vector<rRigged> riggedModels;
     std::vector<rScatter> scatterModels;
     std::vector<rTree> treeModels;
+    
+    static ModelSystem* instance;
 };
 
 #endif	/* MODELSYSTEM_H */
