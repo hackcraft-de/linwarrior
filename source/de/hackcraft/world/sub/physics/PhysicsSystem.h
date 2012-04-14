@@ -24,23 +24,27 @@ public:
     PhysicsSystem(const PhysicsSystem& orig);
     virtual ~PhysicsSystem();
 
-    static float* getGravity();
+    float* getGravity();
     
-    static float getGndfriction();
+    float getGndfriction();
     
-    static float getAirdensity();
+    float getAirdensity();
+    
+    static PhysicsSystem* getInstance();
 private:
     std::map<OID,rCollider*> colliders;
     std::map<OID,rTraceable*> traceables;
 
     /// Gravity acceleration vector [m/s²]. space = (0,0,0), earth = (0,-9.8,0).
-    static vec3 mGravity;
+    vec3 gravity;
 
     /// Air density in kg per cubic meter (default 1.204 kg/m3 Air at 20°C).
-    static float mAirdensity;
+    float airdensity;
 
     /// Velocity "damping" when on ground (0.14 ok).
-    static float mGndfriction;
+    float gndfriction;
+    
+    static PhysicsSystem* instance;
 };
 
 #endif	/* PHYSICSSYSTEM_H */

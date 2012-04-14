@@ -38,9 +38,9 @@ void rTraceable::accumulate(float spf) {
     }
 
     // Accumulate environmental forces
-    applyGravityForce(PhysicsSystem::getGravity());
+    applyGravityForce(PhysicsSystem::getInstance()->getGravity());
     applyFrictionForce(spf);
-    applyAirdragForce(PhysicsSystem::getAirdensity());
+    applyAirdragForce(PhysicsSystem::getInstance()->getAirdensity());
 }
 
 void rTraceable::integrate(float spf) {
@@ -90,7 +90,7 @@ void rTraceable::collide(float spf) {
     // Average groundedness to decide on friction.
     grounded += 0.1 * (onground - grounded);
     // Set friction for next frame.
-    friction = ((grounded > 0.1) ? 1.0f : 0.0f) * PhysicsSystem::getGndfriction();
+    friction = ((grounded > 0.1) ? 1.0f : 0.0f) * PhysicsSystem::getInstance()->getGndfriction();
 }
 
 void rTraceable::animate(float spf) {
