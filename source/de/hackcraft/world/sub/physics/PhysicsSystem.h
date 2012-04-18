@@ -34,6 +34,9 @@ public:
 private:
     std::map<OID,rCollider*> colliders;
     std::map<OID,rTraceable*> traceables;
+    
+    /// Allows searching the world in a structured manner.
+    //std::unordered_map<OID, std::list<rCollider*> > geoToColliders;
 
     /// Gravity acceleration vector [m/s²]. space = (0,0,0), earth = (0,-9.8,0).
     vec3 gravity;
