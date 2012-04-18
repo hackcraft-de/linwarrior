@@ -11,6 +11,18 @@
 
 #include <cassert>
 
+    
+MissionSystem* MissionSystem::instance = NULL;
+
+MissionSystem::MissionSystem() {
+    instance = this;
+    
+    mState = 0;
+}
+
+void MissionSystem::advanceTime(int deltamsec) {
+    checkConditions();
+}
 
 void MissionSystem::checkConditions() {
     // Destroyed all necessary enemies?

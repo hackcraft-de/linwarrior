@@ -34,10 +34,11 @@ protected:
     std::vector<Entity*> mVictory; // Shall be destroyed
     std::vector<Entity*> mDefeat; // May not be destroyed includes player
     int mState;
+    
+    static MissionSystem* instance;
 public:
 
-    MissionSystem() : mState(0) {
-    };
+    MissionSystem();
 
     /**
      * Called with the world which needs to be populated by this mission.
@@ -46,7 +47,11 @@ public:
      */
     virtual Entity* init(World* world);
 
-    virtual void advanceTime(int deltamsec) { checkConditions(); };
+    /**
+     * Calls checkConditions().
+     * @param deltamsec
+     */
+    virtual void advanceTime(int deltamsec);
 
     /**
      * Through this method mission objectives can be traced.
@@ -71,6 +76,8 @@ public:
      * Indicates wether this Mission is a failure.
      */
     //virtual bool isFailure() = 0;
+    
+    static MissionSystem* getInstance();
 };
 
 #endif
