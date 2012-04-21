@@ -980,9 +980,7 @@ void OpenMission::roundForrest(int wx, int wy, int wz, World* world, int r1, int
             float b = r1 + (rand() % r2);
             float pos[3] = {float(wx + sin(a) * b), float(0 + wy), float(wz + cos(a) * b)};
             float rot[3] = {0, 10.0f * (rand() % 36), 0};
-            Entity* treeobj = new Entity();
-            treeobj->components.push_back(new rTree(treeobj, pos, rot, pp[j].seed, pp[j].type, pp[j].age));
-            world->spawnObject(treeobj);
+            ModelSystem::getInstance()->add(new rTree(NULL, pos, rot, pp[j].seed, pp[j].type, pp[j].age));
         };
     }
 }
