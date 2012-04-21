@@ -9,6 +9,8 @@
 #ifndef RBILLBOARD_H
 #define	RBILLBOARD_H
 
+#include "IModel.h"
+
 #include "de/hackcraft/world/Component.h"
 
 #include "de/hackcraft/psi3d/math3d.h"
@@ -16,7 +18,7 @@
 /**
  *  Encapsulates on-screen descriptive texts about an object.
  */
-struct rBillboard : public Component {
+struct rBillboard : public Component, public IModel {
 public: // SYSTEM
     /// Identifier for this component (all uppercase letters without leading "r").
     static std::string cname;
@@ -51,6 +53,11 @@ public:
     /// Clone this.
     virtual Component * clone();
 
+    virtual int getPosX() { return (int) pos0[0]; }
+    virtual int getPosZ() { return (int) pos0[2]; }
+    virtual void animate(float spf) {};
+    virtual void transform() {};
+    virtual void drawSolid() {};
     virtual void drawEffect();
 };
 

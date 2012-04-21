@@ -9,6 +9,8 @@
 #ifndef RRIGGED_H
 #define	RRIGGED_H
 
+#include "IModel.h"
+
 #include "de/hackcraft/world/Component.h"
 
 #include "de/hackcraft/io/MD5Format.h"
@@ -18,7 +20,7 @@
 /**
  * Encapsulates a rigged mesh in md5mesh format.
  */
-struct rRigged : public Component {
+struct rRigged : public Component, public IModel {
 public: // SYSTEM
     /// Identifier for this component (all uppercase letters without leading "r").
     static std::string cname;
@@ -136,6 +138,8 @@ public:
     std::string resolveFilename(std::string modelname);
     void loadModel(std::string filename);
 
+    virtual int getPosX() { return (int) pos0[0]; }
+    virtual int getPosZ() { return (int) pos0[2]; }
     virtual void animate(float spf);
     virtual void transform();
     virtual void drawSolid();

@@ -45,7 +45,7 @@ using std::map;
 
 #define EXPERIMENT true
 
-
+#include "de/hackcraft/world/sub/model/ModelSystem.h"
 // -------------------------------------------------------------------
 
 #include <typeinfo>
@@ -140,10 +140,10 @@ void cMech::init(float* pos, float* rot, string modelName) {
     pad = new Pad;
 
     collider = new rCollider(this);
-    rigged = new rRigged(this);
+    rigged = new rRigged(this); ModelSystem::getInstance()->add(rigged);
     damageable = new rTarget(this);
     controller = new rController(this);
-    nameable = new rBillboard(this);
+    nameable = new rBillboard(this); ModelSystem::getInstance()->add(nameable);
     traceable = new rTraceable(this);
     camra = new rCamera(this);
     mobile = new rMobile(this);
@@ -622,8 +622,8 @@ void cMech::animate(float spf) {
             rigged->basetexture3d = texture;
         }
 
-        rigged->animate(spf);
-        rigged->transform();
+        //rigged->animate(spf);
+        //rigged->transform();
     }
 
     // NAMEABLE
@@ -645,7 +645,7 @@ void cMech::animate(float spf) {
             quat_cpy(nameable->ori1, rigged->joints[eye].q);
         }
 
-        nameable->animate(spf);
+        //nameable->animate(spf);
     }
 
     // CAMERA
@@ -779,7 +779,7 @@ void cMech::drawSolid() {
     }
 
     {
-        rigged->drawSolid();
+        //rigged->drawSolid();
     }
     {
         mobile->drawSolid();
@@ -798,7 +798,7 @@ void cMech::drawEffect() {
         collider->drawEffect();
     }
     {
-        rigged->drawEffect();
+        //rigged->drawEffect();
     }
     {
         mobile->drawEffect();
@@ -811,7 +811,7 @@ void cMech::drawEffect() {
         explosion->drawEffect();
     }
     {
-        nameable->drawEffect();
+        //nameable->drawEffect();
     }
 }
 

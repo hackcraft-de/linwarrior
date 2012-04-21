@@ -10,6 +10,8 @@
 
 struct rTree;
 
+#include "IModel.h"
+
 #include "de/hackcraft/world/Component.h"
 
 #include "de/hackcraft/world/OID.h"
@@ -25,7 +27,7 @@ class cPlanetmap;
 /**
  * Generates and caches proceduraly generated 3d tree models.
  */
-struct rTree : public Component {
+struct rTree : public Component, public IModel {
 public: // SYSTEM
     /// Identifier for this component (all uppercase letters without leading "r").
     static std::string cname;
@@ -59,7 +61,10 @@ protected: // INTERNALS
 public:
     rTree(Entity* obj, float* pos = NULL, float* rot = NULL, int seed = 0, int type = 0, int age = 0);
     
+    virtual int getPosX() { return (int) pos0[0]; }
+    virtual int getPosZ() { return (int) pos0[2]; }
     virtual void animate(float spf);
+    virtual void transform() {};
     virtual void drawSolid();
     virtual void drawEffect();
 
