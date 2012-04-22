@@ -138,6 +138,7 @@
           <df name="util">
             <in>Binding.h</in>
             <in>GapBuffer.h</in>
+            <in>Geomap.h</in>
             <in>HashMap.h</in>
             <in>KDTree.h</in>
             <in>String.h</in>
@@ -191,6 +192,7 @@
                 <in>rMobile.h</in>
               </df>
               <df name="model">
+                <in>IModel.h</in>
                 <in>ModelSystem.cpp</in>
                 <in>ModelSystem.h</in>
                 <in>rBillboard.cpp</in>

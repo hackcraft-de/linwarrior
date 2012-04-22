@@ -151,9 +151,7 @@ void World::advanceTime(int deltamsec) {
 void World::clusterObjects() {
     try {
         int j = 0;
-        unsigned long geosize = mGeomap.size();
         mGeomap.clear();
-        mGeomap.reserve(geosize * 2);
         mUncluster.clear();
 
         for(Entity* o : mObjects) {
@@ -162,7 +160,7 @@ void World::clusterObjects() {
             if (!finitef(px) || !finitef(pz)) {
                 mUncluster.push_back(o);
             } else {
-                mGeomap[getGeokey(px, pz)].push_back(o);
+                mGeomap.put(px, pz, o);
             }
             j++;
         }
@@ -347,35 +345,8 @@ void World::drawEffect() {
 
 // World Scanning And Filtering
 
-OID World::getGeokey(long x, long z) {
-    OID xpart = ((OID) ((long(x))&0xFFFFFFFF)) >> 5;
-    //cout << x << " ~ " << xpart << endl;
-    OID zpart = ((OID) ((long(z))&0xFFFFFFFF)) >> 5;
-    OID key = (xpart << 32) | zpart;
-    //cout << key << endl;
-    return key;
-}
-
 std::list<Entity*>* World::getGeoInterval(float* min2f, float* max2f, bool addunclustered) {
-    std::list<Entity*>* found = new std::list<Entity*>();
-    const long f = 1 << 5;
-
-    long ax = ((long) min2f[0] / f) * f;
-    long az = ((long) min2f[1] / f) * f;
-    long bx = ((long) max2f[0] / f) * f;
-    long bz = ((long) max2f[1] / f) * f;
-
-    int n = 0;
-    for (long j = az - f * 1; j <= bz + f * 1; j += f) {
-        for (long i = ax - f * 1; i <= bx + f * 1; i += f) {
-            std::list<Entity*>* l = &(mGeomap[getGeokey(i, j)]);
-            if (l != NULL) {
-                //cout << "found " << l->size() << endl;
-                found->insert(found->begin(), l->begin(), l->end());
-            }
-            n++;
-        }
-    }
+    std::list<Entity*>* found = mGeomap.getGeoInterval(min2f, max2f);
     //cout << min2f[0] << ":" << min2f[1] << " - " << max2f[0] << ":" << max2f[1] << " " << n <<  " FOUND " << found->size() << endl;
     //cout << ax << ":" << az << " - " << bx << ":" << bz << " " << n <<  " FOUND " << found->size() << endl;
 

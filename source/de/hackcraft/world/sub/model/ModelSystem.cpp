@@ -25,9 +25,8 @@ ModelSystem* ModelSystem::getInstance() {
 void ModelSystem::clusterObjects() {
     try {
         int j = 0;
-        unsigned long geosize = geomap.size();
+        
         geomap.clear();
-        geomap.reserve(geosize * 2);
 
         for(IModel* model : models) {
             float px = model->getPosX();
@@ -35,7 +34,7 @@ void ModelSystem::clusterObjects() {
             if (!finitef(px) || !finitef(pz)) {
                 //mUncluster.push_back(model);
             } else {
-                geomap[getGeokey(px, pz)].push_back(model);
+                geomap.put(px, pz, model);
             }
             j++;
         }
@@ -77,7 +76,7 @@ void ModelSystem::setupView(float* pos, float* ori) {
         delete visobjects;
     }
     
-    visobjects = getGeoInterval(min, max, true);
+    visobjects = geomap.getGeoInterval(min, max);
     assert(visobjects != NULL);
     //cout << "vis:" << objects->size() << " vs " << mObjects.size() << endl;
     
@@ -134,39 +133,3 @@ void ModelSystem::drawEffect() {
     }
 }
 
-
-OID ModelSystem::getGeokey(long x, long z) {
-    OID xpart = ((OID) ((long(x))&0xFFFFFFFF)) >> 5;
-    //cout << x << " ~ " << xpart << endl;
-    OID zpart = ((OID) ((long(z))&0xFFFFFFFF)) >> 5;
-    OID key = (xpart << 32) | zpart;
-    //cout << key << endl;
-    return key;
-}
-
-
-std::list<IModel*>* ModelSystem::getGeoInterval(float* min2f, float* max2f, bool addunclustered) {
-    std::list<IModel*>* found = new std::list<IModel*>();
-    const long f = 1 << 5;
-
-    long ax = ((long) min2f[0] / f) * f;
-    long az = ((long) min2f[1] / f) * f;
-    long bx = ((long) max2f[0] / f) * f;
-    long bz = ((long) max2f[1] / f) * f;
-
-    int n = 0;
-    for (long j = az - f * 1; j <= bz + f * 1; j += f) {
-        for (long i = ax - f * 1; i <= bx + f * 1; i += f) {
-            std::list<IModel*>* l = &(geomap[getGeokey(i, j)]);
-            if (l != NULL) {
-                //cout << "found " << l->size() << endl;
-                found->insert(found->begin(), l->begin(), l->end());
-            }
-            n++;
-        }
-    }
-    //cout << min2f[0] << ":" << min2f[1] << " - " << max2f[0] << ":" << max2f[1] << " " << n <<  " FOUND " << found->size() << endl;
-    //cout << ax << ":" << az << " - " << bx << ":" << bz << " " << n <<  " FOUND " << found->size() << endl;
-
-    return found;
-}

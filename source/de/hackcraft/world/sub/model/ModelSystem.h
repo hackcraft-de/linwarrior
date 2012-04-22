@@ -19,6 +19,8 @@
 
 #include "de/hackcraft/world/Subsystem.h"
 
+#include "de/hackcraft/util/Geomap.h"
+
 #include <unordered_map>
 #include <vector>
 
@@ -52,7 +54,7 @@ public:
     static ModelSystem* getInstance();
 private:
     /// Allows searching the world in a structured manner.
-    std::unordered_map<OID, std::list<IModel*> > geomap;
+    Geomap<IModel*> geomap;
     
     std::vector<IModel*> models;
     
@@ -69,26 +71,6 @@ private:
     std::list<IModel*>* visobjects;
     
     static ModelSystem* instance;
-
-
-    /**
-     * Hash key for location.
-     *
-     * @param x east west coord
-     * @param z north south coord
-     * @return Hash key for location.
-     */
-    OID getGeokey(long x, long z);
-
-    /**
-     * Find objects within 2d area using location hashkeys.
-     * 
-     * @param min2f First corner of square area (smaller values).
-     * @param max2f Second corner of square area (larger values).
-     * @param addunclustered Return global unclustered objects, too.
-     * @return List of found objects.
-     */
-    std::list<IModel*>* getGeoInterval(float* min2f, float* max2f, bool addunclustered = false);
 };
 
 #endif	/* MODELSYSTEM_H */

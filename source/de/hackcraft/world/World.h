@@ -12,6 +12,8 @@
 
 class World;
 
+#include "de/hackcraft/util/Geomap.h"
+
 #include "de/hackcraft/psi3d/macros.h"
 
 #include "de/hackcraft/world/OID.h"
@@ -69,7 +71,7 @@ private:
     std::list<Entity*> mCorpses;
 
     /// Allows searching the world in a structured manner.
-    std::unordered_map<OID, std::list<Entity*> > mGeomap;
+    Geomap<Entity*> mGeomap;
 
     /// Non-Positional (NaN) and some oversize objects go here for clustering.
     std::list<Entity*> mUncluster;
@@ -191,15 +193,6 @@ public: // Simulation Step - Call every frame in order to update the world/missi
     void drawEffect();
 
 public: // World-Filtering, World-Scanning, World-Sense for objects.
-
-    /**
-     * Hash key for location.
-     *
-     * @param x east west coord
-     * @param z north south coord
-     * @return Hash key for location.
-     */
-    OID getGeokey(long x, long z);
 
     /**
      * Find objects within 2d area using location hashkeys.
