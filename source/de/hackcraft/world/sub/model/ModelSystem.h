@@ -10,7 +10,7 @@
 #ifndef MODELSYSTEM_H
 #define	MODELSYSTEM_H
 
-#include "IModel.h"
+#include "de/hackcraft/world/IModel.h"
 
 #include "rBillboard.h"
 #include "rRigged.h"

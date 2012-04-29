@@ -9,9 +9,8 @@
 #ifndef RRIGGED_H
 #define	RRIGGED_H
 
-#include "IModel.h"
-
 #include "de/hackcraft/world/Component.h"
+#include "de/hackcraft/world/IModel.h"
 
 #include "de/hackcraft/io/MD5Format.h"
 
@@ -139,6 +138,7 @@ public:
     void loadModel(std::string filename);
 
     virtual int getPosX() { return (int) pos0[0]; }
+    virtual int getPosY() { return (int) pos0[1]; }
     virtual int getPosZ() { return (int) pos0[2]; }
     virtual void animate(float spf);
     virtual void transform();

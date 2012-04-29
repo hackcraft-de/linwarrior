@@ -9,9 +9,8 @@
 #ifndef RBILLBOARD_H
 #define	RBILLBOARD_H
 
-#include "IModel.h"
-
 #include "de/hackcraft/world/Component.h"
+#include "de/hackcraft/world/IModel.h"
 
 #include "de/hackcraft/psi3d/math3d.h"
 
@@ -54,6 +53,7 @@ public:
     virtual Component * clone();
 
     virtual int getPosX() { return (int) pos0[0]; }
+    virtual int getPosY() { return (int) pos0[1]; }
     virtual int getPosZ() { return (int) pos0[2]; }
     virtual void animate(float spf) {};
     virtual void transform() {};
