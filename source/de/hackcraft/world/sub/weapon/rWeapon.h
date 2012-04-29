@@ -12,6 +12,7 @@
 class rWeapon;
 
 #include "de/hackcraft/world/Entity.h"
+#include "de/hackcraft/world/IModel.h"
 
 #include <list>
 #include <vector>
@@ -28,7 +29,7 @@ class rWeapon;
  * their visual effects. Note that weapons are themselves responsible for
  * drawing themselves, their bullets, missiles, dust, smoke and other particles.
  */
-class rWeapon : public Component {
+class rWeapon : public Component, public IModel {
 public: // SYSTEM
     /// Instance counter.
     static int sInstances;
@@ -92,6 +93,15 @@ protected: // INTERNALS
 public:
     rWeapon(Entity* obj = NULL);
 
+    /**
+     * Get id - address for now.
+     */
+    virtual OID getId() { return (OID) this; }
+    
+    virtual int getPosX() { return (int) weaponPosef[12]; }
+    virtual int getPosY() { return (int) weaponPosef[13]; }
+    virtual int getPosZ() { return (int) weaponPosef[14]; }
+    
     /**
      * Start playback of audio source.
      */

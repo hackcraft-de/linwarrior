@@ -25,9 +25,41 @@ public:
     WeaponSystem();
     WeaponSystem(const WeaponSystem& orig);
     virtual ~WeaponSystem();
+    
+    void add(rTarcom* tarcom);
+    void add(rWepcom* wepcom);
+    void add(rWeapon* weapon);
+    void add(rTarget* target);
+    
+    /** Advance simulation time for one frame. */
+    virtual void advanceTime(int deltamsec) {};
+    
+    /** Re-build spatial clustering of objects. */
+    virtual void clusterObjects() {};
+    
+    /** Deliver overdue messages to objects. */
+    virtual void dispatchMessages() {};
+    
+    /** Let all objects process input, adjust pose and calculate physics. */
+    virtual void animateObjects() {};
+    
+    /** Let all objects calculate transformation matrices etc. */
+    virtual void transformObjects() {};
+    
+    /** Setup structures for rendering */
+    virtual void setupView(float* pos, float* ori) {};
+    
+    /** Draws background (skybox). */
+    virtual bool drawBack() { return false; };
+    
+    /** Draw all Object's solid surfaces (calls their drawSolid method). */
+    virtual void drawSolid() {};
+    
+    /** Draw all Object's effects (calls their drawEffect method). */
+    virtual void drawEffect() {};
 private:
-    std::map<OID,rTarcom*> targetComputers;
-    std::map<OID,rWepcom*> weaponComputers;
+    std::map<OID,rTarcom*> tarcoms;
+    std::map<OID,rWepcom*> wepcoms;
     std::map<OID,rWeapon*> weapons;
     std::map<OID,rTarget*> targets;
 };

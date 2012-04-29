@@ -65,6 +65,8 @@ public:
     rTarget(rTarget * original);
     /// Clone this.
     virtual Component * clone();
+    /// Get id - address for now.
+    virtual OID getId() { return (OID) this; }
     /// Apply damage to a hitzone, and return alife.
     virtual bool damage(float* localpos, float damage, Entity * enactor);
     /// Average disturbance (damage) and find max disturbing enactor.

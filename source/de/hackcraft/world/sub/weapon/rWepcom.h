@@ -24,6 +24,8 @@ public: // SYSTEM
     static unsigned int cid;
 public:
     rWepcom(Entity* obj = NULL); // FIXME: Must be a cMech.
+    /// Get id - address for now.
+    virtual OID getId() { return (OID) this; }
     virtual void animate(float spf);
     virtual void drawHUD();
     void addControlledWeapon(rWeapon* weapon);

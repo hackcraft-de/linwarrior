@@ -63,6 +63,8 @@ protected: // INTERNALS
 public:
     /// Constructor.
     rTarcom(Entity* obj = NULL);
+    /// Get id - address for now.
+    virtual OID getId() { return (OID) this; }
 protected:
     /// Switch to next target.
     void nextTarget();
