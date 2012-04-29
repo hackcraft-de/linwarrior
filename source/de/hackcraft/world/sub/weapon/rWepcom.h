@@ -11,6 +11,8 @@
 
 #include "de/hackcraft/world/sub/computer/rComputer.h"
 
+#include "rWeapon.h"
+
 /** Weapon Computer
  * currently just draws weapon status.
  */
@@ -24,6 +26,17 @@ public:
     rWepcom(Entity* obj = NULL); // FIXME: Must be a cMech.
     virtual void animate(float spf);
     virtual void drawHUD();
+    void addControlledWeapon(rWeapon* weapon);
+    void fire();
+private:
+    /** Controlled/displayed weapons. */
+    std::vector<rWeapon*> weapons;
+    /** Currently selected weapon for firing. */
+    int currentWeapon;
+    /** Switch to next weapon after firing when true (default). */
+    bool cycleWeapon;
+    /** Fire a single weapon only at a time when true (default) */
+    bool singleWeapon;
 };
 
 #endif	/* RWEPCOM_H */

@@ -329,69 +329,13 @@ void cMech::listener() {
 void cMech::mountWeapon(const char* point, rWeapon *weapon, bool add) {
     if (weapon == NULL) throw "Null weapon for mounting given.";
     weapon->weaponMount = rigged->getMountpoint(point);
-    //weapon->weaponBasefv = rigged->getMountMatrix(point);
     weapon->object = this;
     if (add) {
         weapons.push_back(weapon);
-#if 0
-        int n = weapons.size();
-
-        loopi(n) {
-            weapons[i]->triggeren = false;
-            weapons[i]->triggered = false;
-            weapons[i]->triggereded = false;
-        }
-        weapon->triggeren = true;
-        weapon->triggered = true;
-        weapon->triggereded = true;
-#endif
+        wepcom->addControlledWeapon(weapon);
     }
 }
 
-#if 0
-
-void cMech::fireCycleWeapons() {
-    cout << "fireCycleWeapons()\n";
-    int n = weapons.size();
-
-    loopi(n) {
-        cout << "W " << i << ", triggeren = " << weapons[i]->triggeren << ", triggered = " << weapons[i]->triggered << ", triggereded = " << weapons[i]->triggereded << endl;
-        bool selfdone = weapons[i]->triggered && weapons[i]->triggereded;
-        bool otherdone = weapons[(i + 1) % n]->triggered;
-        weapons[i]->triggeren ^= selfdone;
-        weapons[i]->triggeren |= otherdone;
-        weapons[i]->triggered ^= selfdone;
-        weapons[i]->triggereded ^= selfdone;
-        weapons[i]->target = target;
-        weapons[i]->trigger = true;
-    }
-
-    loopi(n) {
-        cout << "W'" << i << ", triggeren = " << weapons[i]->triggeren << ", triggered = " << weapons[i]->triggered << ", triggereded = " << weapons[i]->triggereded << endl;
-    }
-}
-#else
-
-void cMech::fireCycleWeapons() {
-    if (weapons.size() == 0) return;
-    currentWeapon %= weapons.size();
-    fireWeapon(currentWeapon);
-    currentWeapon++;
-    currentWeapon %= weapons.size();
-}
-#endif
-
-void cMech::fireAllWeapons() {
-
-    loopi(weapons.size()) {
-        weapons[i]->trigger = true;
-    }
-}
-
-void cMech::fireWeapon(unsigned n) {
-    if (n >= weapons.size()) return;
-    weapons[n]->trigger = true;
-}
 
 void cMech::animate(float spf) {
     // Read in.
@@ -676,11 +620,7 @@ void cMech::animate(float spf) {
     // FIXME: Weapons need to be chained in an independent style.
     if (damageable->alife) {
         if (pad->getButton(Pad::MECH_FIRE_BUTTON1) || pad->getButton(Pad::MECH_FIRE_BUTTON2)) {
-            if (true) {
-                fireCycleWeapons();
-            } else {
-                fireAllWeapons();
-            }
+            wepcom->fire();
         }
     }
 

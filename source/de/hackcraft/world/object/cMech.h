@@ -97,9 +97,6 @@ public:
     /// List of WEAPONs.
     std::vector<rWeapon*> weapons;
 
-    /// Index of selected weapon.
-    int currentWeapon;
-
 public:
     cMech(Propmap* props);
     cMech(float* pos, float* rot, std::string modelName);
@@ -116,9 +113,6 @@ public:
 
     // Weapons
     void mountWeapon(const char* point, rWeapon *weapon, bool add = true);
-    void fireCycleWeapons();
-    void fireAllWeapons();
-    void fireWeapon(unsigned n);
 
     // World Step
     virtual void message(Message* message); // Conditionally/repeatedly called.

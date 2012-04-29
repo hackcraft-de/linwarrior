@@ -13,6 +13,10 @@ unsigned int rWepcom::cid = 4280;
 
 rWepcom::rWepcom(Entity* obj) {
     object = obj;
+    
+    currentWeapon = 0;
+    cycleWeapon = true;
+    singleWeapon = true;
 }
 
 void rWepcom::animate(float spf) {
@@ -53,5 +57,27 @@ void rWepcom::drawHUD() {
         }
     }
     glPopMatrix();
+}
+
+
+void rWepcom::addControlledWeapon(rWeapon* weapon) {
+    weapons.push_back(weapon);
+}
+
+
+void rWepcom::fire() {
+
+    if (singleWeapon) {
+        if (weapons.size() == 0) return;
+        currentWeapon %= weapons.size();
+        weapons[currentWeapon]->trigger = true;
+        currentWeapon = cycleWeapon ? (currentWeapon + 1) : currentWeapon;
+        currentWeapon %= weapons.size();
+    } else {
+        int n = weapons.size();
+        for (int i = 0; i < n; i++) {
+                weapons[i]->trigger = true;
+        }
+    }
 }
 
