@@ -264,7 +264,8 @@ Entity* OpenMission::initPlayerParty(World* world, cPlanetmap* planetmap, float*
 
         c.put("mech.name", "Playermech");
         c.put("mech.displayname", "Alpha");
-        c.put("mech.model", "frogger");
+        c.put("mech.model", globalProperties.getProperty("mission.playerMech", "frogger"));
+        //c.put("mech.model", "frogger");
         c.put("mech.ai", "false");
         //c.put("mech.tags"], "{FAC_BLUE,PLR_HUMAN}");
         //c.put("mech.enemies"], "{FAC_RED}");
