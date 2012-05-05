@@ -192,7 +192,6 @@
                 <in>rMobile.h</in>
               </df>
               <df name="model">
-                <in>IModel.h</in>
                 <in>ModelSystem.cpp</in>
                 <in>ModelSystem.h</in>
                 <in>rBillboard.cpp</in>
@@ -249,6 +248,7 @@
             <in>Component.h</in>
             <in>Entity.cpp</in>
             <in>Entity.h</in>
+            <in>IModel.h</in>
             <in>Message.cpp</in>
             <in>Message.h</in>
             <in>OID.h</in>
