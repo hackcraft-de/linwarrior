@@ -205,7 +205,7 @@ Entity* OpenMission::init(World* world) {
             OID delay = 0;
             Entity* oob = new Entity();
             rAlert* alert = new rAlert(oob, pos, range, rAlert::rShape::BOX, type, message, group, &inc_sense, &exc_sense, positive, posedge, delay);
-            triggerSystem->addAlert(alert);
+            triggerSystem->add(alert);
             oob->components.push_back(alert);
             world->spawnObject(oob);
         }
@@ -222,7 +222,7 @@ Entity* OpenMission::init(World* world) {
             OID delay = 0;
             Entity* oob = new Entity();
             rAlert* alert = new rAlert(oob, pos, range, rAlert::rShape::BOX, type, message, group, &inc_sense, &exc_sense, positive, posedge, delay);
-            triggerSystem->addAlert(alert);
+            triggerSystem->add(alert);
             oob->components.push_back(alert);
             world->spawnObject(oob);
         }
@@ -298,7 +298,7 @@ Entity* OpenMission::initPlayerParty(World* world, cPlanetmap* planetmap, float*
         rTrigger* trigger = new rTrigger();
         trigger->addTag(World::getInstance()->getGroup(FAC_BLUE));
         trigger->addTag(World::getInstance()->getGroup(PLR_HUMAN));
-        triggerSystem->addTrigger(trigger);
+        triggerSystem->add(trigger);
         mech->components.push_back(trigger);
         trigger->addBinding(&trigger->pos0, mech->mobile->pos0, sizeof(vec3));
     }
@@ -386,7 +386,7 @@ void OpenMission::initSkytideCity(World* world, cPlanetmap* planetmap) {
         string message = string("Skytide City");
         Entity* oob = new Entity();
         rAlert* alert = new rAlert(oob, pos, range, rAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
-        triggerSystem->addAlert(alert);
+        triggerSystem->add(alert);
         oob->components.push_back(alert);
         oob->name = message;
         world->spawnObject(oob);
@@ -521,7 +521,7 @@ void OpenMission::initStarcircleTown(World* world, cPlanetmap* planetmap) {
         string message = string("Starcircle Town\n(currently under bandit control)");
         Entity* oob = new Entity();
         rAlert* alert = new rAlert(oob, pos, range, rAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
-        triggerSystem->addAlert(alert);
+        triggerSystem->add(alert);
         oob->components.push_back(alert);
         oob->name = message;
         world->spawnObject(oob);
@@ -548,7 +548,7 @@ void OpenMission::initStarcircleTown(World* world, cPlanetmap* planetmap) {
         OID delay = 0;
         Entity* oob = new Entity();
         rAlert* alert = new rAlert(oob, pos, range, rAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense, positive, posedge, delay);
-        triggerSystem->addAlert(alert);
+        triggerSystem->add(alert);
         oob->components.push_back(alert);
         world->spawnObject(oob);
     }
@@ -577,7 +577,7 @@ void OpenMission::initAcroloidMines(World* world, cPlanetmap* planetmap) {
         string message = string("Acroloid Surface Mining Ltd. Co.\n(under construction)");
         Entity* oob = new Entity();
         rAlert* alert = new rAlert(oob, pos, range, rAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
-        triggerSystem->addAlert(alert);
+        triggerSystem->add(alert);
         oob->components.push_back(alert);
         oob->name = message;
         world->spawnObject(oob);
@@ -607,7 +607,7 @@ void OpenMission::initCollapsiumFactory(World* world, cPlanetmap* planetmap) {
         string message = string("Collapsium Factory Ltd.\n(under construction)");
         Entity* oob = new Entity();
         rAlert* alert = new rAlert(oob, pos, range, rAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
-        triggerSystem->addAlert(alert);
+        triggerSystem->add(alert);
         oob->components.push_back(alert);
         oob->name = message;
         world->spawnObject(oob);
@@ -637,7 +637,7 @@ void OpenMission::initJurataJail(World* world, cPlanetmap* planetmap) {
         string message = string("Jurata Jail Ltd.\n- Service Company -\n(under construction)");
         Entity* oob = new Entity();
         rAlert* alert = new rAlert(oob, pos, range, rAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
-        triggerSystem->addAlert(alert);
+        triggerSystem->add(alert);
         oob->components.push_back(alert);
         oob->name = message;
         world->spawnObject(oob);
@@ -667,7 +667,7 @@ void OpenMission::initSpadenixFactory(World* world, cPlanetmap* planetmap) {
         string message = string("Spadenix Mechanical Factory Ltd.\n(under construction)");
         Entity* oob = new Entity();
         rAlert* alert = new rAlert(oob, pos, range, rAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
-        triggerSystem->addAlert(alert);
+        triggerSystem->add(alert);
         oob->components.push_back(alert);
         oob->name = message;
         world->spawnObject(oob);
@@ -697,7 +697,7 @@ void OpenMission::initFortifyDefense(World* world, cPlanetmap* planetmap) {
         string message = string("Fortify and Defend!\n(under construction)");
         Entity* oob = new Entity();
         rAlert* alert = new rAlert(oob, pos, range, rAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
-        triggerSystem->addAlert(alert);
+        triggerSystem->add(alert);
         oob->components.push_back(alert);
         oob->name = message;
         world->spawnObject(oob);
@@ -766,7 +766,7 @@ void OpenMission::initPyraNanoCorp(World* world, cPlanetmap* planetmap) {
         string message = string("Pyra Nano Corporation\n(currently under bandit control)");
         Entity* oob = new Entity();
         rAlert* alert = new rAlert(oob, pos, range, rAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
-        triggerSystem->addAlert(alert);
+        triggerSystem->add(alert);
         oob->components.push_back(alert);
         oob->name = message;
         world->spawnObject(oob);
@@ -800,7 +800,7 @@ void OpenMission::initPentaSpaceport(World* world, cPlanetmap* planetmap) {
         string message = string("Penta Interstellar Spaceport\n(currently under bandit control)");
         Entity* oob = new Entity();
         rAlert* alert = new rAlert(oob, pos, range, rAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
-        triggerSystem->addAlert(alert);
+        triggerSystem->add(alert);
         oob->components.push_back(alert);
         oob->name = message;
         world->spawnObject(oob);

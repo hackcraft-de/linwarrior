@@ -25,8 +25,8 @@ public:
     static TriggerSystem* getInstance();
     virtual void animateObjects();
     virtual void drawEffect();
-    void addAlert(rAlert* alert) { alerts[alert->id] = alert; };
-    void addTrigger(rTrigger* trigger) { triggers[trigger->id] = trigger; };
+    void add(rAlert* alert) { alerts[alert->id] = alert; };
+    void add(rTrigger* trigger) { triggers[trigger->id] = trigger; };
 private:
     static TriggerSystem* instance;
     std::map<OID,rAlert*> alerts;
