@@ -10,6 +10,8 @@
 #define	RCOMPONENT_H
 
 #include "de/hackcraft/util/Binding.h"
+
+#include "de/hackcraft/world/OID.h"
 #include "de/hackcraft/world/Subsystem.h"
 
 #include <string>
@@ -52,13 +54,17 @@ struct Component {
     }
 
     virtual Component * clone() {
-        return new Component(this);
+        return NULL;
     }
 
     void addBinding(void* dst, void* src, unsigned int size) {
         prebinds.push_back(new Binding(dst, src, size));
     }
-
+    
+    virtual OID getId() {
+        return (OID) this;
+    }
+    
     virtual void spawn() {
     }
 
