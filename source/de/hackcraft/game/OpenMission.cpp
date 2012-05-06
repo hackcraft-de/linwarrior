@@ -50,7 +50,7 @@ using std::string;
 
 #define PLAYERPOS SKYTIDE
 
-void adjustHeight(cPlanetmap* planetmap, float* pos) {
+void adjustHeight(rPlanetmap* planetmap, float* pos) {
     float color[16];
     planetmap->getHeight(pos[0], pos[2], color);
     pos[1] = color[3] + 0.001f;
@@ -120,9 +120,9 @@ Entity* OpenMission::init(World* world) {
     }
 
     cout << "Initialising planetary maps...\n";
-    cPlanetmap* planetmap = new cPlanetmap(&globalProperties);
+    rPlanetmap* planetmap = new rPlanetmap(&globalProperties);
     LandscapeSystem* landscapeSystem = new LandscapeSystem();
-    landscapeSystem->setPlanetmap(planetmap);
+    landscapeSystem->add(planetmap);
     world->subsystems.push_front(landscapeSystem);
     //world->spawnObject(planetmap);
 
@@ -168,7 +168,7 @@ Entity* OpenMission::init(World* world) {
         loc[1] += color[3];
 
         // Provide flat terrain at that height.
-        cPlanetmap::sMod* mod = new cPlanetmap::sMod();
+        rPlanetmap::sMod* mod = new rPlanetmap::sMod();
         mod->pos[0] = loc[0] + 7;
         mod->pos[1] = loc[1];
         mod->pos[2] = loc[2] + 7;
@@ -240,7 +240,7 @@ Entity* OpenMission::init(World* world) {
 #include "de/hackcraft/util/HashSet.h"
  */
 
-Entity* OpenMission::initPlayerParty(World* world, cPlanetmap* planetmap, float* position) {
+Entity* OpenMission::initPlayerParty(World* world, rPlanetmap* planetmap, float* position) {
     Entity* player = NULL;
 
     float* p = position;
@@ -356,7 +356,7 @@ Entity* OpenMission::initPlayerParty(World* world, cPlanetmap* planetmap, float*
     return player;
 }
 
-void OpenMission::initSkytideCity(World* world, cPlanetmap* planetmap) {
+void OpenMission::initSkytideCity(World* world, rPlanetmap* planetmap) {
     float loc[] = SKYTIDE;
 
     // Get natural height.
@@ -365,7 +365,7 @@ void OpenMission::initSkytideCity(World* world, cPlanetmap* planetmap) {
     loc[1] = color[3];
 
     // Provide flat terrain at that height.
-    cPlanetmap::sMod* mod = new cPlanetmap::sMod();
+    rPlanetmap::sMod* mod = new rPlanetmap::sMod();
     mod->pos[0] = loc[0] + 50;
     mod->pos[1] = loc[1] + 0;
     mod->pos[2] = loc[2] + 50;
@@ -496,7 +496,7 @@ void OpenMission::initSkytideCity(World* world, cPlanetmap* planetmap) {
     }
 }
 
-void OpenMission::initStarcircleTown(World* world, cPlanetmap* planetmap) {
+void OpenMission::initStarcircleTown(World* world, rPlanetmap* planetmap) {
     float loc[] = STARCIRCLE;
 
     // Get natural height.
@@ -506,7 +506,7 @@ void OpenMission::initStarcircleTown(World* world, cPlanetmap* planetmap) {
     loc[1] = 0.0;
     cout << "STARCIRCLE height: " << loc[1] << endl;
 
-    cPlanetmap::sMod* mod = new cPlanetmap::sMod();
+    rPlanetmap::sMod* mod = new rPlanetmap::sMod();
     mod->pos[0] = loc[0];
     mod->pos[1] = loc[1];
     mod->pos[2] = loc[2];
@@ -554,7 +554,7 @@ void OpenMission::initStarcircleTown(World* world, cPlanetmap* planetmap) {
     }
 }
 
-void OpenMission::initAcroloidMines(World* world, cPlanetmap* planetmap) {
+void OpenMission::initAcroloidMines(World* world, rPlanetmap* planetmap) {
     float loc[] = ACROLOID;
 
     // Get natural height.
@@ -562,7 +562,7 @@ void OpenMission::initAcroloidMines(World* world, cPlanetmap* planetmap) {
     planetmap->getHeight(loc[0], loc[2], color);
     loc[1] = color[3];
 
-    cPlanetmap::sMod* mod = new cPlanetmap::sMod();
+    rPlanetmap::sMod* mod = new rPlanetmap::sMod();
     mod->pos[0] = loc[0];
     mod->pos[1] = loc[1];
     mod->pos[2] = loc[2];
@@ -584,7 +584,7 @@ void OpenMission::initAcroloidMines(World* world, cPlanetmap* planetmap) {
     }
 }
 
-void OpenMission::initCollapsiumFactory(World* world, cPlanetmap* planetmap) {
+void OpenMission::initCollapsiumFactory(World* world, rPlanetmap* planetmap) {
     float loc[] = COLLAPSIUM;
 
     // Get natural height.
@@ -592,7 +592,7 @@ void OpenMission::initCollapsiumFactory(World* world, cPlanetmap* planetmap) {
     planetmap->getHeight(loc[0], loc[2], color);
     loc[1] = color[3];
 
-    cPlanetmap::sMod* mod = new cPlanetmap::sMod();
+    rPlanetmap::sMod* mod = new rPlanetmap::sMod();
     mod->pos[0] = loc[0];
     mod->pos[1] = loc[1];
     mod->pos[2] = loc[2];
@@ -614,7 +614,7 @@ void OpenMission::initCollapsiumFactory(World* world, cPlanetmap* planetmap) {
     }
 }
 
-void OpenMission::initJurataJail(World* world, cPlanetmap* planetmap) {
+void OpenMission::initJurataJail(World* world, rPlanetmap* planetmap) {
     float loc[] = JURATA;
 
     // Get natural height.
@@ -622,7 +622,7 @@ void OpenMission::initJurataJail(World* world, cPlanetmap* planetmap) {
     planetmap->getHeight(loc[0], loc[2], color);
     loc[1] = color[3];
 
-    cPlanetmap::sMod* mod = new cPlanetmap::sMod();
+    rPlanetmap::sMod* mod = new rPlanetmap::sMod();
     mod->pos[0] = loc[0];
     mod->pos[1] = loc[1];
     mod->pos[2] = loc[2];
@@ -644,7 +644,7 @@ void OpenMission::initJurataJail(World* world, cPlanetmap* planetmap) {
     }
 }
 
-void OpenMission::initSpadenixFactory(World* world, cPlanetmap* planetmap) {
+void OpenMission::initSpadenixFactory(World* world, rPlanetmap* planetmap) {
     float loc[] = SPADENIX;
 
     // Get natural height.
@@ -652,7 +652,7 @@ void OpenMission::initSpadenixFactory(World* world, cPlanetmap* planetmap) {
     planetmap->getHeight(loc[0], loc[2], color);
     loc[1] = color[3];
 
-    cPlanetmap::sMod* mod = new cPlanetmap::sMod();
+    rPlanetmap::sMod* mod = new rPlanetmap::sMod();
     mod->pos[0] = loc[0];
     mod->pos[1] = loc[1];
     mod->pos[2] = loc[2];
@@ -674,7 +674,7 @@ void OpenMission::initSpadenixFactory(World* world, cPlanetmap* planetmap) {
     }
 }
 
-void OpenMission::initFortifyDefense(World* world, cPlanetmap* planetmap) {
+void OpenMission::initFortifyDefense(World* world, rPlanetmap* planetmap) {
     float loc[] = FORTIFY;
 
     // Get natural height.
@@ -682,7 +682,7 @@ void OpenMission::initFortifyDefense(World* world, cPlanetmap* planetmap) {
     planetmap->getHeight(loc[0], loc[2], color);
     loc[1] = color[3];
     
-    cPlanetmap::sMod* mod = new cPlanetmap::sMod();
+    rPlanetmap::sMod* mod = new rPlanetmap::sMod();
     mod->pos[0] = loc[0];
     mod->pos[1] = loc[1];
     mod->pos[2] = loc[2];
@@ -743,7 +743,7 @@ void OpenMission::initFortifyDefense(World* world, cPlanetmap* planetmap) {
     }
 }
 
-void OpenMission::initPyraNanoCorp(World* world, cPlanetmap* planetmap) {
+void OpenMission::initPyraNanoCorp(World* world, rPlanetmap* planetmap) {
     float loc[] = PYRANANO;
 
     // Get natural height.
@@ -751,7 +751,7 @@ void OpenMission::initPyraNanoCorp(World* world, cPlanetmap* planetmap) {
     planetmap->getHeight(loc[0], loc[2], color);
     loc[1] = color[3];
 
-    cPlanetmap::sMod* mod = new cPlanetmap::sMod();
+    rPlanetmap::sMod* mod = new rPlanetmap::sMod();
     mod->pos[0] = loc[0];
     mod->pos[1] = loc[1];
     mod->pos[2] = loc[2];
@@ -777,7 +777,7 @@ void OpenMission::initPyraNanoCorp(World* world, cPlanetmap* planetmap) {
     smallArmy(loc[0] + 15, loc[1], loc[2] - 30, world, "Bandito", 3, false, 0, false, "flopsy");
 }
 
-void OpenMission::initPentaSpaceport(World* world, cPlanetmap* planetmap) {
+void OpenMission::initPentaSpaceport(World* world, rPlanetmap* planetmap) {
     float loc[] = SPACEPORT;
 
     // Get natural height.
@@ -785,7 +785,7 @@ void OpenMission::initPentaSpaceport(World* world, cPlanetmap* planetmap) {
     planetmap->getHeight(loc[0], loc[2], color);
     loc[1] = color[3];
 
-    cPlanetmap::sMod* mod = new cPlanetmap::sMod();
+    rPlanetmap::sMod* mod = new rPlanetmap::sMod();
     mod->pos[0] = loc[0];
     mod->pos[1] = loc[1];
     mod->pos[2] = loc[2];

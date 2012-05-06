@@ -20,13 +20,13 @@ using namespace std;
 
 #define GROUNDDETAIL 0
 
-int cPlanetmap::sInstances = 0;
-std::vector<long> cPlanetmap::sGrounds;
-std::vector<long> cPlanetmap::sGrasses;
-std::vector<cPlanetmap::Growth*> cPlanetmap::sGrowth;
+int rPlanetmap::sInstances = 0;
+std::vector<long> rPlanetmap::sGrounds;
+std::vector<long> rPlanetmap::sGrasses;
+std::vector<rPlanetmap::Growth*> rPlanetmap::sGrowth;
 
 
-inline float cPlanetmap::sMod::getModifiedHeight(float x, float z, float h) {
+inline float rPlanetmap::sMod::getModifiedHeight(float x, float z, float h) {
 
     switch (type) {
         case MODTYPE_FLATSQUARE:
@@ -94,7 +94,7 @@ inline float cPlanetmap::sMod::getModifiedHeight(float x, float z, float h) {
     }
 }
 
-cPlanetmap::cPlanetmap() {
+rPlanetmap::rPlanetmap() {
     Propmap properties;
     properties.put("landscape.type", "grass");
     properties.put("landscape.vegetation", "0.7");
@@ -102,11 +102,11 @@ cPlanetmap::cPlanetmap() {
     init(&properties);
 }
 
-cPlanetmap::cPlanetmap(Propmap* properties) {
+rPlanetmap::rPlanetmap(Propmap* properties) {
     init(properties);
 }
 
-void cPlanetmap::init(Propmap* properties) {
+void rPlanetmap::init(Propmap* properties) {
     sInstances++;
     if (sInstances == 1) {
         {
@@ -284,7 +284,7 @@ void cPlanetmap::init(Propmap* properties) {
     }
 }
 
-void cPlanetmap::invalidateCache() {
+void rPlanetmap::invalidateCache() {
     const long TILESIZE = PLANETMAP_TILESIZE;
     for (maptype<unsigned long, sPatch*>::iterator i = patches.begin(); i != patches.end(); i++) {
         sPatch* patch = (*i).second;
@@ -298,7 +298,7 @@ void cPlanetmap::invalidateCache() {
     }
 }
 
-void cPlanetmap::getHeight(float x, float z, float* const color) {
+void rPlanetmap::getHeight(float x, float z, float* const color) {
     float h = 0;
     float y = 0;
 
@@ -436,7 +436,7 @@ void cPlanetmap::getHeight(float x, float z, float* const color) {
     color[Landscape::BUMP] = h;
 } // getHeight
 
-void cPlanetmap::getCachedHeight(float x, float z, float* const color) {
+void rPlanetmap::getCachedHeight(float x, float z, float* const color) {
     // nan?
     if (x != x || z != z) {
         color[0] = 1;
@@ -556,7 +556,7 @@ void cPlanetmap::getCachedHeight(float x, float z, float* const color) {
 #endif
 } // getCachedHeight
 
-float cPlanetmap::constrain(float* worldpos, float radius, float* localpos, Entity* enactor) {
+float rPlanetmap::constrain(float* worldpos, float radius, float* localpos, Entity* enactor) {
     //if (enactor == NULL) return 0.0;
     float localpos_[3];
     vector_cpy(localpos_, worldpos);
@@ -636,7 +636,7 @@ float cPlanetmap::constrain(float* worldpos, float radius, float* localpos, Enti
     return maxdelta;
 }
 
-void cPlanetmap::animate(float spf) {
+void rPlanetmap::animate(float spf) {
     if (tree) tree->seconds += spf;
 }
 
@@ -672,7 +672,7 @@ static GLenum loadMaterial() {
     return prog;
 }
 
-void cPlanetmap::drawSolid() {
+void rPlanetmap::drawSolid() {
 
     // Get current Camera-Matrix.
     float m[16];
@@ -872,7 +872,7 @@ void cPlanetmap::drawSolid() {
     }
 }
 
-void cPlanetmap::drawBillboardPlant(float x__, float h, float z__, float scale, float* unrotateMatrix) {
+void rPlanetmap::drawBillboardPlant(float x__, float h, float z__, float scale, float* unrotateMatrix) {
     glTranslatef(x__, h - 0.2, z__);
     glMultMatrixf(unrotateMatrix);
     glScalef(scale, scale, scale);
@@ -888,7 +888,7 @@ void cPlanetmap::drawBillboardPlant(float x__, float h, float z__, float scale, 
     }
 }
 
-void cPlanetmap::drawStarPlant(float x__, float h, float z__, float scale) {
+void rPlanetmap::drawStarPlant(float x__, float h, float z__, float scale) {
     glTranslatef(x__, h - 0.2-0.3, z__);
     glScalef(scale, scale, scale);
     static unsigned int dlist = 0;
@@ -902,7 +902,7 @@ void cPlanetmap::drawStarPlant(float x__, float h, float z__, float scale) {
     }
 }
 
-void cPlanetmap::drawTrianglePlant(float x__, float h, float z__, float scale) {
+void rPlanetmap::drawTrianglePlant(float x__, float h, float z__, float scale) {
     glTranslatef(x__, h - 0.2, z__);
     glScalef(scale, scale, scale);
     static unsigned int dlist = 0;
@@ -916,7 +916,7 @@ void cPlanetmap::drawTrianglePlant(float x__, float h, float z__, float scale) {
     }
 }
 
-void cPlanetmap::drawCrossPlant(float x__, float h, float z__, float scale) {
+void rPlanetmap::drawCrossPlant(float x__, float h, float z__, float scale) {
     glTranslatef(x__, h - 0.2, z__);
     glScalef(scale, scale, scale);
     static unsigned int dlist = 0;
@@ -930,7 +930,7 @@ void cPlanetmap::drawCrossPlant(float x__, float h, float z__, float scale) {
     }
 }
 
-void cPlanetmap::drawLeafPlant(float x__, float h, float z__, float scale) {
+void rPlanetmap::drawLeafPlant(float x__, float h, float z__, float scale) {
     glTranslatef(x__, h - 0.2, z__);
     glScalef(scale, scale, scale);
     static unsigned int dlist = 0;
@@ -966,7 +966,7 @@ void cPlanetmap::drawLeafPlant(float x__, float h, float z__, float scale) {
     }
 }
 
-void cPlanetmap::drawEffect() {
+void rPlanetmap::drawEffect() {
     const float totaldensity = vegetation;
 
     // Pseudorandom Permutation.

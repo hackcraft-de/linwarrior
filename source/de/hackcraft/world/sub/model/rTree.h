@@ -21,7 +21,7 @@ struct rTree;
 #include <list>
 #include <map>
 
-class cPlanetmap;
+class rPlanetmap;
 
 /**
  * Generates and caches proceduraly generated 3d tree models.
@@ -41,7 +41,7 @@ public: // INPUT
     float seconds;
 public: // OUTPUT
 protected: // INTERNALS
-    friend class cPlanetmap;
+    friend class rPlanetmap;
     struct TreeType {
         // Random seed that produced this tree.
         unsigned int seed;

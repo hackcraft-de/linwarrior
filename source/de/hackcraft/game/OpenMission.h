@@ -35,16 +35,16 @@ private:
     virtual void onDefeat();
     virtual Entity* init(World* world);
 private:
-    Entity* initPlayerParty(World* world, cPlanetmap* planetmap, float* position);
-    void initSkytideCity(World* world, cPlanetmap* planetmap);
-    void initStarcircleTown(World* world, cPlanetmap* planetmap);
-    void initPentaSpaceport(World* world, cPlanetmap* planetmap);
-    void initPyraNanoCorp(World* world, cPlanetmap* planetmap);
-    void initAcroloidMines(World* world, cPlanetmap* planetmap);
-    void initCollapsiumFactory(World* world, cPlanetmap* planetmap);
-    void initJurataJail(World* world, cPlanetmap* planetmap);
-    void initSpadenixFactory(World* world, cPlanetmap* planetmap);
-    void initFortifyDefense(World* world, cPlanetmap* planetmap);
+    Entity* initPlayerParty(World* world, rPlanetmap* planetmap, float* position);
+    void initSkytideCity(World* world, rPlanetmap* planetmap);
+    void initStarcircleTown(World* world, rPlanetmap* planetmap);
+    void initPentaSpaceport(World* world, rPlanetmap* planetmap);
+    void initPyraNanoCorp(World* world, rPlanetmap* planetmap);
+    void initAcroloidMines(World* world, rPlanetmap* planetmap);
+    void initCollapsiumFactory(World* world, rPlanetmap* planetmap);
+    void initJurataJail(World* world, rPlanetmap* planetmap);
+    void initSpadenixFactory(World* world, rPlanetmap* planetmap);
+    void initFortifyDefense(World* world, rPlanetmap* planetmap);
 private:
     void battleField(World* world);
     void smallArmy(int wx, int wy, int wz, World* world, const char* name, int n, bool blue, int wpn /*0*/, bool immobile, std::string model);

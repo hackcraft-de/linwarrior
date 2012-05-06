@@ -19,7 +19,8 @@ public:
     LandscapeSystem();
     LandscapeSystem(const LandscapeSystem& orig);
     virtual ~LandscapeSystem();
-    void setPlanetmap(cPlanetmap* map) { planetmap = map; };
+    
+    void add(rPlanetmap* map);
     
     virtual float constrainParticle(Entity* ex, float* worldpos, float radius);
     
@@ -32,7 +33,7 @@ public:
     /// Draw all Object's effects (calls their drawEffect method).
     virtual void drawEffect();
 private:
-    cPlanetmap* planetmap;
+    rPlanetmap* planetmap;
 };
 
 #endif	/* LANDSCAPESYSTEM_H */

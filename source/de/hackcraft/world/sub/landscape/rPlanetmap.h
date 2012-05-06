@@ -9,7 +9,7 @@
 #ifndef PLANETMAP_H
 #define	PLANETMAP_H
 
-class cPlanetmap;
+class rPlanetmap;
 
 #include "de/hackcraft/world/Component.h"
 
@@ -40,7 +40,7 @@ class cPlanetmap;
 /**
  * Procedural Landscape Rendering and Collision.
  */
-class cPlanetmap : public Component {
+class rPlanetmap : public Component {
 public:
     /// Instance counter.
     static int sInstances;
@@ -65,7 +65,7 @@ public:
             this->rendertype = rendertype;
         }
     };
-    static std::vector<cPlanetmap::Growth*> sGrowth;
+    static std::vector<rPlanetmap::Growth*> sGrowth;
 
 public:
     /// Surface Modifiction
@@ -109,8 +109,8 @@ public:
     /// Ground texture number used in rendering
     int groundtype;
 public:
-    cPlanetmap();
-    cPlanetmap(Propmap* properties);
+    rPlanetmap();
+    rPlanetmap(Propmap* properties);
     /// Remove cached data - enforce recalculation (enforce cache miss).
     void invalidateCache();
     /// Calculate Height and Color of the xz position.
