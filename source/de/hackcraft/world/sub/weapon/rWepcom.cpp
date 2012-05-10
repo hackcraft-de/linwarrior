@@ -1,9 +1,5 @@
 #include "rWepcom.h"
 
-// FIXME: Wepcom rely on mech.
-#include "de/hackcraft/world/object/cMech.h"
-
-// FIXME? Wepcom rely on weapon.
 #include "de/hackcraft/world/sub/weapon/rWeapon.h"
 
 #include "de/hackcraft/psi3d/Primitive.h"
@@ -25,8 +21,7 @@ void rWepcom::animate(float spf) {
 void rWepcom::drawHUD() {
     if (!active) return;
 
-    cMech* mech = (cMech*) object;
-    float h = 1.0f / 7.0f * (1 + (mech->weapons.size() + 1) / 2);
+    float h = 1.0f / 7.0f * (1 + (weapons.size() + 1) / 2);
     glBegin(GL_QUADS);
     glVertex3f(1, h, 0);
     glVertex3f(0, h, 0);
@@ -38,9 +33,9 @@ void rWepcom::drawHUD() {
         glScalef(1.0f / 2.0f, 1.0f / 7.0f, 1.0f);
         glTranslatef(0, 0.5, 0);
 
-        loopi(mech->weapons.size()) {
+        loopi(weapons.size()) {
             glLineWidth(5);
-            if (mech->weapons[i]->ready()) glColor4f(0.4f, 1.0f, 0.4f, 0.2f);
+            if (weapons[i]->ready()) glColor4f(0.4f, 1.0f, 0.4f, 0.2f);
             else glColor4f(0.8f, 0.0f, 0.0f, 0.2f);
             Primitive::glLineSquare(0.1f);
             glLineWidth(1);
@@ -48,7 +43,7 @@ void rWepcom::drawHUD() {
             Primitive::glLineSquare(0.1f);
             glPushMatrix();
             {
-                mech->weapons[i]->drawHUD();
+                weapons[i]->drawHUD();
             }
             glPopMatrix();
             //glTranslatef(0, 1, 0);
