@@ -25,6 +25,7 @@ public:
     WeaponSystem();
     WeaponSystem(const WeaponSystem& orig);
     virtual ~WeaponSystem();
+    static WeaponSystem* getInstance();
     
     void add(rTarcom* tarcom);
     void add(rWepcom* wepcom);
@@ -62,6 +63,8 @@ private:
     std::map<OID,rWepcom*> wepcoms;
     std::map<OID,rWeapon*> weapons;
     std::map<OID,rTarget*> targets;
+    
+    static WeaponSystem* instance;
 };
 
 #endif	/* WEAPONSYSTEM_H */

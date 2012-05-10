@@ -1,12 +1,20 @@
 #include "WeaponSystem.h"
 
+WeaponSystem* WeaponSystem::instance = NULL;
+
+
 WeaponSystem::WeaponSystem() {
+    instance = this;
 }
 
 WeaponSystem::WeaponSystem(const WeaponSystem& orig) {
 }
 
 WeaponSystem::~WeaponSystem() {
+}
+
+WeaponSystem* WeaponSystem::getInstance() {
+    return instance;
 }
 
 void WeaponSystem::add(rTarcom* tarcom){
