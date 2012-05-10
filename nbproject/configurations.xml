@@ -166,8 +166,6 @@
               <df name="computer">
                 <in>rComcom.cpp</in>
                 <in>rComcom.h</in>
-                <in>rComputer.cpp</in>
-                <in>rComputer.h</in>
                 <in>rController.cpp</in>
                 <in>rController.h</in>
                 <in>rNavcom.cpp</in>
@@ -248,6 +246,7 @@
             <in>Component.h</in>
             <in>Entity.cpp</in>
             <in>Entity.h</in>
+            <in>IComputer.h</in>
             <in>IModel.h</in>
             <in>Message.cpp</in>
             <in>Message.h</in>

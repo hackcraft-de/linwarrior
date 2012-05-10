@@ -11,7 +11,8 @@
 
 struct rNavcom;
 
-#include "rComputer.h"
+#include "de/hackcraft/world/Component.h"
+#include "de/hackcraft/world/IComputer.h"
 
 #include "de/hackcraft/psi3d/math3d.h"
 
@@ -19,7 +20,7 @@ struct rNavcom;
  * stores mission critical POints of Interest (POIs),
  * routes, map data and encapsulates path-finding.
  */
-struct rNavcom : public rComputer {
+struct rNavcom : public Component, public IComputer {
 public: // SYSTEM
     /// Identifier for this component (all uppercase letters without leading "r").
     static std::string cname;

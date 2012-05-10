@@ -7,6 +7,8 @@
 
 #include "rComcom.h"
 
+#include "de/hackcraft/world/sub/weapon/rTarcom.h"
+
 #include <cstdlib>
 #include <cassert>
 #include <iostream>

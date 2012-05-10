@@ -13,8 +13,8 @@
 
 struct rController;
 
-#include "rComputer.h"
-
+#include "de/hackcraft/world/Component.h"
+#include "de/hackcraft/world/IComputer.h"
 #include "de/hackcraft/world/OID.h"
 
 #include "de/hackcraft/psi3d/math3d.h"
@@ -27,7 +27,7 @@ struct rController;
  * Implements an stack-automaton for object behavior control
  * and plan execution.
  */
-struct rController : public rComputer {
+struct rController : public Component, public IComputer {
 public: // SYSTEM
     /// Identifier for this component (all uppercase letters without leading "r").
     static std::string cname;

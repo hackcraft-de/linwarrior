@@ -1,5 +1,5 @@
 /* 
- * File:     rComputer.h
+ * File:     IComputer.h
  * Project:  LinWarrior 3D
  * Home:     hackcraft.de
  *
@@ -16,20 +16,12 @@
  *  Computers have to implement animate and drawHUD methods to be useful.
  *  The message method isn't mandatory.
  */
-struct rComputer : Component {
+struct IComputer {
 public:
-
-    virtual void message(Message * message) {
-    };
+    virtual void message(Message * message) { };
     virtual void animate(float spf) = 0;
     virtual void drawHUD() = 0;
 };
-
-#include "rComcom.h"
-#include "de/hackcraft/world/sub/weapon/rTarcom.h"
-#include "de/hackcraft/world/sub/weapon/rWepcom.h"
-#include "de/hackcraft/world/sub/mobile/rForcom.h"
-#include "rNavcom.h"
 
 #endif	/* RCOMPUTER_H */
 

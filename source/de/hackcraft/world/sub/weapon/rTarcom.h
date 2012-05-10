@@ -11,7 +11,8 @@
 
 struct rTarcom;
 
-#include "de/hackcraft/world/sub/computer/rComputer.h"
+#include "de/hackcraft/world/Component.h"
+#include "de/hackcraft/world/IComputer.h"
 
 #include "de/hackcraft/psi3d/math3d.h"
 
@@ -23,7 +24,7 @@ struct rTarcom;
 /** Targeting Computer,
  * includes Radar, target-selection and -display.
  */
-struct rTarcom : public rComputer {
+struct rTarcom : public Component, public IComputer {
 public: // SYSTEM
     /// Identifier for this component (all uppercase letters without leading "r").
     static std::string cname;

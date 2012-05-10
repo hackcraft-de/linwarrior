@@ -11,8 +11,8 @@
 
 struct rComcom;
 
-#include "rComputer.h"
-
+#include "de/hackcraft/world/Component.h"
+#include "de/hackcraft/world/IComputer.h"
 #include "de/hackcraft/world/OID.h"
 
 #include <list>
@@ -22,7 +22,7 @@ struct rComcom;
  *  and stores these messages.
  *  Orders to comrades may enhance strategic advance.
  */
-struct rComcom : public rComputer {
+struct rComcom : public Component, public IComputer {
 public:
     /// Identifier for this component (all uppercase letters without leading "r").
     static std::string cname;

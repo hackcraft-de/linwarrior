@@ -9,14 +9,15 @@
 #ifndef RWEPCOM_H
 #define	RWEPCOM_H
 
-#include "de/hackcraft/world/sub/computer/rComputer.h"
+#include "de/hackcraft/world/Component.h"
+#include "de/hackcraft/world/IComputer.h"
 
 #include "rWeapon.h"
 
 /** Weapon Computer
  * currently just draws weapon status.
  */
-struct rWepcom : public rComputer {
+struct rWepcom : public Component, public IComputer {
 public: // SYSTEM
     /// Identifier for this component (all uppercase letters without leading "r").
     static std::string cname;
