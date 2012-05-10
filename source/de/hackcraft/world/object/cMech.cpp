@@ -6,21 +6,19 @@
 
 #include "de/hackcraft/io/Pad.h"
 
-#include "de/hackcraft/world/sub/weapon/rTarget.h"
-#include "de/hackcraft/world/sub/weapon/rWeapon.h"
+#include "de/hackcraft/world/sub/weapon/WeaponSystem.h"
 
 #include "de/hackcraft/world/sub/model/rRigged.h"
 
 #include "de/hackcraft/world/sub/computer/rComcom.h"
 #include "de/hackcraft/world/sub/computer/rController.h"
 
-#include "de/hackcraft/world/sub/model/rBillboard.h"
+#include "de/hackcraft/world/sub/model/ModelSystem.h"
 
 #include "de/hackcraft/world/sub/mobile/rCamera.h"
 #include "de/hackcraft/world/sub/mobile/rMobile.h"
 
-#include "de/hackcraft/world/sub/physics/rTraceable.h"
-#include "de/hackcraft/world/sub/physics/rCollider.h"
+#include "de/hackcraft/world/sub/physics/PhysicsSystem.h"
 
 #include "de/hackcraft/psi3d/macros.h"
 #include "de/hackcraft/psi3d/GLS.h"
@@ -141,7 +139,7 @@ void cMech::init(float* pos, float* rot, string modelName) {
 
     collider = new rCollider(this);
     rigged = new rRigged(this); ModelSystem::getInstance()->add(rigged);
-    damageable = new rTarget(this);
+    damageable = new rTarget(this); WeaponSystem::getInstance()->add(damageable);
     controller = new rController(this);
     nameable = new rBillboard(this); ModelSystem::getInstance()->add(nameable);
     traceable = new rTraceable(this);
@@ -330,6 +328,7 @@ void cMech::mountWeapon(const char* point, rWeapon *weapon, bool add) {
     if (weapon == NULL) throw "Null weapon for mounting given.";
     weapon->weaponMount = rigged->getMountpoint(point);
     weapon->object = this;
+    WeaponSystem::getInstance()->add(weapon);
     if (add) {
         weapons.push_back(weapon);
         wepcom->addControlledWeapon(weapon);
