@@ -401,7 +401,6 @@ void cMech::animate(float spf) {
             damageable->height = rigged->height;
         }
         damageable->prebind();
-        damageable->animate(spf);
     }
 
     // begin COMPUTERs -->
@@ -433,7 +432,6 @@ void cMech::animate(float spf) {
             quat_cpy(tarcom->ori0, traceable->ori);
         }
         tarcom->prebind();
-        tarcom->animate(spf);
     }
 
     // WEPCOM
@@ -443,7 +441,6 @@ void cMech::animate(float spf) {
             wepcom->active = damageable->alife;
         }
         wepcom->prebind();
-        wepcom->animate(spf);
     }
 
     // FORCOM
@@ -578,9 +575,6 @@ void cMech::animate(float spf) {
             texture = hasTag(World::getInstance()->getGroup(FAC_YELLOW)) ? 3 : texture;
             rigged->basetexture3d = texture;
         }
-
-        //rigged->animate(spf);
-        //rigged->transform();
     }
 
     // NAMEABLE
@@ -601,8 +595,6 @@ void cMech::animate(float spf) {
             nameable->pos1[1] += 2.0f;
             quat_cpy(nameable->ori1, rigged->joints[eye].q);
         }
-
-        //nameable->animate(spf);
     }
 
     // CAMERA
@@ -653,9 +645,6 @@ void cMech::animate(float spf) {
             quat_cpy(weapon->ori1, joint->q);
             vector_cpy(weapon->pos1, joint->v);
         }
-
-        weapons[i]->animate(spf);
-        weapons[i]->transform();
     }
 
     // EXPLOSION (WEAPON)
@@ -669,8 +658,6 @@ void cMech::animate(float spf) {
             quat_cpy(weapon->ori1, joint->q);
             vector_cpy(weapon->pos1, joint->v);
         }
-        explosion->animate(spf);
-        explosion->transform();
     }
 
     for (auto i = components.begin(); i != components.end(); i++) {
@@ -730,42 +717,10 @@ void cMech::drawSolid() {
             glDisable(light);
         }
     }
-
-    {
-        //rigged->drawSolid();
-    }
-    {
-        mobile->drawSolid();
-    }
-
-    loopi(weapons.size()) {
-        weapons[i]->drawSolid();
-    }
-    {
-        explosion->drawSolid();
-    }
 }
 
 void cMech::drawEffect() {
-    {
-        collider->drawEffect();
-    }
-    {
-        //rigged->drawEffect();
-    }
-    {
-        mobile->drawEffect();
-    }
-
-    loopi(weapons.size()) {
-        weapons[i]->drawEffect();
-    }
-    {
-        explosion->drawEffect();
-    }
-    {
-        //nameable->drawEffect();
-    }
+    
 }
 
 void cMech::drawHUD() {

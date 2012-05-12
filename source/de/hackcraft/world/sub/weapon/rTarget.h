@@ -77,6 +77,10 @@ public:
     virtual void animate(float spf);
     /// Display damaging.
     virtual void drawHUD();
+    
+    virtual int getPosX() { return (int) pos0[0]; }
+    virtual int getPosY() { return (int) pos0[1]; }
+    virtual int getPosZ() { return (int) pos0[2]; }
 };
 
 #endif	/* RDAMAGEABLE_H */
