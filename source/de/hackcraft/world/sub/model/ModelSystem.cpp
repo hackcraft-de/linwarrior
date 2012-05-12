@@ -9,6 +9,8 @@ ModelSystem* ModelSystem::instance = NULL;
 
 ModelSystem::ModelSystem() {
     instance = this;
+    
+    visobjects = NULL;
 }
 
 ModelSystem::ModelSystem(const ModelSystem& orig) {
