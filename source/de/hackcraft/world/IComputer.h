@@ -16,9 +16,8 @@
  *  Computers have to implement animate and drawHUD methods to be useful.
  *  The message method isn't mandatory.
  */
-struct IComputer {
+class IComputer {
 public:
-    virtual void message(Message * message) { };
     virtual void animate(float spf) = 0;
     virtual void drawHUD() = 0;
 };
