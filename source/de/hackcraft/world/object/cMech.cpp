@@ -230,6 +230,8 @@ void cMech::init(float* pos, float* rot, string modelName) {
     }
     // DAMAGEABLE
     {
+        // from Self
+        damageable->addBinding(&damageable->pos0, &pos0, sizeof(vec3));
         // from DAMAGEABLE
         damageable->addBinding(&damageable->active, &damageable->alife, sizeof(bool));
         // from RIGGED

@@ -13,6 +13,8 @@
 
 #include "de/hackcraft/world/OID.h"
 
+#include "de/hackcraft/psi3d/math3d.h"
+
 #include <map>
 
 /**
@@ -25,6 +27,8 @@ public: // SYSTEM
     /// A unique random number (0-9999) to identify this component.
     static unsigned int cid;
 public: // INPUT
+    /// Base orientation (hook i).
+    vec3 pos0;
     /// Radius for hitzone calculation.
     float radius;
     /// Height for hitzone calculation.

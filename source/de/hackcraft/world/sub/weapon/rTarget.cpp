@@ -20,6 +20,7 @@ rTarget::rTarget(Entity* obj) {
     dead = !alife;
     loopi(MAX_PARTS) hp[i] = 100.0f;
     disturber = 0;
+    vector_zero(pos0);
 }
 
 rTarget::rTarget(rTarget * original) {
