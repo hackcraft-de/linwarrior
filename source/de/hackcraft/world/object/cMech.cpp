@@ -140,17 +140,27 @@ void cMech::init(float* pos, float* rot, string modelName) {
     pad = new Pad;
 
     collider = new rCollider(this);
-    rigged = new rRigged(this); ModelSystem::getInstance()->add(rigged);
-    damageable = new rTarget(this); WeaponSystem::getInstance()->add(damageable);
-    controller = new rController(this);
-    nameable = new rBillboard(this); ModelSystem::getInstance()->add(nameable);
     traceable = new rTraceable(this);
+    //PhysicsSystem::getInstance()->add(collider);
+    //PhysicsSystem::getInstance()->add(traceable);
+
+    rigged = new rRigged(this);
+    nameable = new rBillboard(this);
+    ModelSystem::getInstance()->add(rigged);
+    ModelSystem::getInstance()->add(nameable);
+    
+    damageable = new rTarget(this);
+    tarcom = new rTarcom(this);
+    wepcom = new rWepcom(this);
+    WeaponSystem::getInstance()->add(damageable);
+    WeaponSystem::getInstance()->add(tarcom);
+    WeaponSystem::getInstance()->add(wepcom);
+    
+    controller = new rController(this);
     camra = new rCamera(this);
     mobile = new rMobile(this);
 
     comcom = new rComcom(this);
-    tarcom = new rTarcom(this);
-    wepcom = new rWepcom(this);
     forcom = new rForcom(this);
     navcom = new rNavcom(this);
 
