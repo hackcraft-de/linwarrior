@@ -5,8 +5,6 @@
 #include "de/hackcraft/world/Entity.h"
 #include "de/hackcraft/world/object/cMech.h"
 
-#include "rComcom.h"
-
 #include "de/hackcraft/world/sub/weapon/rTarcom.h"
 
 #include <cstdlib>
