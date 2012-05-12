@@ -6,15 +6,12 @@
  * Created on September 15, 2011, 7:40 PM
  */
 
-#ifndef RCOMPUTER_H
-#define	RCOMPUTER_H
+#ifndef ICOMPUTER_H
+#define	ICOMPUTER_H
 
-#include "de/hackcraft/world/Component.h"
-
-/** Computer Component
- *  Placeholder base class for computerized components.
- *  Computers have to implement animate and drawHUD methods to be useful.
- *  The message method isn't mandatory.
+/** 
+ * Class-Interface for computerized components.
+ * Computers have to implement animate and drawHUD methods to be useful.
  */
 class IComputer {
 public:
@@ -22,5 +19,5 @@ public:
     virtual void drawHUD() = 0;
 };
 
-#endif	/* RCOMPUTER_H */
+#endif	/* ICOMPUTER_H */
 
