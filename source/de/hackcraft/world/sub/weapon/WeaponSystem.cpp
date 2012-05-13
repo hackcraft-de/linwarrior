@@ -83,9 +83,27 @@ void WeaponSystem::clusterObjects() {
 
 
 void WeaponSystem::animateObjects() {
+    
+    float spf = World::getInstance()->getTiming()->getSPF();
+    
     for (std::pair<OID,rWeapon*> p : weapons) {
-        IModel* model = p.second;
-        model->animate(World::getInstance()->getTiming()->getSPF());
+        rWeapon* model = p.second;
+        model->animate(spf);
+    }
+    
+    for (std::pair<OID,rTarget*> p : targets) {
+        rTarget* model = p.second;
+        model->animate(spf);
+    }
+    
+    for (std::pair<OID,rTarcom*> p : tarcoms) {
+        rTarcom* model = p.second;
+        model->animate(spf);
+    }
+    
+    for (std::pair<OID,rWepcom*> p : wepcoms) {
+        rWepcom* model = p.second;
+        model->animate(spf);
     }
 }
 
