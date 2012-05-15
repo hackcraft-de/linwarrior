@@ -62,7 +62,7 @@ void WeaponSystem::clusterObjects() {
     try {
         int j = 0;
         
-        getTargets.clear();
+        geoTargets.clear();
 
         for(std::pair<OID,rTarget*> p : targets) {
             rTarget* model = p.second;
@@ -71,7 +71,7 @@ void WeaponSystem::clusterObjects() {
             if (!finitef(px) || !finitef(pz)) {
                 //mUncluster.push_back(model);
             } else {
-                getTargets.put(px, pz, model);
+                geoTargets.put(px, pz, model);
             }
             j++;
         }

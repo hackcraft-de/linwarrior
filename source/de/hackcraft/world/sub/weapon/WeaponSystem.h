@@ -67,7 +67,7 @@ private:
     std::map<OID,rTarget*> targets;
     
     Geomap<IModel*> geoWeapons;
-    Geomap<rTarget*> getTargets;
+    Geomap<rTarget*> geoTargets;
     
     /// Render only objects that far away.
     float viewdistance;
