@@ -171,3 +171,27 @@ void rTarget::drawHUD() {
     glPopMatrix();
 }
 
+bool rTarget::anyTags(std::set<OID>* tagset) {
+    std::set<OID> result;
+    std::set_intersection(tags.begin(), tags.end(), tagset->begin(), tagset->end(), std::inserter(result, result.begin()));
+    return (!result.empty());
+}
+
+bool rTarget::allTags(std::set<OID>* tagset) {
+    std::set<OID> result;
+    std::set_intersection(tags.begin(), tags.end(), tagset->begin(), tagset->end(), std::inserter(result, result.begin()));
+    return (result.size() == tagset->size());
+}
+
+bool rTarget::hasTag(OID tag) {
+    return (tags.find(tag) != tags.end());
+}
+
+void rTarget::addTag(OID tag) {
+    tags.insert(tag);
+}
+
+void rTarget::remTag(OID tag) {
+    tags.erase(tag);
+}
+

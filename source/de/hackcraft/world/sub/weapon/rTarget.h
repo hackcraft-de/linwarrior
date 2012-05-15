@@ -16,6 +16,8 @@
 #include "de/hackcraft/psi3d/math3d.h"
 
 #include <map>
+#include <set>
+#include <algorithm>
 
 /**
  * Encapsulates attributes related to body damage and armor state.
@@ -62,6 +64,8 @@ protected: // INTERNALS
     // Smarter disturbance with non-persistent memory.
     std::map<OID,float> damageAverage;
     std::map<OID,float> damageImpulse;
+    /// Tags (IDs, Social-Roles, Parties, States...) this target has (=groups?).
+    std::set<OID> tags;
 public:
     /// Constructor.
     rTarget(Entity* obj = NULL);
@@ -81,6 +85,39 @@ public:
     virtual int getPosX() { return (int) pos0[0]; }
     virtual int getPosY() { return (int) pos0[1]; }
     virtual int getPosZ() { return (int) pos0[2]; }
+    
+    /**
+     * Check whether this target has at least one of the given tags.
+     * @param tagset
+     * @return 
+     */
+    bool anyTags(std::set<OID>* tagset);
+
+    /**
+     * Check whether this target has all the given tags.
+     * @param tagset
+     * @return 
+     */
+    bool allTags(std::set<OID>* tagset);
+
+    /**
+     * Check whether this target has the given tag.
+     * @param tag
+     * @return 
+     */
+    bool hasTag(OID tag);
+
+    /**
+     * Add a tag to this object.
+     * @param tag
+     */
+    void addTag(OID tag);
+
+    /**
+     * Remove a tag from this object.
+     * @param tag
+     */
+    void remTag(OID tag);
 };
 
 #endif	/* RDAMAGEABLE_H */
