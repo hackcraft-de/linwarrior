@@ -2,6 +2,8 @@
 
 #include "de/hackcraft/world/World.h"
 
+#include <cassert>
+
 WeaponSystem* WeaponSystem::instance = NULL;
 
 
@@ -187,6 +189,75 @@ void WeaponSystem::drawEffect() {
         }
         glPopMatrix();
     }
+}
+
+
+std::list<rTarget*>* WeaponSystem::filterByTags(Entity* ex, std::set<OID>* rolemask, bool all, int maxamount, std::list<rTarget*>* objects) {
+    std::list<rTarget*>* result = new std::list<rTarget*>;
+    int amount = maxamount;
+    if (objects == NULL) {
+        return result;
+    }
+
+    for(rTarget* target: *objects) {
+        if (amount == 0) break;
+        
+        assert(target->object != NULL);
+        if (target->object->oid == 0) continue;
+        if (target->object == ex) continue;
+        
+        // Filter Condition
+        if (all) {
+            if (!target->allTags(rolemask)) continue;
+        } else {
+            if (!target->anyTags(rolemask)) continue;
+        }
+        
+        amount--;
+        result->push_back(target);
+    }
+    return result;
+}
+
+
+std::list<rTarget*>* WeaponSystem::filterByRange(Entity* ex, float* origin, float minrange, float maxrange, int maxamount, std::list<rTarget*>* objects) {
+    std::list<rTarget*>* result = new std::list<rTarget*>;
+    int amount = maxamount;
+    bool all = false;
+    
+    if (objects == NULL) {
+        //objects = &mObjects;
+        all = true;
+        float maxrange_ = maxrange + 1;
+        float min[] = {origin[0] - maxrange_, origin[2] - maxrange_};
+        float max[] = {origin[0] + maxrange_, origin[2] + maxrange_};
+        objects = geoTargets.getGeoInterval(min, max);
+        //cout << "clustered:" << objects->size() << " vs " << mObjects.size() << endl;
+    }
+
+    for(rTarget* target: *objects) {
+        if (amount == 0) break;
+        assert(target->object != NULL);
+        if (target->object == ex) continue;
+        if (target->object->oid == 0) continue;
+        // Filter Condition
+        float diff[3];
+        vector_sub(diff, origin, target->pos0);
+        float d2 = vector_dot(diff, diff);
+        //float d = vector_distance(origin, object->mPos);
+        float r1 = fmax(0.0f, minrange - target->radius);
+        float r2 = maxrange + target->radius;
+        if (d2 < r1 * r1 || d2 > r2 * r2) continue;
+        amount--;
+        result->push_back(target);
+    }
+    if (all) {
+        // Add global objects to result.
+        //result->insert(result->end(), mUncluster.begin(), mUncluster.end());
+        // Cluster-Result is always freshly allocated for us => delete.
+        delete objects;
+    }
+    return result;
 }
 
 

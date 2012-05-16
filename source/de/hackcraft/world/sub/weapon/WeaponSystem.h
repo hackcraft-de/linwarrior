@@ -60,6 +60,18 @@ public:
     
     /** Draw all Object's effects (calls their drawEffect method). */
     virtual void drawEffect();
+    
+    /**
+     * Filters the given objectlist by tags (ORed Bitmask) (excluding ex Object).
+     * There is the option to match all tags (true=AND) or to select any given tag (false=OR).
+     * The returned list is fresh allocated - caller delete responsibility.
+     */
+    std::list<rTarget*>* filterByTags(Entity* ex, std::set<OID>* rolemask, bool all, int maxamount, std::list<rTarget*>* objects);
+
+    /** Returns a List of objects which are within minimum and maximum range (excluding ex Object).
+     * The returned list is fresh allocated - caller delete responsibility.
+     */
+    std::list<rTarget*>* filterByRange(Entity* ex, float* origin, float minrange, float maxrange, int maxamount, std::list<rTarget*>* objects = NULL);
 private:
     std::map<OID,rTarcom*> tarcoms;
     std::map<OID,rWepcom*> wepcoms;
