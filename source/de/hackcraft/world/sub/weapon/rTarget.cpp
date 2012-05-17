@@ -6,6 +6,8 @@
 #include "de/hackcraft/psi3d/GLF.h"
 #include "de/hackcraft/psi3d/Primitive.h"
 
+#include <cassert>
+
 #include <GL/glew.h>
 
 std::string rTarget::cname = "DAMAGEABLE";
@@ -13,6 +15,7 @@ unsigned int rTarget::cid = 5704;
 
 rTarget::rTarget(Entity* obj) {
     object = obj;
+    assert(object != NULL);
 
     radius = 0.25;
     height = 1.80;
@@ -20,6 +23,7 @@ rTarget::rTarget(Entity* obj) {
     dead = !alife;
     loopi(MAX_PARTS) hp[i] = 100.0f;
     disturber = 0;
+    disturbance = 0;
     vector_zero(pos0);
 }
 
@@ -34,6 +38,7 @@ rTarget::rTarget(rTarget * original) {
         dead = original->dead;
         loopi(MAX_PARTS) hp[i] = original->hp[i];
         disturber = original->disturber;
+        disturbance = original->disturbance;
     }
 }
 
@@ -53,6 +58,7 @@ bool rTarget::damage(float* localpos, float damage, Entity* enactor) {
         alife = false;
         dead = !alife;
     }
+    
     if (enactor != NULL && damage > 0.0001f) {
         
         // Setup an averaging memory slot for that enactor.
@@ -64,6 +70,7 @@ bool rTarget::damage(float* localpos, float damage, Entity* enactor) {
         // Sum the disturbance (damage) for the enactor over the time of one frame.
         damageImpulse[enactor->oid] += damage;
     }
+
     return alife;
 }
 
