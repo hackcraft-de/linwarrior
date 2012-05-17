@@ -10,6 +10,8 @@
 #ifndef WEAPONSYSTEM_H
 #define	WEAPONSYSTEM_H
 
+class WeaponSystem;
+
 #include "rTarcom.h"
 #include "rTarget.h"
 #include "rWeapon.h"
