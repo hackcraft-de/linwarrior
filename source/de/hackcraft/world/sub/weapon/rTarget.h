@@ -9,6 +9,10 @@
 #ifndef RTARGET_H
 #define	RTARGET_H
 
+struct rTarget;
+
+#include "de/hackcraft/world/sub/weapon/rTarcom.h"
+
 #include "de/hackcraft/world/Component.h"
 
 #include "de/hackcraft/world/OID.h"
@@ -85,6 +89,8 @@ public:
     virtual int getPosX() { return (int) pos0[0]; }
     virtual int getPosY() { return (int) pos0[1]; }
     virtual int getPosZ() { return (int) pos0[2]; }
+    
+    bool isEnemy(rTarcom* tarcom);
     
     /**
      * Check whether this target has at least one of the given tags.

@@ -5,6 +5,7 @@
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/GLF.h"
 #include "de/hackcraft/psi3d/Primitive.h"
+#include "rTarcom.h"
 
 #include <cassert>
 
@@ -176,6 +177,10 @@ void rTarget::drawHUD() {
         GLF::glprintf("L %3.0f  T %3.0f  R %3.0f\n       B %3.0f", hp[left], hp[body], hp[right], hp[legs]);
     }
     glPopMatrix();
+}
+
+bool rTarget::isEnemy(rTarcom* tarcom) {
+    return tarcom->isEnemy(&tags);
 }
 
 bool rTarget::anyTags(std::set<OID>* tagset) {

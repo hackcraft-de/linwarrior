@@ -82,7 +82,7 @@ Entity* MissionSystem::init(World* world) {
         mech->nameable->name = "Alpha";
 
         mech->controller->enabled = false; // Disable Autopilot.
-        mech->addTag(World::getInstance()->getGroup(FAC_BLUE));
+        mech->damageable->addTag(World::getInstance()->getGroup(FAC_BLUE));
         mech->addTag(World::getInstance()->getGroup(PLR_HUMAN));
         mech->tarcom->addEnemy(World::getInstance()->getGroup(FAC_RED));
         mech->tarcom->addEnemy(World::getInstance()->getGroup(HLT_DEAD), false);

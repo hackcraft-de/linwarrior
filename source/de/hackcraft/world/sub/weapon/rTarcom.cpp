@@ -10,18 +10,22 @@
 
 #include "de/hackcraft/world/Entity.h"
 
+#include <cassert>
+
 std::string rTarcom::cname = "TARCOM";
 unsigned int rTarcom::cid = 5293;
 
 rTarcom::rTarcom(Entity* obj) {
     object = obj;
+    assert(object != NULL);
 
     quat_zero(ori0);
     vector_zero(pos0);
 
-    near = new std::list<Entity*>();
-    far = new std::list<Entity*>();
-    enemies = NULL;
+    near = new std::list<rTarget*>();
+    far = new std::list<rTarget*>();
+    enemies = new std::list<rTarget*>();
+    
     selected = 0;
     nearbyEnemy = 0;
 
@@ -34,19 +38,19 @@ void rTarcom::nextTarget() {
     bool found = false;
     OID last = 0;
 
-    for(Entity* o: *near) {
+    for(rTarget* o: *near) {
         if (last == selected) {
-            selected = o->oid;
+            selected = o->object->oid;
             found = true;
             break;
         }
-        last = o->oid;
+        last = o->object->oid;
     }
     if (!found) {
         if (near->empty()) {
             selected = 0;
         } else {
-            selected = near->front()->oid;
+            selected = near->front()->object->oid;
         }
     }
 }
@@ -55,19 +59,19 @@ void rTarcom::prevTarget() {
     bool found = false;
     OID last = 0;
 
-    for(Entity* o: *near) {
-        if (o->oid == selected) {
+    for(rTarget* o: *near) {
+        if (o->object->oid == selected) {
             selected = last;
             found = true;
             break;
         }
-        last = o->oid;
+        last = o->object->oid;
     }
     if (!found) {
         if (near->empty()) {
             selected = 0;
         } else {
-            selected = near->back()->oid;
+            selected = near->back()->object->oid;
         }
     }
 }
@@ -94,39 +98,32 @@ void rTarcom::animate(float spf) {
     // Find all objects in far range.
     //unsigned char key0 = (key) % m;
     //if (key0 == framekey) {
-    if ((key % 23) == (frame % 23)) {
+    
+    //if ((key % 23) == (frame % 23)) 
+    {
+        // coherence: 4
         delete far;
-        far = World::getInstance()->filterByRange(object, pos0, 0, 100, -1, NULL);
+        far = WeaponSystem::getInstance()->filterByRange(object, pos0, 0, 100, -1, NULL);
+        
+        // coherence: 2
         delete near;
-        near = World::getInstance()->filterByRange(object, pos0, 0, 55, -1, far);
+        near = WeaponSystem::getInstance()->filterByRange(object, pos0, 0, 55, -1, far);
+
+        // coherence: 1
         delete enemies;
-        enemies = World::getInstance()->filterByTags(object, &inc_enemies, false, -1, near);
+        enemies = WeaponSystem::getInstance()->filterByTags(object, &inc_enemies, false, -1, near);
+        
         // Filter one nearby.
         nearbyEnemy = 0;
-        for (std::list<Entity*>::iterator i = enemies->begin(); i != enemies->end(); i++) {
-            Entity* o = *i;
-            if (!o->anyTags(&exc_enemies)) {
-                nearbyEnemy = o->oid;
+        for (rTarget* target : *enemies) {
+            assert(target->object != NULL);
+            if (!target->anyTags(&exc_enemies)) {
+                nearbyEnemy = target->object->oid;
+                //std::cout << "object: " << this->object << " target object: " << target->object << "\n";
                 break;
             }
         }
     }
-    /*
-    unsigned int n = m / 3;
-    unsigned char framekey = frame % m;
-    unsigned char key1 = (key + 1 * n) % m;
-    unsigned char key2 = (key + 2 * n) % m;
-    // Find all objects in near range.
-    if (key1 == framekey) {
-        delete near;
-        near = World::getInstance()->filterByRange(object, pos, 0, 50, -1, far);
-    }
-    // Find all objects belonging to any enemy party/role.
-    if (key2 == framekey) {
-        delete enemies;
-        enemies = World::getInstance()->filterByTags(object, &inc_enemies, false, -1, near);
-    }
-     */
 }
 
 void rTarcom::drawHUD() {
@@ -170,7 +167,7 @@ void rTarcom::drawHUD() {
         }
         glEnd();
 
-        for(Entity* o: *far) {
+        for(rTarget* o: *far) {
             glBegin(GL_POINTS);
             {
                 glColor4f(0.5, 0.5, 0.5, 1);
@@ -178,7 +175,8 @@ void rTarcom::drawHUD() {
                 else if (o->hasTag(World::getInstance()->getGroup(FAC_GREEN))) glColor4f(0, 1, 0, 1);
                 else if (o->hasTag(World::getInstance()->getGroup(FAC_BLUE))) glColor4f(0, 0, 1, 1);
                 else if (o->hasTag(World::getInstance()->getGroup(FAC_YELLOW))) glColor4f(0, 1, 0, 1);
-                if (o->oid == selected) glColor4f(1, 0, 1, 1);
+                assert(o->object != NULL);
+                if (o->object->oid == selected) glColor4f(1, 0, 1, 1);
                 float dx = o->pos0[0] - pos0[0];
                 float dz = o->pos0[2] - pos0[2];
                 float r = sqrtf(dx * dx + dz * dz);

@@ -39,6 +39,43 @@ void WeaponSystem::add(rTarget* target){
     targets[target->getId()] = target;
 }
 
+
+rTarcom* WeaponSystem::findTarcomByEntity(OID entityID) {
+    if (tarcomByEntity.find(entityID) != tarcomByEntity.end()) {
+        return tarcomByEntity.at(entityID);
+    }
+    
+    for(std::pair<OID,rTarcom*> p : tarcoms) {
+        rTarcom* tarcom = p.second;
+        
+        if (tarcom->object->oid == entityID) {
+            tarcomByEntity[entityID] = tarcom;
+            return tarcom;
+        }
+    }
+    
+    return NULL;
+}
+
+
+rTarget* WeaponSystem::findTargetByEntity(OID entityID) {
+    if (targetByEntity.find(entityID) != targetByEntity.end()) {
+        return targetByEntity.at(entityID);
+    }
+    
+    for(std::pair<OID,rTarget*> p : targets) {
+        rTarget* target = p.second;
+        
+        if (target->object->oid == entityID) {
+            targetByEntity[entityID] = target;
+            return target;
+        }
+    }
+    
+    return NULL;
+}
+
+
 void WeaponSystem::clusterObjects() {
     try {
         int j = 0;

@@ -18,6 +18,9 @@ struct rTarcom;
 
 #include "de/hackcraft/world/OID.h"
 
+#include "rTarget.h"
+#include "WeaponSystem.h"
+
 #include <list>
 #include <set>
 
@@ -49,11 +52,11 @@ public: // INPUT
     std::set<OID> exc_enemies;
 public: // OUTPUT
     /// List of objects in far range.
-    std::list<Entity*>* far;
+    std::list<rTarget*>* far;
     /// List of objects in range.
-    std::list<Entity*>* near;
+    std::list<rTarget*>* near;
     /// List of (possible) enemy objects in range (only inc_enemies).
-    std::list<Entity*>* enemies;
+    std::list<rTarget*>* enemies;
     /// ID of selected object (hook o)
     OID selected;
     /// Switching to next/prev target in progress.

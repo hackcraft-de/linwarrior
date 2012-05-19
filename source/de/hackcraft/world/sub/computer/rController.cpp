@@ -247,7 +247,7 @@ void rController::attackEnemy() {
     }
 
     // FIXME: Depends on Mech/tarcom.
-    cMech* mech = (cMech*) object;
+    //cMech* mech = (cMech*) object;
     
     if (disturbedBy != 0 && disturbedBy != entity) {
         pop("Changing target (disturbed by another)");
@@ -255,12 +255,20 @@ void rController::attackEnemy() {
         return;
     }
 
-    Entity* target = World::getInstance()->getObject(entity);
+    //Entity* target = World::getInstance()->getObject(entity);
+    rTarget* target = WeaponSystem::getInstance()->findTargetByEntity(entity);
+    rTarcom* tarcom = WeaponSystem::getInstance()->findTarcomByEntity(this->object->oid);
+            
     if (target == NULL) {
         this->doit(0, NULL, false);
         pop("Target disappeared (removed from world: fragged).");
         return;
-    } else if (!mech->tarcom->isEnemy(&target->tags)) {
+    } else if (tarcom == NULL) {
+        this->doit(0, NULL, false);
+        pop("Tarcom disappeared (removed from world: fragged).");
+        return;
+    //} else if (!mech->tarcom->isEnemy(&target->tags)) { // TODO: Change dependency.
+    } else if (!target->isEnemy(tarcom)) {
         this->doit(0, NULL, false);
         pop("Not an enemy anymore (maybe dead or not interesting anymore).");
         return;

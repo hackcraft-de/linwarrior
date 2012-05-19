@@ -209,6 +209,8 @@ void cMech::init(float* pos, float* rot, string modelName) {
     quat_cpy(this->ori0, traceable->ori);
     this->radius = traceable->radius;
 
+    vector_cpy(damageable->pos0, this->pos0);
+    
     vector_cpy(collider->pos0, this->pos0);
     quat_cpy(collider->ori0, this->ori0);
     collider->radius = this->radius;
@@ -389,9 +391,9 @@ void cMech::animate(float spf) {
         collider->animate(spf);
     }
 
-    // DAMAGEABLE
+    // TARGET
     {
-        // from DAMAGEABLE
+        // from TARGET itself
         if (0) {
             damageable->active = damageable->alife;
         }
@@ -422,7 +424,7 @@ void cMech::animate(float spf) {
             tarcom->switchnext = pad->getButton(Pad::MECH_NEXT_BUTTON);
             tarcom->switchprev = pad->getButton(Pad::MECH_PREV_BUTTON);
         }
-        // from DAMAGEABLE
+        // from TARGET
         if (0) {
             tarcom->active = damageable->alife;
         }
@@ -434,18 +436,9 @@ void cMech::animate(float spf) {
         tarcom->prebind();
     }
 
-    // WEPCOM
-    {
-        // from DAMAGEABLE
-        if (0) {
-            wepcom->active = damageable->alife;
-        }
-        wepcom->prebind();
-    }
-
     // FORCOM
     {
-        // from DAMAGEABLE
+        // from TARGET
         if (0) {
             forcom->active = damageable->alife;
         }
@@ -467,7 +460,7 @@ void cMech::animate(float spf) {
 
     // NAVCOM
     {
-        // from DAMAGEABLE
+        // from TARGET
         if (0) {
             navcom->active = damageable->alife;
         }
@@ -482,12 +475,12 @@ void cMech::animate(float spf) {
 
     // CONTROLLER
     {
-        // from Damageable
+        // from TARGET
         if (0) {
             controller->active = damageable->alife;
             controller->disturbedBy = damageable->disturber;
         }
-        // from tarcom
+        // from TARCOM
         if (0) {
             controller->enemyNearby = tarcom->nearbyEnemy;
         }
@@ -517,7 +510,7 @@ void cMech::animate(float spf) {
             mobile->walktargetdist = controller->walktargetdist;
             mobile->firetarget = controller->firetarget;
         }
-        // from DAMAGEABLE
+        // from TARGET
         {
             mobile->active = damageable->alife;
         }
@@ -565,26 +558,26 @@ void cMech::animate(float spf) {
             vector_cpy(rigged->vel, traceable->vel);
             rigged->grounded = traceable->grounded;
         }
-        // FIXME: from object tags
+        // from TARGET: Fixme tags
         {
             // Group-to-texture.
             int texture = 0;
-            texture = hasTag(World::getInstance()->getGroup(FAC_RED)) ? 0 : texture;
-            texture = hasTag(World::getInstance()->getGroup(FAC_BLUE)) ? 1 : texture;
-            texture = hasTag(World::getInstance()->getGroup(FAC_GREEN)) ? 2 : texture;
-            texture = hasTag(World::getInstance()->getGroup(FAC_YELLOW)) ? 3 : texture;
+            texture = damageable->hasTag(World::getInstance()->getGroup(FAC_RED)) ? 0 : texture;
+            texture = damageable->hasTag(World::getInstance()->getGroup(FAC_BLUE)) ? 1 : texture;
+            texture = damageable->hasTag(World::getInstance()->getGroup(FAC_GREEN)) ? 2 : texture;
+            texture = damageable->hasTag(World::getInstance()->getGroup(FAC_YELLOW)) ? 3 : texture;
             rigged->basetexture3d = texture;
         }
     }
 
     // NAMEABLE
     {
-        // from Object
+        // from TARGET
         {
-            nameable->color[0] = hasTag(World::getInstance()->getGroup(FAC_RED)) ? 1.0f : 0.0f;
-            nameable->color[1] = hasTag(World::getInstance()->getGroup(FAC_GREEN)) ? 1.0f : 0.0f;
-            nameable->color[2] = hasTag(World::getInstance()->getGroup(FAC_BLUE)) ? 1.0f : 0.0f;
-            nameable->effect = !hasTag(World::getInstance()->getGroup(PLR_HUMAN)) && !hasTag(World::getInstance()->getGroup(HLT_DEAD));
+            nameable->color[0] = damageable->hasTag(World::getInstance()->getGroup(FAC_RED)) ? 1.0f : 0.0f;
+            nameable->color[1] = damageable->hasTag(World::getInstance()->getGroup(FAC_GREEN)) ? 1.0f : 0.0f;
+            nameable->color[2] = damageable->hasTag(World::getInstance()->getGroup(FAC_BLUE)) ? 1.0f : 0.0f;
+            nameable->effect = !damageable->hasTag(World::getInstance()->getGroup(PLR_HUMAN)) && !damageable->hasTag(World::getInstance()->getGroup(HLT_DEAD));
         }
         // from RIGGED
         {
@@ -629,6 +622,15 @@ void cMech::animate(float spf) {
         }
     }
 
+    // WEPCOM
+    {
+        // from TARGET
+        if (0) {
+            wepcom->active = damageable->alife;
+        }
+        wepcom->prebind();
+    }
+    
     // WEAPON
 
     loopi(weapons.size()) {
@@ -794,16 +796,17 @@ void cMech::damage(float* localpos, float damage, Entity* enactor) {
         explosion->triggeren = true;
         explosion->trigger = true;
     }
+    
     int body = rTarget::BODY;
-    if (damageable->hp[body] <= 75) addTag(World::getInstance()->getGroup(HLT_WOUNDED));
-    if (damageable->hp[body] <= 50) addTag(World::getInstance()->getGroup(HLT_SERIOUS));
-    if (damageable->hp[body] <= 25) addTag(World::getInstance()->getGroup(HLT_CRITICAL));
-    if (damageable->hp[body] <= 0) addTag(World::getInstance()->getGroup(HLT_DEAD));
+    if (damageable->hp[body] <= 75) damageable->addTag(World::getInstance()->getGroup(HLT_WOUNDED));
+    if (damageable->hp[body] <= 50) damageable->addTag(World::getInstance()->getGroup(HLT_SERIOUS));
+    if (damageable->hp[body] <= 25) damageable->addTag(World::getInstance()->getGroup(HLT_CRITICAL));
+    if (damageable->hp[body] <= 0) damageable->addTag(World::getInstance()->getGroup(HLT_DEAD));
 }
 
 float cMech::constrain(float* worldpos, float radius, float* localpos, Entity* enactor) {
     float maxdepth = 0.0f;
-    {
+    if (true) {
         float depth = collider->constrain(worldpos, radius, localpos, enactor);
         if (depth > maxdepth) {
             maxdepth = depth;

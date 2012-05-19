@@ -36,6 +36,9 @@ public:
     void add(rWeapon* weapon);
     void add(rTarget* target);
     
+    rTarcom* findTarcomByEntity(OID entityID);
+    rTarget* findTargetByEntity(OID entityID);
+    
     /** Advance simulation time for one frame. */
     virtual void advanceTime(int deltamsec) {};
     
@@ -79,6 +82,9 @@ private:
     std::map<OID,rWepcom*> wepcoms;
     std::map<OID,rWeapon*> weapons;
     std::map<OID,rTarget*> targets;
+
+    std::map<OID,rTarcom*> tarcomByEntity;
+    std::map<OID,rTarget*> targetByEntity;
     
     Geomap<IModel*> geoWeapons;
     Geomap<rTarget*> geoTargets;
