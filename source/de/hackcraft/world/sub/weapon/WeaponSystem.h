@@ -89,13 +89,13 @@ private:
     Geomap<IModel*> geoWeapons;
     Geomap<rTarget*> geoTargets;
     
-    /// Render only objects that far away.
+    /** Render only objects that far away. */
     float viewdistance;
     
-    /// Rendering origin or camera position.
+    /** Rendering origin or camera position. */
     float visorigin[3];
     
-    /// Visible objects for next rendering - (re-)set in setupView.
+    /** Visible objects for next rendering - (re-)set in setupView. */
     std::list<IModel*>* visobjects;
     
     static WeaponSystem* instance;

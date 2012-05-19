@@ -20,18 +20,18 @@
 
 class rPadmap : public Component {
 public: // SYSTEM
-    /// Identifier for this component (all uppercase letters without leading "r").
+    /** Identifier for this component (all uppercase letters without leading "r"). */
     static std::string cname;
-    /// A unique random number (0-9999) to identify this component.
+    /** A unique random number (0-9999) to identify this component. */
     static unsigned int cid;
-    /// Counts number of instances.
+    /** Counts number of instances. */
     static int sInstances;
-    /// Contains shared texture(s) of all instances.
+    /** Contains shared texture(s) of all instances. */
     static std::map<int, long> sTextures;
-    /// Experimental: steps for spiral rendering order.
+    /** Experimental: steps for spiral rendering order. */
     static std::vector<int> sSpiral[2];
 public:
-    /// Possible models of tile.
+    /** Possible models of tile. */
 
     enum Kinds {
         KIND_CONCRETE,
@@ -51,7 +51,7 @@ public: // INPUT
     quat ori0;
 public:
     rPadmap(Entity* obj);
-    /// Calculate Height of the xz position.
+    /** Calculate Height of the xz position. */
     inline float getHeight(float x, float z);
     virtual void animate(float spf);
     virtual float constrain(float* worldpos, float radius = 0.0f, float* localpos = NULL, Entity* enactor = NULL);

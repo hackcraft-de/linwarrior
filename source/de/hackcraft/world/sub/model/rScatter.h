@@ -29,13 +29,13 @@ struct Particle;
  */
 class rScatter : public Component, public IModel {
 public: // SYSTEM
-    /// Identifier for this component (all uppercase letters without leading "r").
+    /** Identifier for this component (all uppercase letters without leading "r"). */
     static std::string cname;
-    /// A unique random number (0-9999) to identify this component.
+    /** A unique random number (0-9999) to identify this component. */
     static unsigned int cid;
-    /// Instance counter for resource allocation.
+    /** Instance counter for resource allocation. */
     static int sInstances;
-    /// Shared material bindings.
+    /** Shared material bindings. */
     static std::map<int, long> sTextures;
 public:
     enum BillboardType {
@@ -44,9 +44,9 @@ public:
 protected:
     std::list<Particle*> decalParticles;
 public: // INPUT
-    /// Base orientation (hook i).
+    /** Base orientation (hook i). */
     vec3 pos0;
-    /// Base position (hook i).
+    /** Base position (hook i). */
     quat ori0;
 public: // OUTPUT
 protected: // INTERNALS

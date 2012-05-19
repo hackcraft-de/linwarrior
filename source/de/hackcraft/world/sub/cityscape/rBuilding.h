@@ -24,15 +24,15 @@ protected:
     static int sInstances;
     static std::map<int, long> sTextures;
 public:
-    /// Unique id of the instance.
+    /** Unique id of the instance. */
     OID id;
-    /// Position of the building.
+    /** Position of the building. */
     vec3 pos0;
-    /// Orientation of the building.
+    /** Orientation of the building. */
     quat ori0;
-    /// Dimensions of the building.
+    /** Dimensions of the building. */
     float buildingRooms[3];
-    /// Derived from building dimensions.
+    /** Derived from building dimensions. */
     float radius;
 public:
     rBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z);

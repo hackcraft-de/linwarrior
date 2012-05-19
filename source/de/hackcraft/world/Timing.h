@@ -25,34 +25,34 @@ class Timing;
 
 class Timing {
 private:
-    /// Counts years of simulation universe.
+    /** Counts years of simulation universe. */
     unsigned int mYear;
 
-    /// Counts 366-Days of simulation year (0-365).
+    /** Counts 366-Days of simulation year (0-365). */
     unsigned int mDay;
 
-    /// Counts 24-Hours of simulation day (0-23).
+    /** Counts 24-Hours of simulation day (0-23). */
     unsigned int mHour;
 
-    /// Counts minutes of simulation hour.
+    /** Counts minutes of simulation hour. */
     unsigned int mMinute;
 
-    /// Counts seconds of simulation minute.
+    /** Counts seconds of simulation minute. */
     unsigned int mSecond;
 
-    /// Micro-Seconds, incremented by delta at every simulation timestep.
+    /** Micro-Seconds, incremented by delta at every simulation timestep. */
     unsigned int mMSec;
 
-    /// Incremented at every simulation timestep and reset on each second.
+    /** Incremented at every simulation timestep and reset on each second. */
     unsigned int mFrame;
 
-    /// Incremented for noteable events (eg. OID consumption). Reset each frame.
+    /** Incremented for noteable events (eg. OID consumption). Reset each frame. */
     unsigned int mDeltacycle;
 
-    /// seconds per frame = 1.0f/mFPS.
+    /** seconds per frame = 1.0f/mFPS. */
     float mSPF;
 
-    /// frames per second = 1.0f/mSPF.
+    /** frames per second = 1.0f/mSPF. */
     float mFPS;
 public:
 

@@ -35,43 +35,43 @@ typedef unsigned long long OBID;
  * but that's another story.
  */
 struct Particle {
-    /// Particle orientation quaternion - may use as euler.
+    /** Particle orientation quaternion - may use as euler. */
     quat ori;
-    /// Particle position vector.
+    /** Particle position vector. */
     vec3 pos;
-    /// Particle old position vector.
+    /** Particle old position vector. */
     vec3 old;
-    /// Particle velocity vector.
+    /** Particle velocity vector. */
     vec3 vel;
-    /// Particle force accumulation vector.
+    /** Particle force accumulation vector. */
     vec3 fce;
-    /// Particle mass.
+    /** Particle mass. */
     float mass;
-    /// The inverse of the particle mass is often neccessary.
+    /** The inverse of the particle mass is often neccessary. */
     float mass_inv;
-    /// Set when having contact according to contact-depth and material.
+    /** Set when having contact according to contact-depth and material. */
     float friction;
-    /// CW coefficient times area in m2 for calculating air-drag.
+    /** CW coefficient times area in m2 for calculating air-drag. */
     float cwm2;
-    /// Remaining fuel in seconds.
+    /** Remaining fuel in seconds. */
     float fuel;
-    /// Time since start.
+    /** Time since start. */
     float timer;
-    /// Countdown til spawning next Smoke-Particle.
+    /** Countdown til spawning next Smoke-Particle. */
     float spawn;
-    /// Object-ID of Particle target - attraction object or evasion.
+    /** Object-ID of Particle target - attraction object or evasion. */
     OBID target;
-    /// Abstract dimension of Particle by sphere radius.
+    /** Abstract dimension of Particle by sphere radius. */
     float radius;
-    /// A sound-source-id just in case this particle emits sound.
+    /** A sound-source-id just in case this particle emits sound. */
     unsigned int sound;
-    /// A texture-id when a particle has an individual texture.
+    /** A texture-id when a particle has an individual texture. */
     unsigned int texture;
-    /// User-type specifier or flags, program defines behavior and shape.
+    /** User-type specifier or flags, program defines behavior and shape. */
     int type;
-    /// Specific user-data - eg billboard text, color curves, object, etc.
+    /** Specific user-data - eg billboard text, color curves, object, etc. */
     void* data;
-    /// Recursive sub Particles - or trail of particles.
+    /** Recursive sub Particles - or trail of particles. */
     std::list<Particle*> trail;
 
     Particle() :
@@ -84,7 +84,7 @@ struct Particle {
         vector_zero(fce);
     }
 
-    /// Copy Constructor.
+    /** Copy Constructor. */
 
     Particle(Particle * original) {
         if (original == NULL) {
@@ -119,7 +119,7 @@ struct Particle {
         //}
     }
 
-    /// Apply gravity to the particle's force, eg with float g[] = {0,-9.8f,0}.
+    /** Apply gravity to the particle's force, eg with float g[] = {0,-9.8f,0}. */
 
     inline void applyGravityForce(float* gravity_m_per_s) {
         if (!finitef(mass_inv)) return;
@@ -128,7 +128,7 @@ struct Particle {
         fce[2] += mass * gravity_m_per_s[2];
     }
 
-    /// Apply fake friction based on velocity and mass.
+    /** Apply fake friction based on velocity and mass. */
 
     inline void applyFrictionForce(float dt) {
         if (friction == 0.0f) return;
@@ -136,7 +136,7 @@ struct Particle {
         vector_muladd(fce, fce, vel, -c_step * mass);
     }
 
-    /// Apply billboard airdrag based on front surface area and cw-value.
+    /** Apply billboard airdrag based on front surface area and cw-value. */
 
     inline void applyAirdragForce(float density_kg_per_m3 = 1.204f) {
         if (cwm2 == 0.0f) return;
@@ -151,7 +151,7 @@ struct Particle {
         vector_muladd(fce, fce, vel, -F * velocity_inv);
     }
 
-    /// Apply spring force to both particles and return force.
+    /** Apply spring force to both particles and return force. */
 
     inline float applySpringForce(Particle* other, float strength, float rest_length) {
         float* c = this->pos;
@@ -458,7 +458,7 @@ struct Particle {
 
 public:
 
-    /// Utility function to compute nearest rotation direction and intensity.
+    /** Utility function to compute nearest rotation direction and intensity. */
 
     static void rotationTo(float* result2f, float* own_pos, float* tgt_pos, float* base_ori, float*tower_ori = NULL) {
         float dir_global[3];

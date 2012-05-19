@@ -25,9 +25,9 @@
  */
 class Minion : public Thread {
 private:
-    /// Pointing to the main job-mutex.
+    /** Pointing to the main job-mutex. */
     SDL_mutex* jobMutex;
-    /// Pointing to the main job-queue.
+    /** Pointing to the main job-queue. */
     std::queue<int (*)(void*) >* jobQueue;
 public:
     void run();
@@ -41,77 +41,77 @@ public:
 class GameMain {
 public:
     friend class Minion;
-    /// Points to the main instance, necessary because of c-callbacks/threads.
+    /** Points to the main instance, necessary because of c-callbacks/threads. */
     static GameMain* instance;
     
 private:
-    /// Current game configuration.
+    /** Current game configuration. */
     Game game;
 
-    /// SDL doesn't count mouse wheel movement.
+    /** SDL doesn't count mouse wheel movement. */
     int mouseWheel;
 
-    /// Old keystates
+    /** Old keystates */
     Uint8 keystate_[512];
 
-    /// Mutex for job queue - minions wait until they can grab a job.
+    /** Mutex for job queue - minions wait until they can grab a job. */
     SDL_mutex* jobMutex;
 
-    /// The job queue itself - minions grab jobs here.
+    /** The job queue itself - minions grab jobs here. */
     std::queue<int(*)(void*)>* jobQueue;
 
-    /// stdout is redirected to this stringstream.
+    /** stdout is redirected to this stringstream. */
     std::stringstream oss;
 
-    /// Program output log.
+    /** Program output log. */
     GapBuffer log;
 
-    /// Console terminal program output.
+    /** Console terminal program output. */
     GapBuffer console;
 
-    /// Commandline input buffer for console.
+    /** Commandline input buffer for console. */
     GapBuffer cmdline;
 
-    /// Command & Control Overlay enabled => redirect keyboard
+    /** Command & Control Overlay enabled => redirect keyboard */
     bool overlayEnabled;
 
 private:
-    /// Apply post-processing filter right after drawing frame.
+    /** Apply post-processing filter right after drawing frame. */
     void applyFilter(int width, int height);
     
 private:
-    /// Sets initial OpenGL mode parameters (dis-/enables and values).
+    /** Sets initial OpenGL mode parameters (dis-/enables and values). */
     void initGL(int width, int height);
     
-    /// Handles "special" keys for things like rendering options.
+    /** Handles "special" keys for things like rendering options. */
     void updateKey(Uint8 keysym);
 
-    /// Reads joystick/keyboard input and maps it to to a Gamepad structure.
+    /** Reads joystick/keyboard input and maps it to to a Gamepad structure. */
     void updatePad(Pad* pad, SDL_Joystick* joy, int* mapping);
 
-    /// Updating the world for the given delta time.
+    /** Updating the world for the given delta time. */
     void updateFrame(int elapsed_msec);
 
-    /// Draws a single frame.
+    /** Draws a single frame. */
     void drawFrame();
 
 public:
-    /// Constructor sets instance pointer among other things.
+    /** Constructor sets instance pointer among other things. */
     GameMain();
 
-    /// Called directly by the main entry point.
+    /** Called directly by the main entry point. */
     int run(int argc, char** args);
 
-    /// Enables and disables OpenAL Audio-System.
+    /** Enables and disables OpenAL Audio-System. */
     int alEnableSystem(bool en);
 
-    /// Experiment.
+    /** Experiment. */
     void drawLog();
 
-    /// Experiment.
+    /** Experiment. */
     void drawPlaque();
 
-    /// Experiment.
+    /** Experiment. */
     void updateLog();
 };
 

@@ -34,58 +34,58 @@ struct Game;
  * by any other class and is maintained directly by the main code.
  */
 struct Game {
-    /// Keyboard/Joystick inputs sent to which Virtual-Gamepad?
+    /** Keyboard/Joystick inputs sent to which Virtual-Gamepad? */
     Pad* pad1;
 
-    /// Mapping of real joystick/gamepad to virtual gamepad.
+    /** Mapping of real joystick/gamepad to virtual gamepad. */
     int* map1;
 
-    /// Seeing the world through which object's eyes?
+    /** Seeing the world through which object's eyes? */
     Entity* camera;
 
-    /// Instance of the world we are on.
+    /** Instance of the world we are on. */
     World *world;
 
-    /// Id of Mission we are running.
+    /** Id of Mission we are running. */
     int mission;
 
-    /// Background music wav filename.
+    /** Background music wav filename. */
     std::string bgm;
 
-    /// Indicates pausing - no time advancement.
+    /** Indicates pausing - no time advancement. */
     bool paused;
 
-    /// Indicates fullscreenmode (does not change mode).
+    /** Indicates fullscreenmode (does not change mode). */
     bool fullscreen;
 
-    /// Enables wireframe drawing.
+    /** Enables wireframe drawing. */
     bool wireframe;
 
-    /// Enables (fake) nightvision.
+    /** Enables (fake) nightvision. */
     bool nightvision;
 
-    /// Enables printing of game-pad button states.
+    /** Enables printing of game-pad button states. */
     bool printpad;
 
-    /// Enforced frames per second.
+    /** Enforced frames per second. */
     float fps;
 
-    /// Horizontal resolution.
+    /** Horizontal resolution. */
     int width;
 
-    /// Vertical resolution.
+    /** Vertical resolution. */
     int height;
 
-    /// Color depth.
+    /** Color depth. */
     int depth;
 
-    /// Multisampling/Antialiasing
+    /** Multisampling/Antialiasing */
     int multisamples;
 
-    /// Field Of View in degrees
+    /** Field Of View in degrees */
     int fov;
 
-    /// Enables mouse input.
+    /** Enables mouse input. */
     bool mouseInput;
 
     /**

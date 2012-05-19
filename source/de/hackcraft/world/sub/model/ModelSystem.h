@@ -34,40 +34,40 @@ public:
         models.push_back(model);
     };
     
-     /// Advance simulation time for one frame.
+     /** Advance simulation time for one frame. */
     virtual void advanceTime(int deltamsec) {};
-    /// Re-build spatial clustering of objects.
+    /** Re-build spatial clustering of objects. */
     virtual void clusterObjects();
-    /// Deliver overdue messages to objects.
+    /** Deliver overdue messages to objects. */
     virtual void dispatchMessages() {};
-    /// Let all objects process input, adjust pose and calculate physics.
+    /** Let all objects process input, adjust pose and calculate physics. */
     virtual void animateObjects();
-    /// Let all objects calculate transformation matrices etc.
+    /** Let all objects calculate transformation matrices etc. */
     virtual void transformObjects();
-    /// Setup structures for rendering
+    /** Setup structures for rendering */
     virtual void setupView(float* pos, float* ori);
-   /// Draw all Object's solid surfaces (calls their drawSolid method).
+   /** Draw all Object's solid surfaces (calls their drawSolid method). */
     virtual void drawSolid();
-    /// Draw all Object's effects (calls their drawEffect method).
+    /** Draw all Object's effects (calls their drawEffect method). */
     virtual void drawEffect();
     
     static ModelSystem* getInstance();
 private:
-    /// Allows searching the world in a structured manner.
+    /** Allows searching the world in a structured manner. */
     Geomap<IModel*> geomap;
     
     std::vector<IModel*> models;
     
-    /// Seconds per frame.
+    /** Seconds per frame. */
     float spf;
     
-    /// Render only objects that far away.
+    /** Render only objects that far away. */
     float viewdistance;
     
-    /// Rendering origin or camera position.
+    /** Rendering origin or camera position. */
     float visorigin[3];
     
-    /// Visible objects for next rendering - (re-)set in setupView.
+    /** Visible objects for next rendering - (re-)set in setupView. */
     std::list<IModel*>* visobjects;
     
     static ModelSystem* instance;

@@ -27,12 +27,12 @@ public:
         this->size = size;
     }
     
-    /// Store from destination to source.
+    /** Store from destination to source. */
     void write() {
         memcpy(src, dst, size);
     }
     
-    /// Load from source to destination.
+    /** Load from source to destination. */
     void read() {
         memcpy(dst, src, size);
     }

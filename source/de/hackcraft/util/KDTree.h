@@ -347,15 +347,15 @@ public:
      * in kdtree class only!
      */
     struct KDNode {
-        /// Value which splits the data into two halfs along current dimension.
+        /** Value which splits the data into two halfs along current dimension. */
         float comparevalue;
-        /// Left subtree contains only datavectors v where v[dim] < comparevalue;
+        /** Left subtree contains only datavectors v where v[dim] < comparevalue; */
         KDNode *left;
-        /// Right subtree contains only datavectors v where v[dim] >= comparevalue;
+        /** Right subtree contains only datavectors v where v[dim] >= comparevalue; */
         KDNode *right;
-        /// If this node is a leaf then dataset stores same datavectors (or one).
+        /** If this node is a leaf then dataset stores same datavectors (or one). */
         std::list<float*>* dataset;
-        /// If this node is a leaf then userset stores associated userdata.
+        /** If this node is a leaf then userset stores associated userdata. */
         std::list<VALUE>* userset;
 
         /**
@@ -363,7 +363,7 @@ public:
          */
         template <typename T>
                 struct no_specific_order : std::binary_function<T, T, bool> {
-            /// Always return true - ie x is always less than y.
+            /** Always return true - ie x is always less than y. */
 
             bool operator()(const T& x, const T & y) const {
                 return true;

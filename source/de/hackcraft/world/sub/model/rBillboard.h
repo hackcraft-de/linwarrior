@@ -19,37 +19,37 @@
  */
 struct rBillboard : public Component, public IModel {
 public: // SYSTEM
-    /// Identifier for this component (all uppercase letters without leading "r").
+    /** Identifier for this component (all uppercase letters without leading "r"). */
     static std::string cname;
-    /// A unique random number (0-9999) to identify this component.
+    /** A unique random number (0-9999) to identify this component. */
     static unsigned int cid;
 public: // INPUT
-    /// Base position for rendering. (hook i)
+    /** Base position for rendering. (hook i) */
     vec3 pos0;
-    /// Base orientation for rendering. (hook i)
+    /** Base orientation for rendering. (hook i) */
     quat ori0;
-    /// Extended position for rendering. (hook i)
+    /** Extended position for rendering. (hook i) */
     vec3 pos1;
-    /// Extended orientation for rendering. (hook i)
+    /** Extended orientation for rendering. (hook i) */
     quat ori1;
-    /// Color for rendering. (hook i)
+    /** Color for rendering. (hook i) */
     vec4 color;
-    /// Enable effect rendering. (hook i)
+    /** Enable effect rendering. (hook i) */
     bool effect;
-    /// Name or title of object or the document.
+    /** Name or title of object or the document. */
     std::string name;
-    /// String describing the object or the document.
+    /** String describing the object or the document. */
     std::string description;
-    /// { 0, .., 25 } for { a, ..., z }.
+    /** { 0, .., 25 } for { a, ..., z }. */
     unsigned int designation;
 public: // OUTPUT
 public: // INTERNALS
 public:
-    /// Constructor.
+    /** Constructor. */
     rBillboard(Entity* obj = NULL);
-    /// Copy Constructor.
+    /** Copy Constructor. */
     rBillboard(rBillboard * original);
-    /// Clone this.
+    /** Clone this. */
     virtual Component * clone();
 
     virtual int getPosX() { return (int) pos0[0]; }

@@ -42,9 +42,9 @@ class rPlanetmap;
  */
 class rPlanetmap : public Component {
 public:
-    /// Instance counter.
+    /** Instance counter. */
     static int sInstances;
-    /// Instance shared Textures.
+    /** Instance shared Textures. */
     static std::vector<long> sGrounds;
     static std::vector<long> sGrasses;
 
@@ -68,7 +68,7 @@ public:
     static std::vector<rPlanetmap::Growth*> sGrowth;
 
 public:
-    /// Surface Modifiction
+    /** Surface Modifiction */
 
     struct sMod {
         float pos[3];
@@ -84,10 +84,10 @@ public:
         sMod() { type = MODTYPE_SMOOTHROUND; pos[0] = pos[1] = pos[2] = 0.0f; range = 10.0f; height = 0.0f; }
         float getModifiedHeight(float x, float y, float h);
     };
-    /// All effective surface modifictions.
+    /** All effective surface modifictions. */
     std::vector<sMod*> mods;
 
-    /// LRU Surface Cache-Tile.
+    /** LRU Surface Cache-Tile. */
 
     struct sPatch {
         // Number of accesses last frame.
@@ -98,32 +98,32 @@ public:
         OID heightcolor[(1UL << PLANETMAP_TILESIZE)*(1UL << PLANETMAP_TILESIZE)];
         long normal[(1UL << PLANETMAP_TILESIZE)*(1UL << PLANETMAP_TILESIZE)];
     };
-    /// LRU Surface Cache.
+    /** LRU Surface Cache. */
     maptype<unsigned long, sPatch*> patches;
-    /// Tree template for drawing of all trees.
+    /** Tree template for drawing of all trees. */
     rTree* tree;
-    /// Landscape type 0-4: grassland, desert etc.
+    /** Landscape type 0-4: grassland, desert etc. */
     int landtype;
-    /// Vegetation density use small values near or below one (eg. 0.7).
+    /** Vegetation density use small values near or below one (eg. 0.7). */
     double vegetation;
-    /// Ground texture number used in rendering
+    /** Ground texture number used in rendering */
     int groundtype;
 public:
     rPlanetmap();
     rPlanetmap(Propmap* properties);
-    /// Remove cached data - enforce recalculation (enforce cache miss).
+    /** Remove cached data - enforce recalculation (enforce cache miss). */
     void invalidateCache();
-    /// Calculate Height and Color of the xz position.
+    /** Calculate Height and Color of the xz position. */
     void getHeight(float x, float z, float* const color);
-    /// Retrieves Height and Color of the xz position and calculates on demand.
+    /** Retrieves Height and Color of the xz position and calculates on demand. */
     void getCachedHeight(float x, float z, float* const color);
-    /// Re-adjust particle position by making multiple downward-hemispherical checks.
+    /** Re-adjust particle position by making multiple downward-hemispherical checks. */
     virtual float constrain(float* worldpos, float radius, float* localpos, Entity* enactor);
-    /// Animate foliage.
+    /** Animate foliage. */
     virtual void animate(float spf);
-    /// Draw Landscape surrounding the current camera position.
+    /** Draw Landscape surrounding the current camera position. */
     virtual void drawSolid();
-    /// Draw Decals surrounding the current camera position.
+    /** Draw Decals surrounding the current camera position. */
     virtual void drawEffect();
 protected:
     void init(Propmap* properties);

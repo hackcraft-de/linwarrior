@@ -18,33 +18,33 @@
  */
 struct rCamera : public Component {
 public: // SYSTEM
-    /// Identifier for this component (all uppercase letters without leading "r").
+    /** Identifier for this component (all uppercase letters without leading "r"). */
     static std::string cname;
-    /// A unique random number (0-9999) to identify this component.
+    /** A unique random number (0-9999) to identify this component. */
     static unsigned int cid;
 public: // INPUT
-    /// Base position (hook i).
+    /** Base position (hook i). */
     quat ori0;
-    /// Base orientation (hook i).
+    /** Base orientation (hook i). */
     vec3 pos0;
-    /// Position relative to base position and orientation (hook i).
+    /** Position relative to base position and orientation (hook i). */
     quat ori1;
-    /// Orientation relative to base position and orientation (hook i).
+    /** Orientation relative to base position and orientation (hook i). */
     vec3 pos1;
-    /// Switch camera state one step when greater zero. (hook i)
+    /** Switch camera state one step when greater zero. (hook i) */
     float cameraswitch;
-    /// Strenght of camera shaking [0,1], scaled internally. (hook i)
+    /** Strenght of camera shaking [0,1], scaled internally. (hook i) */
     float camerashake;
 public: // OUTPUT
-    /// True when camerastate is in first perspective mode. (hook o)
+    /** True when camerastate is in first perspective mode. (hook o) */
     bool firstperson;
 protected: // INTERNALS
-    /// Current Camera mode, negative number is indicating transition.
+    /** Current Camera mode, negative number is indicating transition. */
     int camerastate;
 public:
-    /// Constructor
+    /** Constructor */
     rCamera(Entity * obj);
-    /// Mult in camera matrix.
+    /** Mult in camera matrix. */
     virtual void camera();
 
     virtual void animate(float spf);

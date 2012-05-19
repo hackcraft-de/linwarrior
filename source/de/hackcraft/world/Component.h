@@ -28,18 +28,18 @@ class Message;
  * or signal variables for i/o impules.
  */
 struct Component {
-    /// Identifier for this component (all uppercase letters without leading "r").
+    /** Identifier for this component (all uppercase letters without leading "r"). */
     static std::string cname;
-    /// A unique random number (0-9999) to identify this component.
+    /** A unique random number (0-9999) to identify this component. */
     static unsigned int cid;
 
-    /// Parent object of which this component is a part of.
+    /** Parent object of which this component is a part of. */
     Entity* object;
-    /// Indicates an active enabled component (or disabled if false).
+    /** Indicates an active enabled component (or disabled if false). */
     bool active;
-    /// Bindings to be executed before animation.
+    /** Bindings to be executed before animation. */
     std::vector<Binding*> prebinds;
-    /// Bindings to be executed after animation (if any).
+    /** Bindings to be executed after animation (if any). */
     std::vector<Binding*> postbinds;
     
 

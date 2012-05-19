@@ -13,7 +13,7 @@
 
 #include "macros.h"
 
-/// Primitive
+/** Primitive */
 struct Primitive {
 
     static inline void glVertex3fv2f(float* pnt, float u, float v) {

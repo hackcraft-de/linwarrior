@@ -29,128 +29,128 @@ struct rController;
  */
 struct rController : public Component, public IComputer {
 public: // SYSTEM
-    /// Identifier for this component (all uppercase letters without leading "r").
+    /** Identifier for this component (all uppercase letters without leading "r"). */
     static std::string cname;
-    /// A unique random number (0-9999) to identify this component.
+    /** A unique random number (0-9999) to identify this component. */
     static unsigned int cid;
 public: // INPUT
-    /// Whether control is enabled (autopilot/ai enabled/disabled).
+    /** Whether control is enabled (autopilot/ai enabled/disabled). */
     bool enabled;
-    /// Set to any offending/attacking object if any. (hook i)
+    /** Set to any offending/attacking object if any. (hook i) */
     OID disturbedBy;
-    /// Set to nearby enemy object if any. (hook i)
+    /** Set to nearby enemy object if any. (hook i) */
     OID enemyNearby;
-    /// Indicator of distance to aim-target, see Mobile. (hook i)
+    /** Indicator of distance to aim-target, see Mobile. (hook i) */
     float aimrange;
-    /// Indicator of distance to walk-target, see Mobile. (hook i)
+    /** Indicator of distance to walk-target, see Mobile. (hook i) */
     float walkrange;
 public: // OUTPUT
-    /// Target for aiming or zero. (hook o)
+    /** Target for aiming or zero. (hook o) */
     OID aimtarget;
-    /// Enable firing onto target. (hook o)
+    /** Enable firing onto target. (hook o) */
     bool firetarget;
-    /// Walk target. (hook o)
+    /** Walk target. (hook o) */
     vec3 walktarget;
-    /// Desired distance to walk-target. (hook o)
+    /** Desired distance to walk-target. (hook o) */
     float walktargetdist;
-    /// Disable any action. (hook o)
+    /** Disable any action. (hook o) */
     bool idling;
 protected: // INTERNALS
-    /// Available opcodes of stack-machine.
+    /** Available opcodes of stack-machine. */
 
     enum Opcodes {
-        /// Play idle until something happens.
+        /** Play idle until something happens. */
         WAIT,
-        /// Attack a target.
+        /** Attack a target. */
         ATTACK,
-        /// Follow a target (and watchout).
+        /** Follow a target (and watchout). */
         FOLLOW,
-        /// Goto a target (and watchout).
+        /** Goto a target (and watchout). */
         GOTO,
-        /// Repeat stack commands.
+        /** Repeat stack commands. */
         REPEAT,
-        /// The Amount of Opcodes.
+        /** The Amount of Opcodes. */
         OPCODE_MAX
     };
 
-    /// The command stack: n Values may form a command frame (command+arguments).
+    /** The command stack: n Values may form a command frame (command+arguments). */
     std::vector<OID> commandStack;
-    /// Who disturbed me the last time - ignore now.
+    /** Who disturbed me the last time - ignore now. */
     OID lastDisturbedBy;
 public:
-    /// Initialises a en-/disabled controller for the given entity->
+    /** Initialises a en-/disabled controller for the given entity-> */
     rController(Entity* entity = NULL, bool enable = true);
-    /// Destructor.
+    /** Destructor. */
     virtual ~rController();
-    /// Clone this.
+    /** Clone this. */
 
     virtual Component * clone() {
         return NULL;
     }
 
-    /// Do a single Instruction step as the top frame on the stack says.
+    /** Do a single Instruction step as the top frame on the stack says. */
     virtual void animate(float spf = 1.0f);
 
-    /// Currently there is no hud.
+    /** Currently there is no hud. */
 
     virtual void drawHUD() {
     };
 
-    /// Print out State and Stackinformation.
+    /** Print out State and Stackinformation. */
     void printState();
 
 protected:
-    /// Set output impulses.
+    /** Set output impulses. */
     void doit(OID aim, float* go, bool fire, float distance = 0.25f);
 
-    /// Get the name of the current stack/command frame.
+    /** Get the name of the current stack/command frame. */
     std::string getFrameName();
 
-    /// Get the stack frame size of the opcode (command+arguments).
+    /** Get the stack frame size of the opcode (command+arguments). */
     unsigned int getFrameSizeOf(int opcode);
 
-    /// Get the stack frame size of the current command.
+    /** Get the stack frame size of the current command. */
     unsigned int getFrameSize();
 
-    /// Set Parameter value at top of the stack minus offset.
+    /** Set Parameter value at top of the stack minus offset. */
     void setParameter(int offset, OID value);
 
-    /// Get Parameter value from top of the stack minus offset.
+    /** Get Parameter value from top of the stack minus offset. */
     OID getParameter(int offset);
 
-    /// Push a single value onto the stack.
+    /** Push a single value onto the stack. */
     void push(OID value);
 
-    /// Remove whole instruction/frame from stack.
+    /** Remove whole instruction/frame from stack. */
     void pop(std::string reason);
 
 public:
     // 1. Transition Function
     // 2. State Function
 
-    /// Wait until a Timeout occures or the selected event occures (patrol==true => Enemy Contact).
+    /** Wait until a Timeout occures or the selected event occures (patrol==true => Enemy Contact). */
     void pushWaitEvent(long mseconds = -1, bool patrol = true);
-    /// Execute wait command.
+    /** Execute wait command. */
     void waitEvent();
 
-    /// Attack that entity.
+    /** Attack that entity. */
     void pushAttackEnemy(OID entity);
-    /// Execute attack command.
+    /** Execute attack command. */
     void attackEnemy();
 
-    /// Follow the given entity and patrol (watchout) if required.
+    /** Follow the given entity and patrol (watchout) if required. */
     void pushFollowLeader(OID entity, bool patrol = true);
-    /// Execute follow command.
+    /** Execute follow command. */
     void followLeader();
 
-    /// Go to the given location and patrol (watchout) if required.
+    /** Go to the given location and patrol (watchout) if required. */
     void pushGotoDestination(float* v, bool patrol = true);
-    /// Execute goto command.
+    /** Execute goto command. */
     void gotoDestination();
 
-    /// Repeat the n commands below this one (copies/pushes n frames onto stack).
+    /** Repeat the n commands below this one (copies/pushes n frames onto stack). */
     void pushRepeatInstructions(int n);
-    /// Execute repeat command.
+    /** Execute repeat command. */
     void repeatInstructions();
 
     // pushRandomWalk();

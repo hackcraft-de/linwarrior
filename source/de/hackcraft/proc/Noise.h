@@ -20,7 +20,7 @@
  */
 struct Noise {
     
-    /// Predictable Pseudo Random Number Generator.
+    /** Predictable Pseudo Random Number Generator. */
     static inline unsigned long nextrand(unsigned long x) {
         return (x * 1103515245 + 12345);
     }
@@ -44,7 +44,7 @@ struct Noise {
     }
 
 
-    /// 32 Bit Linear Feedback Shift Register (need to verify).
+    /** 32 Bit Linear Feedback Shift Register (need to verify). */
     static inline unsigned int LFSR32(unsigned int b) {
         unsigned int x32 = b >> 31;
         unsigned int x22 = b >> 21;
@@ -54,7 +54,7 @@ struct Noise {
         return (b << 1) | prod;
     }
 
-    /// 16 Bit Linear Feedback Shift Register (need to verify).
+    /** 16 Bit Linear Feedback Shift Register (need to verify). */
     static inline unsigned short LFSR16(unsigned short b) {
         unsigned short x16 = b >> 15;
         unsigned short x14 = b >> 13;
@@ -64,7 +64,7 @@ struct Noise {
         return (b << 1) | prod;
     }
 
-    /// 8 Bit Linear Feedback Shift Register.
+    /** 8 Bit Linear Feedback Shift Register. */
     static inline unsigned char LFSR8(unsigned char b) {
         unsigned char x8 = b >> 7;
         unsigned char x6 = b >> 5;
@@ -74,7 +74,7 @@ struct Noise {
         return (b << 1) | prod;
     }
 
-    /// 4 Bit Linear Feedback Shift Register.
+    /** 4 Bit Linear Feedback Shift Register. */
     static inline unsigned char LFSR4(unsigned char b) {
         unsigned char x4 = b >> 3;
         unsigned char x3 = b >> 2;

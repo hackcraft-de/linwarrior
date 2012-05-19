@@ -31,63 +31,63 @@ class rWeapon;
  */
 class rWeapon : public Component, public IModel {
 public: // SYSTEM
-    /// Instance counter.
+    /** Instance counter. */
     static int sInstances;
-    /// Texture Binds shared between instances.
+    /** Texture Binds shared between instances. */
     static std::map<int, long> sTextures;
 
 public: // INPUT
-    /// Base position (hook i).
+    /** Base position (hook i). */
     quat ori0;
-    /// Base orientation (hook i).
+    /** Base orientation (hook i). */
     vec3 pos0;
-    /// Position relative to base position and orientation (hook i).
+    /** Position relative to base position and orientation (hook i). */
     quat ori1;
-    /// Orientation relative to base position and orientation (hook i).
+    /** Orientation relative to base position and orientation (hook i). */
     vec3 pos1;
-    /// Mountpoint-index of the weapon.
+    /** Mountpoint-index of the weapon. */
     int weaponMount;
-    /// Target object id for weapons that need targeting. (hook i)
+    /** Target object id for weapons that need targeting. (hook i) */
     OID target;
-    /// Set to true to enable triggering (default true). (hook i)
+    /** Set to true to enable triggering (default true). (hook i) */
     bool triggeren;
-    /// Triggering firing of weapon (once). (hook i)
+    /** Triggering firing of weapon (once). (hook i) */
     bool trigger;
-    /// Enable drawing of the weapon itself.
+    /** Enable drawing of the weapon itself. */
     bool drawWeapon;
-    /// Relative size and power of the weapon, 1.0 default mechscale weapon.
+    /** Relative size and power of the weapon, 1.0 default mechscale weapon. */
     float weaponScale;
 public: // OUTPUT
-    /// True when firing was just really triggered last animation cycle. (hook o)
+    /** True when firing was just really triggered last animation cycle. (hook o) */
     bool triggered;
-    /// True when firing was just really triggered second last animation cycle. (hook o)
+    /** True when firing was just really triggered second last animation cycle. (hook o) */
     bool triggereded;
-    /// Current Matrix indicating world pos & orientation (pose) of this weapon.
+    /** Current Matrix indicating world pos & orientation (pose) of this weapon. */
     float weaponPosef[16];
-    /// Remaining reload time until next firing is possible.
+    /** Remaining reload time until next firing is possible. */
     float timeReloading;
-    /// Remaining readying time for bringing up the weapon (unused).
+    /** Remaining readying time for bringing up the weapon (unused). */
     float timeReadying;
-    /// Remaining firing time when firing takes more than an instant time.
+    /** Remaining firing time when firing takes more than an instant time. */
     float timeFiring;
-    /// Remaining shots until reloading another clip (negative == infinitive?).
+    /** Remaining shots until reloading another clip (negative == infinitive?). */
     short remainingAmmo;
-    /// Remaining clips (negative == infinitive?).
+    /** Remaining clips (negative == infinitive?). */
     short remainingClips;
-    /// Maximum amount of Ammo inside a clip.
+    /** Maximum amount of Ammo inside a clip. */
     short clipSize;
-    /// Maximum amount of clips.
+    /** Maximum amount of clips. */
     short depotSize;
-    /// OpenAL sound source for this weapon's sounds.
+    /** OpenAL sound source for this weapon's sounds. */
     unsigned soundSource;
 protected: // INTERNALS
-    /// Particle container with variable meaning.
+    /** Particle container with variable meaning. */
     std::list<Particle*> shrapnelParticles;
-    /// Particle container with variable meaning.
+    /** Particle container with variable meaning. */
     std::list<Particle*> castoffParticles;
-    /// Particle container with variable meaning.
+    /** Particle container with variable meaning. */
     std::list<Particle*> missileParticles;
-    /// Particle container for particles with induce damage.
+    /** Particle container for particles with induce damage. */
     std::list<Particle*> damageParticles;
 
 public:

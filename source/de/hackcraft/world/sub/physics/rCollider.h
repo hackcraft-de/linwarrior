@@ -19,32 +19,32 @@
  */
 struct rCollider : public Component {
 public: // SYSTEM
-    /// Identifier for this component (all uppercase letters without leading "r").
+    /** Identifier for this component (all uppercase letters without leading "r"). */
     static std::string cname;
-    /// A unique random number (0-9999) to identify this component.
+    /** A unique random number (0-9999) to identify this component. */
     static unsigned int cid;
 public:
-    /// Yet unused.
+    /** Yet unused. */
     enum CollisionType {
         CT_NONE, CT_CYLINDER, CT_SPHERE, CT_BOX
     };
 public: // INPUT
-    /// Base orientation (hook i).
+    /** Base orientation (hook i). */
     vec3 pos0;
-    /// Base position (hook i).
+    /** Base position (hook i). */
     quat ori0;
-    /// Radius for cylinder or sphere.
+    /** Radius for cylinder or sphere. */
     float radius;
-    /// Ratio of radius to height (height = ratio * radius) if not zero.
+    /** Ratio of radius to height (height = ratio * radius) if not zero. */
     float ratio;
-    /// Height of cylinder if ratio not zero.
+    /** Height of cylinder if ratio not zero. */
     float height;
 public: // OUTPUT
 protected: // INTERNALS
 public:
-    /// Constructor
+    /** Constructor */
     rCollider(Entity * obj);
-    /// Destructor
+    /** Destructor */
 
     ~rCollider() {
     }

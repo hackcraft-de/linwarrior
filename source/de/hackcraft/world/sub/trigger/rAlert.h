@@ -42,39 +42,39 @@
  */
 class rAlert : public Component {
 public: // SYSTEM
-    /// Identifier for this component (all uppercase letters without leading "r").
+    /** Identifier for this component (all uppercase letters without leading "r"). */
     static std::string cname;
-    /// A unique random number (0-9999) to identify this component.
+    /** A unique random number (0-9999) to identify this component. */
     static unsigned int cid;
-    /// Draw zones for debugging.
+    /** Draw zones for debugging. */
     static bool sDrawzone;
-    /// Id
+    /** Id */
     OID id;
 public: // INPUT
-    /// The group of receivers.
+    /** The group of receivers. */
     OID receiver;
-    /// Use positive shape (true) or negative of shape (false) as zone?
+    /** Use positive shape (true) or negative of shape (false) as zone? */
     bool positive;
-    /// Fire message when entering (true) or exiting (false) the zone?
+    /** Fire message when entering (true) or exiting (false) the zone? */
     bool posedge;
-    /// Fire message only once (true) or always when conditions are true?
+    /** Fire message only once (true) or always when conditions are true? */
     bool once;
-    /// Delay for the delivery of the notification message.
+    /** Delay for the delivery of the notification message. */
     OID fusedelay;
-    /// Reacting only on triggers with such Tags:
+    /** Reacting only on triggers with such Tags: */
     std::set<OID> inc_sense;
-    /// But not reacting on triggers with such Tags:
+    /** But not reacting on triggers with such Tags: */
     std::set<OID> exc_sense;
-    /// Type of the message to be sent when triggered.
+    /** Type of the message to be sent when triggered. */
     std::string msgtype;
-    /// Text of the message to be sent when triggered.
+    /** Text of the message to be sent when triggered. */
     std::string msgtext;
 public: // OUTPUT
-    /// Overall radius of this alert zone for clustering.
+    /** Overall radius of this alert zone for clustering. */
     float radius;
-    /// Set true when the message was fired at least once - initially false.
+    /** Set true when the message was fired at least once - initially false. */
     bool fired;
-    /// Lists object currently inside the tracked zone.
+    /** Lists object currently inside the tracked zone. */
     std::set<OID> intruders;
 public:
     struct rShape {

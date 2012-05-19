@@ -21,49 +21,49 @@
  */
 struct rRigged : public Component, public IModel {
 public: // SYSTEM
-    /// Identifier for this component (all uppercase letters without leading "r").
+    /** Identifier for this component (all uppercase letters without leading "r"). */
     static std::string cname;
-    /// A unique random number (0-9999) to identify this component.
+    /** A unique random number (0-9999) to identify this component. */
     static unsigned int cid;
-    /// Shared material bindings.
+    /** Shared material bindings. */
     static std::map<std::string,unsigned long> materials;
 public: // INPUT
-    /// Model scale. (1.0f, unused/removed now)
+    /** Model scale. (1.0f, unused/removed now) */
     float scale;
-    /// Animation time counter in seconds.
+    /** Animation time counter in seconds. */
     float seconds;
-    /// Position. (hook i)
+    /** Position. (hook i) */
     vec3 pos0;
-    /// Orientation. (hook i)
+    /** Orientation. (hook i) */
     quat ori0;
-    /// Velocity. (hook i)
+    /** Velocity. (hook i) */
     vec3 vel;
-    /// Grounded. (hook i)
+    /** Grounded. (hook i) */
     float grounded;
-    /// Jetting. (hook i)
+    /** Jetting. (hook i) */
     float jetting;
-    /// Basic 3d texture bind when greater 0. (still a hook i)
+    /** Basic 3d texture bind when greater 0. (still a hook i) */
     int basetexture3d;
 public: // OUTPUT
-    /// Actual local-(model-)space joints for this instance.
+    /** Actual local-(model-)space joints for this instance. */
     MD5Format::joint* joints;
-    /// Maps jointpoint identifier to actual joint index of the model (-1 ~ NULL).
+    /** Maps jointpoint identifier to actual joint index of the model (-1 ~ NULL). */
     std::map<int, int> jointpoints;
-    /// Joint angles for animation.
+    /** Joint angles for animation. */
     std::map<int, std::map<int, float> > rotators;
-    /// Current model height - only messured above ground ie. > 0. (hook o)
+    /** Current model height - only messured above ground ie. > 0. (hook o) */
     float height;
-    /// Current model radius as seen from above. (hook o)
+    /** Current model radius as seen from above. (hook o) */
     float radius;
 protected: // INTERNALS
-    /// The "static" model just as it is loaded.
+    /** The "static" model just as it is loaded. */
     MD5Format::model* model;
     // Untransformed vertices for mesh i.
     std::map<int, float*> baseverts;
-    /// Untransformed normals for mesh i.
+    /** Untransformed normals for mesh i. */
     std::map<int, float*> basenorms;
 public:
-    /// Enumeration for indexing joints in animation.
+    /** Enumeration for indexing joints in animation. */
 
     enum Jointpoints {
         EYE, HEADPITCH, HEADYAW,
@@ -72,7 +72,7 @@ public:
         YAW, PITCH, LEFTLEG, RIGHTLEG, LEFTCALF, RIGHTCALF, LEFTFOOT, RIGHTFOOT, MAX_JOINTPOINTS
     };
 
-    /// Constructor
+    /** Constructor */
 
     rRigged(Entity* obj = NULL) : scale(1.0f), seconds(0.0f), grounded(0.0f), jetting(0.0f), basetexture3d(0), joints(NULL), height(0.1f), radius(0.1f), model(NULL) {
         object = obj;
@@ -87,7 +87,7 @@ public:
         initMaterials();
     }
 
-    /// Destructor
+    /** Destructor */
 
     ~rRigged() {
         delete model;

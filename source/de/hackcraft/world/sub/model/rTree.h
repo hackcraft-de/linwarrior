@@ -28,16 +28,16 @@ class rPlanetmap;
  */
 struct rTree : public Component, public IModel {
 public: // SYSTEM
-    /// Identifier for this component (all uppercase letters without leading "r").
+    /** Identifier for this component (all uppercase letters without leading "r"). */
     static std::string cname;
-    /// A unique random number (0-9999) to identify this component.
+    /** A unique random number (0-9999) to identify this component. */
     static unsigned int cid;
 public: // INPUT
-    /// Base position vector.
+    /** Base position vector. */
     vec3 pos0;
-    /// Base orientation quaternion.
+    /** Base orientation quaternion. */
     quat ori0;
-    /// Seconds since spawn for leaf animation.
+    /** Seconds since spawn for leaf animation. */
     float seconds;
 public: // OUTPUT
 protected: // INTERNALS
@@ -70,12 +70,12 @@ public:
 
     virtual float constrain(float* worldpos, float radius = 0.0f, float* localpos = NULL, Entity* enactor = NULL);
 private:
-    /// Instance counter for init only.
+    /** Instance counter for init only. */
     static int sInstances;
-    /// Instance shared Textures.
+    /** Instance shared Textures. */
     static std::vector<long> sLeaftexs;
     static std::vector<long> sBarktexs;
-    /// Instance shared Tree cache.
+    /** Instance shared Tree cache. */
     static std::map<OID,TreeType*> sTrees;
 
     static TreeType* getCompiledTree(int seed, int type, int age);

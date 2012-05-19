@@ -15,27 +15,27 @@
  * noise transformation and distortion.
  */
 struct Distortion {
-    /// [-inf,+inf] => [0,+1]
+    /** [-inf,+inf] => [0,+1] */
     static inline float sig(float x) {
         return (1.0f / (1.0f + (float) exp(-x)));
     }
 
-    /// [-inf,+inf] => [0,+1]
+    /** [-inf,+inf] => [0,+1] */
     static inline float sigdbl(float x) {
         return copysign( 1.0f - (float) exp(-x*x), x );
     }
 
-    /// [0,+1] => [0,+1] in n steps
+    /** [0,+1] => [0,+1] in n steps */
     static inline float posterize(float x, int n) {
         return (floor(n * x) / n);
     }
 
-    /// [0,+inf] => [0,+1], limiting to 1, ~5 => 0.993
+    /** [0,+inf] => [0,+1], limiting to 1, ~5 => 0.993 */
     static inline float exposure(float x) {
         return (1.0f - (float) exp(-x));
     }
 
-    /// [-inf,value-e] => 0, [value,+inf] => 1
+    /** [-inf,value-e] => 0, [value,+inf] => 1 */
     static inline float threshold(float x, float value) {
         return ((x < value) ? 0.0f : 1.0f);
     }
@@ -59,7 +59,7 @@ struct Distortion {
         return fmin(a, b);
     }
 
-    /// [0,+1] => [~min(a,b,c,d), ~max(a,b,c,d)]
+    /** [0,+1] => [~min(a,b,c,d), ~max(a,b,c,d)] */
     static inline float spline4(float x, float p0, float p1, float p2, float p3) {
         // x [0,+1] => u [-1,+2]
         float u = (x * 3.0f - 1.0f);
@@ -71,7 +71,7 @@ struct Distortion {
         return y;
     }
 
-    /// [0,1] => [0,1], f(x) = max( (1-abs(x-0.57))^11, min((2.05*x)^12, min(0.61*x+0.197, 0.51) ) )
+    /** [0,1] => [0,1], f(x) = max( (1-abs(x-0.57))^11, min((2.05*x)^12, min(0.61*x+0.197, 0.51) ) ) */
     static inline float continentalRidge(float x) {
         float a = pow(x*2.05f, 12);//1.1f * x;
         //float b = 0.5f * x + 0.26f;

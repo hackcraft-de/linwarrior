@@ -29,10 +29,10 @@ public:
     
     virtual float constrainParticle(Entity* ex, float* worldpos, float radius);
     
-    /// Draw all Object's solid surfaces (calls their drawSolid method).
+    /** Draw all Object's solid surfaces (calls their drawSolid method). */
     virtual void drawSolid();
     
-    /// Draw all Object's effects (calls their drawEffect method).
+    /** Draw all Object's effects (calls their drawEffect method). */
     virtual void drawEffect();
     
     static CityscapeSystem* getInstance();

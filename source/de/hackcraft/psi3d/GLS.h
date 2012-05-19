@@ -19,7 +19,7 @@
 #include "macros.h"
 
 
-/// Extended OpenGL commands/snippets.
+/** Extended OpenGL commands/snippets. */
 struct GLS {
 
     static void glPrintEnum(const char* name, int getenum)
@@ -155,7 +155,7 @@ struct GLS {
 
     // Shader related.
 
-    /// Background plain colored
+    /** Background plain colored */
     static void glUseProgram_bkplaincolor() {
         glEnable(GL_CULL_FACE);
         glDisable(GL_DEPTH_TEST);
@@ -166,7 +166,7 @@ struct GLS {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    /// Background plain textured
+    /** Background plain textured */
     static void glUseProgram_bkplaintexture() {
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_CULL_FACE);
@@ -178,7 +178,7 @@ struct GLS {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    /// Background additive textured
+    /** Background additive textured */
     static void glUseProgram_bkaddtexture() {
         glEnable(GL_CULL_FACE);
         glEnable(GL_TEXTURE_2D);
@@ -188,7 +188,7 @@ struct GLS {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     }
 
-    /// Foreground plain colored
+    /** Foreground plain colored */
     static void glUseProgram_fgplaincolor() {
         glEnable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);
@@ -197,7 +197,7 @@ struct GLS {
         glDisable(GL_TEXTURE_2D);
     }
 
-    /// Foreground lit colored
+    /** Foreground lit colored */
     static void glUseProgram_fglitcolor() {
         glEnable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);
@@ -208,7 +208,7 @@ struct GLS {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    /// Foreground plain textured
+    /** Foreground plain textured */
     static void glUseProgram_fgplaintexture() {
         glEnable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);
@@ -218,7 +218,7 @@ struct GLS {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    /// Foreground lit textured
+    /** Foreground lit textured */
     static void glUseProgram_fglittexture() {
         glEnable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);
@@ -230,7 +230,7 @@ struct GLS {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    /// Foreground lit textured 3d
+    /** Foreground lit textured 3d */
     static void glUseProgram_fglittexture3d() {
         glEnable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);
@@ -242,7 +242,7 @@ struct GLS {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    /// Foreground additive textured
+    /** Foreground additive textured */
     static void glUseProgram_fgaddtexture() {
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_DEPTH_TEST);
@@ -253,7 +253,7 @@ struct GLS {
         glDepthMask(GL_FALSE);
     }
 
-    /// Foreground additive colored
+    /** Foreground additive colored */
     static void glUseProgram_fgaddcolor() {
         glEnable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
@@ -344,7 +344,7 @@ struct GLS {
         memcpy(invm16fv, _n_, sizeof(float)*16);
     }
 
-    /// Multiplies a quaternion rotation into the current matrix.
+    /** Multiplies a quaternion rotation into the current matrix. */
     static void glRotateq(float* quat4fv) \
     {
         float x = -(quat4fv)[0];

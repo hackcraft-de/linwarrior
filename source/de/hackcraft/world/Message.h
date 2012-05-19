@@ -19,19 +19,19 @@ class Message;
  */
 class Message {
 private:
-    /// Who sent this message (object id).
+    /** Who sent this message (object id). */
     OID mSender;
-    /// To whom this message is/was sent (object id).
+    /** To whom this message is/was sent (object id). */
     OID mReceiver;
-    /// When was this message sent / valid only after this due date.
+    /** When was this message sent / valid only after this due date. */
     OID mTimestamp;
-    /// Until when is this message meant to be valid (0 == forever).
+    /** Until when is this message meant to be valid (0 == forever). */
     OID mBestbefore;
-    /// Message type.
+    /** Message type. */
     std::string mType;
-    /// Message String (lets say it's the subject).
+    /** Message String (lets say it's the subject). */
     std::string mText;
-    /// Binary large object - fresh allocated pointer to custom data (delete yourself).
+    /** Binary large object - fresh allocated pointer to custom data (delete yourself). */
     void* mBlob;
 public:
     Message(OID sender = 0, OID receiver = 0, OID timestamp = 0, OID bestbefore = 0, std::string type = "", std::string text = "", void* blob = NULL);
@@ -46,7 +46,7 @@ public:
     std::string getText();
     void* getBlob();
 
-    /// Compare time for message priority queue, fifo.
+    /** Compare time for message priority queue, fifo. */
     bool operator()(Message const* a, Message const* b) const;
 };
 

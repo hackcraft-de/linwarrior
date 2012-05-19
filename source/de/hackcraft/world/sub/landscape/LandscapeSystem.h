@@ -24,13 +24,13 @@ public:
     
     virtual float constrainParticle(Entity* ex, float* worldpos, float radius);
     
-    /// Let all objects process input, adjust pose and calculate physics.
+    /** Let all objects process input, adjust pose and calculate physics. */
     virtual void animateObjects();
     
-    /// Draw all Object's solid surfaces (calls their drawSolid method).
+    /** Draw all Object's solid surfaces (calls their drawSolid method). */
     virtual void drawSolid();
     
-    /// Draw all Object's effects (calls their drawEffect method).
+    /** Draw all Object's effects (calls their drawEffect method). */
     virtual void drawEffect();
 private:
     rPlanetmap* planetmap;

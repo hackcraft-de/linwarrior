@@ -86,19 +86,19 @@ class Entity {
 
 public: // Basic Object attributes for managing.
 
-    /// Unique Object ID, simulation date:time:deltacycle of spawn.
+    /** Unique Object ID, simulation date:time:deltacycle of spawn. */
     OID oid;
-    /// Position for clustering, targeting and placing.
+    /** Position for clustering, targeting and placing. */
     vec3 pos0;
-    /// Radius for clustering and visibility.
+    /** Radius for clustering and visibility. */
     float radius;
-    /// Basic object orientation.
+    /** Basic object orientation. */
     quat ori0;
-    /// Age in seconds since spawn, updated by world before animate() call.
+    /** Age in seconds since spawn, updated by world before animate() call. */
     double seconds;
-    /// Internal qualified name of the object.
+    /** Internal qualified name of the object. */
     std::string name;
-    /// Input to the object through common input device if not null.
+    /** Input to the object through common input device if not null. */
     Pad* pad;
 
 public: // Components
@@ -116,7 +116,7 @@ public: // Experimental Component "Managing"
 
 public: // Object Tags
 
-    /// Tags (IDs, Social-Roles, Parties, States...) this object has (=groups?).
+    /** Tags (IDs, Social-Roles, Parties, States...) this object has (=groups?). */
     std::set<OID> tags;
 
 public:
@@ -164,20 +164,19 @@ public:
         return (result.size() == test->size());
     }
 
-    /// Check wether this Object is playing the given role.
-
+    // Check wether this Object is playing the given role.
     bool hasRole(OID role) {
         return (roleset.find(role) != roleset.end());
     }
 
-    /// Add a role this objects has to play.
-
+    // Add a role this objects has to play.
+    
     void addRole(OID role, rRole* roleobj = NULL) {
         roles[role] = roleobj;
         roleset.insert(role);
     }
 
-    /// Remove a role this object wont play anymore.
+    // Remove a role this object wont play anymore.
 
     void remRole(OID role, bool deleteobj = false) {
         if (deleteobj) delete roles[role];
@@ -186,7 +185,7 @@ public:
     }
      */
 
-    /// Check wether this Object has at least one of the given tags.
+    /** Check wether this Object has at least one of the given tags. */
 
     bool anyTags(std::set<OID>* tagset) {
         std::set<OID> result;
@@ -194,7 +193,7 @@ public:
         return (!result.empty());
     }
 
-    /// Check wether this Object has all the given tags.
+    /** Check wether this Object has all the given tags. */
 
     bool allTags(std::set<OID>* tagset) {
         std::set<OID> result;
@@ -202,25 +201,25 @@ public:
         return (result.size() == tagset->size());
     }
 
-    /// Check wether this Object has the given tag.
+    /** Check wether this Object has the given tag. */
 
     bool hasTag(OID tag) {
         return (tags.find(tag) != tags.end());
     }
 
-    /// Add a tag to this object.
+    /** Add a tag to this object. */
 
     void addTag(OID tag) {
         tags.insert(tag);
     }
 
-    /// Remove a tag from this object.
+    /** Remove a tag from this object. */
 
     void remTag(OID tag) {
         tags.erase(tag);
     }
 
-    /// Called right after object was spawned into the world.
+    /** Called right after object was spawned into the world. */
 
     virtual void spawn() {
         for (auto i = components.begin(); i != components.end(); i++) {
@@ -228,7 +227,7 @@ public:
         }
     }
 
-    /// Called right after object has been removed from object list and index.
+    /** Called right after object has been removed from object list and index. */
 
     virtual void frag() {
         for (auto i = components.begin(); i != components.end(); i++) {
@@ -236,7 +235,7 @@ public:
         }
     }
 
-    /// Called to glMultiply in the Object's camera matrix.
+    /** Called to glMultiply in the Object's camera matrix. */
 
     virtual void camera() {
         for (auto i = components.begin(); i != components.end(); i++) {
@@ -244,7 +243,7 @@ public:
         }
     }
 
-    /// Called to set Object's location, orientation and vel. as audio listener.
+    /** Called to set Object's location, orientation and vel. as audio listener. */
 
     virtual void listener() {
         for (auto i = components.begin(); i != components.end(); i++) {
@@ -252,7 +251,7 @@ public:
         }
     }
 
-    /// Called for each message sent to this object.
+    /** Called for each message sent to this object. */
 
     virtual void message(Message* message) {
         for (auto i = components.begin(); i != components.end(); i++) {
@@ -260,7 +259,7 @@ public:
         }
     }
 
-    /// Called to advance internal timers,animation state and pose, check gamepad.
+    /** Called to advance internal timers,animation state and pose, check gamepad. */
 
     virtual void animate(float dt) {
         for (auto i = components.begin(); i != components.end(); i++) {
@@ -268,7 +267,7 @@ public:
         }
     }
 
-    /// Deprecated, use animate? Called to precalculate neccessary transformations - matrices, mountpoints, pos ..
+    /** Deprecated, use animate? Called to precalculate neccessary transformations - matrices, mountpoints, pos .. */
 
     virtual void transform() {
         for (auto i = components.begin(); i != components.end(); i++) {
@@ -276,7 +275,7 @@ public:
         }
     }
 
-    /// Called to render solid non-translucent parts of the object.
+    /** Called to render solid non-translucent parts of the object. */
 
     virtual void drawSolid() {
         for (auto i = components.begin(); i != components.end(); i++) {
@@ -284,7 +283,7 @@ public:
         }
     }
 
-    /// Called to render translucent object-parts and visual effects.
+    /** Called to render translucent object-parts and visual effects. */
 
     virtual void drawEffect() {
         for (auto i = components.begin(); i != components.end(); i++) {
@@ -292,7 +291,7 @@ public:
         }
     }
 
-    /// Called to render HUD-contents as seen when looking through the objects-eyes.
+    /** Called to render HUD-contents as seen when looking through the objects-eyes. */
 
     virtual void drawHUD() {
     }

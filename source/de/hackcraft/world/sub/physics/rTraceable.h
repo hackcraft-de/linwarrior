@@ -18,33 +18,33 @@
  */
 class rTraceable : public Component, public Particle {
 public: // SYSTEM
-    /// Identifier for this component.
+    /** Identifier for this component. */
     static std::string cname;
-    /// Just a unique random number (0-9999) to identify this component.
+    /** Just a unique random number (0-9999) to identify this component. */
     static unsigned int cid;
 public: // INPUT
-    /// Jetdrive throttle setting hook usually [0,1].
+    /** Jetdrive throttle setting hook usually [0,1]. */
     float jetthrottle;
-    /// Grounddrive throttle setting hook usually [0,1].
+    /** Grounddrive throttle setting hook usually [0,1]. */
     float throttle;
 public: // OUTPUT
-    /// Averaged amount of groundedness [0,1] result from collision checks.
+    /** Averaged amount of groundedness [0,1] result from collision checks. */
     float grounded;
 protected: // INTERNALS
 public:
-    /// Constructor.
+    /** Constructor. */
     rTraceable(Entity* obj = NULL);
-    /// Copy Constructor.
+    /** Copy Constructor. */
     rTraceable(rTraceable * original);
-    /// Clone this.
+    /** Clone this. */
     virtual Component * clone();
-    /// Accumulate steering and environmental forces.
+    /** Accumulate steering and environmental forces. */
     void accumulate(float spf);
-    /// Integrate position and derive velocity given forces and old state.
+    /** Integrate position and derive velocity given forces and old state. */
     void integrate(float spf);
-    /// Adjust position to nullify collisions.
+    /** Adjust position to nullify collisions. */
     void collide(float spf);
-    /// Accumulate, integrate and collide.
+    /** Accumulate, integrate and collide. */
     virtual void animate(float spf);
 };
 

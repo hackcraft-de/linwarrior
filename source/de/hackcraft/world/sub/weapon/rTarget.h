@@ -28,23 +28,23 @@ struct rTarget;
  */
 struct rTarget : public Component {
 public: // SYSTEM
-    /// Identifier for this component (all uppercase letters without leading "r").
+    /** Identifier for this component (all uppercase letters without leading "r"). */
     static std::string cname;
-    /// A unique random number (0-9999) to identify this component.
+    /** A unique random number (0-9999) to identify this component. */
     static unsigned int cid;
 public: // INPUT
-    /// Base orientation (hook i).
+    /** Base orientation (hook i). */
     vec3 pos0;
-    /// Radius for hitzone calculation.
+    /** Radius for hitzone calculation. */
     float radius;
-    /// Height for hitzone calculation.
+    /** Height for hitzone calculation. */
     float height;
 public: // OUTPUT
-    /// Marks object as still alife.
+    /** Marks object as still alife. */
     bool alife;
-    /// Marks object as dead.
+    /** Marks object as dead. */
     bool dead;
-    /// Enumeration of entity body part units: Body, Legs, Left, Right.
+    /** Enumeration of entity body part units: Body, Legs, Left, Right. */
 
     enum Parts {
         BODY = 0, // Some Objects only have this
@@ -53,7 +53,7 @@ public: // OUTPUT
         RIGHT,
         MAX_PARTS
     };
-    /// Health-Points for Body-Parts.
+    /** Health-Points for Body-Parts. */
     float hp[MAX_PARTS];
     // Diverse armor for Body-Parts.
     // float beam[MAX_PARTS];
@@ -61,29 +61,29 @@ public: // OUTPUT
     // float splash[MAX_PARTS];
     // float heat[MAX_PARTS];
     // float sinks[MAX_PARTS];
-    /// Some object that dealt some damage to the object. (hook o)
+    /** Some object that dealt some damage to the object. (hook o) */
     OID disturber;
     float disturbance;
 protected: // INTERNALS
     // Smarter disturbance with non-persistent memory.
     std::map<OID,float> damageAverage;
     std::map<OID,float> damageImpulse;
-    /// Tags (IDs, Social-Roles, Parties, States...) this target has (=groups?).
+    /** Tags (IDs, Social-Roles, Parties, States...) this target has (=groups?). */
     std::set<OID> tags;
 public:
-    /// Constructor.
+    /** Constructor. */
     rTarget(Entity* obj = NULL);
-    /// Copy Constructor.
+    /** Copy Constructor. */
     rTarget(rTarget * original);
-    /// Clone this.
+    /** Clone this. */
     virtual Component * clone();
-    /// Get id - address for now.
+    /** Get id - address for now. */
     virtual OID getId() { return (OID) this; }
-    /// Apply damage to a hitzone, and return alife.
+    /** Apply damage to a hitzone, and return alife. */
     virtual bool damage(float* localpos, float damage, Entity * enactor);
-    /// Average disturbance (damage) and find max disturbing enactor.
+    /** Average disturbance (damage) and find max disturbing enactor. */
     virtual void animate(float spf);
-    /// Display damaging.
+    /** Display damaging. */
     virtual void drawHUD();
     
     virtual int getPosX() { return (int) pos0[0]; }

@@ -19,13 +19,13 @@
  */
 struct rWepcom : public Component, public IComputer {
 public: // SYSTEM
-    /// Identifier for this component (all uppercase letters without leading "r").
+    /** Identifier for this component (all uppercase letters without leading "r"). */
     static std::string cname;
-    /// A unique random number (0-9999) to identify this component.
+    /** A unique random number (0-9999) to identify this component. */
     static unsigned int cid;
 public:
     rWepcom(Entity* obj = NULL); // FIXME: Must be a cMech.
-    /// Get id - address for now.
+    /** Get id - address for now. */
     virtual OID getId() { return (OID) this; }
     virtual void animate(float spf);
     virtual void drawHUD();

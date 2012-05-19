@@ -61,10 +61,10 @@ public:
      */
     virtual void checkConditions();
 
-    /// Called when checkConditions() sees the victory condition(s) fullfilled.
+    /** Called when checkConditions() sees the victory condition(s) fullfilled. */
     virtual void onVictory();
 
-    /// Called when checkConditions() sees the defeat condition(s) fullfilled.
+    /** Called when checkConditions() sees the defeat condition(s) fullfilled. */
     virtual void onDefeat();
 
     /**

@@ -11,7 +11,7 @@
 
 class Filesystem {
     public:
-    /// Loading whole text file.
+    /** Loading whole text file. */
     static char* loadTextFile(const char* filename);
 };
 

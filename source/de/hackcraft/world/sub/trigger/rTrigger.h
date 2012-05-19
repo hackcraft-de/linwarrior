@@ -25,7 +25,7 @@ class rTrigger : public Component {
 public:
     OID id;
     vec3 pos0;
-    /// Tags (IDs, Social-Roles, Parties, States...) this trigger belongs to.
+    /** Tags (IDs, Social-Roles, Parties, States...) this trigger belongs to. */
     std::set<OID> tags;
 public:
     rTrigger(Entity* obj = NULL);

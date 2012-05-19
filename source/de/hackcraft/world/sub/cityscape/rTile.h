@@ -22,7 +22,7 @@
  */
 class rTile : public Component {
 public:
-    /// Possible models of tile.
+    /** Possible models of tile. */
 
     enum Kinds {
         KIND_CONCRETE,
@@ -42,21 +42,21 @@ public:
         MAX_KINDS
     };
 protected:
-    /// Counts number of instances.
+    /** Counts number of instances. */
     static int sInstances;
-    /// Contains shared texture(s) of all instances.
+    /** Contains shared texture(s) of all instances. */
     static std::map<int, long> sTextures;
 
 public:
-    /// Unique id of the instance.
+    /** Unique id of the instance. */
     OID id;
-    /// Position of the tile.
+    /** Position of the tile. */
     vec3 pos0;
-    /// This tile has the named appearance (as in Kinds-enum).
+    /** This tile has the named appearance (as in Kinds-enum). */
     int tileKind;
 public:
 
-    /// Initializes a tile of a certain kind at the given tile-grid position.
+    /** Initializes a tile of a certain kind at the given tile-grid position. */
     rTile(int x, int y, int z, int kind);
     virtual void drawSolid();
 };

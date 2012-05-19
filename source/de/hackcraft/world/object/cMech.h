@@ -60,7 +60,7 @@ class cMech : public Entity {
     friend class rForcom;
 protected:
 
-    /// Instance counter.
+    /** Instance counter. */
     static int sInstances;
 
     enum {
@@ -70,7 +70,7 @@ protected:
         TEXTURE_URBAN
     };
 
-    /// Texture Binds shared between instances.
+    /** Texture Binds shared between instances. */
     static std::map<int, long> sTextures;
 
 public:
@@ -94,7 +94,7 @@ public:
     // WEAPON: EXPLOSION
     rWeaponExplosion* explosion;
 
-    /// List of WEAPONs.
+    /** List of WEAPONs. */
     std::vector<rWeapon*> weapons;
 
 public:

@@ -1,0 +1,5 @@
+
+Replace /// ... comments with /** ... */ comments:
+search: ^(\s*)///(.*)$
+replace: $1/**$2 */
+in: *.h
