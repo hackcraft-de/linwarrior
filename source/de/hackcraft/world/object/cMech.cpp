@@ -149,10 +149,10 @@ void cMech::init(float* pos, float* rot, string modelName) {
     ModelSystem::getInstance()->add(rigged);
     ModelSystem::getInstance()->add(nameable);
     
-    damageable = new rTarget(this);
+    target = new rTarget(this);
     tarcom = new rTarcom(this);
     wepcom = new rWepcom(this);
-    WeaponSystem::getInstance()->add(damageable);
+    WeaponSystem::getInstance()->add(target);
     WeaponSystem::getInstance()->add(tarcom);
     WeaponSystem::getInstance()->add(wepcom);
     
@@ -209,7 +209,7 @@ void cMech::init(float* pos, float* rot, string modelName) {
     quat_cpy(this->ori0, traceable->ori);
     this->radius = traceable->radius;
 
-    vector_cpy(damageable->pos0, this->pos0);
+    vector_cpy(target->pos0, this->pos0);
     
     vector_cpy(collider->pos0, this->pos0);
     quat_cpy(collider->ori0, this->ori0);
@@ -233,36 +233,36 @@ void cMech::init(float* pos, float* rot, string modelName) {
     // DAMAGEABLE
     {
         // from Self
-        damageable->addBinding(&damageable->pos0, &pos0, sizeof(vec3));
-        // from DAMAGEABLE
-        damageable->addBinding(&damageable->active, &damageable->alife, sizeof(bool));
+        target->addBinding(&target->pos0, &pos0, sizeof(vec3));
+        // from TARGET
+        target->addBinding(&target->active, &target->alife, sizeof(bool));
         // from RIGGED
-        damageable->addBinding(&damageable->radius, &rigged->radius, sizeof(float));
-        damageable->addBinding(&damageable->height, &rigged->height, sizeof(float));
+        target->addBinding(&target->radius, &rigged->radius, sizeof(float));
+        target->addBinding(&target->height, &rigged->height, sizeof(float));
     }
     // COMCOM
     {
-        comcom->addBinding(&comcom->active, &damageable->alife, sizeof(bool));
+        comcom->addBinding(&comcom->active, &target->alife, sizeof(bool));
     }
     // TARCOM
     {
         // from Pad
         //tarcom->switchnext = pad->getButton(Pad::MECH_NEXT_BUTTON);
         //tarcom->switchprev = pad->getButton(Pad::MECH_PREV_BUTTON);
-        // from DAMAGEABLE
-        tarcom->addBinding(&tarcom->active, &damageable->alife, sizeof(bool));
+        // from TARGET
+        tarcom->addBinding(&tarcom->active, &target->alife, sizeof(bool));
         // from TRACEABLE
         tarcom->addBinding(&tarcom->pos0, &traceable->pos, sizeof(vec3));
         tarcom->addBinding(&tarcom->ori0, &traceable->ori, sizeof(quat));
     }
     // WEPCOM
     {
-        wepcom->addBinding(&wepcom->active, &damageable->alife, sizeof(bool));
+        wepcom->addBinding(&wepcom->active, &target->alife, sizeof(bool));
     }
     // FORCOM
     {
-        // from DAMAGEABLE
-        forcom->addBinding(&forcom->active, &damageable->alife, sizeof(bool));
+        // from TARGET
+        forcom->addBinding(&forcom->active, &target->alife, sizeof(bool));
         // from TRACEABLE
         forcom->addBinding(&forcom->ori, &traceable->ori, sizeof(quat));
         // from MOBILE
@@ -272,17 +272,17 @@ void cMech::init(float* pos, float* rot, string modelName) {
     }
     // NAVCOM
     {
-        // from DAMAGEABLE
-        navcom->addBinding(&navcom->active, &damageable->alife, sizeof(bool));
+        // from TARGET
+        navcom->addBinding(&navcom->active, &target->alife, sizeof(bool));
         // from TRACEABLE
         navcom->addBinding(&navcom->pos0, &traceable->pos, sizeof(vec3));
         navcom->addBinding(&navcom->ori0, &traceable->ori, sizeof(quat));
     }
     // CONTROLLER
     {
-        // from Damageable
-        controller->addBinding(&controller->active, &damageable->alife, sizeof(bool));
-        controller->addBinding(&controller->disturbedBy, &damageable->disturber, sizeof(OID));
+        // from TARGET
+        controller->addBinding(&controller->active, &target->alife, sizeof(bool));
+        controller->addBinding(&controller->disturbedBy, &target->disturber, sizeof(OID));
         // from tarcom
         controller->addBinding(&controller->enemyNearby, &tarcom->nearbyEnemy, sizeof(OID));
         // from Mobile
@@ -361,7 +361,7 @@ void cMech::animate(float spf) {
     /* Index of Component order
      * ------------------------
      * COLLIDER
-     * DAMAGEABLE
+     * TARGET
      * COMPUTERs
      * CONTROLLER
      * MOBILE
@@ -395,23 +395,23 @@ void cMech::animate(float spf) {
     {
         // from TARGET itself
         if (0) {
-            damageable->active = damageable->alife;
+            target->active = target->alife;
         }
         // from RIGGED
         if (0) {
-            damageable->radius = rigged->radius;
-            damageable->height = rigged->height;
+            target->radius = rigged->radius;
+            target->height = rigged->height;
         }
-        damageable->prebind();
+        target->prebind();
     }
 
     // begin COMPUTERs -->
 
     // COMCOM
     {
-        // from DAMAGEABLE
+        // from TARGET
         if (0) {
-            comcom->active = damageable->alife;
+            comcom->active = target->alife;
         }
         comcom->prebind();
         comcom->animate(spf);
@@ -426,7 +426,7 @@ void cMech::animate(float spf) {
         }
         // from TARGET
         if (0) {
-            tarcom->active = damageable->alife;
+            tarcom->active = target->alife;
         }
         // from TRACEABLE
         if (0) {
@@ -440,7 +440,7 @@ void cMech::animate(float spf) {
     {
         // from TARGET
         if (0) {
-            forcom->active = damageable->alife;
+            forcom->active = target->alife;
         }
         // from traceable
         if (0) {
@@ -462,7 +462,7 @@ void cMech::animate(float spf) {
     {
         // from TARGET
         if (0) {
-            navcom->active = damageable->alife;
+            navcom->active = target->alife;
         }
         // from TRACEABLE
         if (0) {
@@ -477,8 +477,8 @@ void cMech::animate(float spf) {
     {
         // from TARGET
         if (0) {
-            controller->active = damageable->alife;
-            controller->disturbedBy = damageable->disturber;
+            controller->active = target->alife;
+            controller->disturbedBy = target->disturber;
         }
         // from TARCOM
         if (0) {
@@ -512,7 +512,7 @@ void cMech::animate(float spf) {
         }
         // from TARGET
         {
-            mobile->active = damageable->alife;
+            mobile->active = target->alife;
         }
         // from traceable
         {
@@ -562,10 +562,10 @@ void cMech::animate(float spf) {
         {
             // Group-to-texture.
             int texture = 0;
-            texture = damageable->hasTag(World::getInstance()->getGroup(FAC_RED)) ? 0 : texture;
-            texture = damageable->hasTag(World::getInstance()->getGroup(FAC_BLUE)) ? 1 : texture;
-            texture = damageable->hasTag(World::getInstance()->getGroup(FAC_GREEN)) ? 2 : texture;
-            texture = damageable->hasTag(World::getInstance()->getGroup(FAC_YELLOW)) ? 3 : texture;
+            texture = target->hasTag(World::getInstance()->getGroup(FAC_RED)) ? 0 : texture;
+            texture = target->hasTag(World::getInstance()->getGroup(FAC_BLUE)) ? 1 : texture;
+            texture = target->hasTag(World::getInstance()->getGroup(FAC_GREEN)) ? 2 : texture;
+            texture = target->hasTag(World::getInstance()->getGroup(FAC_YELLOW)) ? 3 : texture;
             rigged->basetexture3d = texture;
         }
     }
@@ -574,10 +574,10 @@ void cMech::animate(float spf) {
     {
         // from TARGET
         {
-            nameable->color[0] = damageable->hasTag(World::getInstance()->getGroup(FAC_RED)) ? 1.0f : 0.0f;
-            nameable->color[1] = damageable->hasTag(World::getInstance()->getGroup(FAC_GREEN)) ? 1.0f : 0.0f;
-            nameable->color[2] = damageable->hasTag(World::getInstance()->getGroup(FAC_BLUE)) ? 1.0f : 0.0f;
-            nameable->effect = !damageable->hasTag(World::getInstance()->getGroup(PLR_HUMAN)) && !damageable->hasTag(World::getInstance()->getGroup(HLT_DEAD));
+            nameable->color[0] = target->hasTag(World::getInstance()->getGroup(FAC_RED)) ? 1.0f : 0.0f;
+            nameable->color[1] = target->hasTag(World::getInstance()->getGroup(FAC_GREEN)) ? 1.0f : 0.0f;
+            nameable->color[2] = target->hasTag(World::getInstance()->getGroup(FAC_BLUE)) ? 1.0f : 0.0f;
+            nameable->effect = !target->hasTag(World::getInstance()->getGroup(PLR_HUMAN)) && !target->hasTag(World::getInstance()->getGroup(HLT_DEAD));
         }
         // from RIGGED
         {
@@ -614,9 +614,8 @@ void cMech::animate(float spf) {
         camra->animate(spf);
     }
 
-    // FIXME: This block needs to be factored out to fit the used component pattern.
-    // FIXME: Weapons need to be chained in an independent style.
-    if (damageable->alife) {
+    // FIXME: Input binding.
+    if (target->alife) {
         if (pad->getButton(Pad::MECH_FIRE_BUTTON1) || pad->getButton(Pad::MECH_FIRE_BUTTON2)) {
             wepcom->fire();
         }
@@ -626,7 +625,7 @@ void cMech::animate(float spf) {
     {
         // from TARGET
         if (0) {
-            wepcom->active = damageable->alife;
+            wepcom->active = target->alife;
         }
         wepcom->prebind();
     }
@@ -749,7 +748,7 @@ void cMech::drawHUD() {
                     { navcom, NULL, NULL, NULL, comcom},
                     { NULL, NULL, NULL, NULL, NULL},
                     { NULL, NULL, NULL, NULL, NULL},
-                    { tarcom, NULL, wepcom, NULL, damageable}
+                    { tarcom, NULL, wepcom, NULL, target}
                 };
 
                 loopj(4) {
@@ -788,9 +787,9 @@ void cMech::drawHUD() {
 }
 
 void cMech::damage(float* localpos, float damage, Entity* enactor) {
-    if (!damageable->alife || damage == 0.0f) return;
+    if (!target->alife || damage == 0.0f) return;
 
-    if (!damageable->damage(localpos, damage, enactor)) {
+    if (!target->damage(localpos, damage, enactor)) {
         cout << "cMech::damageByParticle(): DEAD\n";
         //explosion->fire();
         explosion->triggeren = true;
@@ -798,10 +797,10 @@ void cMech::damage(float* localpos, float damage, Entity* enactor) {
     }
     
     int body = rTarget::BODY;
-    if (damageable->hp[body] <= 75) damageable->addTag(World::getInstance()->getGroup(HLT_WOUNDED));
-    if (damageable->hp[body] <= 50) damageable->addTag(World::getInstance()->getGroup(HLT_SERIOUS));
-    if (damageable->hp[body] <= 25) damageable->addTag(World::getInstance()->getGroup(HLT_CRITICAL));
-    if (damageable->hp[body] <= 0) damageable->addTag(World::getInstance()->getGroup(HLT_DEAD));
+    if (target->hp[body] <= 75) target->addTag(World::getInstance()->getGroup(HLT_WOUNDED));
+    if (target->hp[body] <= 50) target->addTag(World::getInstance()->getGroup(HLT_SERIOUS));
+    if (target->hp[body] <= 25) target->addTag(World::getInstance()->getGroup(HLT_CRITICAL));
+    if (target->hp[body] <= 0) target->addTag(World::getInstance()->getGroup(HLT_DEAD));
 }
 
 float cMech::constrain(float* worldpos, float radius, float* localpos, Entity* enactor) {

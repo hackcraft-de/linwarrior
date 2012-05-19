@@ -83,7 +83,7 @@ public:
     rNavcom* navcom;
 
     rBillboard* nameable;
-    rTarget* damageable;
+    rTarget* target;
     rTraceable* traceable;
     rController* controller;
     rCamera* camra;
