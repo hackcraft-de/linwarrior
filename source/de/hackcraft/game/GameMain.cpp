@@ -662,8 +662,36 @@ void GameMain::drawPlaque() {
                 glLoadIdentity();
                 glTranslatef(0, 1, 0);
                 glScalef(1.0f / 80.0f, 1.0f / 40.0f, 1.0f);
+                
+                glDisable(GL_TEXTURE_2D);
+                glBegin(GL_QUADS);
+                {
+                    glColor4f(0.6, 0.6, 0.6, 1);
+                    glVertex3f(0,0,0);
+                    glVertex3f(80,0,0);
+                    glVertex3f(80,-1,0);
+                    glVertex3f(0,-1,0);
+
+                    glColor4f(0.8, 0.8, 0.8, 0.9);
+                    glVertex3f(0,-1,0);
+                    glColor4f(0.5, 0.5, 0.5, 0.6);
+                    glVertex3f(80,-1,0);
+                    glColor4f(0.5, 0.5, 0.5, 0.3);
+                    glVertex3f(80,-39,0);
+                    glColor4f(0.5, 0.5, 0.5, 0.6);
+                    glVertex3f(0,-39,0);
+
+                    glColor4f(0.6, 0.6, 0.6, 1);
+                    glVertex3f(0,-39,0);
+                    glVertex3f(80,-39,0);
+                    glVertex3f(80,-40,0);
+                    glVertex3f(0,-40,0);
+                }
+                glEnd();
+                
                 glColor4f(1, 1, 0, 1);
                 GLF::glprint("LinWarrior 3D  (Build " __DATE__ ") by hackcraft.de");
+                
                 glColor4f(0, 1, 0, 1);
                 glTranslatef(0, -34, 0);
                 GLF::glprint("IJKL-Keys   : Aim Weapons");
@@ -816,7 +844,7 @@ int GameMain::run(int argc, char** args) {
     bool loadscreen = true;
     if (loadscreen) {
         cout << "Showing load screen...\n";
-        glClearColor(0.1, 0.1, 0.9, 1.0);
+        glClearColor(0.4, 0.4, 0.45, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         drawPlaque();
         SDL_GL_SwapBuffers();
