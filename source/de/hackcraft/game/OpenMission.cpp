@@ -279,7 +279,7 @@ Entity* OpenMission::initPlayerParty(World* world, rPlanetmap* planetmap, float*
         player = mech;
         
         mech->target->addTag(World::getInstance()->getGroup(FAC_BLUE));
-        mech->addTag(World::getInstance()->getGroup(PLR_HUMAN));
+        mech->target->addTag(World::getInstance()->getGroup(PLR_HUMAN));
         
         mech->tarcom->addEnemy(World::getInstance()->getGroup(FAC_RED));
         mech->tarcom->addEnemy(World::getInstance()->getGroup(HLT_DEAD), false);

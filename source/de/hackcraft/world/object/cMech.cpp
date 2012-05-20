@@ -308,7 +308,12 @@ void cMech::message(Message* message) {
 void cMech::spawn() {
     //cout << "cMech::onSpawn()\n";
     ALuint soundsource = traceable->sound;
-    if (hasTag(World::getInstance()->getGroup(PLR_HUMAN)) && alIsSource(soundsource)) alSourcePlay(soundsource);
+    bool isHumanPlayer = target->hasTag(World::getInstance()->getGroup(PLR_HUMAN));
+    bool isSoundEnabled = alIsSource(soundsource);
+    
+    if ( isHumanPlayer && isSoundEnabled ) {
+        alSourcePlay(soundsource);
+    }
     //cout << "Mech spawned " << oid << "\n";
 }
 
@@ -692,7 +697,7 @@ void cMech::transform() {
 
 void cMech::drawSolid() {
     // Setup jumpjet light source - for player only so far. move to rLightsource?
-    if (hasTag(World::getInstance()->getGroup(PLR_HUMAN))) {
+    if (target->hasTag(World::getInstance()->getGroup(PLR_HUMAN))) {
         int light = GL_LIGHT1;
         if (mobile->jetthrottle > 0.001f) {
             float p[] = {traceable->pos[0], traceable->pos[1] + 1.2f, traceable->pos[2], 1.0f};

@@ -26,16 +26,33 @@ void MissionSystem::advanceTime(int deltamsec) {
 }
 
 void MissionSystem::checkConditions() {
+    
+    OID deadTag = World::getInstance()->getGroup(HLT_DEAD);
+    
     // Destroyed all necessary enemies?
     unsigned int n = 0;
-    for (Entity* object: mVictory) if (object->hasTag(World::getInstance()->getGroup(HLT_DEAD))) n++;
+    
+    for (Entity* object: mVictory) {
+        rTarget* target = WeaponSystem::getInstance()->findTargetByEntity(object->oid);
+        if (target != NULL && target->hasTag(deadTag)) {
+            n++;
+        }
+    }
+    
     if (n != 0 && n == mVictory.size()) {
         onVictory();
         return;
     }
-    // Destroyed any neccessary friend?
+    
+    // Destroyed any necessary friend?
     n = 0;
-    for (Entity* object: mDefeat) if (object->hasTag(World::getInstance()->getGroup(HLT_DEAD))) n++;
+    for (Entity* object: mDefeat) {
+        rTarget* target = WeaponSystem::getInstance()->findTargetByEntity(object->oid);
+        if (target != NULL && target->hasTag(deadTag)) {
+            n++;
+        }
+    }
+    
     if (n != 0) {
         onDefeat();
         return;
@@ -83,7 +100,7 @@ Entity* MissionSystem::init(World* world) {
 
         mech->controller->enabled = false; // Disable Autopilot.
         mech->target->addTag(World::getInstance()->getGroup(FAC_BLUE));
-        mech->addTag(World::getInstance()->getGroup(PLR_HUMAN));
+        mech->target->addTag(World::getInstance()->getGroup(PLR_HUMAN));
         mech->tarcom->addEnemy(World::getInstance()->getGroup(FAC_RED));
         mech->tarcom->addEnemy(World::getInstance()->getGroup(HLT_DEAD), false);
 
