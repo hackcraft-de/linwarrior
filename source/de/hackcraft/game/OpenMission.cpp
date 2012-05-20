@@ -43,7 +43,7 @@ using std::string;
 
 #define FORTIFY     { 300, 0, 330 }
 
-#define PLAYERPOS SKYTIDE
+#define PLAYERPOS   { 0, 0, 0 }
 
 void adjustHeight(rPlanetmap* planetmap, float* pos) {
     float color[16];
@@ -183,6 +183,9 @@ Entity* OpenMission::init(World* world) {
     Entity* player = NULL;
     {
         float position[] = PLAYERPOS;
+        position[0] = globalProperties.getProperty("mission.player.mech.x", (double) position[0]);
+        position[1] = globalProperties.getProperty("mission.player.mech.y", (double) position[1]);
+        position[2] = globalProperties.getProperty("mission.player.mech.z", (double) position[2]);
         player = initPlayerParty(world, planetmap, position);
     }
 
@@ -242,7 +245,7 @@ Entity* OpenMission::initPlayerParty(World* world, rPlanetmap* planetmap, float*
 
     // Player
     if (true) {
-        float* pos = vector_new(p[0] - 20, 0.1, p[2] - 50);
+        float* pos = vector_new(p[0] - 0, 0.1, p[2] - 0);
         float* rot = vector_new(0, -170, 0);
 
         adjustHeight(planetmap, pos);
@@ -259,7 +262,7 @@ Entity* OpenMission::initPlayerParty(World* world, rPlanetmap* planetmap, float*
 
         c.put("mech.name", "Playermech");
         c.put("mech.displayname", "Alpha");
-        c.put("mech.model", globalProperties.getProperty("mission.playerMech", "frogger"));
+        c.put("mech.model", globalProperties.getProperty("mission.player.mech", "frogger"));
         //c.put("mech.model", "frogger");
         c.put("mech.ai", "false");
         //c.put("mech.tags"], "{FAC_BLUE,PLR_HUMAN}");
