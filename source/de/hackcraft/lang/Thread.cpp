@@ -38,6 +38,6 @@ void Thread::sleep(unsigned int ms) {
 
 
 int Thread::hashCode() {
-    return (int)this;
+    return (int)((unsigned long long)this & 0xFFFFFFFF);
 }
 
