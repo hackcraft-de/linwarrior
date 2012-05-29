@@ -13,7 +13,7 @@ ifneq (,$(findstring Win,$(OS)))
 	DESCRIPTION=Make using native mingw
 	LIBRARIES= -Wl,-subsystem,console -lmingw32 -lSDLmain -lSDL -lOpenGL32  -lglew32 -lGLU32 -lopenal32 -lalut
 	TARGET=dist\linwarrior.exe
-	MKDIR=mkdir
+	MKDIR=mkdir -p
 	CP=copy
 	RM=cmd /C del /Q
 	RMREC=cmd /C del /Q /S
