@@ -3,3 +3,9 @@ Replace /// ... comments with /** ... */ comments:
 search: ^(\s*)///(.*)$
 replace: $1/**$2 */
 in: *.h
+
+
+Replace for (Type loopvar : listvar[->subvar]) { with oldschool iterator style:
+search: for\s*\(\s*([A-Za-z0-9_:\<\>\,\*]*\s*[\*\&]?)\s*([A-Za-z0-9_]*)\s*:\s*([\*]?[A-Za-z0-9_\->]*)\s*\)\s*\{
+replace: for (auto $2_it = ($3).begin(); $2_it != ($3).end(); $2_it ++) { $1 $2 = ($1) (*$2_it);
+in: *.cpp, *.h
