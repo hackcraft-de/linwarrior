@@ -145,7 +145,7 @@ void rPlanetmap::init(Propmap* properties) {
             }
             unsigned int texname = GLS::glBindTexture3D(0, true, true, true, true, true, size, size, size, texels);
             sGrounds.push_back(texname);
-            delete texels;
+            delete[] texels;
         }
         
         for (int i = 0; i < 4; i++) {
@@ -162,7 +162,7 @@ void rPlanetmap::init(Propmap* properties) {
             int w, h, bpp;
             unsigned char* texels = Texfile::loadTGA(name.c_str(), &w, &h, &bpp);
             texname = GLS::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
-            delete texels;
+            delete[] texels;
             sGrounds.push_back(texname);
         }
 
@@ -174,7 +174,7 @@ void rPlanetmap::init(Propmap* properties) {
             int w, h, bpp;
             unsigned char* texels = Texfile::loadTGA(name.c_str(), &w, &h, &bpp);
             texname = GLS::glBindTexture2D(0, true, true, true, false, w, h, bpp, texels);
-            delete texels;
+            delete[] texels;
             sGrasses.push_back(texname);
         }
 
@@ -235,7 +235,7 @@ void rPlanetmap::init(Propmap* properties) {
             int w, h, bpp;
             unsigned char* texels = Texfile::loadTGA(name.c_str(), &w, &h, &bpp);
             texname = GLS::glBindTexture2D(0, true, true, false, false, w, h, bpp, texels);
-            delete texels;
+            delete[] texels;
             sGrowth.push_back(new Growth(texname, 2.0f * sizes[i], render[i]));
         }
     }

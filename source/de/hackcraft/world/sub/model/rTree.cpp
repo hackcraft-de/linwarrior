@@ -48,7 +48,7 @@ rTree::rTree(Entity* obj, float* pos, float* rot, int seed, int type, int age) {
             int w, h, bpp;
             unsigned char* texels = Texfile::loadTGA(name.c_str(), &w, &h, &bpp);
             texname = GLS::glBindTexture2D(0, true, true, false, false, w, h, bpp, texels);
-            delete texels;
+            delete[] texels;
             sLeaftexs.push_back(texname);
         }
         
@@ -67,7 +67,7 @@ rTree::rTree(Entity* obj, float* pos, float* rot, int seed, int type, int age) {
             int w, h, bpp;
             unsigned char* texels = Texfile::loadTGA(name.c_str(), &w, &h, &bpp);
             texname = GLS::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
-            delete texels;
+            delete[] texels;
             sBarktexs.push_back(texname);
         }
     }

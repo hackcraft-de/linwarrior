@@ -125,7 +125,7 @@ void rRigged::initMaterials() {
                 unsigned int texname = GLS::glBindTexture3D(0, true, true, true, true, true, SIZE, SIZE, SIZE, texels);
                 materials[string(names[l])] = texname;
             }
-            delete texels;
+            delete[] texels;
         }
     }
 }
@@ -256,8 +256,8 @@ void rRigged::drawMeshes() {
                 }
             }
             //
-            delete vtx;
-            delete nrm;
+            delete[] vtx;
+            delete[] nrm;
             // Process next mesh of model in next iteration.
             msh = MD5Format::getNextMesh(msh);
         }
