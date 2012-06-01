@@ -25,6 +25,11 @@ void Propmap::load(const char* filename) {
     
     while (std::getline(lines, line)) {
         
+        // Remove trailing carriage return characters if any.
+        if (line.size() > 0 && line[line.size()-1] == '\r') {
+            line.resize(line.size()-1);
+        }
+        
         ln++;
         
         //std::cout << ln << "| " << line << "\n";
