@@ -111,7 +111,7 @@ void rTarcom::animate(float spf) {
 
         // coherence: 1
         delete enemies;
-        enemies = WeaponSystem::getInstance()->filterByTags(object, &inc_enemies, false, -1, near);
+        enemies = WeaponSystem::getInstance()->filterByTags(object, &inc_enemies, false, -1, near_obj);
         
         // Filter one nearby.
         nearbyEnemy = 0;
