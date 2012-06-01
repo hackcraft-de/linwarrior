@@ -11,6 +11,7 @@
 
 
 #include <cassert>
+#include <ctime>
 
     
 MissionSystem* MissionSystem::instance = NULL;

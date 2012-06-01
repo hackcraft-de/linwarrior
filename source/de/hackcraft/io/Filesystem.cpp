@@ -1,6 +1,6 @@
 #include "Filesystem.h"
 
-#include <iostream>
+#include <cstdio>
 
 char* Filesystem::loadTextFile(const char* filename) {
     FILE* f = fopen(filename, "rb");
