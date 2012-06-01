@@ -22,8 +22,8 @@ rTarcom::rTarcom(Entity* obj) {
     quat_zero(ori0);
     vector_zero(pos0);
 
-    near = new std::list<rTarget*>();
-    far = new std::list<rTarget*>();
+    near_obj = new std::list<rTarget*>();
+    far_obj = new std::list<rTarget*>();
     enemies = new std::list<rTarget*>();
     
     selected = 0;
@@ -38,7 +38,7 @@ void rTarcom::nextTarget() {
     bool found = false;
     OID last = 0;
 
-    for(rTarget* o: *near) {
+    for(rTarget* o: *near_obj) {
         if (last == selected) {
             selected = o->object->oid;
             found = true;
@@ -47,10 +47,10 @@ void rTarcom::nextTarget() {
         last = o->object->oid;
     }
     if (!found) {
-        if (near->empty()) {
+        if (near_obj->empty()) {
             selected = 0;
         } else {
-            selected = near->front()->object->oid;
+            selected = near_obj->front()->object->oid;
         }
     }
 }
@@ -59,7 +59,7 @@ void rTarcom::prevTarget() {
     bool found = false;
     OID last = 0;
 
-    for(rTarget* o: *near) {
+    for(rTarget* o: *near_obj) {
         if (o->object->oid == selected) {
             selected = last;
             found = true;
@@ -68,10 +68,10 @@ void rTarcom::prevTarget() {
         last = o->object->oid;
     }
     if (!found) {
-        if (near->empty()) {
+        if (near_obj->empty()) {
             selected = 0;
         } else {
-            selected = near->back()->object->oid;
+            selected = near_obj->back()->object->oid;
         }
     }
 }
@@ -102,12 +102,12 @@ void rTarcom::animate(float spf) {
     //if ((key % 23) == (frame % 23)) 
     {
         // coherence: 4
-        delete far;
-        far = WeaponSystem::getInstance()->filterByRange(object, pos0, 0, 100, -1, NULL);
+        delete far_obj;
+        far_obj = WeaponSystem::getInstance()->filterByRange(object, pos0, 0, 100, -1, NULL);
         
         // coherence: 2
-        delete near;
-        near = WeaponSystem::getInstance()->filterByRange(object, pos0, 0, 55, -1, far);
+        delete near_obj;
+        near_obj = WeaponSystem::getInstance()->filterByRange(object, pos0, 0, 55, -1, far_obj);
 
         // coherence: 1
         delete enemies;
@@ -167,7 +167,7 @@ void rTarcom::drawHUD() {
         }
         glEnd();
 
-        for(rTarget* o: *far) {
+        for(rTarget* o: *far_obj) {
             glBegin(GL_POINTS);
             {
                 glColor4f(0.5, 0.5, 0.5, 1);
