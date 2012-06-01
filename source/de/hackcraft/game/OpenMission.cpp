@@ -31,6 +31,8 @@ using std::stringstream;
 #include <string>
 using std::string;
 
+#include <ctime>
+
 #define SKYTIDE     { 0, 0, 0 }
 #define SPACEPORT   { -270, 0, -180 }
 #define PYRANANO    { -210, 0, 270 }

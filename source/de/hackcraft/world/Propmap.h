@@ -11,6 +11,7 @@
 
 #include <string>
 #include <map>
+#include <cmath>
 
 class Propmap {
     std::map<std::string, std::string> contents;

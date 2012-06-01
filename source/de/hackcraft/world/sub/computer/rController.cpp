@@ -340,7 +340,7 @@ void rController::gotoDestination() {
         float* u = new float[3];
         vector_set(u, v[0],v[1],v[2]);
         this->doit(0, u, false);
-        delete u;
+        delete[] u;
     }
     
     float range = walkrange;

@@ -94,7 +94,7 @@ void BackgroundSystem::initTextures() {
         texname = SGL::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
         int id = texturedefs[i].id;
         textures[id] = texname;
-        delete texels;
+        delete[] texels;
     }
      */
 
@@ -125,7 +125,7 @@ void BackgroundSystem::initTextures() {
         texname = GLS::glBindTexture2D(0, false, soft, repeat, repeat, w, h, bpp, texels);
         gPermutationTexture256 = texname;
         //saveTGA("permutation256.tga", w, h, bpp, texels);
-        delete texels;
+        delete[] texels;
     }
 
     // Ground Texture
@@ -154,7 +154,7 @@ void BackgroundSystem::initTextures() {
         unsigned int texname;
         texname = GLS::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
         textures[T_ICE] = texname;
-        delete texels;
+        delete[] texels;
     }
 
     // Sun Texture
@@ -195,7 +195,7 @@ void BackgroundSystem::initTextures() {
         unsigned int texname;
         texname = GLS::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
         textures[T_SUN] = texname;
-        delete texels;
+        delete[] texels;
     }
 
     // Earth Texture
@@ -239,7 +239,7 @@ void BackgroundSystem::initTextures() {
         texname = GLS::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
         textures[T_EARTH] = texname;
         //saveTGA("earth.tga", w, h, bpp, texels);
-        delete texels;
+        delete[] texels;
     }
 
     // Lavos Texture
@@ -284,7 +284,7 @@ void BackgroundSystem::initTextures() {
         texname = GLS::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
         textures[T_LAVOS] = texname;
         //saveTGA("lavos.tga", w, h, bpp, texels);
-        delete texels;
+        delete[] texels;
     }
 
     // Moon Texture
@@ -328,7 +328,7 @@ void BackgroundSystem::initTextures() {
         unsigned int texname;
         texname = GLS::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
         textures[T_MOON] = texname;
-        delete texels;
+        delete[] texels;
     }
 
     // Cloud Texture
@@ -362,7 +362,7 @@ void BackgroundSystem::initTextures() {
         unsigned int texname;
         texname = GLS::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
         textures[T_CLOUDS] = texname;
-        delete texels;
+        delete[] texels;
     }
 
     // Galaxy Box Textures
@@ -423,7 +423,7 @@ void BackgroundSystem::initTextures() {
                 }
             }
         }
-        delete texels;
+        delete[] texels;
     }
 }
 
