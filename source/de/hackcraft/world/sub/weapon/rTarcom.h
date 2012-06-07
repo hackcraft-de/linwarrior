@@ -52,9 +52,9 @@ public: // INPUT
     std::set<OID> exc_enemies;
 public: // OUTPUT
     /** List of objects in far range. */
-    std::list<rTarget*>* far;
+    std::list<rTarget*>* farTargets;
     /** List of objects in range. */
-    std::list<rTarget*>* near;
+    std::list<rTarget*>* nearTargets;
     /** List of (possible) enemy objects in range (only inc_enemies). */
     std::list<rTarget*>* enemies;
     /** ID of selected object (hook o) */

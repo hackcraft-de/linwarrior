@@ -85,7 +85,7 @@ struct GLS {
      * stays the same after calling the projection-macros (most often MODELVIEW).
      */
 
-    static void glPushPerspectiveProjection(float fovdegrees = 90, float near = 0.07f, float far = 1500.0f)
+    static void glPushPerspectiveProjection(float fovdegrees = 90, float znear = 0.07f, float zfar = 1500.0f)
     {
         glPushAttrib(GL_DEPTH_BUFFER_BIT); /* push glDepthFunc */
         glPushAttrib(GL_TRANSFORM_BIT);
@@ -94,24 +94,24 @@ struct GLS {
             glLoadIdentity();
             GLint view[4];
             glGetIntegerv(GL_VIEWPORT, view);
-            gluPerspective(fovdegrees, GLdouble(view[2]) / GLdouble(view[3]), near, far);
+            gluPerspective(fovdegrees, GLdouble(view[2]) / GLdouble(view[3]), znear, zfar);
             glDepthFunc(GL_LEQUAL);
         glPopAttrib();
     }
 
-    static void glPushOrthoProjection(float left = 0, float right = 1, float bottom = 0, float top = 1, float near = -500, float far = 500)
+    static void glPushOrthoProjection(float left = 0, float right = 1, float bottom = 0, float top = 1, float znear = -500, float zfar = 500)
     {
         glPushAttrib(GL_DEPTH_BUFFER_BIT); /* push glDepthFunc */
         glPushAttrib(GL_TRANSFORM_BIT);
             glMatrixMode(GL_PROJECTION);
             glPushMatrix();
             glLoadIdentity();
-            glOrtho(left, right, bottom, top, -500.0, 500.0);
+            glOrtho(left, right, bottom, top, znear, zfar);
             glDepthFunc(GL_GEQUAL);
         glPopAttrib();
     }
 
-    static void glPushOrthoProjectionViewport(float near = -500, float far = 500)
+    static void glPushOrthoProjectionViewport(float znear = -500, float zfar = 500)
     {
         glPushAttrib(GL_DEPTH_BUFFER_BIT); /* push glDepthFunc */
         glPushAttrib(GL_TRANSFORM_BIT);
@@ -120,7 +120,7 @@ struct GLS {
             glLoadIdentity();
             GLint view[4];
             glGetIntegerv(GL_VIEWPORT, view);
-            glOrtho(view[0], view[2], view[1], view[3], near, far);
+            glOrtho(view[0], view[2], view[1], view[3], znear, zfar);
             glDepthFunc(GL_GEQUAL);
         glPopAttrib();
     }

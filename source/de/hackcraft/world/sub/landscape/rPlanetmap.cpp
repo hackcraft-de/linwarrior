@@ -579,7 +579,7 @@ float rPlanetmap::constrain(float* worldpos, float radius, float* localpos, Enti
         //const float a = 2.0 * M_PI / (float) samples;
         //const float b = 0.5 * M_PI / (float) samples;
         float nearest2 = radius*radius;
-        float near[] = {0, 0, 0};
+        float nearestV[] = {0, 0, 0};
 
         loopi(samples) {
             float x_ = localpos_[0];
@@ -610,7 +610,7 @@ float rPlanetmap::constrain(float* worldpos, float radius, float* localpos, Enti
             float dist2 = vector_dot(v, v);
             if (dist2 < nearest2) {
                 nearest2 = dist2;
-                vector_cpy(near, v);
+                vector_cpy(nearestV, v);
             }
         }
         float nearest = sqrtf(nearest2);
@@ -619,9 +619,9 @@ float rPlanetmap::constrain(float* worldpos, float radius, float* localpos, Enti
             //vector_print(near);
             //cout << radius << " " << nearest << " " << delta << endl;
 
-            vector_scale(near, near, 1.0f / (nearest + 0.000001f));
-            vector_scale(near, near, delta * relax);
-            vector_add(localpos_, localpos_, near);
+            vector_scale(nearestV, nearestV, 1.0f / (nearest + 0.000001f));
+            vector_scale(nearestV, nearestV, delta * relax);
+            vector_add(localpos_, localpos_, nearestV);
         } else if (j > 2) {
             break;
         }
