@@ -2,6 +2,7 @@
 
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/GLF.h"
+#include "de/hackcraft/psi3d/Console.h"
 
 #include "de/hackcraft/world/World.h"
 

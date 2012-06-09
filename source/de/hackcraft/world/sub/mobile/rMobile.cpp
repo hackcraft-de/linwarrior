@@ -1,6 +1,7 @@
 #include "rMobile.h"
 
 #include "de/hackcraft/psi3d/macros.h"
+#include "de/hackcraft/psi3d/Particle.h"
 
 #include "de/hackcraft/world/World.h"
 
