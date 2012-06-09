@@ -32,7 +32,7 @@ rScatter::rScatter(Entity* obj, float radius, float density) {
             int w, h, bpp;
             unsigned char* texels = Texfile::loadTGA("data/base/landscape/plant/plant_desert.tga", &w, &h, &bpp);
             texname = GLS::glBindTexture2D(0, true, true, false, false, w, h, bpp, texels);
-            delete texels;
+            delete[] texels;
             sTextures[0] = texname;
         }
     }

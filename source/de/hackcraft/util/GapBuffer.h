@@ -358,7 +358,7 @@ public: // Testing
         if (1) {
             char* buffer = new char [80*50];
             printConsole(buffer, 22, 5);
-            delete buffer;
+            delete[] buffer;
         }
     }
 
@@ -379,7 +379,7 @@ private:
             for (i = 0; i < postsize; i++) {
                 bufferData_[bufferPost_ + i] = bufferData[bufferPost + i];
             }
-            delete bufferData;
+            delete[] bufferData;
             bufferData = bufferData_;
             bufferSize = bufferSize_;
             bufferData = bufferData_;

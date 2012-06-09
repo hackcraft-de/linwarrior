@@ -219,7 +219,7 @@ protected: // PARSING UTILITIES
             return verts;
 
         } catch (...) {
-            delete verts;
+            delete[] verts;
             throw;
         }
     }
@@ -245,7 +245,7 @@ protected: // PARSING UTILITIES
             return tris;
 
         } catch (...) {
-            delete tris;
+            delete[] tris;
             throw;
         }
     }
@@ -271,7 +271,7 @@ protected: // PARSING UTILITIES
             return weights;
 
         } catch (...) {
-            delete weights;
+            delete[] weights;
             throw;
         }
     }
@@ -361,17 +361,17 @@ protected: // PARSING UTILITIES
             chunk_ptr += sizeof (tri) * m.numtris;
             memcpy(chunk_ptr, weights, sizeof (weight) * m.numweights);
 
-            delete verts;
-            delete tris;
-            delete weights;
+            delete[] verts;
+            delete[] tris;
+            delete[] weights;
 
             return (mesh*) chunk;
 
         } catch (...) {
-            delete verts;
-            delete tris;
-            delete weights;
-            delete chunk;
+            delete[] verts;
+            delete[] tris;
+            delete[] weights;
+            delete[] chunk;
             throw;
         }
     }
@@ -417,7 +417,7 @@ protected: // PARSING UTILITIES
             return joints;
 
         } catch (...) {
-            delete joints;
+            delete[] joints;
             throw;
         }
     }
@@ -503,11 +503,11 @@ public: // LOADING
             return (model*) modelchunk;
 
         } catch (...) {
-            delete joints;
-            delete modelchunk;
+            delete[] joints;
+            delete[] modelchunk;
             if (meshes != NULL) {
                 for (int i = 0; i < m.numMeshes; i++) delete meshes[i];
-                delete meshes;
+                delete[] meshes;
             }
             throw;
         }
@@ -597,7 +597,7 @@ public: // TRANSFORMING
         }
         if (locals != joints_) {
             memcpy(joints_, locals, sizeof (joint) * numJoints);
-            delete locals;
+            delete[] locals;
         }
     }
 
@@ -648,7 +648,7 @@ public: // TRANSFORMING
         }
         if (globals != joints_) {
             memcpy(joints_, globals, sizeof (joint) * numJoints);
-            delete globals;
+            delete[] globals;
         }
     }
     

@@ -18,7 +18,7 @@ void Propmap::load(const char* filename) {
     char* contents = Filesystem::loadTextFile(filename);
     if (contents == NULL) throw new string("Could not load property file.");
     stringstream lines(contents);
-    delete contents;
+    delete[] contents;
     
     int ln = 0;
     string line;

@@ -30,8 +30,8 @@ static GLenum loadMaterial() {
         if (!fail) {
             prog = GLS::glCompileProgram(vtx, fgm, cout);
         }
-        delete vtx;
-        delete fgm;
+        delete[] vtx;
+        delete[] fgm;
     }
 
     if (fail) return 0;
@@ -78,7 +78,7 @@ rTile::rTile(int x, int y, int z, int kind) {
                     cout << "Could not save image: " << fname << endl;
                 }
             }
-            delete texels;
+            delete[] texels;
             sTextures[KIND_ROAD_NEWS] = texname;
         }
         // TN-Road
@@ -107,7 +107,7 @@ rTile::rTile(int x, int y, int z, int kind) {
                     cout << "Could not save image: " << fname << endl;
                 }
             }
-            delete texels;
+            delete[] texels;
             sTextures[KIND_ROAD_TN] = texname;
         }
         // TS-Road
@@ -136,7 +136,7 @@ rTile::rTile(int x, int y, int z, int kind) {
                     cout << "Could not save image: " << fname << endl;
                 }
             }
-            delete texels;
+            delete[] texels;
             sTextures[KIND_ROAD_TS] = texname;
         }
         // TE-Road
@@ -165,7 +165,7 @@ rTile::rTile(int x, int y, int z, int kind) {
                     cout << "Could not save image: " << fname << endl;
                 }
             }
-            delete texels;
+            delete[] texels;
             sTextures[KIND_ROAD_TE] = texname;
         }
         // TW-Road
@@ -194,7 +194,7 @@ rTile::rTile(int x, int y, int z, int kind) {
                     cout << "Could not save image: " << fname << endl;
                 }
             }
-            delete texels;
+            delete[] texels;
             sTextures[KIND_ROAD_TW] = texname;
         }
         // NS road.
@@ -223,7 +223,7 @@ rTile::rTile(int x, int y, int z, int kind) {
                     cout << "Could not save image: " << fname << endl;
                 }
             }
-            delete texels;
+            delete[] texels;
             sTextures[KIND_ROAD_NS] = texname;
         }
         // EW road.
@@ -252,7 +252,7 @@ rTile::rTile(int x, int y, int z, int kind) {
                     cout << "Could not save image: " << fname << endl;
                 }
             }
-            delete texels;
+            delete[] texels;
             sTextures[KIND_ROAD_EW] = texname;
         }
         // NE road.
@@ -281,7 +281,7 @@ rTile::rTile(int x, int y, int z, int kind) {
                     cout << "Could not save image: " << fname << endl;
                 }
             }
-            delete texels;
+            delete[] texels;
             sTextures[KIND_ROAD_NE] = texname;
         }
         // SE road.
@@ -310,7 +310,7 @@ rTile::rTile(int x, int y, int z, int kind) {
                     cout << "Could not save image: " << fname << endl;
                 }
             }
-            delete texels;
+            delete[] texels;
             sTextures[KIND_ROAD_SE] = texname;
         }
         // SW road.
@@ -339,7 +339,7 @@ rTile::rTile(int x, int y, int z, int kind) {
                     cout << "Could not save image: " << fname << endl;
                 }
             }
-            delete texels;
+            delete[] texels;
             sTextures[KIND_ROAD_SE] = texname;
         }
         // NW road.
@@ -368,7 +368,7 @@ rTile::rTile(int x, int y, int z, int kind) {
                     cout << "Could not save image: " << fname << endl;
                 }
             }
-            delete texels;
+            delete[] texels;
             sTextures[KIND_ROAD_SE] = texname;
         }
         // PLAZA road.
@@ -397,7 +397,7 @@ rTile::rTile(int x, int y, int z, int kind) {
                     cout << "Could not save image: " << fname << endl;
                 }
             }
-            delete texels;
+            delete[] texels;
             sTextures[KIND_ROAD_SE] = texname;
         }
 

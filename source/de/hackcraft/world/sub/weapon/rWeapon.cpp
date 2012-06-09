@@ -52,7 +52,7 @@ rWeapon::rWeapon(Entity* obj) {
             unsigned int texname;
             texname = GLS::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
             sTextures[0] = texname;
-            delete texels;
+            delete[] texels;
         }
     }
 

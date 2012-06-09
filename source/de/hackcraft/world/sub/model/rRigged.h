@@ -91,7 +91,7 @@ public:
 
     ~rRigged() {
         delete model;
-        delete joints;
+        delete[] joints;
     }
 
     virtual Component * clone() {

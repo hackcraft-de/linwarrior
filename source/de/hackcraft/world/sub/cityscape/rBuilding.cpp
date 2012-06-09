@@ -37,8 +37,8 @@ static GLenum loadMaterial() {
         if (!fail) {
             prog = GLS::glCompileProgram(vtx, fgm, cout);
         }
-        delete vtx;
-        delete fgm;
+        delete[] vtx;
+        delete[] fgm;
     }
 
     if (fail) return 0;
@@ -74,7 +74,7 @@ rBuilding::rBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
                 }
             }
             texname = GLS::glBindTexture2D(0, true, false, true, true, w, h, bpp, texels);
-            delete texels;
+            delete[] texels;
             sTextures[0] = texname;
         }
 
@@ -121,7 +121,7 @@ rBuilding::rBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
                         cout << "ERROR: " << s << endl;
                     }
                 }
-                delete texels;
+                delete[] texels;
             }
         }
     }

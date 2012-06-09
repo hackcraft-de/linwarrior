@@ -84,6 +84,7 @@ unsigned char* Texfile::loadTGA(const char *fname, int *w, int* h, int* bpp) {
     assert(bmp != NULL);
     r = fread(bmp, size, 1, file);
     if (r != 1) {
+        delete[] bmp;
         fclose(file);
         cout << "WARNING: Could not read tga bitmap data.\n";
         return warningTexture(fname, w, h, bpp);

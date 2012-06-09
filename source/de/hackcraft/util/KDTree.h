@@ -234,7 +234,7 @@ public:
         //printf("  Count: %i  Splitpos %i  Splitvalue: %f\n", count, split, splitvalue);
 
         // Free Bins
-        delete bins;
+        delete[] bins;
 
         // Splitting - separate dataset into two datasets left and right.
 
@@ -460,8 +460,8 @@ public:
                     memcpy(left_max, max_datavec, sizeof (float) * kdim);
                     left_max[index] = this->comparevalue - epsilon; // sure less than.
                     std::list<float*>* left_list = this->left->findDatasetInterval(kdim, curlvl + 1, left_min, left_max);
-                    delete left_min;
-                    delete left_max;
+                    delete[] left_min;
+                    delete[] left_max;
                     ret->merge(*left_list, no_specific_order<float*>());
                     delete left_list;
                 }
@@ -475,8 +475,8 @@ public:
                     memcpy(right_max, max_datavec, sizeof (float) * kdim);
                     right_min[index] = this->comparevalue; // sure greater or equal than.
                     std::list<float*>* right_list = this->right->findDatasetInterval(kdim, curlvl + 1, right_min, right_max);
-                    delete right_min;
-                    delete right_max;
+                    delete[] right_min;
+                    delete[] right_max;
                     ret->merge(*right_list, no_specific_order<float*>());
                     delete right_list;
                 }
@@ -543,8 +543,8 @@ public:
                     memcpy(left_max, max_datavec, sizeof (float) * kdim);
                     left_max[index] = this->comparevalue - epsilon; // sure less than.
                     std::list<VALUE>* left_list = this->left->findUsersetInterval(kdim, curlvl + 1, left_min, left_max);
-                    delete left_min;
-                    delete left_max;
+                    delete[] left_min;
+                    delete[] left_max;
                     ret->merge(*left_list, no_specific_order<VALUE>());
                     delete left_list;
                 }
@@ -558,8 +558,8 @@ public:
                     memcpy(right_max, max_datavec, sizeof (float) * kdim);
                     right_min[index] = this->comparevalue; // sure greater or equal than.
                     std::list<VALUE>* right_list = this->right->findUsersetInterval(kdim, curlvl + 1, right_min, right_max);
-                    delete right_min;
-                    delete right_max;
+                    delete[] right_min;
+                    delete[] right_max;
                     ret->merge(*right_list, no_specific_order<VALUE>());
                     delete right_list;
                 }

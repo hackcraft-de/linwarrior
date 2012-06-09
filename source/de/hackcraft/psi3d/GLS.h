@@ -279,7 +279,7 @@ struct GLS {
             char* log = new char[length];
             glGetShaderInfoLog(vs, length, &length, log);
             //str << "Vertex Shader Log:\n" << log << "\n";
-            delete log;
+            delete[] log;
         }
 
         GLenum fs = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
@@ -294,7 +294,7 @@ struct GLS {
             char* log = new char[length];
             glGetShaderInfoLog(fs, length, &length, log);
             //str << "Fragment Shader Log:\n" << log << "\n";
-            delete log;
+            delete[] log;
         }
 
         glLinkProgramARB(program);

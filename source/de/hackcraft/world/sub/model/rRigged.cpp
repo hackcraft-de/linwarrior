@@ -30,8 +30,8 @@ static GLenum loadMaterial() {
         if (!fail) {
             prog = GLS::glCompileProgram(vtx, fgm, cout);
         }
-        delete vtx;
-        delete fgm;
+        delete[] vtx;
+        delete[] fgm;
     }
 
     if (fail) return 0;
@@ -125,7 +125,7 @@ void rRigged::initMaterials() {
                 unsigned int texname = GLS::glBindTexture3D(0, true, true, true, true, true, SIZE, SIZE, SIZE, texels);
                 materials[string(names[l])] = texname;
             }
-            delete texels;
+            delete[] texels;
         }
     }
 }
@@ -256,8 +256,8 @@ void rRigged::drawMeshes() {
                 }
             }
             //
-            delete vtx;
-            delete nrm;
+            delete[] vtx;
+            delete[] nrm;
             // Process next mesh of model in next iteration.
             msh = MD5Format::getNextMesh(msh);
         }
@@ -446,7 +446,7 @@ void rRigged::transformJoints() {
     // Transform local skeleton using manipulators to global skeleton.
     MD5Format::joint* joints_orig = MD5Format::getJoints(model);
     MD5Format::toGlobalJoints(model->numJoints, joints_orig, joints, manipulators);
-    delete manipulators;
+    delete[] manipulators;
 }
 
 std::string rRigged::resolveFilename(std::string modelname) {
