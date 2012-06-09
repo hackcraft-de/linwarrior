@@ -15,6 +15,9 @@ class Subsystem;
 
 class Entity;
 
+/**
+ * Base class for subsystems that form the whole world system.
+ */
 class Subsystem {
 
 public: // Housekeeping

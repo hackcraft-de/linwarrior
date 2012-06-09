@@ -20,6 +20,10 @@ class CityscapeSystem;
 
 #include <map>
 
+/**
+ * Represents all aspects (rendering, collision, ...)
+ * for largescale city models.
+ */
 class CityscapeSystem : public Subsystem {
 public:
     CityscapeSystem();

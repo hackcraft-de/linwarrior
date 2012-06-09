@@ -13,7 +13,9 @@
 
 #include <GL/glew.h>
 
-/** Primitive */
+/** 
+ * Provides extended GL rendering primitives.
+ */
 struct Primitive {
 
     static inline void glVertex3fv2f(float* pnt, float u, float v) {

@@ -22,7 +22,9 @@ class WeaponSystem;
 
 #include <map>
 
-
+/**
+ * Manages weapons, targets and ranging-/targeting-devices.
+ */
 class WeaponSystem : public Subsystem {
 public:
     WeaponSystem();

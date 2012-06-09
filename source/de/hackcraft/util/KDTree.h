@@ -3,13 +3,6 @@
  * Author: Benjamin Pickhardt
  * Home:   hackcraft.de
  *
- * KD-Tree for clustering k-dimensional data vectors
- * and finding the nearest stored data vectors (or associated data)
- * for a given sample or for a given sample interval.
- *
- * The current implementation is for float-array vectors but you
- * may easily replace it with another typed array.
- *
  * Created on August 29, 2008, 12:00 PM
  */
 
@@ -24,6 +17,17 @@
 #include <stdio.h>
 #include <string.h>
 
+/**
+ * Generic KD-Tree for clustering k-dimensional data vectors
+ * and finding the nearest stored data vectors (or associated data)
+ * for a given sample or for a given sample interval.
+ *
+ * The current implementation is for float-array vectors but you
+ * may easily replace it with another typed array.
+ * 
+ * Note: Geo-Hash-Tables have been sufficient and simpler
+ * for simple spatial indexing.
+ */
 template <class VALUE>
 class KDTree {
 public:

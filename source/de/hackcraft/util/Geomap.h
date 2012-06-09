@@ -14,6 +14,9 @@
 #include <list>
 #include <stdlib.h>
 
+/**
+ * Generic Geo-Hash-Table for spatial indexing.
+ */
 template <class T>
 class Geomap {
 public:

@@ -1,14 +1,10 @@
-// benjamin.pickhardt {@udo.edu}
-// Comments welcome.
-
-// Textured Console Font out of a box.
-// For opengl use glUploadFont()
-// and then glprintf("Hello World");
-// Or use bnprintf(..) for console buffer writing followed by
-// glDrawConsole(..);
-//
-// See function definitions for further comment and information.
-// See end of file for a testdriver/sample of use.
+/* 
+ * File:   GLS.h
+ * Author: Benjamin Pickhardt
+ * Home:   hackcraft.de
+ *
+ * Created on someday
+ */
 
 #ifndef _GLFONT_H
 #define	_GLFONT_H
@@ -294,6 +290,15 @@
     0X0, 0X0, 0X0, 0X0, /* Unbreakable Space (255) */
 
 
+/**
+ * Textured Console Font out of a box.
+ * For opengl use glUploadFont()
+ * and then glprintf("Hello World");
+ * used in Console class.
+ *
+ * See method definitions for further comment and information.
+ * See end of file for a testdriver/sample of use.
+ */
 struct GLF {
     typedef int32_t four_bytes;
 

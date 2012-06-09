@@ -9,6 +9,9 @@
 #ifndef TEXFILE_H
 #define	TEXFILE_H
 
+/**
+ * Class for loading (uncompressed tga) textures.
+ */
 struct Texfile {
 
     /**

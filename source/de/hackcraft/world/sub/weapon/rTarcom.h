@@ -23,7 +23,8 @@ struct rTarcom;
 #include <list>
 #include <set>
 
-/** Targeting Computer,
+/** 
+ * Targeting Computer,
  * includes Radar, target-selection and -display.
  */
 struct rTarcom : public Component, public IComputer {

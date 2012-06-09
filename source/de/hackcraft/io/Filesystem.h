@@ -9,6 +9,9 @@
 #ifndef FILESYSTEM_H
 #define	FILESYSTEM_H
 
+/**
+ * Class that shall provide means to load files from the filesystem.
+ */
 class Filesystem {
     public:
     /** Loading whole text file. */

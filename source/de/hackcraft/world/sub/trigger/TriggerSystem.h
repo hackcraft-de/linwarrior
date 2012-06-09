@@ -19,6 +19,9 @@ class TriggerSystem;
 
 #include <map>
 
+/**
+ * Manages alerts and triggers for alerts.
+ */
 class TriggerSystem : public Subsystem {
 public:
     TriggerSystem();

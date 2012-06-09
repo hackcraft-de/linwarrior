@@ -20,6 +20,11 @@ class rPadmap;
 #include <vector>
 #include <map>
 
+/**
+ * Enhanced heightmap model with vertical walls for gaps
+ * (with 4 heights at one grid point).
+ * To be used for urban areas or scifi building complexes.
+ */
 class rPadmap : public Component {
 public: // SYSTEM
     /** Identifier for this component (all uppercase letters without leading "r"). */

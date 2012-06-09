@@ -24,6 +24,10 @@ class ModelSystem;
 #include <unordered_map>
 #include <vector>
 
+/**
+ * Manages small to medium scale model rendering,
+ * collision and so on.
+ */
 class ModelSystem : public Subsystem {
 public:
     ModelSystem();

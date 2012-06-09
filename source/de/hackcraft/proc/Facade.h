@@ -9,6 +9,9 @@
 #ifndef FACADE_H
 #define	FACADE_H
 
+/**
+ * Class that provides methods for generating facade textures.
+ */
 struct Facade {
 
     static void getVStrings(float x, float y, float* color4f, unsigned char seed = 131);

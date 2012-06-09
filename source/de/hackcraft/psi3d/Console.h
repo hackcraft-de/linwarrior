@@ -15,6 +15,10 @@ struct Console;
 
 #include <GL/glew.h>
 
+/**
+ * Simple console buffer which makes use of the
+ * instant font rendering class.
+ */
 struct Console {
     char* buffer;
     int size;

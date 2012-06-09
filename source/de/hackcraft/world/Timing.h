@@ -16,13 +16,16 @@ class Timing;
 #include <string>
 
 
-// Serious question: What time & date format would be used
-// as a common planetary calendar? Is that sensible at all?!
-// So far I assume terran planetary dates everywhere.
-// But time & date should be adjusted to the planet and
-// planet's date shall be mapped like beween maya, gregorian
-// or moon calendars.
-
+/**
+ * Class that encapsulates the simulation time and animation timing.
+ * 
+ * Serious question: What time & date format would be used
+ * as a common planetary calendar? Is that sensible at all?!
+ * So far I assume terran planetary dates everywhere.
+ * But time & date should be adjusted to the planet and
+ * planet's date shall be mapped like beween maya, gregorian
+ * or moon calendars.
+ */
 class Timing {
 private:
     /** Counts years of simulation universe. */

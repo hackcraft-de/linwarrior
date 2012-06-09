@@ -71,6 +71,8 @@ class Entity;
 class World;
 
 /**
+ * Obsolete description:
+ * 
  * Generic Game-Object (Object with Roles) which
  * collects as much common attributes as needed
  * by the different roles and as needed by World-Filtering

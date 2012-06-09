@@ -21,7 +21,7 @@ class rAlert;
 #include <string>
 
 /**
- * Checks a defined area for certain intruding objects
+ * Checks a defined area for certain intruding trigger-objects
  * (most likely the player). When such an intrusion is
  * detected a message is sent to a given group of objects.
  * Those receivers may then react on that message.

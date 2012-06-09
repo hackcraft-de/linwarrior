@@ -15,6 +15,11 @@ class Propmap;
 #include <string>
 #include <stdlib.h>
 
+/**
+ * Property map that can load configurations from property files.
+ * Note that feasible property files do not allow whitespaces around
+ * keys or values.
+ */
 class Propmap {
     std::map<std::string, std::string> contents;
 public:

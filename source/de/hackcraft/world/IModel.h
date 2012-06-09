@@ -10,6 +10,10 @@
 #ifndef IMODEL_H
 #define	IMODEL_H
 
+/**
+ * Interface for models that have a position for
+ * spatial-indexing and that can be rendered.
+ */
 class IModel {
 public:
     virtual int getPosX() = 0;

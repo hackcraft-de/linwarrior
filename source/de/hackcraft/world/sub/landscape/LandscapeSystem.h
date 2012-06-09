@@ -15,6 +15,10 @@ class LandscapeSystem;
 
 #include "de/hackcraft/world/sub/landscape/rPlanetmap.h"
 
+/**
+ * Models omniscient ultra largescale landscape with
+ * all aspects like rendering, collision and etc.
+ */
 class LandscapeSystem : public Subsystem {
 public:
     LandscapeSystem();
