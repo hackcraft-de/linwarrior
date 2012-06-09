@@ -222,9 +222,9 @@ void GameMain::applyFilter(int width, int height) {
     static GLenum postprocess = 0;
 
     if (postprocess == 0 && !fail) {
-        char* vtx = Filesystem::loadTextFile("data/base/prgs/post.v");
+        char* vtx = Filesystem::loadTextFile("data/base/prgs/post.vert");
         if (vtx) cout << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
-        char* fgm = Filesystem::loadTextFile("data/base/prgs/post.f");
+        char* fgm = Filesystem::loadTextFile("data/base/prgs/post.frag");
         if (fgm) cout << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
         fail = (vtx[0] == 0 && fgm[0] == 0);
         if (!fail) {

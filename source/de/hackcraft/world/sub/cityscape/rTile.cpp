@@ -22,9 +22,9 @@ static GLenum loadMaterial() {
     static GLenum prog = 0;
 
     if (prog == 0 && !fail) {
-        char* vtx = Filesystem::loadTextFile("data/base/material/base.v");
+        char* vtx = Filesystem::loadTextFile("data/base/material/base.vert");
         if (vtx) cout << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
-        char* fgm = Filesystem::loadTextFile("data/base/material/base2d.f");
+        char* fgm = Filesystem::loadTextFile("data/base/material/base2d.frag");
         if (fgm) cout << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
         fail = (vtx[0] == 0 && fgm[0] == 0);
         if (!fail) {
