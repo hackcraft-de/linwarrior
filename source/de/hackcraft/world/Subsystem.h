@@ -11,7 +11,25 @@
 
 class Entity;
 
+#include <stdlib.h>
+
 class Subsystem {
+
+public: // Housekeeping
+    /**
+     * Returns the id of the subsystem
+     * @return Id of this subsystem.
+     */
+    virtual int getId() { return 0; };
+    
+    /**
+     * Returns a once allocated string with the name
+     * of the system for debugging purposes - don't change or delete.
+     * Shall be implemented in all subclasses.
+     * 
+     * @return Name of this subsystem.
+     */
+    virtual char* getName() { return (char*) NULL; };
 
 public: // Interaction
     /**
