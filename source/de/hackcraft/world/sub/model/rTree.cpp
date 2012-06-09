@@ -1,10 +1,10 @@
 #include "rTree.h"
 
+#include "de/hackcraft/io/Texfile.h"
+
 #include "de/hackcraft/psi3d/macros.h"
 #include "de/hackcraft/psi3d/Primitive.h"
 #include "de/hackcraft/psi3d/Particle.h"
-
-#include "de/hackcraft/io/Texfile.h"
 
 #include <cmath>
 #include <cassert>

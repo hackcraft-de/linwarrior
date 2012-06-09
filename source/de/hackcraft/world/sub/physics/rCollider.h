@@ -9,9 +9,11 @@
 #ifndef RCOLLIDER_H
 #define	RCOLLIDER_H
 
-#include "de/hackcraft/world/Component.h"
+struct rCollider;
 
 #include "de/hackcraft/psi3d/math3d.h"
+
+#include "de/hackcraft/world/Component.h"
 
 /**
  * Component for collision and collision response.

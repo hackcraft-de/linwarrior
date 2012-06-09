@@ -1,4 +1,5 @@
 #include "LandscapeSystem.h"
+
 #include "de/hackcraft/world/World.h"
 
 LandscapeSystem::LandscapeSystem() {

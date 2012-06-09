@@ -1,20 +1,19 @@
-// cBuilding.cpp
-
 #include "rBuilding.h"
 
-#include "de/hackcraft/world/sub/weapon/rTarget.h"
-#include "de/hackcraft/world/World.h"
+#include "de/hackcraft/io/Texfile.h"
+#include "de/hackcraft/io/Filesystem.h"
 
 #include "de/hackcraft/psi3d/macros.h"
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Primitive.h"
 
-#include "de/hackcraft/proc/Noise.h"
 #include "de/hackcraft/proc/Distortion.h"
 #include "de/hackcraft/proc/Facade.h"
+#include "de/hackcraft/proc/Noise.h"
 
-#include "de/hackcraft/io/Texfile.h"
-#include "de/hackcraft/io/Filesystem.h"
+#include "de/hackcraft/world/World.h"
+
+#include "de/hackcraft/world/sub/weapon/rTarget.h"
 
 #include <cassert>
 

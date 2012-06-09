@@ -11,13 +11,12 @@
 
 class rPlanetmap;
 
-#include "de/hackcraft/world/Component.h"
-
 #include "de/hackcraft/proc/Landscape.h"
 
-#include "de/hackcraft/world/sub/model/rTree.h"
-
+#include "de/hackcraft/world/Component.h"
 #include "de/hackcraft/world/Propmap.h"
+
+#include "de/hackcraft/world/sub/model/rTree.h"
 
 #define USE_UNORDERED_MAP
 #if defined(USE_UNORDERED_MAP)

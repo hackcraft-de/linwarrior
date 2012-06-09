@@ -11,17 +11,16 @@
 
 struct rTarget;
 
-#include "de/hackcraft/world/sub/weapon/rTarcom.h"
-
-#include "de/hackcraft/world/Component.h"
-
-#include "de/hackcraft/world/OID.h"
-
 #include "de/hackcraft/psi3d/math3d.h"
 
+#include "de/hackcraft/world/Component.h"
+#include "de/hackcraft/world/OID.h"
+
+#include "de/hackcraft/world/sub/weapon/rTarcom.h"
+
+#include <algorithm>
 #include <map>
 #include <set>
-#include <algorithm>
 
 /**
  * Encapsulates attributes related to body damage and armor state.

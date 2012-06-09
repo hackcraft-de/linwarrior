@@ -9,9 +9,9 @@
 #ifndef PRIMITIVE_H
 #define	PRIMITIVE_H
 
-#include <GL/glew.h>
+#include "de/hackcraft/psi3d/macros.h"
 
-#include "macros.h"
+#include <GL/glew.h>
 
 /** Primitive */
 struct Primitive {

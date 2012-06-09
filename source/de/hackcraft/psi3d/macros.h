@@ -9,8 +9,8 @@
 #ifndef _MACROS_H
 #define	_MACROS_H
 
-#include "ctrl.h"
-#include "math3d.h"
+#include "de/hackcraft/psi3d/ctrl.h"
+#include "de/hackcraft/psi3d/math3d.h"
 
 // Not a number: NaN
 // gcc supplies a NAN which is float but that may not be available everywhere.

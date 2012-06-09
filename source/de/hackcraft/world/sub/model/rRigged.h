@@ -9,10 +9,12 @@
 #ifndef RRIGGED_H
 #define	RRIGGED_H
 
-#include "de/hackcraft/world/Component.h"
-#include "de/hackcraft/world/IModel.h"
+struct rRigged;
 
 #include "de/hackcraft/io/MD5Format.h"
+
+#include "de/hackcraft/world/Component.h"
+#include "de/hackcraft/world/IModel.h"
 
 #include <map>
 

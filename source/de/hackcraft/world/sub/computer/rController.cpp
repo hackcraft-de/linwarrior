@@ -1,8 +1,8 @@
 #include "rController.h"
 
+#include "de/hackcraft/world/Entity.h"
 #include "de/hackcraft/world/World.h"
 
-#include "de/hackcraft/world/Entity.h"
 #include "de/hackcraft/world/object/cMech.h"
 
 #include "de/hackcraft/world/sub/weapon/rTarcom.h"

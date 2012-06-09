@@ -9,13 +9,15 @@
 #ifndef RTRIGGER_H
 #define	RTRIGGER_H
 
+class rTrigger;
+
 #include "de/hackcraft/world/Component.h"
 #include "de/hackcraft/world/OID.h"
 
 #include "de/hackcraft/psi3d/math3d.h"
 
-#include <set>
 #include <algorithm>
+#include <set>
 
 /**
  * At this moment only a spot with an id and tags

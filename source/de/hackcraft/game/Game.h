@@ -11,15 +11,14 @@
 
 struct Game;
 
+#include "de/hackcraft/game/OpenMission.h"
+
 #include "de/hackcraft/io/Pad.h"
 
-#include "de/hackcraft/world/sub/mission/MissionSystem.h"
-
 #include "de/hackcraft/world/World.h"
-
 #include "de/hackcraft/world/Entity.h"
 
-#include "OpenMission.h"
+#include "de/hackcraft/world/sub/mission/MissionSystem.h"
 
 #define DEFAULT_FULLSCREEN true
 #define DEFAULT_FPS 29

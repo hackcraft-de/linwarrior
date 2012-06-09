@@ -9,10 +9,12 @@
 #ifndef RWEPCOM_H
 #define	RWEPCOM_H
 
+struct rWepcom;
+
 #include "de/hackcraft/world/Component.h"
 #include "de/hackcraft/world/IComputer.h"
 
-#include "rWeapon.h"
+#include "de/hackcraft/world/sub/weapon/rWeapon.h"
 
 /** Weapon Computer
  * currently just draws weapon status.

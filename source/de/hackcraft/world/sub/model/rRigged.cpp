@@ -1,12 +1,12 @@
 #include "rRigged.h"
 
-#include "de/hackcraft/psi3d/GLS.h"
-#include "de/hackcraft/psi3d/Primitive.h"
-#include "de/hackcraft/psi3d/GLF.h"
+#include "de/hackcraft/io/Filesystem.h"
 
 #include "de/hackcraft/proc/Solid.h"
 
-#include "de/hackcraft/io/Filesystem.h"
+#include "de/hackcraft/psi3d/GLS.h"
+#include "de/hackcraft/psi3d/Primitive.h"
+#include "de/hackcraft/psi3d/GLF.h"
 
 #include <iostream>
 using std::cout;

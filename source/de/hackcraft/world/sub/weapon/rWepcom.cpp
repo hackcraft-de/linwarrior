@@ -1,8 +1,8 @@
 #include "rWepcom.h"
 
-#include "de/hackcraft/world/sub/weapon/rWeapon.h"
-
 #include "de/hackcraft/psi3d/Primitive.h"
+
+#include "de/hackcraft/world/sub/weapon/rWeapon.h"
 
 std::string rWepcom::cname = "WEPCOM";
 unsigned int rWepcom::cid = 4280;

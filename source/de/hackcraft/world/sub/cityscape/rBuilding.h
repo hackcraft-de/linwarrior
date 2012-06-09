@@ -9,6 +9,8 @@
 #ifndef BUILDING_H
 #define BUILDING_H
 
+class rBuilding;
+
 #include "de/hackcraft/psi3d/math3d.h"
 
 #include "de/hackcraft/world/Component.h"

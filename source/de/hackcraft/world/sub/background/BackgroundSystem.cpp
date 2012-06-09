@@ -1,17 +1,16 @@
 #include "BackgroundSystem.h"
 
-#include "de/hackcraft/proc/Noise.h"
-#include "de/hackcraft/proc/Distortion.h"
-#include "de/hackcraft/proc/Landscape.h"
-#include "de/hackcraft/proc/Solid.h"
-
-#include "de/hackcraft/psi3d/macros.h"
-#include "de/hackcraft/psi3d/GLS.h"
-#include "de/hackcraft/psi3d/Primitive.h"
-
 #include "de/hackcraft/io/Texfile.h"
 
 #include "de/hackcraft/proc/Ambient.h"
+#include "de/hackcraft/proc/Distortion.h"
+#include "de/hackcraft/proc/Landscape.h"
+#include "de/hackcraft/proc/Noise.h"
+#include "de/hackcraft/proc/Solid.h"
+
+#include "de/hackcraft/psi3d/GLS.h"
+#include "de/hackcraft/psi3d/macros.h"
+#include "de/hackcraft/psi3d/Primitive.h"
 
 #include <cstdio>
 #include <memory>

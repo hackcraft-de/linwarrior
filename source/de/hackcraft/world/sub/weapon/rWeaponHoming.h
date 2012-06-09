@@ -9,7 +9,9 @@
 #ifndef RHOMING_H
 #define	RHOMING_H
 
-#include "rWeapon.h"
+class rWeaponHoming;
+
+#include "de/hackcraft/world/sub/weapon/rWeapon.h"
 
 /**
  * Small swarming homing missile.

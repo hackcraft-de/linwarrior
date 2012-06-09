@@ -1,8 +1,8 @@
 #include "rPadmap.h"
 
-#include "de/hackcraft/psi3d/GLS.h"
-
 #include "de/hackcraft/io/Texfile.h"
+
+#include "de/hackcraft/psi3d/GLS.h"
 
 #include "de/hackcraft/world/Entity.h"
 

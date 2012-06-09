@@ -6,7 +6,6 @@
  * Created on April 9, 2012, 8:04 PM
  */
 
-
 #ifndef RTILE_H
 #define	RTILE_H
 

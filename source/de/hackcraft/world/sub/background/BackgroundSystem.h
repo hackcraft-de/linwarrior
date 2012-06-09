@@ -14,13 +14,13 @@
 
 class BackgroundSystem;
 
-#include <map>
-#include <list>
-
 #include "de/hackcraft/psi3d/Particle.h"
 
 #include "de/hackcraft/world/Propmap.h"
 #include "de/hackcraft/world/Subsystem.h"
+
+#include <map>
+#include <list>
 
 /**
  * A background in form of a SkySphere just like

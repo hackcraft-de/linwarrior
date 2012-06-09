@@ -6,20 +6,20 @@
  * Created on March 22, 2012, 10:52 PM
  */
 
-
 #ifndef MODELSYSTEM_H
 #define	MODELSYSTEM_H
 
-#include "de/hackcraft/world/IModel.h"
-
-#include "rBillboard.h"
-#include "rRigged.h"
-#include "rScatter.h"
-#include "rTree.h"
-
-#include "de/hackcraft/world/Subsystem.h"
+class ModelSystem;
 
 #include "de/hackcraft/util/Geomap.h"
+
+#include "de/hackcraft/world/IModel.h"
+#include "de/hackcraft/world/Subsystem.h"
+
+#include "de/hackcraft/world/sub/model/rBillboard.h"
+#include "de/hackcraft/world/sub/model/rRigged.h"
+#include "de/hackcraft/world/sub/model/rScatter.h"
+#include "de/hackcraft/world/sub/model/rTree.h"
 
 #include <unordered_map>
 #include <vector>

@@ -6,13 +6,14 @@
  * Created on March 25, 2012, 6:02 PM
  */
 
-
 #ifndef LANDSCAPESYSTEM_H
 #define	LANDSCAPESYSTEM_H
 
+class LandscapeSystem;
+
 #include "de/hackcraft/world/Subsystem.h"
 
-#include "rPlanetmap.h"
+#include "de/hackcraft/world/sub/landscape/rPlanetmap.h"
 
 class LandscapeSystem : public Subsystem {
 public:

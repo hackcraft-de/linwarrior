@@ -9,6 +9,8 @@
 #ifndef RCOMPONENT_H
 #define	RCOMPONENT_H
 
+struct Component;
+
 #include "de/hackcraft/util/Binding.h"
 
 #include "de/hackcraft/world/OID.h"

@@ -1,18 +1,11 @@
-/* 
- * File:   rScatter.cpp
- * Author: benben
- * 
- * Created on June 8, 2011, 10:33 PM
- */
-
 #include "rScatter.h"
 
+#include "de/hackcraft/io/Texfile.h"
+
 #include "de/hackcraft/psi3d/ctrl.h"
+#include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Particle.h"
 #include "de/hackcraft/psi3d/Primitive.h"
-#include "de/hackcraft/psi3d/GLS.h"
-
-#include "de/hackcraft/io/Texfile.h"
 
 #include <cassert>
 

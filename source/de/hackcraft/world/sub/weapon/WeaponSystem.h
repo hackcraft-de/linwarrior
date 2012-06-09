@@ -6,20 +6,19 @@
  * Created on March 22, 2012, 10:50 PM
  */
 
-
 #ifndef WEAPONSYSTEM_H
 #define	WEAPONSYSTEM_H
 
 class WeaponSystem;
 
-#include "rTarcom.h"
-#include "rTarget.h"
-#include "rWeapon.h"
-#include "rWepcom.h"
-
 #include "de/hackcraft/util/Geomap.h"
 
 #include "de/hackcraft/world/Subsystem.h"
+
+#include "de/hackcraft/world/sub/weapon/rTarcom.h"
+#include "de/hackcraft/world/sub/weapon/rTarget.h"
+#include "de/hackcraft/world/sub/weapon/rWeapon.h"
+#include "de/hackcraft/world/sub/weapon/rWepcom.h"
 
 #include <map>
 

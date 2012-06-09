@@ -9,9 +9,11 @@
 #ifndef RCAMERA_H
 #define	RCAMERA_H
 
-#include "de/hackcraft/world/Component.h"
+struct rCamera;
 
 #include "de/hackcraft/psi3d/math3d.h"
+
+#include "de/hackcraft/world/Component.h"
 
 /**
  * Camera component.

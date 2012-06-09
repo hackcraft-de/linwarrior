@@ -9,7 +9,9 @@
 #ifndef RSPARKGUN_H
 #define	RSPARKGUN_H
 
-#include "rWeapon.h"
+class rWeaponSparkgun;
+
+#include "de/hackcraft/world/sub/weapon/rWeapon.h"
 
 /**
  * Big Flaming slow moving bullet type gun.

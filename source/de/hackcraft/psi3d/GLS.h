@@ -9,15 +9,14 @@
 #ifndef _SNIPPETSGL_H
 #define	_SNIPPETSGL_H
 
+#include "de/hackcraft/psi3d/macros.h"
+
 // memcpy
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include <GL/glew.h>
-
-#include "macros.h"
-
 
 /** Extended OpenGL commands/snippets. */
 struct GLS {

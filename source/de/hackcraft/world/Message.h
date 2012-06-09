@@ -1,6 +1,7 @@
 /* 
- * File:   Message.h
- * Author: benben
+ * File:     Message.h
+ * Project:  LinWarrior 3D
+ * Home:     hackcraft.de
  *
  * Created on 23. Dezember 2010, 15:41
  */

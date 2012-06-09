@@ -1,9 +1,9 @@
 #include "rWeaponHoming.h"
 
-#include "de/hackcraft/world/World.h"
-
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Primitive.h"
+
+#include "de/hackcraft/world/World.h"
 
 #include <cassert>
 

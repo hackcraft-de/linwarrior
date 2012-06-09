@@ -9,11 +9,13 @@
 #ifndef TRIGGERSYSTEM_H
 #define	TRIGGERSYSTEM_H
 
-#include "rAlert.h"
-#include "rTrigger.h"
+class TriggerSystem;
 
 #include "de/hackcraft/world/OID.h"
 #include "de/hackcraft/world/Subsystem.h"
+
+#include "de/hackcraft/world/sub/trigger/rAlert.h"
+#include "de/hackcraft/world/sub/trigger/rTrigger.h"
 
 #include <map>
 

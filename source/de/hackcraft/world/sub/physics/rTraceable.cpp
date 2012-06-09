@@ -1,6 +1,6 @@
 #include "rTraceable.h"
 
-#include "PhysicsSystem.h"
+#include "de/hackcraft/world/sub/physics/PhysicsSystem.h"
 
 #include "de/hackcraft/world/World.h"
 

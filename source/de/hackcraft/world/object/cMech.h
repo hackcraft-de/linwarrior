@@ -12,6 +12,11 @@
 class cMech;
 
 #include "de/hackcraft/world/Entity.h"
+#include "de/hackcraft/world/Propmap.h"
+
+#include <string>
+#include <vector>
+#include <map>
 
 struct rComcom;
 struct rTarcom;
@@ -30,12 +35,6 @@ struct rCollider;
 
 struct rWeapon;
 struct rWeaponExplosion;
-
-#include "de/hackcraft/world/Propmap.h"
-
-#include <string>
-#include <vector>
-#include <map>
 
 // Gamepad Mapping
 #define MECH_CHASSIS_LR_AXIS  AX_LR1

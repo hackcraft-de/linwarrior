@@ -9,10 +9,12 @@
 #ifndef RBILLBOARD_H
 #define	RBILLBOARD_H
 
-#include "de/hackcraft/world/Component.h"
-#include "de/hackcraft/world/IModel.h"
+struct rBillboard;
 
 #include "de/hackcraft/psi3d/math3d.h"
+
+#include "de/hackcraft/world/Component.h"
+#include "de/hackcraft/world/IModel.h"
 
 /**
  *  Encapsulates on-screen descriptive texts about an object.

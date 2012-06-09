@@ -9,15 +9,16 @@
 #ifndef RALERT_H
 #define	RALERT_H
 
-#include "de/hackcraft/world/Component.h"
+class rAlert;
 
+#include "de/hackcraft/world/Component.h"
 #include "de/hackcraft/world/OID.h"
 
-#include "rTrigger.h"
+#include "de/hackcraft/world/sub/trigger/rTrigger.h"
 
-#include <string>
 #include <hash_set>
 #include <set>
+#include <string>
 
 /**
  * Checks a defined area for certain intruding objects

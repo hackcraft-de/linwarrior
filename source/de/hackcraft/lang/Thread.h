@@ -9,8 +9,8 @@
 #ifndef THREAD_H
 #define	THREAD_H
 
-#include "Object.h"
-#include "Runnable.h"
+#include "de/hackcraft/lang/Object.h"
+#include "de/hackcraft/lang/Runnable.h"
 
 /**
  * Thread class for starting and maintaining runnable threads.

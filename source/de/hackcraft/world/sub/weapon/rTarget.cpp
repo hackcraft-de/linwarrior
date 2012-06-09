@@ -1,15 +1,16 @@
 #include "rTarget.h"
 
-#include "de/hackcraft/world/Entity.h"
-
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/GLF.h"
 #include "de/hackcraft/psi3d/Primitive.h"
-#include "rTarcom.h"
 
-#include <cassert>
+#include "de/hackcraft/world/Entity.h"
+
+#include "de/hackcraft/world/sub/weapon/rTarcom.h"
 
 #include <GL/glew.h>
+
+#include <cassert>
 
 std::string rTarget::cname = "DAMAGEABLE";
 unsigned int rTarget::cid = 5704;

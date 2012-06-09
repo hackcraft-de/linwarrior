@@ -3,8 +3,8 @@
 #include "de/hackcraft/io/Filesystem.h"
 #include "de/hackcraft/io/Texfile.h"
 
-#include "de/hackcraft/proc/Surface.h"
 #include "de/hackcraft/proc/Road.h"
+#include "de/hackcraft/proc/Surface.h"
 
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Primitive.h"

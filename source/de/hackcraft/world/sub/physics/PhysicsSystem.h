@@ -6,15 +6,16 @@
  * Created on March 22, 2012, 10:46 PM
  */
 
-
 #ifndef PHYSICSSYSTEM_H
 #define	PHYSICSSYSTEM_H
 
-#include "rCollider.h"
-#include "rTraceable.h"
+class PhysicsSystem;
 
 #include "de/hackcraft/world/OID.h"
 #include "de/hackcraft/world/Subsystem.h"
+
+#include "de/hackcraft/world/sub/physics/rCollider.h"
+#include "de/hackcraft/world/sub/physics/rTraceable.h"
 
 #include <map>
 

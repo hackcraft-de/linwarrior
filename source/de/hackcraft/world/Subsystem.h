@@ -9,9 +9,11 @@
 #ifndef SUBSYSTEM_H
 #define	SUBSYSTEM_H
 
-class Entity;
+class Subsystem;
 
 #include <stdlib.h>
+
+class Entity;
 
 class Subsystem {
 

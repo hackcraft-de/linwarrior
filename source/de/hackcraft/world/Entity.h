@@ -25,13 +25,6 @@ class Entity;
 #include "de/hackcraft/psi3d/math3d.h"
 #include "de/hackcraft/psi3d/macros.h"
 
-#include <vector>
-#include <set>
-#include <map>
-#include <algorithm>
-#include <string>
-#include <iostream>
-
 #include <GL/glew.h>
 
 #ifdef __APPLE__
@@ -41,6 +34,13 @@ class Entity;
 #include <AL/al.h>
 #include <AL/alut.h>
 #endif
+
+#include <algorithm>
+#include <iostream>
+#include <map>
+#include <set>
+#include <string>
+#include <vector>
 
 // Some predefined groups (move to groups class file later).
 

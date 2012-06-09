@@ -2,7 +2,6 @@
 
 #include "de/hackcraft/io/Filesystem.h"
 
-
 #include <string>
 using std::string;
 

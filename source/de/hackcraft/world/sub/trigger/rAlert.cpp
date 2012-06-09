@@ -3,10 +3,10 @@
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Particle.h"
 
+#include "de/hackcraft/world/Entity.h"
 #include "de/hackcraft/world/World.h"
 
-#include "de/hackcraft/world/Entity.h"
-#include "rTrigger.h"
+#include "de/hackcraft/world/sub/trigger/rTrigger.h"
 
 #include <ostream>
 using std::cout;

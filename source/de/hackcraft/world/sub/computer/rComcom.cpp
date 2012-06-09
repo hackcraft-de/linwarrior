@@ -1,10 +1,9 @@
 #include "rComcom.h"
 
-#include "de/hackcraft/world/World.h"
-
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/GLF.h"
-//#include "de/hackcraft/psi3d/Primitive.h"
+
+#include "de/hackcraft/world/World.h"
 
 #include <iostream>
 using std::cout;

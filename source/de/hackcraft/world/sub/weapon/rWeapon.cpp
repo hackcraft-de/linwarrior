@@ -1,12 +1,12 @@
 #include "rWeapon.h"
 
-#include "de/hackcraft/world/World.h"
+#include "de/hackcraft/proc/Noise.h"
+#include "de/hackcraft/proc/Distortion.h"
 
 #include "de/hackcraft/psi3d/macros.h"
 #include "de/hackcraft/psi3d/GLS.h"
 
-#include "de/hackcraft/proc/Noise.h"
-#include "de/hackcraft/proc/Distortion.h"
+#include "de/hackcraft/world/World.h"
 
 #include <iostream>
 using std::cout;

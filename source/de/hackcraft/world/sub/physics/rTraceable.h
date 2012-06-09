@@ -9,9 +9,11 @@
 #ifndef RTRACEABLE_H
 #define	RTRACEABLE_H
 
-#include "de/hackcraft/world/Component.h"
+class rTraceable;
 
 #include "de/hackcraft/psi3d/Particle.h"
+
+#include "de/hackcraft/world/Component.h"
 
 /**
  * Encapsulates physical state as far as movement and position is concerned.

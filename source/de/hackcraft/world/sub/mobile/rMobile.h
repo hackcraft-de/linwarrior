@@ -9,11 +9,12 @@
 #ifndef RMOBILE_H
 #define	RMOBILE_H
 
-#include "de/hackcraft/world/Component.h"
-
-#include "de/hackcraft/world/OID.h"
+struct rMobile;
 
 #include "de/hackcraft/psi3d/math3d.h"
+
+#include "de/hackcraft/world/Component.h"
+#include "de/hackcraft/world/OID.h"
 
 /**
  * Flat-Motoric-Behavior of a mobile unit with base-heading and turret-heading.

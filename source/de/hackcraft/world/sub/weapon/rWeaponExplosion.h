@@ -9,7 +9,7 @@
 #ifndef REXPLOSION_H
 #define	REXPLOSION_H
 
-#include "rWeapon.h"
+#include "de/hackcraft/world/sub/weapon/rWeapon.h"
 
 /**
  * Explosion with dust, smoke, dirt and shrapnels.

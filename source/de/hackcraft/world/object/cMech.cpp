@@ -2,9 +2,12 @@
 
 #include "cMech.h"
 
-#include "de/hackcraft/world/World.h"
-
 #include "de/hackcraft/io/Pad.h"
+
+#include "de/hackcraft/psi3d/macros.h"
+#include "de/hackcraft/psi3d/GLS.h"
+
+#include "de/hackcraft/world/World.h"
 
 #include "de/hackcraft/world/sub/weapon/WeaponSystem.h"
 
@@ -21,9 +24,6 @@
 #include "de/hackcraft/world/sub/mobile/rForcom.h"
 
 #include "de/hackcraft/world/sub/physics/PhysicsSystem.h"
-
-#include "de/hackcraft/psi3d/macros.h"
-#include "de/hackcraft/psi3d/GLS.h"
 
 #include <cassert>
 

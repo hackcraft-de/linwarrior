@@ -9,7 +9,9 @@
 #ifndef RMACHINEGUN_H
 #define	RMACHINEGUN_H
 
-#include "rWeapon.h"
+class rWeaponMachinegun;
+
+#include "de/hackcraft/world/sub/weapon/rWeapon.h"
 
 /**
  * Your usual Machine or Mini-Gun.

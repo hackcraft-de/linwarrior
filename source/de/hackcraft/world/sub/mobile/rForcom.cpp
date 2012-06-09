@@ -1,7 +1,7 @@
 #include "rForcom.h"
 
-#include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/GLF.h"
+#include "de/hackcraft/psi3d/GLS.h"
 
 #include "de/hackcraft/world/Message.h"
 

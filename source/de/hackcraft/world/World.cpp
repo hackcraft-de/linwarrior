@@ -4,15 +4,15 @@
 
 #include <cassert>
 
-#include <string>
-using std::string;
+#include <iostream>
+using std::cout;
+using std::endl;
 
 #include <sstream>
 using std::stringstream;
 
-#include <iostream>
-using std::cout;
-using std::endl;
+#include <string>
+using std::string;
 
 
 World* World::instance = NULL;

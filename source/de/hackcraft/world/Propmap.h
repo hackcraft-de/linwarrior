@@ -9,8 +9,10 @@
 #ifndef PROPMAP_H
 #define	PROPMAP_H
 
-#include <string>
+class Propmap;
+
 #include <map>
+#include <string>
 #include <stdlib.h>
 
 class Propmap {

@@ -1,9 +1,10 @@
 #include "rMobile.h"
 
+#include "de/hackcraft/psi3d/macros.h"
+
 #include "de/hackcraft/world/World.h"
 
-#include "de/hackcraft/psi3d/macros.h"
-#include "GL/glew.h"
+#include <GL/glew.h>
 
 #include <iostream>
 using std::cout;

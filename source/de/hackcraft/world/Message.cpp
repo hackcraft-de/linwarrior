@@ -1,10 +1,3 @@
-/* 
- * File:   cMessage.cpp
- * Author: benben
- * 
- * Created on 23. Dezember 2010, 15:41
- */
-
 #include "Message.h"
 
 Message::Message(OID sender, OID receiver, OID timestamp, OID bestbefore, std::string type, std::string text, void* blob) {

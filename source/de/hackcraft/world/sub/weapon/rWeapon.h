@@ -11,13 +11,13 @@
 
 class rWeapon;
 
+#include "de/hackcraft/psi3d/Particle.h"
+
 #include "de/hackcraft/world/Entity.h"
 #include "de/hackcraft/world/IModel.h"
 
 #include <list>
 #include <vector>
-
-#include "de/hackcraft/psi3d/Particle.h"
 
 #define WEAPONDETAIL 0
 #define WEAPONSOUND true

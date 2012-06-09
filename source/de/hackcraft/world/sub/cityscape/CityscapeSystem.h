@@ -10,11 +10,13 @@
 #ifndef CITYSCAPESYSTEM_H
 #define	CITYSCAPESYSTEM_H
 
+class CityscapeSystem;
+
 #include "de/hackcraft/world/Subsystem.h"
 
-#include "rBuilding.h"
-#include "rTile.h"
-#include "rPadmap.h"
+#include "de/hackcraft/world/sub/cityscape/rBuilding.h"
+#include "de/hackcraft/world/sub/cityscape/rTile.h"
+#include "de/hackcraft/world/sub/cityscape/rPadmap.h"
 
 #include <map>
 

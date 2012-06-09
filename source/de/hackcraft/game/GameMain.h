@@ -9,11 +9,11 @@
 #ifndef _GAMEMAIN_H
 #define _GAMEMAIN_H
 
-#include "de/hackcraft/util/GapBuffer.h"
+#include "de/hackcraft/game/Game.h"
 
 #include "de/hackcraft/lang/Thread.h"
 
-#include "Game.h"
+#include "de/hackcraft/util/GapBuffer.h"
 
 #include <SDL/SDL.h>
 #include <string>

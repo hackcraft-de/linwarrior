@@ -1,14 +1,12 @@
 #include "rTarcom.h"
 
-#include "de/hackcraft/psi3d/GLS.h"
-#include "de/hackcraft/psi3d/Primitive.h"
-#include "de/hackcraft/psi3d/math3d.h"
-
 #include "de/hackcraft/psi3d/ctrl.h"
-
-#include "de/hackcraft/world/World.h"
+#include "de/hackcraft/psi3d/GLS.h"
+#include "de/hackcraft/psi3d/math3d.h"
+#include "de/hackcraft/psi3d/Primitive.h"
 
 #include "de/hackcraft/world/Entity.h"
+#include "de/hackcraft/world/World.h"
 
 #include <cassert>
 

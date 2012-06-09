@@ -2,13 +2,13 @@
 
 #include "de/hackcraft/game/userkeys.h"
 
-#include "de/hackcraft/psi3d/GLS.h"
+#include "de/hackcraft/io/Filesystem.h"
+
 #include "de/hackcraft/psi3d/GLF.h"
+#include "de/hackcraft/psi3d/GLS.h"
 
 // To dis-/enable zone drawing.
 #include "de/hackcraft/world/sub/trigger/rAlert.h"
-
-#include "de/hackcraft/io/Filesystem.h"
 
 #include <iostream>
 #include <cassert>
@@ -29,6 +29,7 @@ using std::endl;
 #endif
 
 #include <SDL/SDL_thread.h>
+
 #include <iosfwd>
 
 

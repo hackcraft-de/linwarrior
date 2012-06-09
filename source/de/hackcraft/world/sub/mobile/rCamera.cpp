@@ -1,8 +1,8 @@
 #include "rCamera.h"
 
-#include <GL/glew.h>
-
 #include "de/hackcraft/psi3d/GLS.h"
+
+#include <GL/glew.h>
 
 #define grand() ((rand()%100 + rand()%100 + rand()%100 + rand()%100 + rand()%100) * 0.01f * 0.2f - 0.5f)
 

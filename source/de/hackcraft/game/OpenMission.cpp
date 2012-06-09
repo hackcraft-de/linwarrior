@@ -1,24 +1,26 @@
 #include "OpenMission.h"
 
+#include "de/hackcraft/world/Propmap.h"
+
 #include "de/hackcraft/world/object/cMech.h"
 
-#include "de/hackcraft/world/sub/computer/rController.h"
-
-#include "de/hackcraft/world/sub/model/ModelSystem.h"
-
-#include "de/hackcraft/world/sub/mobile/rMobile.h"
-
-#include "de/hackcraft/world/sub/weapon/WeaponSystem.h"
-
-#include "de/hackcraft/world/sub/trigger/TriggerSystem.h"
-
-#include "de/hackcraft/world/sub/landscape/LandscapeSystem.h"
+#include "de/hackcraft/world/sub/background/BackgroundSystem.h"
 
 #include "de/hackcraft/world/sub/cityscape/CityscapeSystem.h"
 
+#include "de/hackcraft/world/sub/computer/rController.h"
+
+#include "de/hackcraft/world/sub/landscape/LandscapeSystem.h"
+
+#include "de/hackcraft/world/sub/mobile/rMobile.h"
+
+#include "de/hackcraft/world/sub/model/ModelSystem.h"
+
 #include "de/hackcraft/world/sub/physics/PhysicsSystem.h"
 
-#include "de/hackcraft/world/Propmap.h"
+#include "de/hackcraft/world/sub/trigger/TriggerSystem.h"
+
+#include "de/hackcraft/world/sub/weapon/WeaponSystem.h"
 
 #include <iostream>
 using std::cout;

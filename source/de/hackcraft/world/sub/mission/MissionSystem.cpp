@@ -1,13 +1,13 @@
 #include "MissionSystem.h"
 
+#include "de/hackcraft/world/Entity.h"
+#include "de/hackcraft/world/object/cMech.h"
+
 #include "de/hackcraft/world/sub/computer/rController.h"
 
 #include "de/hackcraft/world/sub/model/ModelSystem.h"
 
 #include "de/hackcraft/world/sub/weapon/WeaponSystem.h"
-
-#include "de/hackcraft/world/Entity.h"
-#include "de/hackcraft/world/object/cMech.h"
 
 
 #include <cassert>

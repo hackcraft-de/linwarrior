@@ -9,7 +9,9 @@
 #ifndef RRAYBEAM_H
 #define	RRAYBEAM_H
 
-#include "rWeapon.h"
+class rWeaponRaybeam;
+
+#include "de/hackcraft/world/sub/weapon/rWeapon.h"
 
 /**
  * Laser Beam kind of Weapon.

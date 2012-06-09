@@ -9,33 +9,28 @@
 #ifndef _CWORLD_H
 #define _CWORLD_H
 
-
 class World;
 
 #include "de/hackcraft/util/Geomap.h"
 
 #include "de/hackcraft/psi3d/macros.h"
 
+#include "de/hackcraft/world/Message.h"
 #include "de/hackcraft/world/OID.h"
 #include "de/hackcraft/world/Timing.h"
-#include "de/hackcraft/world/Message.h"
 
 #include "de/hackcraft/world/Entity.h"
 #include "de/hackcraft/world/Subsystem.h"
 
-#include "de/hackcraft/world/sub/background/BackgroundSystem.h"
-
 #include <list>
-#include <set>
 #include <map>
-#include <string>
-#include <vector>
 #include <queue>
+#include <set>
+#include <string>
 #include <unordered_map>
+#include <vector>
 
-class BackgroundSystem;
 class Entity;
-class MissionSystem;
 
 /**
  * The Game-Object-Managing World-Database-Class.

@@ -1,12 +1,11 @@
 #include "rCollider.h"
 
-#include "de/hackcraft/psi3d/macros.h"
-
-#include <GL/glew.h>
-
 #include "de/hackcraft/psi3d/GLS.h"
+#include "de/hackcraft/psi3d/macros.h"
 #include "de/hackcraft/psi3d/Primitive.h"
 #include "de/hackcraft/psi3d/Particle.h"
+
+#include <GL/glew.h>
 
 std::string rCollider::cname = "COLLIDER";
 unsigned int rCollider::cid = 4109;

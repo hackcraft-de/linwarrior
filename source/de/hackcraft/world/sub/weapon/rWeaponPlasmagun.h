@@ -9,7 +9,9 @@
 #ifndef RPLASMAGUN_H
 #define	RPLASMAGUN_H
 
-#include "rWeapon.h"
+class rWeaponPlasmagun;
+
+#include "de/hackcraft/world/sub/weapon/rWeapon.h"
 
 /**
  * Energetic Particle Rail-Gun.

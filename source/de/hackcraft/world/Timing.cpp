@@ -1,16 +1,8 @@
-/* 
- * File:     cTiming.cpp
- * Project:  LinWarrior 3D
- * Home:     hackcraft.de
- * 
- * Created on 23. Dezember 2010, 14:54
- */
-
 #include "Timing.h"
 
+#include <iomanip>
 #include <iostream>
 #include <sstream>
-#include <iomanip>
 
 Timing::Timing() {
     setDate(0, 0);
