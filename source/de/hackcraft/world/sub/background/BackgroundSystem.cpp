@@ -12,6 +12,8 @@
 #include "de/hackcraft/psi3d/macros.h"
 #include "de/hackcraft/psi3d/Primitive.h"
 
+#include "de/hackcraft/world/World.h"
+
 #include <cstdio>
 #include <memory>
 #include <cstdlib>
@@ -66,6 +68,8 @@ void BackgroundSystem::init(Propmap* properties) {
     windspeed = fmax(0, fmin(properties->getProperty("backscape.windspeed", 0.0f), 10000));
     raininess = fmax(0, fmin(properties->getProperty("backscape.raininess", 0.0f), 1));
     cloudiness = fmax(0, fmin(properties->getProperty("backscape.cloudiness", 0.0f), 1));
+
+    hour = (World::getInstance() == NULL) ? 0 : World::getInstance()->getTiming()->getTime24();
     
     if (textures.size() == 0) {
         initTextures();

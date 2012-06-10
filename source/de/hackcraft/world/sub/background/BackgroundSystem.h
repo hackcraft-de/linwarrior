@@ -31,8 +31,11 @@ class BackgroundSystem : public Subsystem {
 private:
     static std::map<int, unsigned int> textures;
 private:
+    /** Time in 24 hours format plus fractions of an hour - influences everything. */
     float hour;
+    /** Currently simulated rain particles. */
     std::list<Particle*> rain;
+    /** Current randomizer seed backup (make local var?). */
     int seed;
     /** Total amount of rain drops at a time. */
     int raininess;
