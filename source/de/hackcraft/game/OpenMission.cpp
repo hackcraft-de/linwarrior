@@ -90,6 +90,16 @@ Entity* OpenMission::init(World* world) {
     //} catch (...) {
     //    cout << "Could not load global properties.\n";
     //}
+    
+    cout << "Setting mission date and time...\n";
+    if (!true) {
+        world->getTiming()->setTime(12);
+    } else {
+        float hour;
+        getSystemHour(hour);
+        hour = fmod(hour, 24);
+        world->getTiming()->setTime(hour, 60 * (hour - (int) hour));
+    }
 
     cout << "Initialising background subsystem...\n";
     world->subsystems.push_back(new BackgroundSystem(&globalProperties));
@@ -107,16 +117,6 @@ Entity* OpenMission::init(World* world) {
     world->subsystems.push_back(new PhysicsSystem());
     world->subsystems.push_back(new WeaponSystem());
     world->subsystems.push_back(new ModelSystem());
-    
-    cout << "Setting mission date and time...\n";
-    if (!true) {
-        world->getTiming()->setTime(12);
-    } else {
-        float hour;
-        getSystemHour(hour);
-        hour = fmod(hour, 24);
-        world->getTiming()->setTime(hour, 60 * (hour - (int) hour));
-    }
 
     cout << "Initialising planetary maps...\n";
     rPlanetmap* planetmap = new rPlanetmap(&globalProperties);
