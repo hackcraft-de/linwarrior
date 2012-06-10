@@ -50,15 +50,10 @@
           </df>
         </df>
         <df name="materials">
-          <in>base2d.f</in>
-          <in>base3d.f</in>
-          <in>noise.f</in>
         </df>
         <df name="messages">
         </df>
         <df name="prg">
-          <in>post (copy).f</in>
-          <in>post.f</in>
         </df>
       </df>
       <df name="com">
@@ -127,6 +122,7 @@
             <in>Surface.h</in>
           </df>
           <df name="psi3d">
+            <in>Console.h</in>
             <in>GLF.h</in>
             <in>GLS.h</in>
             <in>Particle.h</in>
