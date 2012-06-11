@@ -130,8 +130,8 @@ int Texfile::saveTGA(const char *fname, int w, int h, int bpp, unsigned char* im
 
     tgahead.depth = bpp << 3;
     if (tgahead.depth != 24 && tgahead.depth != 32) {
+        fclose(file);
         throw "Only 24 or 32 bit per pixel tga images supported.";
-        return -1;
     }
 
     tgahead.xorigin[0] = 0;
@@ -152,15 +152,21 @@ int Texfile::saveTGA(const char *fname, int w, int h, int bpp, unsigned char* im
 #endif
 
     size_t r = fwrite(&tgahead, sizeof (tgahead), 1, file);
-    if (r != 1) throw "Could not write tga header.";
+    if (r != 1) {
+        fclose(file);
+        throw "Could not write tga header.";
+    }
 
     unsigned long size = (w) * (h) * (bpp);
     if (image == NULL) {
+        fclose(file);
         throw "Can't write NULL image.";
-        return -1;
     }
     r = fwrite(image, size, 1, file);
-    if (r != 1) throw "Could not write tga bitmap data.";
+    if (r != 1) {
+        fclose(file);
+        throw "Could not write tga bitmap data.";
+    }
 
     fclose(file);
     return 0;
