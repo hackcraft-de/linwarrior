@@ -88,8 +88,7 @@ struct Particle {
 
     Particle(Particle * original) {
         if (original == NULL) {
-            Particle();
-            return;
+            throw "Particle: Null instance for copy when calling copy constructor.";
         }
         quat_cpy(ori, original->ori);
         vector_cpy(pos, original->pos);

@@ -31,7 +31,7 @@ rTarget::rTarget(Entity* obj) {
 
 rTarget::rTarget(rTarget * original) {
     if (original == NULL) {
-        rTarget();
+        throw "Target: Null instance for copy when calling copy constructor.";
     } else {
         object = original->object;
         radius = original->radius;
