@@ -19,6 +19,7 @@ Thread::Thread() {
 
 Thread::Thread(Runnable *runnable) {
     this->runnable = runnable;
+    this->threadhandle = NULL;
 }
 
 

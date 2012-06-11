@@ -85,7 +85,7 @@ void rTarget::animate(float spf) {
     float maxDisturbance = 0;
     
     // Loop through memory, average new damage in and find biggest disturbance.
-    for (std::map<OID,float>::iterator i = damageAverage.begin(); i != damageAverage.end(); i++) {
+    for (std::map<OID,float>::iterator i = damageAverage.begin(); i != damageAverage.end(); ++i) {
         OID enactor = (*i).first;
         float disturbanceValue = (*i).second;
         

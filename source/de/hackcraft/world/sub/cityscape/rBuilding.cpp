@@ -32,7 +32,7 @@ static GLenum loadMaterial() {
         if (vtx) cout << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
         char* fgm = Filesystem::loadTextFile("data/base/material/base2d.frag");
         if (fgm) cout << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
-        fail = (vtx[0] == 0 && fgm[0] == 0);
+        fail = (vtx == NULL || fgm == NULL) || (vtx[0] == 0 && fgm[0] == 0);
         if (!fail) {
             prog = GLS::glCompileProgram(vtx, fgm, cout);
         }

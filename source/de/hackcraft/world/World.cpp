@@ -62,7 +62,7 @@ float World::getViewdistance() {
 // Grouping
 
 OID World::getGroup(std::string name) {
-    for (std::map<OID,Group*>::iterator i = mGroupIndex.begin(); i != mGroupIndex.end(); i++) {
+    for (std::map<OID,Group*>::iterator i = mGroupIndex.begin(); i != mGroupIndex.end(); ++i) {
         if ((*i).second->name.compare(name) == 0) {
             return (*i).second->gid;
         }

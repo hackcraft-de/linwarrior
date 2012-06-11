@@ -227,7 +227,7 @@ void GameMain::applyFilter(int width, int height) {
         if (vtx) cout << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
         char* fgm = Filesystem::loadTextFile("data/base/prgs/post.frag");
         if (fgm) cout << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
-        fail = (vtx[0] == 0 && fgm[0] == 0);
+        fail = (vtx == NULL || fgm == NULL) || (vtx[0] == 0 || fgm[0] == 0);
         if (!fail) {
             postprocess = GLS::glCompileProgram(vtx, fgm, cout);
         }

@@ -63,7 +63,7 @@ void rWepcom::addControlledWeapon(rWeapon* weapon) {
 void rWepcom::fire() {
 
     if (singleWeapon) {
-        if (weapons.size() == 0) return;
+        if (weapons.empty()) return;
         currentWeapon %= weapons.size();
         weapons[currentWeapon]->trigger = true;
         currentWeapon = cycleWeapon ? (currentWeapon + 1) : currentWeapon;

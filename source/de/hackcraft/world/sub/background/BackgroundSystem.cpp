@@ -71,7 +71,7 @@ void BackgroundSystem::init(Propmap* properties) {
 
     hour = (World::getInstance() == NULL) ? 0 : World::getInstance()->getTiming()->getTime24();
     
-    if (textures.size() == 0) {
+    if (textures.empty()) {
         initTextures();
     }
 }

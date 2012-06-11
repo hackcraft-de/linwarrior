@@ -285,7 +285,7 @@ void rPlanetmap::init(Propmap* properties) {
 
 void rPlanetmap::invalidateCache() {
     const long TILESIZE = PLANETMAP_TILESIZE;
-    for (maptype<unsigned long, sPatch*>::iterator i = patches.begin(); i != patches.end(); i++) {
+    for (maptype<unsigned long, sPatch*>::iterator i = patches.begin(); i != patches.end(); ++i) {
         sPatch* patch = (*i).second;
         OID* ptr = patch->heightcolor;
         const unsigned long totaltilesize = (1UL << (TILESIZE + TILESIZE));
@@ -470,7 +470,7 @@ void rPlanetmap::getCachedHeight(float x, float z, float* const color) {
             sPatch* minpatch = NULL;
             maptype<unsigned long, sPatch*>::iterator mini;
             maptype<unsigned long, sPatch*>::iterator i;
-            for (i = patches.begin(); i != patches.end(); i++) {
+            for (i = patches.begin(); i != patches.end(); ++i) {
                 sPatch* patch_ = i->second;
                 if (patch_ == NULL) continue;
                 if (patch_->touches < mintouches) {
@@ -659,7 +659,7 @@ static GLenum loadMaterial() {
         if (vtx) cout << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
         char* fgm = Filesystem::loadTextFile("data/base/material/base2d.frag");
         if (fgm) cout << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
-        fail = (vtx[0] == 0 && fgm[0] == 0);
+        fail = (vtx == NULL || fgm == NULL) || (vtx[0] == 0 && fgm[0] == 0);
         if (!fail) {
             prog = GLS::glCompileProgram(vtx, fgm, cout);
         }
@@ -863,7 +863,7 @@ void rPlanetmap::drawSolid() {
     glPopMatrix();
 
     // Reset Touches for LRU
-    for (maptype<unsigned long, sPatch*>::iterator i = patches.begin(); i != patches.end(); i++) {
+    for (maptype<unsigned long, sPatch*>::iterator i = patches.begin(); i != patches.end(); ++i) {
         //cout << "A2" << endl;
         sPatch* patch_ = i->second;
         if (patch_ == NULL) continue;

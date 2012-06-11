@@ -324,7 +324,7 @@ Entity* OpenMission::initPlayerParty(World* world, rPlanetmap* planetmap, float*
         world->addToGroup(group_alliance_wingmen, mech);
         world->addToGroup(group_alliance_all, mech);
         bool patrol = true;
-        mech->controller->pushFollowLeader(player->oid, patrol);
+        if (player != NULL) mech->controller->pushFollowLeader(player->oid, patrol);
         mech->mountWeapon((char*) "LLoArm", new rWeaponMachinegun);
     }
 
@@ -347,13 +347,15 @@ Entity* OpenMission::initPlayerParty(World* world, rPlanetmap* planetmap, float*
         world->addToGroup(group_alliance_wingmen, mech);
         world->addToGroup(group_alliance_all, mech);
         bool patrol = true;
-        mech->controller->pushFollowLeader(player->oid, patrol);
+        if (player != NULL) mech->controller->pushFollowLeader(player->oid, patrol);
         mech->mountWeapon((char*) "RLoArm", new rWeaponMachinegun);
     }
 
-    world->sendMessage(0, player->oid, group_alliance_all, "RADIO", string("Stay alert there have been intruders!"));
-    world->sendMessage(0, player->oid, group_alliance_wingmen, "RADIO", string("Wingmen into formation!"));
-    world->sendMessage(0, player->oid, group_alliance_player, "RADIO", string("Stortebeker:\n  You guys search the town for offenders.\n  Then I'll give you more work!\n  I'll search the sourrounding."));
+    if (player != NULL) {
+        world->sendMessage(0, player->oid, group_alliance_all, "RADIO", string("Stay alert there have been intruders!"));
+        world->sendMessage(0, player->oid, group_alliance_wingmen, "RADIO", string("Wingmen into formation!"));
+        world->sendMessage(0, player->oid, group_alliance_player, "RADIO", string("Stortebeker:\n  You guys search the town for offenders.\n  Then I'll give you more work!\n  I'll search the sourrounding."));
+    }
 
     return player;
 }
