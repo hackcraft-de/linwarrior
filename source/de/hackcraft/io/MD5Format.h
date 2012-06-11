@@ -446,7 +446,10 @@ public: // LOADING
             while ((header & flags) != flags) {
                 char line[MD5LINESIZE];
                 char* result = fgets(line, sizeof (line), f);
-                if (feof(f) != 0 || result == NULL) throw "unexpected end of file when reading header";
+                if (feof(f) != 0 || result == NULL) {
+                    fclose(f);
+                    throw "unexpected end of file when reading header";
+                }
 
                 r = sscanf(line, " MD5Version %i", &m.version);
                 if (r == 1) header |= 1;
