@@ -330,10 +330,13 @@ void rController::gotoDestination() {
     OID v1 = getParameter(2);
     OID v2 = getParameter(3);
     OID patrol = getParameter(4);
+    
+    // Store data in integer array that really holds binary float data.
     unsigned long p[] = {
         (unsigned long)v0, (unsigned long)v1, (unsigned long)v2
     };
-    float* v = (float*) p;
+    // Now re-interprete as a float array.
+    float* v = (float*)((void*) p);
 
     {
         if (debug_state) cout << "going " << ((patrol > 0) ? "patrolling" : "directly") << " to <" << v[0] << "," << v[1] << "," << v[2] << " >\n";
