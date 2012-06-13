@@ -13,6 +13,7 @@ rForcom::rForcom(Entity* obj) {
     
     quat_zero(ori);
     vector_zero(twr);
+    reticle = true;
 }
 
 void rForcom::message(Message* message) {
