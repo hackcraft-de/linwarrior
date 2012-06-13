@@ -27,7 +27,6 @@ class CityscapeSystem;
 class CityscapeSystem : public Subsystem {
 public:
     CityscapeSystem();
-    CityscapeSystem(const CityscapeSystem& orig);
     virtual ~CityscapeSystem();
     void add(rBuilding* building) { buildings[building->id] = building; };
     void add(rTile* tile) { tiles[tile->id] = tile; };

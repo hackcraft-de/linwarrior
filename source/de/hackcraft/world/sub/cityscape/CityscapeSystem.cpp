@@ -7,9 +7,6 @@ CityscapeSystem::CityscapeSystem() {
     instance = this;
 }
 
-CityscapeSystem::CityscapeSystem(const CityscapeSystem& orig) {
-}
-
 CityscapeSystem::~CityscapeSystem() {
 }
 
