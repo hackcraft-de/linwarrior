@@ -22,7 +22,6 @@ class LandscapeSystem;
 class LandscapeSystem : public Subsystem {
 public:
     LandscapeSystem();
-    LandscapeSystem(const LandscapeSystem& orig);
     virtual ~LandscapeSystem();
     
     void add(rPlanetmap* map);

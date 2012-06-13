@@ -6,9 +6,6 @@ LandscapeSystem::LandscapeSystem() {
     planetmap = NULL;
 }
 
-LandscapeSystem::LandscapeSystem(const LandscapeSystem& orig) {
-}
-
 LandscapeSystem::~LandscapeSystem() {
 }
 
