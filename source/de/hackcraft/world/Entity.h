@@ -124,24 +124,22 @@ public: // Object Tags
 public:
 
     Entity() {
+        name = "";
         oid = 0;
         pos0[0] = pos0[1] = pos0[2] = float_NAN;
         ori0[0] = ori0[1] = ori0[2] = 0.0f;
         ori0[3] = 1.0f;
+        pad = NULL;
+        radius = 0.1f;
         seconds = 0;
-        name = "";
         //if (roleprotos.empty()) {
             //registerRole(new rNameable, FIELDOFS(nameable), ROLEPTR(cObject::nameable));
             //registerRole(new rTraceable, FIELDOFS(traceable), ROLEPTR(cObject::traceable));
             //registerRole(new rDamageable, FIELDOFS(damageable), ROLEPTR(cObject::damageable));
             //registerRole(new rControlled, FIELDOFS(controlled), ROLEPTR(cObject::controlled));
         //}
-        pad = NULL;
         //rRole* r = GETROLE(FIELDOFS(nameable));
         //std::cout << "TEST: " << r << " vs " << nameable << "\n";
-    }
-
-    Entity(Entity* original) {
     }
 
     virtual ~Entity() {
