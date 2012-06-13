@@ -22,7 +22,6 @@ class PhysicsSystem;
 class PhysicsSystem : public Subsystem {
 public:
     PhysicsSystem();
-    PhysicsSystem(const PhysicsSystem& orig);
     virtual ~PhysicsSystem();
 
     float* getGravity();

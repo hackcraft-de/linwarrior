@@ -21,9 +21,6 @@ PhysicsSystem::PhysicsSystem() {
     instance = this;
 }
 
-PhysicsSystem::PhysicsSystem(const PhysicsSystem& orig) {
-}
-
 PhysicsSystem::~PhysicsSystem() {
 }
 
