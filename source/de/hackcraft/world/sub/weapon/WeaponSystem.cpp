@@ -10,10 +10,9 @@ WeaponSystem* WeaponSystem::instance = NULL;
 WeaponSystem::WeaponSystem() {
     instance = this;
     
-    visobjects = NULL;
-}
-
-WeaponSystem::WeaponSystem(const WeaponSystem& orig) {
+    visobjects = new std::list<IModel*>();
+    viewdistance = 500;
+    vector_zero(visorigin);
 }
 
 WeaponSystem::~WeaponSystem() {

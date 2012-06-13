@@ -28,7 +28,6 @@ class WeaponSystem;
 class WeaponSystem : public Subsystem {
 public:
     WeaponSystem();
-    WeaponSystem(const WeaponSystem& orig);
     virtual ~WeaponSystem();
     static WeaponSystem* getInstance();
     

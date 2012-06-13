@@ -61,6 +61,8 @@ rWeapon::rWeapon(Entity* obj) {
     trigger = false;
     triggered = false;
     triggereded = false;
+    
+    matrix_identity(weaponPosef);
 
     quat_zero(ori1);
     vector_zero(pos1);
