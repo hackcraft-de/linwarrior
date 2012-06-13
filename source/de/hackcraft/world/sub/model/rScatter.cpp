@@ -47,9 +47,6 @@ rScatter::rScatter(Entity* obj, float radius, float density) {
     }
 }
 
-rScatter::rScatter(const rScatter& orig) {
-}
-
 rScatter::~rScatter() {
 }
 

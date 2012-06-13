@@ -31,7 +31,6 @@ class ModelSystem;
 class ModelSystem : public Subsystem {
 public:
     ModelSystem();
-    ModelSystem(const ModelSystem& orig);
     virtual ~ModelSystem();
     
     void add(IModel* model) {
@@ -61,9 +60,6 @@ private:
     Geomap<IModel*> geomap;
     
     std::vector<IModel*> models;
-    
-    /** Seconds per frame. */
-    float spf;
     
     /** Render only objects that far away. */
     float viewdistance;

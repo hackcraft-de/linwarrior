@@ -11,10 +11,9 @@ ModelSystem* ModelSystem::instance = NULL;
 ModelSystem::ModelSystem() {
     instance = this;
     
-    visobjects = NULL;
-}
-
-ModelSystem::ModelSystem(const ModelSystem& orig) {
+    visobjects = new std::list<IModel*>();
+    viewdistance = 500;
+    vector_zero(visorigin);
 }
 
 ModelSystem::~ModelSystem() {

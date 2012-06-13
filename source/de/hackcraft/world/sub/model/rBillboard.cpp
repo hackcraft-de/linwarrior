@@ -24,6 +24,7 @@ rBillboard::rBillboard(rBillboard * original) : name("Unnamed"), description("Un
         name = original->name;
         description = original->description;
         designation = original->designation;
+        effect = original->effect;
     }
 }
 

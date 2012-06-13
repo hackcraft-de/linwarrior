@@ -65,8 +65,8 @@ protected: // INTERNALS
     /** Untransformed normals for mesh i. */
     std::map<int, float*> basenorms;
 public:
+    
     /** Enumeration for indexing joints in animation. */
-
     enum Jointpoints {
         EYE, HEADPITCH, HEADYAW,
         CTMOUNT, LAMOUNT, RAMOUNT, LSMOUNT, RSMOUNT, BKMOUNT,
@@ -75,7 +75,6 @@ public:
     };
 
     /** Constructor */
-
     rRigged(Entity* obj = NULL) : scale(1.0f), seconds(0.0f), grounded(0.0f), jetting(0.0f), basetexture3d(0), joints(NULL), height(0.1f), radius(0.1f), model(NULL) {
         object = obj;
         vector_zero(pos0);
@@ -84,20 +83,10 @@ public:
         initMaterials();
     }
 
-    rRigged(rRigged * original) {
-        assert(0);
-        initMaterials();
-    }
-
     /** Destructor */
-
     ~rRigged() {
         delete model;
         delete[] joints;
-    }
-
-    virtual Component * clone() {
-        return new rRigged(this);
     }
 
     std::string getJointname(unsigned int num) {
@@ -146,7 +135,6 @@ public:
     virtual void transform();
     virtual void drawSolid();
     virtual void drawEffect();
-    //virtual void drawHUD() { }
 };
 
 
