@@ -7,9 +7,6 @@ TriggerSystem::TriggerSystem() {
     instance = this;
 }
 
-TriggerSystem::TriggerSystem(const TriggerSystem& orig) {
-}
-
 TriggerSystem::~TriggerSystem() {
 }
 

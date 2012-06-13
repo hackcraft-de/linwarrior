@@ -25,7 +25,6 @@ class TriggerSystem;
 class TriggerSystem : public Subsystem {
 public:
     TriggerSystem();
-    TriggerSystem(const TriggerSystem& orig);
     virtual ~TriggerSystem();
     static TriggerSystem* getInstance();
     virtual void animateObjects();
