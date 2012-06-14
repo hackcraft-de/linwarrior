@@ -13,7 +13,8 @@ int runRunnable(void* data) {
 
 
 Thread::Thread() {
-    runnable = this;
+    this->runnable = this;
+    this->threadhandle = NULL;
 }
 
 
