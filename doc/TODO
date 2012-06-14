@@ -15,6 +15,8 @@ Inspector-/Edit-Mode:
 
 AI and behavior:
 
+- Should AI rather not be a component but something parallel to a human-game-client with different perception?
+
 - Reintroduce some random walking pattern when in close range combat (or in line of sight).
 
 - Think about blocked-left/-front/-right detectors for collision avoidance.
@@ -39,38 +41,23 @@ Refactoring and cleanup:
 
 - Player's jumpjet light shall be moved to a component.
 
-- Convert visual/model objects (planetmap, building, etc.) to component-systems.
+- Make Camera a Camera-System component.
 
 - Resolve HUD dependency on cMech-Class's weapons.
-
-- Make weapon chaining work with weapon-bindings (use sequencer component?).
 
 - Use vec4 to utilize vector ops?
 
 
-Backscape:
+Backscape-System:
 
 - Particle snow with brownian motion.
 
 - Dark (rainy) / White (snowy) overcast sky.
 
-
-Landscape:
-
-- Take slope into account for Planetmap erosion and material within second pass.
-
-- Biome and continents - pre-designed shape and automatic fill out?
-
-- Find a way to add Caves and sub-terrain to the Planetmap's height map (hole mod?).
-
-- Add vegetation growth mods.
-
-- Add water veins.
-
-- Add oceans.
+- Remove time scaling in favor of scaled world time?
 
 
-Cityscape:
+Cityscape-System:
 
 - Non-square convex building blocks
 
@@ -87,6 +74,44 @@ Cityscape:
 - Over-the-road applications (wires, traffic-/lights)
 
 
+Landscape-System:
+
+- Move Landscape-Mods (Planetmap inner class) to own component class file. (?)
+
+- Take slope into account for Planetmap erosion and material within second pass.
+
+- Biome and continents - pre-designed shape and automatic fill out?
+
+- Find a way to add Caves and sub-terrain to the Planetmap's height map (hole mod?).
+
+- Add vegetation growth mods.
+
+- Add water veins.
+
+- Add oceans.
+
+
+Physics-System:
+
+- What's next?
+
+
+Trigger-System:
+
+- What's next?
+
+
+Weapon-System:
+
+- Colored particles indicating damage inflicted (chipping off).
+
+- Weapon-Engage and -Disengage time. (necessary?)
+
+- Select target ahead (button). Implement Target ahead selection in tarcom?
+
+- Selected target should be identified (button/automatically-timed).
+
+
 Immersion and FX:
 
 - Implement camera lag and shake rig
@@ -95,16 +120,10 @@ Immersion and FX:
 
 - Footstep sound
 
-- Colored particles indicating damage inflicted (chipping off).
-
 - Dust when walking/landing/jetting
 
 
 Gameplay:
-
-- Select target ahead (button). Implement Target ahead selection in tarcom?
-
-- Selected target should be identified (button/automatically-timed).
 
 - Implement command scheme and gui for sending Wingmen Orders to group members
 
@@ -113,8 +132,6 @@ Gameplay:
 - First real mission.
 
 - Radar LOS and Disturbances?
-
-- Weapon-Engage and -Disengage time. (necessary?)
 
 - Portals
 
