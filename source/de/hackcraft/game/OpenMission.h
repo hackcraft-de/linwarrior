@@ -34,29 +34,30 @@ private:
     Propmap globalProperties;
     TriggerSystem* triggerSystem;
     CityscapeSystem* cityscapeSystem;
+    World* world;
 private:
     virtual void onVictory();
     virtual void onDefeat();
     virtual Entity* init(World* world);
 private:
-    Entity* initPlayerParty(World* world, rPlanetmap* planetmap, float* position);
-    void initSkytideCity(World* world, rPlanetmap* planetmap);
-    void initStarcircleTown(World* world, rPlanetmap* planetmap);
-    void initPentaSpaceport(World* world, rPlanetmap* planetmap);
-    void initPyraNanoCorp(World* world, rPlanetmap* planetmap);
-    void initAcroloidMines(World* world, rPlanetmap* planetmap);
-    void initCollapsiumFactory(World* world, rPlanetmap* planetmap);
-    void initJurataJail(World* world, rPlanetmap* planetmap);
-    void initSpadenixFactory(World* world, rPlanetmap* planetmap);
-    void initFortifyDefense(World* world, rPlanetmap* planetmap);
+    Entity* initPlayerParty(rPlanetmap* planetmap, float* position);
+    void initSkytideCity(rPlanetmap* planetmap);
+    void initStarcircleTown(rPlanetmap* planetmap);
+    void initPentaSpaceport(rPlanetmap* planetmap);
+    void initPyraNanoCorp(rPlanetmap* planetmap);
+    void initAcroloidMines(rPlanetmap* planetmap);
+    void initCollapsiumFactory(rPlanetmap* planetmap);
+    void initJurataJail(rPlanetmap* planetmap);
+    void initSpadenixFactory(rPlanetmap* planetmap);
+    void initFortifyDefense(rPlanetmap* planetmap);
 private:
-    void battleField(World* world);
-    void smallArmy(int wx, int wy, int wz, World* world, const char* name, int n, bool blue, int wpn /*0*/, bool immobile, std::string model);
-    void smallSettling(int wx, int wy, int wz, World* world, int n);
-    void roundForrest(int wx, int wy, int wz, World* world, int r1, int r2, int nmax = 17);
-    void capitalCity(int wx, int wy, int wz, World* world);
-    void pyramidBuilding(int x, int y, int z, World* world);
-    void spacePort(int x, int y, int z, World* world, std::vector<Entity*>& defeat, std::vector<Entity*>& victory);
+    void battleField();
+    void smallArmy(int wx, int wy, int wz, const char* name, int n, bool blue, int wpn /*0*/, bool immobile, std::string model);
+    void smallSettling(int wx, int wy, int wz, int n);
+    void roundForrest(int wx, int wy, int wz, int r1, int r2, int nmax = 17);
+    void capitalCity(int wx, int wy, int wz);
+    void pyramidBuilding(int x, int y, int z);
+    void spacePort(int x, int y, int z, std::vector<Entity*>& defeat, std::vector<Entity*>& victory);
 };
 
 /** 

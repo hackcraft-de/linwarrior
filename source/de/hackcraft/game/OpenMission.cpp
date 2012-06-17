@@ -83,6 +83,8 @@ void OpenMission::onDefeat() {
 
 Entity* OpenMission::init(World* world) {
     srand(0);
+    
+    this->world = world;
 
     cout << "Loading global properties...\n";
     //try {
@@ -140,23 +142,23 @@ Entity* OpenMission::init(World* world) {
     }
 
     cout << "Initialising Skytide City...\n";
-    initSkytideCity(world, planetmap);
+    initSkytideCity(planetmap);
 
     cout << "Initialising Starcircle Town...\n";
-    initStarcircleTown(world, planetmap);
+    initStarcircleTown(planetmap);
 
     cout << "Initialising Penta Spaceport...\n";
-    initPentaSpaceport(world, planetmap);
+    initPentaSpaceport(planetmap);
 
     cout << "Initialising Pyra Nano Corp...\n";
-    initPyraNanoCorp(world, planetmap);
+    initPyraNanoCorp(planetmap);
 
-    initFortifyDefense(world, planetmap);
+    initFortifyDefense(planetmap);
 
-    //initAcroloidMines(world, planetmap);
-    //initCollapsiumFactory(world, planetmap);
-    //initJurataJail(world, planetmap);
-    //initSpadenixFactory(world, planetmap);
+    //initAcroloidMines(planetmap);
+    //initCollapsiumFactory(planetmap);
+    //initJurataJail(planetmap);
+    //initSpadenixFactory(planetmap);
 
     if (!true) {
         cout << "Initialising Experimental Structure...\n";
@@ -190,7 +192,7 @@ Entity* OpenMission::init(World* world) {
         position[0] = globalProperties.getProperty("mission.player.mech.x", (double) position[0]);
         position[1] = globalProperties.getProperty("mission.player.mech.y", (double) position[1]);
         position[2] = globalProperties.getProperty("mission.player.mech.z", (double) position[2]);
-        player = initPlayerParty(world, planetmap, position);
+        player = initPlayerParty(planetmap, position);
     }
 
     cout << "Initialising mission triggers...\n";
@@ -242,7 +244,7 @@ Entity* OpenMission::init(World* world) {
 #include "de/hackcraft/util/HashSet.h"
  */
 
-Entity* OpenMission::initPlayerParty(World* world, rPlanetmap* planetmap, float* position) {
+Entity* OpenMission::initPlayerParty(rPlanetmap* planetmap, float* position) {
     Entity* player = NULL;
 
     float* p = position;
@@ -360,7 +362,7 @@ Entity* OpenMission::initPlayerParty(World* world, rPlanetmap* planetmap, float*
     return player;
 }
 
-void OpenMission::initSkytideCity(World* world, rPlanetmap* planetmap) {
+void OpenMission::initSkytideCity(rPlanetmap* planetmap) {
     float loc[] = SKYTIDE;
 
     // Get natural height.
@@ -380,8 +382,8 @@ void OpenMission::initSkytideCity(World* world, rPlanetmap* planetmap) {
     //planetmap->getHeight(loc[0],loc[2], color);
     //cout << "height before: " << loc[1] << "  height after: " << color[3] << endl;
 
-    capitalCity(loc[0], loc[1], loc[2], world);
-    //roundForrest(loc[0] + 50, loc[1], loc[2] + 50, world, 65, 150, 1);
+    capitalCity(loc[0], loc[1], loc[2]);
+    //roundForrest(loc[0] + 50, loc[1], loc[2] + 50, 65, 150, 1);
 
     {
         OID group = group_alliance_player;
@@ -500,7 +502,7 @@ void OpenMission::initSkytideCity(World* world, rPlanetmap* planetmap) {
     }
 }
 
-void OpenMission::initStarcircleTown(World* world, rPlanetmap* planetmap) {
+void OpenMission::initStarcircleTown(rPlanetmap* planetmap) {
     float loc[] = STARCIRCLE;
 
     // Get natural height.
@@ -531,14 +533,14 @@ void OpenMission::initStarcircleTown(World* world, rPlanetmap* planetmap) {
         world->spawnObject(oob);
     }
 
-    smallSettling(loc[0], loc[1], loc[2], world, 15);
+    smallSettling(loc[0], loc[1], loc[2], 15);
     //roundForrest(loc[0], loc[1], loc[2], world, 7 * 2, 22 * 2, 3);
 
     if (true) {
-        smallArmy(loc[0], loc[1] + 5, loc[2], world, "Bandit Leader", 1, false, 1, false, "frogger");
-        smallArmy(loc[0] - 48, loc[1] + 5, loc[2] + 17, world, "Bandits A", 2, false, 3, false, "bug");
-        //smallArmy(loc[0] - 50, loc[1] + 5, loc[2] - 50, world, "Bandits B", 5, false, 2, true, "twinblaster");
-        smallArmy(loc[0] - 50, loc[1] + 5, loc[2] - 50, world, "Bandits B", 5, false, 2, false, "lemur");
+        smallArmy(loc[0], loc[1] + 5, loc[2], "Bandit Leader", 1, false, 1, false, "frogger");
+        smallArmy(loc[0] - 48, loc[1] + 5, loc[2] + 17, "Bandits A", 2, false, 3, false, "bug");
+        //smallArmy(loc[0] - 50, loc[1] + 5, loc[2] - 50, "Bandits B", 5, false, 2, true, "twinblaster");
+        smallArmy(loc[0] - 50, loc[1] + 5, loc[2] - 50, "Bandits B", 5, false, 2, false, "lemur");
     }
 
     {
@@ -558,7 +560,7 @@ void OpenMission::initStarcircleTown(World* world, rPlanetmap* planetmap) {
     }
 }
 
-void OpenMission::initAcroloidMines(World* world, rPlanetmap* planetmap) {
+void OpenMission::initAcroloidMines(rPlanetmap* planetmap) {
     float loc[] = ACROLOID;
 
     // Get natural height.
@@ -588,7 +590,7 @@ void OpenMission::initAcroloidMines(World* world, rPlanetmap* planetmap) {
     }
 }
 
-void OpenMission::initCollapsiumFactory(World* world, rPlanetmap* planetmap) {
+void OpenMission::initCollapsiumFactory(rPlanetmap* planetmap) {
     float loc[] = COLLAPSIUM;
 
     // Get natural height.
@@ -618,7 +620,7 @@ void OpenMission::initCollapsiumFactory(World* world, rPlanetmap* planetmap) {
     }
 }
 
-void OpenMission::initJurataJail(World* world, rPlanetmap* planetmap) {
+void OpenMission::initJurataJail(rPlanetmap* planetmap) {
     float loc[] = JURATA;
 
     // Get natural height.
@@ -648,7 +650,7 @@ void OpenMission::initJurataJail(World* world, rPlanetmap* planetmap) {
     }
 }
 
-void OpenMission::initSpadenixFactory(World* world, rPlanetmap* planetmap) {
+void OpenMission::initSpadenixFactory(rPlanetmap* planetmap) {
     float loc[] = SPADENIX;
 
     // Get natural height.
@@ -678,7 +680,7 @@ void OpenMission::initSpadenixFactory(World* world, rPlanetmap* planetmap) {
     }
 }
 
-void OpenMission::initFortifyDefense(World* world, rPlanetmap* planetmap) {
+void OpenMission::initFortifyDefense(rPlanetmap* planetmap) {
     float loc[] = FORTIFY;
 
     // Get natural height.
@@ -747,7 +749,7 @@ void OpenMission::initFortifyDefense(World* world, rPlanetmap* planetmap) {
     }
 }
 
-void OpenMission::initPyraNanoCorp(World* world, rPlanetmap* planetmap) {
+void OpenMission::initPyraNanoCorp(rPlanetmap* planetmap) {
     float loc[] = PYRANANO;
 
     // Get natural height.
@@ -776,12 +778,12 @@ void OpenMission::initPyraNanoCorp(World* world, rPlanetmap* planetmap) {
         world->spawnObject(oob);
     }
 
-    pyramidBuilding(loc[0], loc[1], loc[2], world);
-    //roundForrest(loc[0], loc[1], loc[2], world, 28, 50, 3);
-    smallArmy(loc[0] + 15, loc[1], loc[2] - 30, world, "Bandito", 3, false, 0, false, "flopsy");
+    pyramidBuilding(loc[0], loc[1], loc[2]);
+    //roundForrest(loc[0], loc[1], loc[2], 28, 50, 3);
+    smallArmy(loc[0] + 15, loc[1], loc[2] - 30, "Bandito", 3, false, 0, false, "flopsy");
 }
 
-void OpenMission::initPentaSpaceport(World* world, rPlanetmap* planetmap) {
+void OpenMission::initPentaSpaceport(rPlanetmap* planetmap) {
     float loc[] = SPACEPORT;
 
     // Get natural height.
@@ -862,7 +864,7 @@ void OpenMission::initPentaSpaceport(World* world, rPlanetmap* planetmap) {
     }
 }
 
-void OpenMission::battleField(World* world) {
+void OpenMission::battleField() {
 
     loopi(25) {
         float s = 30;
@@ -906,7 +908,7 @@ void OpenMission::battleField(World* world) {
     }
 }
 
-void OpenMission::smallArmy(int wx, int wy, int wz, World* world, const char* name, int n, bool blue, int wpn, bool immobile, string model) {
+void OpenMission::smallArmy(int wx, int wy, int wz, const char* name, int n, bool blue, int wpn, bool immobile, string model) {
     float r = 2;
     float a = 0;
 
@@ -948,7 +950,7 @@ void OpenMission::smallArmy(int wx, int wy, int wz, World* world, const char* na
     }
 }
 
-void OpenMission::smallSettling(int wx, int wy, int wz, World* world, int n) {
+void OpenMission::smallSettling(int wx, int wy, int wz, int n) {
     float r = 2;
     float a = 0;
 
@@ -963,7 +965,7 @@ void OpenMission::smallSettling(int wx, int wy, int wz, World* world, int n) {
     //world->spawnObject(new cScatterfield(wx*3.0f, wy, wz*3.0f, 25, 0.2));
 }
 
-void OpenMission::roundForrest(int wx, int wy, int wz, World* world, int r1, int r2, int nmax) {
+void OpenMission::roundForrest(int wx, int wy, int wz, int r1, int r2, int nmax) {
 
     struct plantplan {
         int n, seed, type, age;
@@ -990,7 +992,7 @@ void OpenMission::roundForrest(int wx, int wy, int wz, World* world, int r1, int
     }
 }
 
-void OpenMission::capitalCity(int wx, int wy, int wz, World* world) {
+void OpenMission::capitalCity(int wx, int wy, int wz) {
     const int b = 0;
     const int width = 11;
     const int height = 11;
@@ -1089,7 +1091,7 @@ void OpenMission::capitalCity(int wx, int wy, int wz, World* world) {
     }
 }
 
-void OpenMission::pyramidBuilding(int x, int y, int z, World* world) {
+void OpenMission::pyramidBuilding(int x, int y, int z) {
     int n = 5;
 
     loopi(n) {
