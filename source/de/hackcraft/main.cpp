@@ -17,7 +17,7 @@ using namespace std;
 #include "de/hackcraft/game/GameMain.h"
 
 #include <de/hackcraft/util/HashMap.h>
-#include <de/hackcraft/util/String.h>
+#include <de/hackcraft/lang/String.h>
 
 void testHM1() {
     HashMap<Object*,Object*>* h = new HashMap<Object*,Object*>();
