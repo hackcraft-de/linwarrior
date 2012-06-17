@@ -49,11 +49,6 @@ using std::string;
 
 #define PLAYERPOS   { 0, 0, 0 }
 
-void adjustHeight(rPlanetmap* planetmap, float* pos) {
-    float color[16];
-    planetmap->getHeight(pos[0], pos[2], color);
-    pos[1] = color[3] + 0.001f;
-}
 
 void OpenMission::onVictory() {
     //Mission::onVictory();
@@ -121,7 +116,7 @@ Entity* OpenMission::init(World* world) {
     world->subsystems.push_back(new ModelSystem());
 
     cout << "Initialising planetary maps...\n";
-    rPlanetmap* planetmap = new rPlanetmap(&globalProperties);
+    this->planetmap = new rPlanetmap(&globalProperties);
     LandscapeSystem* landscapeSystem = new LandscapeSystem();
     landscapeSystem->add(planetmap);
     world->subsystems.push_front(landscapeSystem);
@@ -142,23 +137,23 @@ Entity* OpenMission::init(World* world) {
     }
 
     cout << "Initialising Skytide City...\n";
-    initSkytideCity(planetmap);
+    initSkytideCity();
 
     cout << "Initialising Starcircle Town...\n";
-    initStarcircleTown(planetmap);
+    initStarcircleTown();
 
     cout << "Initialising Penta Spaceport...\n";
-    initPentaSpaceport(planetmap);
+    initPentaSpaceport();
 
     cout << "Initialising Pyra Nano Corp...\n";
-    initPyraNanoCorp(planetmap);
+    initPyraNanoCorp();
 
-    initFortifyDefense(planetmap);
+    initFortifyDefense();
 
-    //initAcroloidMines(planetmap);
-    //initCollapsiumFactory(planetmap);
-    //initJurataJail(planetmap);
-    //initSpadenixFactory(planetmap);
+    //initAcroloidMines();
+    //initCollapsiumFactory();
+    //initJurataJail();
+    //initSpadenixFactory();
 
     if (!true) {
         cout << "Initialising Experimental Structure...\n";
@@ -192,7 +187,7 @@ Entity* OpenMission::init(World* world) {
         position[0] = globalProperties.getProperty("mission.player.mech.x", (double) position[0]);
         position[1] = globalProperties.getProperty("mission.player.mech.y", (double) position[1]);
         position[2] = globalProperties.getProperty("mission.player.mech.z", (double) position[2]);
-        player = initPlayerParty(planetmap, position);
+        player = initPlayerParty(position);
     }
 
     cout << "Initialising mission triggers...\n";
@@ -244,7 +239,7 @@ Entity* OpenMission::init(World* world) {
 #include "de/hackcraft/util/HashSet.h"
  */
 
-Entity* OpenMission::initPlayerParty(rPlanetmap* planetmap, float* position) {
+Entity* OpenMission::initPlayerParty(float* position) {
     Entity* player = NULL;
 
     float* p = position;
@@ -254,7 +249,7 @@ Entity* OpenMission::initPlayerParty(rPlanetmap* planetmap, float* position) {
         float* pos = vector_new(p[0] - 0, 0.1, p[2] - 0);
         float* rot = vector_new(0, -170, 0);
 
-        adjustHeight(planetmap, pos);
+        adjustHeight(pos);
 
         Propmap c;
 
@@ -311,7 +306,7 @@ Entity* OpenMission::initPlayerParty(rPlanetmap* planetmap, float* position) {
     if (true) {
         float pos[3] = {p[0] + 13 * 1, 0.1, p[2] - 50 * 1};
         float rot[3] = {0, -210, 0};
-        adjustHeight(planetmap, pos);
+        adjustHeight(pos);
         cMech* mech = new cMech(pos, rot, "frogger");
         assert(mech != NULL);
 
@@ -334,7 +329,7 @@ Entity* OpenMission::initPlayerParty(rPlanetmap* planetmap, float* position) {
     if (true) {
         float pos[3] = {p[0] + 7 * 1, 0.1, p[2] - 50 * 1};
         float rot[3] = {0, -210, 0};
-        adjustHeight(planetmap, pos);
+        adjustHeight(pos);
         cMech* mech = new cMech(pos, rot, "frogger");
         assert(mech != NULL);
 
@@ -362,7 +357,7 @@ Entity* OpenMission::initPlayerParty(rPlanetmap* planetmap, float* position) {
     return player;
 }
 
-void OpenMission::initSkytideCity(rPlanetmap* planetmap) {
+void OpenMission::initSkytideCity() {
     float loc[] = SKYTIDE;
 
     // Get natural height.
@@ -402,7 +397,7 @@ void OpenMission::initSkytideCity(rPlanetmap* planetmap) {
     if (true) {
         float pos[3] = {loc[0] + 10, loc[1], loc[2] - 50};
         float rot[3] = {0, -210, 0};
-        adjustHeight(planetmap, pos);
+        adjustHeight(pos);
         cMech* mech = new cMech(pos, rot, "frogger");
         assert(mech != NULL);
 
@@ -424,16 +419,16 @@ void OpenMission::initSkytideCity(rPlanetmap* planetmap) {
         }
 
         float d[] = {loc[0] + 100, loc[1] + 0, loc[1] - 50};
-        adjustHeight(planetmap, d);
+        adjustHeight(d);
         mech->controller->pushGotoDestination(d);
         float c[] = {loc[0] + 100, loc[1] + 0, loc[2] + 120};
-        adjustHeight(planetmap, c);
+        adjustHeight(c);
         mech->controller->pushGotoDestination(c);
         float b[] = {loc[0] - 20, loc[1] + 0, loc[2] + 120};
-        adjustHeight(planetmap, b);
+        adjustHeight(b);
         mech->controller->pushGotoDestination(b, false);
         float a[] = {loc[0] - 15, loc[1] + 0, loc[2] - 50};
-        adjustHeight(planetmap, a);
+        adjustHeight(a);
         mech->controller->pushGotoDestination(a);
         mech->controller->pushRepeatInstructions(4);
         mech->controller->pushWaitEvent(1000 * 3);
@@ -443,7 +438,7 @@ void OpenMission::initSkytideCity(rPlanetmap* planetmap) {
     // Primary Target
     if (true) {
         float pos[3] = {loc[0] + 50, loc[1], loc[2] + 50};
-        adjustHeight(planetmap, pos);
+        adjustHeight(pos);
         cMech* mech = new cMech(pos, NULL, "scorpion");
         assert(mech != NULL);
 
@@ -474,7 +469,7 @@ void OpenMission::initSkytideCity(rPlanetmap* planetmap) {
     // Secondary Target
     if (true) {
         float pos[3] = {loc[0] - 50, loc[1], loc[2] + 50};
-        adjustHeight(planetmap, pos);
+        adjustHeight(pos);
         cMech* mech = new cMech(pos, NULL, "scorpion");
         assert(mech != NULL);
 
@@ -502,7 +497,7 @@ void OpenMission::initSkytideCity(rPlanetmap* planetmap) {
     }
 }
 
-void OpenMission::initStarcircleTown(rPlanetmap* planetmap) {
+void OpenMission::initStarcircleTown() {
     float loc[] = STARCIRCLE;
 
     // Get natural height.
@@ -560,7 +555,7 @@ void OpenMission::initStarcircleTown(rPlanetmap* planetmap) {
     }
 }
 
-void OpenMission::initAcroloidMines(rPlanetmap* planetmap) {
+void OpenMission::initAcroloidMines() {
     float loc[] = ACROLOID;
 
     // Get natural height.
@@ -590,7 +585,7 @@ void OpenMission::initAcroloidMines(rPlanetmap* planetmap) {
     }
 }
 
-void OpenMission::initCollapsiumFactory(rPlanetmap* planetmap) {
+void OpenMission::initCollapsiumFactory() {
     float loc[] = COLLAPSIUM;
 
     // Get natural height.
@@ -620,7 +615,7 @@ void OpenMission::initCollapsiumFactory(rPlanetmap* planetmap) {
     }
 }
 
-void OpenMission::initJurataJail(rPlanetmap* planetmap) {
+void OpenMission::initJurataJail() {
     float loc[] = JURATA;
 
     // Get natural height.
@@ -650,7 +645,7 @@ void OpenMission::initJurataJail(rPlanetmap* planetmap) {
     }
 }
 
-void OpenMission::initSpadenixFactory(rPlanetmap* planetmap) {
+void OpenMission::initSpadenixFactory() {
     float loc[] = SPADENIX;
 
     // Get natural height.
@@ -680,7 +675,7 @@ void OpenMission::initSpadenixFactory(rPlanetmap* planetmap) {
     }
 }
 
-void OpenMission::initFortifyDefense(rPlanetmap* planetmap) {
+void OpenMission::initFortifyDefense() {
     float loc[] = FORTIFY;
 
     // Get natural height.
@@ -711,7 +706,7 @@ void OpenMission::initFortifyDefense(rPlanetmap* planetmap) {
     
     {
         float pos[3] = {loc[0], loc[1], loc[2]};
-        adjustHeight(planetmap, pos);
+        adjustHeight(pos);
         cMech* mech = new cMech(pos, NULL, "reactor");
         mech->nameable->name = "Hit Me !!";
         assert(mech != NULL);
@@ -721,7 +716,7 @@ void OpenMission::initFortifyDefense(rPlanetmap* planetmap) {
     for (int i = 0; i < 5; i++) {
         float r = 30;
         float pos[3] = {loc[0]-float(r*sin((18+72 * i) * 0.017454)), loc[1], loc[2]-float(r*cos((18+72 * i) * 0.017454))};
-        adjustHeight(planetmap, pos);
+        adjustHeight(pos);
         cMech* mech = new cMech(pos, NULL, "gausscan");
         assert(mech != NULL);
         mech->nameable->name = "Gausscan";
@@ -735,7 +730,7 @@ void OpenMission::initFortifyDefense(rPlanetmap* planetmap) {
     for (int i = 0; i < 10; i++) {
         float r = 45;
         float pos[3] = {loc[0]-float(r*sin(36 * i * 0.017454)), loc[1], loc[2]-float(r*cos(36 * i * 0.017454))};
-        adjustHeight(planetmap, pos);
+        adjustHeight(pos);
         cMech* mech = new cMech(pos, NULL, "twinblaster");
         assert(mech != NULL);
         mech->nameable->name = "Twinblaster";
@@ -749,7 +744,7 @@ void OpenMission::initFortifyDefense(rPlanetmap* planetmap) {
     }
 }
 
-void OpenMission::initPyraNanoCorp(rPlanetmap* planetmap) {
+void OpenMission::initPyraNanoCorp() {
     float loc[] = PYRANANO;
 
     // Get natural height.
@@ -783,7 +778,7 @@ void OpenMission::initPyraNanoCorp(rPlanetmap* planetmap) {
     smallArmy(loc[0] + 15, loc[1], loc[2] - 30, "Bandito", 3, false, 0, false, "flopsy");
 }
 
-void OpenMission::initPentaSpaceport(rPlanetmap* planetmap) {
+void OpenMission::initPentaSpaceport() {
     float loc[] = SPACEPORT;
 
     // Get natural height.
@@ -862,6 +857,12 @@ void OpenMission::initPentaSpaceport(rPlanetmap* planetmap) {
         world->spawnObject(mech);
         mech->mountWeapon((char*) "Center", new rWeaponMachinegun);
     }
+}
+
+void OpenMission::adjustHeight(float* pos) {
+    float color[16];
+    planetmap->getHeight(pos[0], pos[2], color);
+    pos[1] = color[3] + 0.001f;
 }
 
 void OpenMission::battleField() {

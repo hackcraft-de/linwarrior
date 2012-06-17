@@ -34,23 +34,26 @@ private:
     Propmap globalProperties;
     TriggerSystem* triggerSystem;
     CityscapeSystem* cityscapeSystem;
+    /** For heights - should be replaced by Landscape- or Word-Delegation. */
+    rPlanetmap* planetmap;
     World* world;
 private:
     virtual void onVictory();
     virtual void onDefeat();
     virtual Entity* init(World* world);
 private:
-    Entity* initPlayerParty(rPlanetmap* planetmap, float* position);
-    void initSkytideCity(rPlanetmap* planetmap);
-    void initStarcircleTown(rPlanetmap* planetmap);
-    void initPentaSpaceport(rPlanetmap* planetmap);
-    void initPyraNanoCorp(rPlanetmap* planetmap);
-    void initAcroloidMines(rPlanetmap* planetmap);
-    void initCollapsiumFactory(rPlanetmap* planetmap);
-    void initJurataJail(rPlanetmap* planetmap);
-    void initSpadenixFactory(rPlanetmap* planetmap);
-    void initFortifyDefense(rPlanetmap* planetmap);
+    Entity* initPlayerParty(float* position);
+    void initSkytideCity();
+    void initStarcircleTown();
+    void initPentaSpaceport();
+    void initPyraNanoCorp();
+    void initAcroloidMines();
+    void initCollapsiumFactory();
+    void initJurataJail();
+    void initSpadenixFactory();
+    void initFortifyDefense();
 private:
+    void adjustHeight(float* pos);
     void battleField();
     void smallArmy(int wx, int wy, int wz, const char* name, int n, bool blue, int wpn /*0*/, bool immobile, std::string model);
     void smallSettling(int wx, int wy, int wz, int n);
