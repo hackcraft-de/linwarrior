@@ -13,10 +13,6 @@ class String;
 
 class Object {
 public:
-    virtual Object* clone() {
-        return new Object();
-    }
-    
     virtual bool equals(const Object* other) {
         return (this == other);
     }
@@ -27,6 +23,11 @@ public:
     
     virtual String* toString() {
         return (String*) 0;
+    }
+    
+protected:
+    virtual Object* clone() {
+        throw "Cloning is not supported by this object.";
     }
 };
 
