@@ -54,8 +54,6 @@ struct rWeaponExplosion;
  * Models Mechlike Objects.
  */
 class cMech : public Entity {
-    friend class rWepcom;
-    friend class rForcom;
 protected:
 
     /** Instance counter. */
