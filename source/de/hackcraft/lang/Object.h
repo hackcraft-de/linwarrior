@@ -13,22 +13,14 @@ class String;
 
 class Object {
 public:
-    virtual bool equals(const Object* other) {
-        return (this == other);
-    }
+    virtual bool equals(const Object* other);
     
-    virtual int hashCode() {
-        return 0;
-    }
+    virtual int hashCode();
     
-    virtual String* toString() {
-        return (String*) 0;
-    }
+    virtual String* toString();
     
 protected:
-    virtual Object* clone() {
-        throw "Cloning is not supported by this object.";
-    }
+    virtual Object* clone();
 };
 
 #endif

@@ -1,7 +1,7 @@
 /* 
- * File:   String.h
- * Author: Benjamin Pickhardt
- * Home:   hackcraft.de
+ * File:     String.h
+ * Project:  LinWarrior 3D
+ * Home:     hackcraft.de
  *
  * Created on August 7, 2011, 1:39 PM
  */
@@ -16,40 +16,19 @@
 class String : public Object {
     std::string value;
 public:
-    String() {
-    }
+    String();
     
-    String(const char* s) {
-        value = s;
-    }
+    String(const char* s);
     
-    ~String() {
-        //cout << "~String()";
-    }
+    ~String();
     
-    bool equals(String* str) {
-        if (str == NULL) return false;
-        //std::cout << value << " ?= " << str->value << "\n";
-        return (value.compare(str->value) == 0);
-    }
+    bool equals(String* str);
     
-    int hashCode() {
-        int code = 0;
-        int n = value.size();
-        for (int i = 0; i < n; i++) {
-                unsigned char c = value.at(i);
-                code += ((code << 5) - code) + c;
-        }
-        return code;
-    }
+    int hashCode();
     
-    String* toString() {
-        return this;
-    }
+    String* toString();
     
-    const char* c_str() {
-        return value.c_str();
-    }
+    const char* c_str();
 };
 
 #endif	/* STRING_H */

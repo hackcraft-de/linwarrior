@@ -100,8 +100,11 @@
             <in>Texfile.h</in>
           </df>
           <df name="lang">
+            <in>Object.cpp</in>
             <in>Object.h</in>
             <in>Runnable.h</in>
+            <in>String.cpp</in>
+            <in>String.h</in>
             <in>Thread.cpp</in>
             <in>Thread.h</in>
           </df>
@@ -137,7 +140,6 @@
             <in>Geomap.h</in>
             <in>HashMap.h</in>
             <in>KDTree.h</in>
-            <in>String.h</in>
           </df>
           <df name="world">
             <df name="object">
