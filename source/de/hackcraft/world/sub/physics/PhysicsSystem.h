@@ -11,7 +11,8 @@
 
 class PhysicsSystem;
 
-#include "de/hackcraft/world/OID.h"
+#include "de/hackcraft/lang/OID.h"
+
 #include "de/hackcraft/world/Subsystem.h"
 
 #include "de/hackcraft/world/sub/physics/rCollider.h"

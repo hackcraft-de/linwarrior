@@ -15,8 +15,9 @@
 
 class Entity;
 
+#include "de/hackcraft/lang/OID.h"
+
 #include "de/hackcraft/world/Message.h"
-#include "de/hackcraft/world/OID.h"
 
 #include "de/hackcraft/world/Component.h"
 

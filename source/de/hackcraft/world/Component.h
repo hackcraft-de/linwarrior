@@ -11,9 +11,10 @@
 
 struct Component;
 
+#include "de/hackcraft/lang/OID.h"
+
 #include "de/hackcraft/util/Binding.h"
 
-#include "de/hackcraft/world/OID.h"
 #include "de/hackcraft/world/Subsystem.h"
 
 #include <string>

@@ -11,7 +11,7 @@
 
 class Message;
 
-#include "de/hackcraft/world/OID.h"
+#include "de/hackcraft/lang/OID.h"
 
 #include <string>
 

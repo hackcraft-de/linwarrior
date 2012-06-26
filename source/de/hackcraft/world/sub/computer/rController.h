@@ -13,9 +13,10 @@
 
 struct rController;
 
+#include "de/hackcraft/lang/OID.h"
+
 #include "de/hackcraft/world/Component.h"
 #include "de/hackcraft/world/IComputer.h"
-#include "de/hackcraft/world/OID.h"
 
 #include "de/hackcraft/psi3d/math3d.h"
 
