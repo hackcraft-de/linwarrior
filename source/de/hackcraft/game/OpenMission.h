@@ -10,7 +10,7 @@
 #ifndef OPENMISSION_H
 #define	OPENMISSION_H
 
-#include "de/hackcraft/world/Propmap.h"
+#include "de/hackcraft/util/Propmap.h"
 
 #include "de/hackcraft/world/sub/cityscape/CityscapeSystem.h"
 

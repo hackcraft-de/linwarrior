@@ -16,7 +16,8 @@ class BackgroundSystem;
 
 #include "de/hackcraft/psi3d/Particle.h"
 
-#include "de/hackcraft/world/Propmap.h"
+#include "de/hackcraft/util/Propmap.h"
+
 #include "de/hackcraft/world/Subsystem.h"
 
 #include <map>

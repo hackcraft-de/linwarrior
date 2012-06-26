@@ -1,6 +1,6 @@
 #include "OpenMission.h"
 
-#include "de/hackcraft/world/Propmap.h"
+#include "de/hackcraft/util/Propmap.h"
 
 #include "de/hackcraft/world/object/cMech.h"
 

@@ -11,8 +11,9 @@
 
 class cMech;
 
+#include "de/hackcraft/util/Propmap.h"
+
 #include "de/hackcraft/world/Entity.h"
-#include "de/hackcraft/world/Propmap.h"
 
 #include <string>
 #include <vector>
