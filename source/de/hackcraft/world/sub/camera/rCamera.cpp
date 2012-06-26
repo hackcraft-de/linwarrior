@@ -4,7 +4,6 @@
 
 #include <GL/glew.h>
 
-#define grand() ((rand()%100 + rand()%100 + rand()%100 + rand()%100 + rand()%100) * 0.01f * 0.2f - 0.5f)
 
 std::string rCamera::cname = "CAMERA";
 unsigned int rCamera::cid = 3311;
@@ -96,3 +95,8 @@ void rCamera::animate(float spf) {
     firstperson = (abs(camerastate) == 1);
 }
 
+
+float rCamera::grand() {
+    float r = ((rand()%100 + rand()%100 + rand()%100 + rand()%100 + rand()%100) * 0.01f * 0.2f - 0.5f);
+    return r;
+}

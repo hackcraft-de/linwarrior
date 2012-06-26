@@ -15,6 +15,10 @@ struct rCamera;
 
 #include "de/hackcraft/world/Component.h"
 
+#include <string>
+
+class Entity;
+
 /**
  * Camera component.
  */
@@ -35,7 +39,7 @@ public: // INPUT
     vec3 pos1;
     /** Switch camera state one step when greater zero. (hook i) */
     float cameraswitch;
-    /** Strenght of camera shaking [0,1], scaled internally. (hook i) */
+    /** Strength of camera shaking [0,1], scaled internally. (hook i) */
     float camerashake;
 public: // OUTPUT
     /** True when camerastate is in first perspective mode. (hook o) */
@@ -46,10 +50,15 @@ protected: // INTERNALS
 public:
     /** Constructor */
     rCamera(Entity * obj);
+    
     /** Mult in camera matrix. */
     virtual void camera();
 
+    /** Performs camera mode switching (see camera() for random shaking). */
     virtual void animate(float spf);
+    
+    /** Approximately Gaussian random number. */
+    float grand();
 };
 
 #endif	/* RCAMERA_H */
