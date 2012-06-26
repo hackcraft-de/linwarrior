@@ -14,13 +14,13 @@ class World;
 #include "de/hackcraft/lang/OID.h"
 
 #include "de/hackcraft/util/Geomap.h"
+#include "de/hackcraft/util/Timing.h"
 
 #include "de/hackcraft/psi3d/macros.h"
 
 #include "de/hackcraft/world/Entity.h"
 #include "de/hackcraft/world/Message.h"
 #include "de/hackcraft/world/Subsystem.h"
-#include "de/hackcraft/world/Timing.h"
 
 #include <list>
 #include <map>
