@@ -396,7 +396,7 @@ struct GLF {
     static unsigned int* glUploadFont() {
         four_bytes font[] = {FONTTABLEDATA};
         unsigned int start_ascii = 0;
-        unsigned int end_ascii = 256;
+        unsigned int end_ascii = 255;
         unsigned int* binds = (unsigned int*) malloc(sizeof (unsigned int) * 256);
         glPushAttrib(GL_TEXTURE_BIT);
         glEnable(GL_TEXTURE_2D);
