@@ -9,21 +9,21 @@
 
 #include "de/hackcraft/world/World.h"
 
-#include "de/hackcraft/world/sub/weapon/WeaponSystem.h"
-
-#include "de/hackcraft/world/sub/model/rRigged.h"
+#include "de/hackcraft/world/sub/camera/rCamera.h"
 
 #include "de/hackcraft/world/sub/computer/rComcom.h"
 #include "de/hackcraft/world/sub/computer/rController.h"
 #include "de/hackcraft/world/sub/computer/rNavcom.h"
 
+#include "de/hackcraft/world/sub/model/rRigged.h"
 #include "de/hackcraft/world/sub/model/ModelSystem.h"
 
-#include "de/hackcraft/world/sub/mobile/rCamera.h"
 #include "de/hackcraft/world/sub/mobile/rMobile.h"
 #include "de/hackcraft/world/sub/mobile/rForcom.h"
 
 #include "de/hackcraft/world/sub/physics/PhysicsSystem.h"
+
+#include "de/hackcraft/world/sub/weapon/WeaponSystem.h"
 
 #include <cassert>
 
