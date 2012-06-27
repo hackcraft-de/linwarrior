@@ -100,6 +100,7 @@
             <in>Texfile.h</in>
           </df>
           <df name="lang">
+            <in>OID.h</in>
             <in>Object.cpp</in>
             <in>Object.h</in>
             <in>Runnable.h</in>
@@ -107,6 +108,8 @@
             <in>String.h</in>
             <in>Thread.cpp</in>
             <in>Thread.h</in>
+          </df>
+          <df name="log">
           </df>
           <df name="proc">
             <in>Ambient.cpp</in>
@@ -140,6 +143,10 @@
             <in>Geomap.h</in>
             <in>HashMap.h</in>
             <in>KDTree.h</in>
+            <in>Propmap.cpp</in>
+            <in>Propmap.h</in>
+            <in>Timing.cpp</in>
+            <in>Timing.h</in>
           </df>
           <df name="world">
             <df name="object">
@@ -150,6 +157,20 @@
               <df name="background">
                 <in>BackgroundSystem.cpp</in>
                 <in>BackgroundSystem.h</in>
+              </df>
+              <df name="camera">
+                <in>rCamera.cpp</in>
+                <in>rCamera.h</in>
+              </df>
+              <df name="chat">
+                <in>ChatSystem.cpp</in>
+                <in>ChatSystem.h</in>
+                <in>rChatGroup.cpp</in>
+                <in>rChatGroup.h</in>
+                <in>rChatMember.cpp</in>
+                <in>rChatMember.h</in>
+                <in>rChatMessage.cpp</in>
+                <in>rChatMessage.h</in>
               </df>
               <df name="cityscape">
                 <in>CityscapeSystem.cpp</in>
@@ -169,6 +190,8 @@
                 <in>rNavcom.cpp</in>
                 <in>rNavcom.h</in>
               </df>
+              <df name="inventory">
+              </df>
               <df name="landscape">
                 <in>LandscapeSystem.cpp</in>
                 <in>LandscapeSystem.h</in>
@@ -180,8 +203,6 @@
                 <in>MissionSystem.h</in>
               </df>
               <df name="mobile">
-                <in>rCamera.cpp</in>
-                <in>rCamera.h</in>
                 <in>rForcom.cpp</in>
                 <in>rForcom.h</in>
                 <in>rMobile.cpp</in>
@@ -206,6 +227,8 @@
                 <in>rCollider.h</in>
                 <in>rTraceable.cpp</in>
                 <in>rTraceable.h</in>
+              </df>
+              <df name="quest">
               </df>
               <df name="trigger">
                 <in>TriggerSystem.cpp</in>
@@ -248,13 +271,8 @@
             <in>IModel.h</in>
             <in>Message.cpp</in>
             <in>Message.h</in>
-            <in>OID.h</in>
-            <in>Propmap.cpp</in>
-            <in>Propmap.h</in>
             <in>Subsystem.cpp</in>
             <in>Subsystem.h</in>
-            <in>Timing.cpp</in>
-            <in>Timing.h</in>
             <in>World.cpp</in>
             <in>World.h</in>
           </df>
