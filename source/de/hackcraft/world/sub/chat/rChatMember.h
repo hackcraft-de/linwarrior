@@ -32,6 +32,9 @@ public:
     static std::string cname;
     /** A unique random number (0-9999) to identify this component. */
     static unsigned int cid;
+public:
+    /** Id of this instance. */
+    OID id;
 protected:
     /** Console instance for chat message output. */
     void* mConsole;
@@ -42,7 +45,8 @@ public:
 
     virtual void animate(float spf);
     virtual void drawHUD();
-    void message(rChatMessage* msg);
+    
+    void recvMessage(rChatMessage* msg);
 };
 
 #endif	/* _RCHATMEMBER_H */

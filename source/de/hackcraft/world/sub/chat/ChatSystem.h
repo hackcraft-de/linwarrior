@@ -34,8 +34,14 @@ public:
     /** Finds and returns a group or creates a new one. */
     OID getGroup(std::string name);
 
-    /** Adds a new member to a existing group or creates a new one, returns gid. */
+    /** Adds a managed member to an existing group. */
     void addToGroup(OID gid, Entity* member);
+    
+    /** Adds a chat member to the managed members (without adding to group) */
+    void add(rChatMember* member);
+    
+    /** For resolving an entity's currently registered chat member. */
+    rChatMember* findChatMemberByEntity(OID entityID);
     
     /**
      * Sent messages are currently collected with an attached timestamp.
@@ -52,10 +58,13 @@ public:
     
 private:
     /** Chat or communication participants (Communication computers). */
-    std::map<OID,rChatMember*> comcoms;
+    std::map<OID,rChatMember*> members;
     
     /** Groups of objects */
-    std::map<OID,rChatGroup*> mGroupIndex;
+    std::map<OID,rChatGroup*> groups;
+
+    /** For resolving an entity's currently registered chat member. */
+    std::map<OID,rChatMember*> memberByEntity;
     
     /** Not yet dispatched messages (because they are not yet overdue). */
     std::priority_queue<rChatMessage*, std::vector<rChatMessage*>, rChatMessage> mMessages;

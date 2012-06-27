@@ -20,29 +20,56 @@ ChatSystem* ChatSystem::getInstance() {
 }
 
 OID ChatSystem::getGroup(std::string name) {
-    for (std::map<OID,rChatGroup*>::iterator i = mGroupIndex.begin(); i != mGroupIndex.end(); i++) {
+    for (std::map<OID,rChatGroup*>::iterator i = groups.begin(); i != groups.end(); i++) {
         if ((*i).second->name.compare(name) == 0) {
-            return (*i).second->gid;
+            return (*i).second->id;
         }
     }
     rChatGroup* group = new rChatGroup();
-    group->gid = (OID) group;
     group->name = name;
-    mGroupIndex[group->gid] = group;
-    std::cout << "Group created: " << group->gid << " as " << group->name << "\n";
-    return group->gid;
+    groups[group->id] = group;
+    std::cout << "Chat group created: " << group->id << " as " << group->name << "\n";
+    return group->id;
 }
 
 void ChatSystem::addToGroup(OID gid, Entity* member) {
     if (member == NULL) {
-        std::cout << "No object given while trying to add object to group.\n";
-    }
-    if (mGroupIndex[gid] == NULL) {
-        std::cout << "No such group " << gid << " while trying to add object " << member->oid << " to group.\n";
+        std::cout << "No object given while trying to add object to chat group.\n";
         return;
     }
-    std::cout << "Adding object " << member->oid << " to group " << gid << " " << mGroupIndex[gid]->name << ".\n";
-    mGroupIndex[gid]->members.push_back(member->oid);
+    if (groups[gid] == NULL) {
+        std::cout << "No such chat group " << gid << " while trying to add object " << member->oid << " to group.\n";
+        return;
+    }
+    rChatMember* chatMember = findChatMemberByEntity(member->oid);
+    if (chatMember == NULL) {
+        std::cout << "No member for entity to add to chat group.\n";
+        return;
+    }
+    
+    std::cout << "Adding object " << chatMember->id << " to chat group " << gid << " " << groups[gid]->name << ".\n";
+    groups[gid]->members.push_back(chatMember->id);
+}
+
+void ChatSystem::add(rChatMember* member) {
+    members[member->id] = member;
+}
+
+rChatMember* ChatSystem::findChatMemberByEntity(OID entityID) {
+    if (memberByEntity.find(entityID) != memberByEntity.end()) {
+        return memberByEntity.at(entityID);
+    }
+    
+    for(std::pair<OID,rChatMember*> p : members) {
+        rChatMember* member = p.second;
+        
+        if (member->object->oid == entityID) {
+            memberByEntity[entityID] = member;
+            return member;
+        }
+    }
+    
+    return NULL;
 }
 
 void ChatSystem::sendMessage(OID delay, OID sender /* = 0 */, OID recvid /* = 0 */, std::string type, std::string text, void* blob) {
@@ -55,7 +82,7 @@ void ChatSystem::sendMessage(OID delay, OID sender /* = 0 */, OID recvid /* = 0 
 
 void ChatSystem::dispatchMessages() {
     // TODO: Remove return statement to enable dispatchMessages.
-    return;
+    //return;
     
     OID now = World::getInstance()->getOID();
     while (!mMessages.empty()) {
@@ -68,13 +95,13 @@ void ChatSystem::dispatchMessages() {
             // Deliver info about new message to individual group members.
             if (message->getReceiver() == 0) continue;
 
-            rChatGroup* group = mGroupIndex[message->getReceiver()];
+            rChatGroup* group = groups[message->getReceiver()];
             if (group == NULL) continue;
 
             for(OID i: group->members) {
-                if (comcoms.find(i) != comcoms.end()) {
-                    rChatMember* object = comcoms[i];
-                    object->message(message);
+                if (members.find(i) != members.end()) {
+                    rChatMember* member = members[i];
+                    member->recvMessage(message);
                 }
             }
         } else {

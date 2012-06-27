@@ -26,8 +26,8 @@ public:
     rChatGroup();
     ~rChatGroup();
 public:
-    /** Group id used for reference (later: use for tags). */
-    OID gid;
+    /** Group id used for reference. */
+    OID id;
     /** Group id of parent group if not zero. */
     //OID parent;
     /** Name of the group (use qualified names like: "world/enemies/squads/alpha" or "state/dead"). */

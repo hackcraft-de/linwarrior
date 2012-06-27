@@ -19,6 +19,8 @@ unsigned int rChatMember::cid = 5007;
 
 rChatMember::rChatMember(Entity* obj) {
     object = obj;
+    
+    id = (OID) this;
 
     int w = 20;
     int h = 10;
@@ -66,6 +68,8 @@ void rChatMember::drawHUD() {
     glPopMatrix();
 }
 
-void rChatMember::message(rChatMessage* msg) {
+void rChatMember::recvMessage(rChatMessage* msg) {
     
+    Console* console = (Console*) mConsole;
+    Console::Console_print(console, msg->getText().c_str());
 }
