@@ -110,6 +110,12 @@
             <in>Thread.h</in>
           </df>
           <df name="log">
+            <in>Appender.cpp</in>
+            <in>Appender.h</in>
+            <in>LevelStreamLogger.cpp</in>
+            <in>LevelStreamLogger.h</in>
+            <in>Logger.cpp</in>
+            <in>Logger.h</in>
           </df>
           <df name="proc">
             <in>Ambient.cpp</in>
@@ -269,8 +275,6 @@
             <in>Entity.h</in>
             <in>IComputer.h</in>
             <in>IModel.h</in>
-            <in>Message.cpp</in>
-            <in>Message.h</in>
             <in>Subsystem.cpp</in>
             <in>Subsystem.h</in>
             <in>World.cpp</in>
