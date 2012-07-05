@@ -14,6 +14,7 @@ class Logger;
 
 #include "de/hackcraft/log/Appender.h"
 #include "de/hackcraft/log/LevelStreamLogger.h"
+#include "de/hackcraft/log/LoggerEvent.h"
 
 #include <string>
 
@@ -26,7 +27,7 @@ class Logger;
  *      ...
  *      logger = Logger::getLogger("de.hackcraft.game.Myclass");
  * 
- * 2. Use to log:
+ * 2. Use to log - Terminate message with backslash n: \n
  * 
  *      logger->trace() %lt;%lt; "This is trace level message no. " %lt;%lt; 1 %lt;%lt; "\n";
  * 
@@ -57,8 +58,14 @@ public:
     /** Get writable input stream for: trace level */
     LevelStreamLogger& trace();
 
-    /** Write string to logger with given level */
-    void append(int level, const char* loggerOutput);
+    /** Called by the level logger to log a submitted log message/event. */
+    void append(LoggerEvent* loggerEvent);
+
+    /** Gets the qualified name of the logger. */
+    const char* getName();
+    
+    /** Returns a static readable uppercase label for the level number. */
+    static const char* getLevelName(int level);
     
 private:
     /** Use getLogger instead to get the benefit of shared loggers (future). */

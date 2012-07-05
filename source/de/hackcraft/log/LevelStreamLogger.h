@@ -33,30 +33,39 @@ public:
         this->level = level;
     }
 
-    /**
-     * Append a value to this level logger 
-     * and thus to the logger this level logger belongs to.
-     * 
-     * @param val Any typed input value that may be used with stringstream.
-     */
+    /*
+    * This template does the trick of allowing the stream operator
+    * on the level logger of a logger:
+    * 
+    * logger.trace() << "Running operation: " << x << "\n";
+    */
     template<typename T>
-    void append(T const& val) {
+    LevelStreamLogger& operator<<(T const& val) {
         logstream << val;
-        if (logger != NULL) {
-            appendString(logstream.str().c_str());
-            logstream.clear();
-            logstream.str("");
-        }
+        appendStream();
+        return *this;
+    }
+    
+    /*
+    * This template does the trick of allowing the plus operator
+    * on the level logger of a logger:
+    * 
+    * logger.trace() + "Running operation: " + x + "\n";
+    */
+    template<typename T>
+    LevelStreamLogger& operator+(T const& val) {
+        logstream << val;
+        appendStream();
+        return *this;
     }
 
 private:
     /**
-     * Append a string value to this level logger 
-     * and thus to the logger this level logger belongs to.
-     * 
-     * @param val A string value to append to the logger this level logger belongs to.
+     * Called after data was written to the stream of this level logger.
+     * Extracts a string (or line) from the stream and sends to the logger
+     * to which this level logger belongs to.
      */
-    void appendString(const char* val);
+    void appendStream();
     
 private:
     /** The logger this level logger belongs to. */
@@ -67,18 +76,6 @@ private:
     std::stringstream logstream;
 };
 
-
-/*
- * This template does the trick of allowing the stream operator
- * on the level logger of a logger:
- * 
- * logger.trace() << "Running operation: " << x << "\n";
- */
-template<typename T>
-LevelStreamLogger& operator<<(LevelStreamLogger& levelLogger, T const& val) {
-    levelLogger.append(val);
-    return levelLogger;
-}
 
 #endif	/* LEVELSTREAMLOGGER_H */
 

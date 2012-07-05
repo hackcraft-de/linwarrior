@@ -60,6 +60,34 @@ LevelStreamLogger& Logger::trace() {
 }
 
 
-void Logger::append(int level, const char* loggerOutput) {
-    appender->append(loggerOutput);
+void Logger::append(LoggerEvent* loggerEvent) {
+    
+    // Send event to the appender if there is any.
+    if (appender != NULL) {
+        appender->append(loggerEvent);
+    }
+
+    // Forward event to the parent or stop here and now.
+    if (parentLogger != NULL) {
+        parentLogger->append(loggerEvent);
+    } else {
+        delete loggerEvent;
+    }
+}
+
+
+const char* Logger::getName() {
+    return qualifiedLoggerName.c_str();
+}
+
+const char* Logger::getLevelName(int level) {
+    
+    switch (level) {
+        case 0: return "ERROR"; break;
+        case 1: return "WARN"; break;
+        case 2: return "INFO"; break;
+        case 3: return "DEBUG"; break;
+        case 4: return "TRACE"; break;
+        default: return "UNKNOWN"; break;
+    }
 }
