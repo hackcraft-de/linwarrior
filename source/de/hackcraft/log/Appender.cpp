@@ -18,7 +18,7 @@ void Appender::append(LoggerEvent* loggerEvent) {
     //int tid = loggerEvent->getTid();
     
     std::cout 
-            << clock() 
+            << clock() / 1000
             << " "
             << Logger::getLevelName(level) 
             << " "
