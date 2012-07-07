@@ -15,6 +15,9 @@ struct Console;
 
 #include <GL/glew.h>
 
+// memset, memmove
+#include <string.h>
+
 /**
  * Simple console buffer which makes use of the
  * instant font rendering class.
