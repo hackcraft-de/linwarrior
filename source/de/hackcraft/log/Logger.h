@@ -80,6 +80,8 @@ private:
 
     /** Logger input is forwarded to this appender (if not null) which will output the input. */
     Appender* appender;
+    
+    static Appender* globalAppender;
 
     // Individual sub-loggers for providing logger input for different levels.
     LevelStreamLogger* errorLogger;

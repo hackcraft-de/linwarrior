@@ -1,5 +1,7 @@
 #include "Logger.h"
 
+Appender* Logger::globalAppender = NULL;
+
 
 Logger* Logger::getLogger(const char* qualifiedLoggerName) {
     
@@ -11,9 +13,13 @@ Logger* Logger::getLogger(const char* qualifiedLoggerName) {
 
 Logger::Logger(const char* qualifiedLoggerName) {
     
+    if (globalAppender == NULL) {
+        globalAppender = new Appender();
+    }
+    
     this->qualifiedLoggerName = qualifiedLoggerName;
     this->parentLogger = NULL;
-    this->appender = new Appender();
+    this->appender = globalAppender;
     
     this->errorLogger = new LevelStreamLogger(this, 0);
     this->warnLogger = new LevelStreamLogger(this, 1);
