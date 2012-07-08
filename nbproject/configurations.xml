@@ -116,6 +116,8 @@
             <in>LevelStreamLogger.h</in>
             <in>Logger.cpp</in>
             <in>Logger.h</in>
+            <in>LoggerEvent.cpp</in>
+            <in>LoggerEvent.h</in>
           </df>
           <df name="proc">
             <in>Ambient.cpp</in>

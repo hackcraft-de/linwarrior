@@ -6,6 +6,8 @@
 
 #include "de/hackcraft/world/sub/background/BackgroundSystem.h"
 
+#include "de/hackcraft/world/sub/chat/ChatSystem.h"
+
 #include "de/hackcraft/world/sub/cityscape/CityscapeSystem.h"
 
 #include "de/hackcraft/world/sub/computer/rController.h"
@@ -55,7 +57,7 @@ void OpenMission::onVictory() {
     if (mState != -1) {
         mState = -1;
         cout << "onVictory!";
-        World::getInstance()->sendMessage(0, 0, group_alliance_player,
+        ChatSystem::getInstance()->sendMessage(0, 0, group_alliance_player,
                 "DISPLAY",
                 //std::string("   (+) Primary target fullfilled.\n   (+) You Won!\n   (+) Hit ESC to finish Mission\n")
                 std::string("Stortebeker:\n  Good work!\n  We now have control over the town.\n  You may have a look around:\n  Pyra Nano Corp: SW of Skytide.\n  Starcircle: E of Skytide\n  Spaceport: NW\n  And don't get yourself killed.")
@@ -68,7 +70,7 @@ void OpenMission::onDefeat() {
     if (mState != -2) {
         mState = -2;
         cout << "onDefeat!";
-        World::getInstance()->sendMessage(0, 0, group_alliance_player,
+        ChatSystem::getInstance()->sendMessage(0, 0, group_alliance_player,
                 "DISPLAY",
                 //std::string("   (-) You Lost!\n   (+) Hit ESC to finish Mission\n")
                 std::string("Stortebeker:\n  And I told you not to die!\n  We will share your booty evenly\n  and spread your ashes in space.\n")
@@ -97,6 +99,9 @@ Entity* OpenMission::init(World* world) {
         hour = fmod(hour, 24);
         world->getTiming()->setTime(hour, 60 * (hour - (int) hour));
     }
+    
+    cout << "Initialising chat subsystem...\n";
+    world->subsystems.push_back(new ChatSystem());
 
     cout << "Initialising background subsystem...\n";
     world->subsystems.push_back(new BackgroundSystem(&globalProperties));
@@ -124,10 +129,10 @@ Entity* OpenMission::init(World* world) {
 
     cout << "Initialising call groups...\n";
     {
-        group_alliance_player = World::getInstance()->getGroup("/call/alliance/player");
-        group_alliance_wingmen = World::getInstance()->getGroup("/call/alliance/wingmen");
-        group_alliance_all = World::getInstance()->getGroup("/call/alliance/all");
-        group_enemies_all = World::getInstance()->getGroup("/call/enemies/all");
+        group_alliance_player = ChatSystem::getInstance()->getGroup("/call/alliance/player");
+        group_alliance_wingmen = ChatSystem::getInstance()->getGroup("/call/alliance/wingmen");
+        group_alliance_all = ChatSystem::getInstance()->getGroup("/call/alliance/all");
+        group_enemies_all = ChatSystem::getInstance()->getGroup("/call/enemies/all");
     }
 
     cout << "Initialising default sensitivities...\n";
@@ -289,9 +294,9 @@ Entity* OpenMission::initPlayerParty(float* position) {
         mech->tarcom->addEnemy(World::getInstance()->getGroup(HLT_DEAD), false);
 
         world->spawnObject(mech);
-        world->addToGroup(group_alliance_player, mech);
-        world->addToGroup(group_alliance_wingmen, mech);
-        world->addToGroup(group_alliance_all, mech);
+        ChatSystem::getInstance()->addToGroup(group_alliance_player, mech);
+        ChatSystem::getInstance()->addToGroup(group_alliance_wingmen, mech);
+        ChatSystem::getInstance()->addToGroup(group_alliance_all, mech);
         cout << "after first spawn\n";
 
         rTrigger* trigger = new rTrigger();
@@ -318,8 +323,8 @@ Entity* OpenMission::initPlayerParty(float* position) {
         mech->tarcom->addEnemy(World::getInstance()->getGroup(HLT_DEAD), false);
 
         world->spawnObject(mech);
-        world->addToGroup(group_alliance_wingmen, mech);
-        world->addToGroup(group_alliance_all, mech);
+        ChatSystem::getInstance()->addToGroup(group_alliance_wingmen, mech);
+        ChatSystem::getInstance()->addToGroup(group_alliance_all, mech);
         bool patrol = true;
         if (player != NULL) mech->controller->pushFollowLeader(player->oid, patrol);
         mech->mountWeapon((char*) "LLoArm", new rWeaponMachinegun);
@@ -341,17 +346,17 @@ Entity* OpenMission::initPlayerParty(float* position) {
         mech->tarcom->addEnemy(World::getInstance()->getGroup(HLT_DEAD), false);
 
         world->spawnObject(mech);
-        world->addToGroup(group_alliance_wingmen, mech);
-        world->addToGroup(group_alliance_all, mech);
+        ChatSystem::getInstance()->addToGroup(group_alliance_wingmen, mech);
+        ChatSystem::getInstance()->addToGroup(group_alliance_all, mech);
         bool patrol = true;
         if (player != NULL) mech->controller->pushFollowLeader(player->oid, patrol);
         mech->mountWeapon((char*) "RLoArm", new rWeaponMachinegun);
     }
 
     if (player != NULL) {
-        world->sendMessage(0, player->oid, group_alliance_all, "RADIO", string("Stay alert there have been intruders!"));
-        world->sendMessage(0, player->oid, group_alliance_wingmen, "RADIO", string("Wingmen into formation!"));
-        world->sendMessage(0, player->oid, group_alliance_player, "RADIO", string("Stortebeker:\n  You guys search the town for offenders.\n  Then I'll give you more work!\n  I'll search the sourrounding."));
+        ChatSystem::getInstance()->sendMessage(0, player->oid, group_alliance_all, "RADIO", string("Stay alert there have been intruders!"));
+        ChatSystem::getInstance()->sendMessage(0, player->oid, group_alliance_wingmen, "RADIO", string("Wingmen into formation!"));
+        ChatSystem::getInstance()->sendMessage(0, player->oid, group_alliance_player, "RADIO", string("Stortebeker:\n  You guys search the town for offenders.\n  Then I'll give you more work!\n  I'll search the sourrounding."));
     }
 
     return player;
@@ -409,7 +414,7 @@ void OpenMission::initSkytideCity() {
         mech->tarcom->addEnemy(World::getInstance()->getGroup(HLT_DEAD), false);
 
         world->spawnObject(mech);
-        world->addToGroup(group_alliance_all, mech);
+        ChatSystem::getInstance()->addToGroup(group_alliance_all, mech);
 
         if (true) {
             //mech->mountWeapon((char*)"LLoArm",  new cMachineGun);
@@ -456,7 +461,7 @@ void OpenMission::initSkytideCity() {
         mVictory.push_back(mech);
 
         world->spawnObject(mech);
-        world->addToGroup(group_enemies_all, mech);
+        ChatSystem::getInstance()->addToGroup(group_enemies_all, mech);
 
         if (true) {
             //mech->mountWeapon((char*)"LTorsor", new cExplosion);
@@ -485,7 +490,7 @@ void OpenMission::initSkytideCity() {
 
         //gCameraEntity = mech;
         world->spawnObject(mech);
-        world->addToGroup(group_enemies_all, mech);
+        ChatSystem::getInstance()->addToGroup(group_enemies_all, mech);
 
         if (true) {
             mech->mountWeapon((char*) "LLoArm", new rWeaponSparkgun);

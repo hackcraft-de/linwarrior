@@ -11,6 +11,9 @@
 
 #include "de/hackcraft/world/sub/camera/rCamera.h"
 
+#include "de/hackcraft/world/sub/chat/ChatSystem.h"
+#include "de/hackcraft/world/sub/chat/rChatMember.h"
+
 #include "de/hackcraft/world/sub/computer/rComcom.h"
 #include "de/hackcraft/world/sub/computer/rController.h"
 #include "de/hackcraft/world/sub/computer/rNavcom.h"
@@ -163,6 +166,9 @@ void cMech::init(float* pos, float* rot, string modelName) {
     comcom = new rComcom(this);
     forcom = new rForcom(this);
     navcom = new rNavcom(this);
+    
+    chatMember = new rChatMember(this);
+    ChatSystem::getInstance()->add(chatMember);
 
     if (rot != NULL) vector_scale(mobile->bse, rot, PI_OVER_180);
 
@@ -299,12 +305,12 @@ cMech::~cMech() {
     }
     sInstances--;
 }
-
+/*
 void cMech::message(Message* message) {
     cout << "I (" << this->oid << ":" << this->name << ") just received: \"" << message->getText() << "\" from sender " << message->getSender() << endl;
     forcom->message(message);
 }
-
+*/
 void cMech::spawn() {
     //cout << "cMech::onSpawn()\n";
     ALuint soundsource = traceable->sound;
@@ -750,7 +756,7 @@ void cMech::drawHUD() {
                 float sy = 1.0f / h;
 
                 Component * displays[4][5] = {
-                    { navcom, NULL, NULL, NULL, comcom},
+                    { navcom, NULL, NULL, NULL, /*comcom*/ chatMember },
                     { NULL, NULL, NULL, NULL, NULL},
                     { NULL, NULL, NULL, NULL, NULL},
                     { tarcom, NULL, wepcom, NULL, target}

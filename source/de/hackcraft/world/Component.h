@@ -21,7 +21,6 @@ struct Component;
 #include <vector>
 
 class Entity;
-class Message;
 
 /**
  * Base-Class of all components.
@@ -86,9 +85,6 @@ struct Component {
 
     virtual bool damage(float* localpos, float damage, Entity * enactor = NULL) {
         return true;
-    }
-
-    virtual void message(Message * message) {
     }
 
     void prebind() {

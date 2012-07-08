@@ -19,6 +19,7 @@ class cMech;
 #include <vector>
 #include <map>
 
+struct rChatMember;
 struct rComcom;
 struct rTarcom;
 struct rWepcom;
@@ -73,6 +74,7 @@ protected:
 public:
 
     // COMPUTERs
+    rChatMember* chatMember;
     rComcom* comcom;
     rTarcom* tarcom;
     rWepcom* wepcom;
@@ -112,7 +114,7 @@ public:
     void mountWeapon(const char* point, rWeapon *weapon, bool add = true);
 
     // World Step
-    virtual void message(Message* message); // Conditionally/repeatedly called.
+    //virtual void message(Message* message); // Conditionally/repeatedly called.
     virtual void animate(float spf);
     virtual void transform();
     virtual void drawSolid();

@@ -48,12 +48,22 @@ void testHM() {
     testHM2();
 }
 
+#include "de/hackcraft/log/Logger.h"
+
+void testLogger() {
+    Logger* logger = Logger::getLogger("/de/hackcraft/main");
+    
+    logger->trace() << "log" << " test " << 1 << "\n";
+    logger->trace() + "log" + " test " + 1 + "\n";
+}
+
 static int test(int argc, char **args) {
     cout << "Arguments for test module:\n";
     for (int i = 0; i < argc; i++) {
         cout << args[i] << "\n";
     }
-    testHM();
+    //testHM();
+    testLogger();
     return 0;
 }
 

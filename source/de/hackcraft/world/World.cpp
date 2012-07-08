@@ -91,11 +91,13 @@ void World::addToGroup(OID gid, Entity* member) {
 // Messaging
 
 void World::sendMessage(OID delay, OID sender /* = 0 */, OID recvid /* = 0 */, string type, string text, void* blob) {
+    /*
     //cout << "sendMessageT(dly=" << delay << ", sdr=" << sender << ", gid=" << groupid << ", txt=" << text << ")" << endl;
     mTiming.advanceDelta();
     Message* message = new Message(sender, recvid, mTiming.getTimekey() + delay, 0, type, text, blob);
     assert(message != NULL);
     mMessages.push(message);
+    */
 }
 
 
@@ -174,6 +176,7 @@ void World::clusterObjects() {
 }
 
 void World::dispatchMessages() {
+    /*
     OID now = getOID();
     while (!mMessages.empty()) {
         Message* message = mMessages.top();
@@ -199,6 +202,7 @@ void World::dispatchMessages() {
             break;
         }
     }
+    */
     
     for (Subsystem* sub : subsystems) {
         sub->dispatchMessages();

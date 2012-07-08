@@ -17,8 +17,6 @@ class Entity;
 
 #include "de/hackcraft/lang/OID.h"
 
-#include "de/hackcraft/world/Message.h"
-
 #include "de/hackcraft/world/Component.h"
 
 #include "de/hackcraft/io/Pad.h"
@@ -249,14 +247,6 @@ public:
     virtual void listener() {
         for (auto i = components.begin(); i != components.end(); i++) {
             (*i)->listener();
-        }
-    }
-
-    /** Called for each message sent to this object. */
-
-    virtual void message(Message* message) {
-        for (auto i = components.begin(); i != components.end(); i++) {
-            (*i)->message(message);
         }
     }
 

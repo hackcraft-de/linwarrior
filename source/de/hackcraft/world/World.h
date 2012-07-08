@@ -19,7 +19,6 @@ class World;
 #include "de/hackcraft/psi3d/macros.h"
 
 #include "de/hackcraft/world/Entity.h"
-#include "de/hackcraft/world/Message.h"
 #include "de/hackcraft/world/Subsystem.h"
 
 #include <list>
@@ -47,10 +46,10 @@ public:
     
 private:
     /** Not yet dispatched messages (because they are not yet overdue). */
-    std::priority_queue<Message*, std::vector<Message*>, Message> mMessages;
+    //std::priority_queue<Message*, std::vector<Message*>, Message> mMessages;
 
     /** Messages already delivered to group participants. */
-    std::list<Message*> mDispatchedMessages;
+    //std::list<Message*> mDispatchedMessages;
 
     // Not Yet, may be merged with Background:
     // Overlays weather effects like rain, snow or dust.
@@ -128,6 +127,7 @@ public: // Grouping
 public: // Messaging
 
     /**
+     * Now defunct:
      * Sent messages are currently collected with an attached timestamp.
      * @param delay time offset for sending see getOID() for calculation.
      * @param sender a value of 0 currently defines a broadcast.

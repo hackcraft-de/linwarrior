@@ -3,7 +3,7 @@
 #include "de/hackcraft/psi3d/GLF.h"
 #include "de/hackcraft/psi3d/GLS.h"
 
-#include "de/hackcraft/world/Message.h"
+//#include "de/hackcraft/world/Message.h"
 
 std::string rForcom::cname = "FORCOM";
 unsigned int rForcom::cid = 1032;
@@ -15,11 +15,11 @@ rForcom::rForcom(Entity* obj) {
     vector_zero(twr);
     reticle = true;
 }
-
+/*
 void rForcom::message(Message* message) {
     mMessage = message->getText();
 }
-
+*/
 void rForcom::animate(float spf) {
 }
 

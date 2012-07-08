@@ -6,6 +6,8 @@
 #include "de/hackcraft/world/Entity.h"
 #include "de/hackcraft/world/World.h"
 
+#include "de/hackcraft/world/sub/chat/ChatSystem.h"
+
 #include "de/hackcraft/world/sub/trigger/rTrigger.h"
 
 #include <ostream>
@@ -97,7 +99,7 @@ float rAlert::detect(rTrigger* trigger) {
             if (posedge) {
                 fired = true;
                 //cout << "fusedelay=" << fusedelay << endl;
-                World::getInstance()->sendMessage(fusedelay, object->oid, receiver, msgtype, msgtext, NULL);
+                ChatSystem::getInstance()->sendMessage(fusedelay, object->oid, receiver, msgtype, msgtext, NULL);
             }
         }
     } else {
@@ -106,7 +108,7 @@ float rAlert::detect(rTrigger* trigger) {
             intruders.erase(trigger->id);
             if (!posedge) {
                 fired = true;
-                World::getInstance()->sendMessage(fusedelay, object->oid, receiver, msgtype, msgtext, NULL);
+                ChatSystem::getInstance()->sendMessage(fusedelay, object->oid, receiver, msgtype, msgtext, NULL);
             }
         }
     }

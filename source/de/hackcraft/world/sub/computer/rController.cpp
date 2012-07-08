@@ -206,7 +206,7 @@ void rController::waitEvent() {
                 OID self = object->oid;
                 std::stringstream s;
                 s << self << ": Intruder!\n";
-                World::getInstance()->sendMessage(0, self, 0, "DEBUG", s.str());
+                //World::getInstance()->sendMessage(0, self, 0, "DEBUG", s.str());
             }
             this->doit(enemy, NULL, false, NEARTO);
             pushAttackEnemy(enemy);
