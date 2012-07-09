@@ -13,7 +13,7 @@ void LevelStreamLogger::appendStream() {
     
     bool messageMode = true;
     
-    unsigned int tid = (unsigned int) SDL_ThreadID;
+    unsigned int tid = SDL_ThreadID();
     
     if (!messageMode) {
         //logger->append(level, logstream.str().c_str());
