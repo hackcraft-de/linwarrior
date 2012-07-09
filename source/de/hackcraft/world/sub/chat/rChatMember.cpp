@@ -1,12 +1,12 @@
 #include "rChatMember.h"
 
-#include "de/hackcraft/world/World.h"
 
 #include "de/hackcraft/psi3d/Console.h"
 #include "de/hackcraft/psi3d/GLS.h"
 
-#include <sstream>
-using std::stringstream;
+#include "de/hackcraft/world/World.h"
+
+#include "de/hackcraft/world/sub/chat/rChatMessage.h"
 
 #include <cassert>
 

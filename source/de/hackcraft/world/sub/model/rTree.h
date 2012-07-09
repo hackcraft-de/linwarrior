@@ -12,6 +12,7 @@ struct rTree;
 
 #include "de/hackcraft/lang/OID.h"
 
+// GLS for GLuint
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/math3d.h"
 

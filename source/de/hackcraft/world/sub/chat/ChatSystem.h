@@ -12,8 +12,7 @@
 
 class ChatSystem;
 
-#include "de/hackcraft/world/sub/chat/rChatGroup.h"
-#include "de/hackcraft/world/sub/chat/rChatMember.h"
+// Include or ChatMessage is necessary for priority queue template.
 #include "de/hackcraft/world/sub/chat/rChatMessage.h"
 
 #include "de/hackcraft/world/Subsystem.h"
@@ -24,6 +23,8 @@ class ChatSystem;
 #include <string>
 
 class Logger;
+class rChatGroup;
+class rChatMember;
 
 class ChatSystem : public Subsystem {
 private:

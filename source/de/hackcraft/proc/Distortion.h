@@ -9,6 +9,7 @@
 #ifndef CDISTORTION_H
 #define	CDISTORTION_H
 
+#include <cmath>
 
 /**
  * Encapsulates functions and algorithms for

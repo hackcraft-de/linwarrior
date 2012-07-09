@@ -9,6 +9,8 @@
 #include "de/hackcraft/psi3d/macros.h"
 #include "de/hackcraft/psi3d/GLS.h"
 
+#include "de/hackcraft/util/Propmap.h"
+
 #include "de/hackcraft/world/World.h"
 
 #include "de/hackcraft/world/sub/camera/rCamera.h"
@@ -20,6 +22,7 @@
 #include "de/hackcraft/world/sub/computer/rController.h"
 #include "de/hackcraft/world/sub/computer/rNavcom.h"
 
+#include "de/hackcraft/world/sub/model/rBillboard.h"
 #include "de/hackcraft/world/sub/model/rRigged.h"
 #include "de/hackcraft/world/sub/model/ModelSystem.h"
 
@@ -27,8 +30,14 @@
 #include "de/hackcraft/world/sub/mobile/rForcom.h"
 
 #include "de/hackcraft/world/sub/physics/PhysicsSystem.h"
+#include "de/hackcraft/world/sub/physics/rCollider.h"
+#include "de/hackcraft/world/sub/physics/rTraceable.h"
 
 #include "de/hackcraft/world/sub/weapon/WeaponSystem.h"
+#include "de/hackcraft/world/sub/weapon/rTarcom.h"
+#include "de/hackcraft/world/sub/weapon/rTarget.h"
+#include "de/hackcraft/world/sub/weapon/rWeapon.h"
+#include "de/hackcraft/world/sub/weapon/rWepcom.h"
 
 #include <cassert>
 

@@ -2,6 +2,8 @@
 
 #include "de/hackcraft/world/World.h"
 
+#include "de/hackcraft/world/sub/landscape/rPlanetmap.h"
+
 LandscapeSystem::LandscapeSystem() {
     planetmap = NULL;
 }

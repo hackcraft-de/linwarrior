@@ -4,6 +4,10 @@
 
 #include "de/hackcraft/world/World.h"
 
+#include "de/hackcraft/world/sub/chat/rChatGroup.h"
+#include "de/hackcraft/world/sub/chat/rChatMember.h"
+#include "de/hackcraft/world/sub/chat/rChatMessage.h"
+
 #include <cassert>
 
 Logger* ChatSystem::logger = Logger::getLogger("de.hackcraft.world.sub.chat.ChatSystem");

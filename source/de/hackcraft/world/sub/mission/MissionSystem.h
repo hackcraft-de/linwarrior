@@ -11,15 +11,13 @@
 
 class MissionSystem;
 
-#include "de/hackcraft/io/Pad.h"
-
-#include "de/hackcraft/world/World.h"
-
-#include "de/hackcraft/world/Entity.h"
 #include "de/hackcraft/world/Subsystem.h"
 
 #include <vector>
 #include <string>
+
+class Entity;
+class World;
 
 /**
  * Missions are responsible for initial and midtime spawning of objects

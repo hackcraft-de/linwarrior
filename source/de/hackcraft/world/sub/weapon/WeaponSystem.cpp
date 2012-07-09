@@ -2,7 +2,13 @@
 
 #include "de/hackcraft/log/Logger.h"
 
+#include "de/hackcraft/world/IModel.h"
 #include "de/hackcraft/world/World.h"
+
+#include "de/hackcraft/world/sub/weapon/rTarcom.h"
+#include "de/hackcraft/world/sub/weapon/rTarget.h"
+#include "de/hackcraft/world/sub/weapon/rWeapon.h"
+#include "de/hackcraft/world/sub/weapon/rWepcom.h"
 
 #include <cassert>
 

@@ -10,17 +10,23 @@
 #ifndef OPENMISSION_H
 #define	OPENMISSION_H
 
+class OpenMission;
+
+#include "de/hackcraft/lang/OID.h"
+
 #include "de/hackcraft/util/Propmap.h"
-
-#include "de/hackcraft/world/sub/cityscape/CityscapeSystem.h"
-
-#include "de/hackcraft/world/sub/landscape/rPlanetmap.h"
 
 #include "de/hackcraft/world/sub/mission/MissionSystem.h"
 
-#include "de/hackcraft/world/sub/trigger/TriggerSystem.h"
+#include <set>
+#include <vector>
 
+class Entity;
 class Logger;
+class World;
+class TriggerSystem;
+class CityscapeSystem;
+class rPlanetmap;
 
 /**
  * Mission for testing new Mission features.

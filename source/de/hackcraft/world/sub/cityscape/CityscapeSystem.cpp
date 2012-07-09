@@ -1,5 +1,10 @@
 #include "CityscapeSystem.h"
 
+#include "de/hackcraft/world/sub/cityscape/rBuilding.h"
+#include "de/hackcraft/world/sub/cityscape/rTile.h"
+#include "de/hackcraft/world/sub/cityscape/rPadmap.h"
+
+
 CityscapeSystem* CityscapeSystem::instance = NULL;
 
 
@@ -8,6 +13,20 @@ CityscapeSystem::CityscapeSystem() {
 }
 
 CityscapeSystem::~CityscapeSystem() {
+}
+
+void CityscapeSystem::add(rBuilding* building) {
+    buildings[building->id] = building;
+}
+
+
+void CityscapeSystem::add(rTile* tile) {
+    tiles[tile->id] = tile;
+}
+
+
+void CityscapeSystem::add(rPadmap* padmap) {
+    padmaps[padmap->id] = padmap;
 }
 
 

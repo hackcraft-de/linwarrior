@@ -11,13 +11,7 @@
 
 class rPlanetmap;
 
-#include "de/hackcraft/proc/Landscape.h"
-
-#include "de/hackcraft/util/Propmap.h"
-
 #include "de/hackcraft/world/Component.h"
-
-#include "de/hackcraft/world/sub/model/rTree.h"
 
 #define USE_UNORDERED_MAP
 #if defined(USE_UNORDERED_MAP)
@@ -29,6 +23,8 @@ class rPlanetmap;
 #endif
 
 class Logger;
+class Propmap;
+struct rTree;
 
 // Amount of cached patches.
 #define PLANETMAP_CACHESIZE 512
@@ -136,7 +132,7 @@ protected:
     void drawTrianglePlant(float x, float h, float z, float scale);
     void drawCrossPlant(float x, float h, float z, float scale);
     void drawLeafPlant(float x, float h, float z, float scale);
-    GLenum loadMaterial();
+    unsigned int loadMaterial();
 };
 
 #endif	/* PLANETMAP_H */

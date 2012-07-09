@@ -13,12 +13,14 @@ class PhysicsSystem;
 
 #include "de/hackcraft/lang/OID.h"
 
+#include "de/hackcraft/psi3d/math3d.h"
+
 #include "de/hackcraft/world/Subsystem.h"
 
-#include "de/hackcraft/world/sub/physics/rCollider.h"
-#include "de/hackcraft/world/sub/physics/rTraceable.h"
-
 #include <map>
+
+class rCollider;
+class rTraceable;
 
 class PhysicsSystem : public Subsystem {
 public:

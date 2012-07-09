@@ -6,12 +6,17 @@
 #include "de/hackcraft/log/Logger.h"
 
 #include "de/hackcraft/proc/Distortion.h"
+#include "de/hackcraft/proc/Landscape.h"
 #include "de/hackcraft/proc/Noise.h"
 #include "de/hackcraft/proc/Solid.h"
 
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/macros.h"
 #include "de/hackcraft/psi3d/Primitive.h"
+
+#include "de/hackcraft/util/Propmap.h"
+
+#include "de/hackcraft/world/sub/model/rTree.h"
 
 #include <cassert>
 #include <ostream>
@@ -652,7 +657,7 @@ int detail = 0;
 
 #define TWODIMTEX
 
-GLenum rPlanetmap::loadMaterial() {
+unsigned int rPlanetmap::loadMaterial() {
     static bool fail = false;
     static GLenum prog = 0;
 

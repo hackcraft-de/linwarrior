@@ -12,13 +12,15 @@
 
 class CityscapeSystem;
 
+#include "de/hackcraft/lang/OID.h"
+
 #include "de/hackcraft/world/Subsystem.h"
 
-#include "de/hackcraft/world/sub/cityscape/rBuilding.h"
-#include "de/hackcraft/world/sub/cityscape/rTile.h"
-#include "de/hackcraft/world/sub/cityscape/rPadmap.h"
-
 #include <map>
+
+class rBuilding;
+class rTile;
+class rPadmap;
 
 /**
  * Represents all aspects (rendering, collision, ...)
@@ -28,9 +30,9 @@ class CityscapeSystem : public Subsystem {
 public:
     CityscapeSystem();
     virtual ~CityscapeSystem();
-    void add(rBuilding* building) { buildings[building->id] = building; };
-    void add(rTile* tile) { tiles[tile->id] = tile; };
-    void add(rPadmap* padmap) { padmaps[padmap->id] = padmap; };
+    void add(rBuilding* building);
+    void add(rTile* tile);
+    void add(rPadmap* padmap);
     
     virtual float constrainParticle(Entity* ex, float* worldpos, float radius);
     

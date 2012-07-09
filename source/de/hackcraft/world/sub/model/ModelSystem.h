@@ -16,11 +16,6 @@ class ModelSystem;
 #include "de/hackcraft/world/IModel.h"
 #include "de/hackcraft/world/Subsystem.h"
 
-#include "de/hackcraft/world/sub/model/rBillboard.h"
-#include "de/hackcraft/world/sub/model/rRigged.h"
-#include "de/hackcraft/world/sub/model/rScatter.h"
-#include "de/hackcraft/world/sub/model/rTree.h"
-
 #include <unordered_map>
 #include <vector>
 

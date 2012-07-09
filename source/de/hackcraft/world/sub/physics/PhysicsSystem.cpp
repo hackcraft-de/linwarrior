@@ -1,5 +1,8 @@
 #include "PhysicsSystem.h"
 
+#include "de/hackcraft/world/sub/physics/rCollider.h"
+#include "de/hackcraft/world/sub/physics/rTraceable.h"
+
 PhysicsSystem* PhysicsSystem::instance = NULL;
 
 

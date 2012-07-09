@@ -16,9 +16,9 @@ struct rChatMember;
 #include "de/hackcraft/world/Component.h"
 #include "de/hackcraft/world/IComputer.h"
 
-#include "de/hackcraft/world/sub/chat/rChatMessage.h"
-
 #include <list>
+
+class rChatMessage;
 
 /** 
  * Chat member (Communication Computer)

@@ -4,6 +4,8 @@
 
 #include "de/hackcraft/world/World.h"
 
+#include <cassert>
+
 Logger* ModelSystem::logger = Logger::getLogger("de.hackcraft.world.sub.model.ModelSystem");
 
 ModelSystem* ModelSystem::instance = NULL;

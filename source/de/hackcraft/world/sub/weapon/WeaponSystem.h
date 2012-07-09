@@ -11,18 +11,23 @@
 
 class WeaponSystem;
 
+#include "de/hackcraft/lang/OID.h"
+
 #include "de/hackcraft/util/Geomap.h"
 
 #include "de/hackcraft/world/Subsystem.h"
 
-#include "de/hackcraft/world/sub/weapon/rTarcom.h"
-#include "de/hackcraft/world/sub/weapon/rTarget.h"
-#include "de/hackcraft/world/sub/weapon/rWeapon.h"
-#include "de/hackcraft/world/sub/weapon/rWepcom.h"
-
+#include <list>
 #include <map>
+#include <set>
 
+class Entity;
 class Logger;
+class IModel;
+class rTarcom;
+class rTarget;
+class rWeapon;
+class rWepcom;
 
 /**
  * Manages weapons, targets and ranging-/targeting-devices.

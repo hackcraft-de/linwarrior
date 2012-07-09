@@ -15,8 +15,6 @@ struct Component;
 
 #include "de/hackcraft/util/Binding.h"
 
-#include "de/hackcraft/world/Subsystem.h"
-
 #include <string>
 #include <vector>
 

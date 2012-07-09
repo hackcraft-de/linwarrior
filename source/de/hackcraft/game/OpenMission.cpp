@@ -4,6 +4,9 @@
 
 #include "de/hackcraft/util/Propmap.h"
 
+#include "de/hackcraft/world/Entity.h"
+#include "de/hackcraft/world/World.h"
+
 #include "de/hackcraft/world/object/cMech.h"
 
 #include "de/hackcraft/world/sub/background/BackgroundSystem.h"
@@ -11,20 +14,31 @@
 #include "de/hackcraft/world/sub/chat/ChatSystem.h"
 
 #include "de/hackcraft/world/sub/cityscape/CityscapeSystem.h"
-
+#include "de/hackcraft/world/sub/cityscape/rBuilding.h"
+#include "de/hackcraft/world/sub/cityscape/rPadmap.h"
+#include "de/hackcraft/world/sub/cityscape/rTile.h"
 #include "de/hackcraft/world/sub/computer/rController.h"
 
 #include "de/hackcraft/world/sub/landscape/LandscapeSystem.h"
+#include "de/hackcraft/world/sub/landscape/rPlanetmap.h"
 
 #include "de/hackcraft/world/sub/mobile/rMobile.h"
 
 #include "de/hackcraft/world/sub/model/ModelSystem.h"
+#include "de/hackcraft/world/sub/model/rBillboard.h"
+#include "de/hackcraft/world/sub/model/rScatter.h"
+#include "de/hackcraft/world/sub/model/rTree.h"
 
 #include "de/hackcraft/world/sub/physics/PhysicsSystem.h"
 
 #include "de/hackcraft/world/sub/trigger/TriggerSystem.h"
+#include "de/hackcraft/world/sub/trigger/rAlert.h"
+#include "de/hackcraft/world/sub/trigger/rTrigger.h"
 
 #include "de/hackcraft/world/sub/weapon/WeaponSystem.h"
+#include "de/hackcraft/world/sub/weapon/rTarcom.h"
+#include "de/hackcraft/world/sub/weapon/rTarget.h"
+#include "de/hackcraft/world/sub/weapon/rWeapon.h"
 
 #include <sstream>
 using std::stringstream;

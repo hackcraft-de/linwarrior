@@ -15,10 +15,10 @@ class TriggerSystem;
 
 #include "de/hackcraft/world/Subsystem.h"
 
-#include "de/hackcraft/world/sub/trigger/rAlert.h"
-#include "de/hackcraft/world/sub/trigger/rTrigger.h"
-
 #include <map>
+
+class rAlert;
+class rTrigger;
 
 /**
  * Manages alerts and triggers for alerts.
@@ -30,8 +30,8 @@ public:
     static TriggerSystem* getInstance();
     virtual void animateObjects();
     virtual void drawEffect();
-    void add(rAlert* alert) { alerts[alert->id] = alert; };
-    void add(rTrigger* trigger) { triggers[trigger->id] = trigger; };
+    void add(rAlert* alert);
+    void add(rTrigger* trigger);
 private:
     static TriggerSystem* instance;
     std::map<OID,rAlert*> alerts;

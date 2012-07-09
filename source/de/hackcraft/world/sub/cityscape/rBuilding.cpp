@@ -7,6 +7,7 @@
 
 #include "de/hackcraft/psi3d/macros.h"
 #include "de/hackcraft/psi3d/GLS.h"
+#include "de/hackcraft/psi3d/Particle.h"
 #include "de/hackcraft/psi3d/Primitive.h"
 
 #include "de/hackcraft/proc/Distortion.h"

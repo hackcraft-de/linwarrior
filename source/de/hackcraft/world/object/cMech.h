@@ -11,8 +11,6 @@
 
 class cMech;
 
-#include "de/hackcraft/util/Propmap.h"
-
 #include "de/hackcraft/world/Entity.h"
 
 #include <string>
@@ -39,6 +37,7 @@ struct rWeapon;
 struct rWeaponExplosion;
 
 class Logger;
+class Propmap;
 
 // Gamepad Mapping
 #define MECH_CHASSIS_LR_AXIS  AX_LR1

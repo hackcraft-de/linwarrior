@@ -15,11 +15,12 @@ class rAlert;
 
 #include "de/hackcraft/world/Component.h"
 
-#include "de/hackcraft/world/sub/trigger/rTrigger.h"
-
 #include <hash_set>
 #include <set>
 #include <string>
+
+class Entity;
+class rTrigger;
 
 /**
  * Checks a defined area for certain intruding trigger-objects

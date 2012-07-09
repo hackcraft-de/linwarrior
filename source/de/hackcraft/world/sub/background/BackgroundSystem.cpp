@@ -2,6 +2,8 @@
 
 #include "de/hackcraft/io/Texfile.h"
 
+#include "de/hackcraft/log/Logger.h"
+
 #include "de/hackcraft/proc/Ambient.h"
 #include "de/hackcraft/proc/Distortion.h"
 #include "de/hackcraft/proc/Landscape.h"
@@ -10,15 +12,16 @@
 
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/macros.h"
+#include "de/hackcraft/psi3d/Particle.h"
 #include "de/hackcraft/psi3d/Primitive.h"
 
+#include "de/hackcraft/util/Propmap.h"
+
 #include "de/hackcraft/world/World.h"
-#include "de/hackcraft/log/Logger.h"
 
 #include <cstdio>
 #include <memory>
 #include <cstdlib>
-using namespace std;
 
 #define BKGDETAIL +0
 

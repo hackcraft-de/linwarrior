@@ -2,8 +2,8 @@
 
 #include "de/hackcraft/psi3d/math3d.h"
 
-#include "Noise.h"
-#include "Distortion.h"
+#include "de/hackcraft/proc/Distortion.h"
+#include "de/hackcraft/proc/Noise.h"
 
 #include <cmath>
 

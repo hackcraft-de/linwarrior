@@ -20,6 +20,8 @@ class rTrigger;
 #include <algorithm>
 #include <set>
 
+class Entity;
+
 /**
  * At this moment only a spot with an id and tags
  * for triggering alarms of different kinds.

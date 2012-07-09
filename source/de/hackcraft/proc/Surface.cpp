@@ -1,8 +1,8 @@
 #include "Surface.h"
 
-#include "Noise.h"
-#include "Distortion.h"
-#include "Solid.h"
+#include "de/hackcraft/proc/Distortion.h"
+#include "de/hackcraft/proc/Noise.h"
+#include "de/hackcraft/proc/Solid.h"
 
 void Surface::stone_plates(float x, float y, float z, float* color, unsigned char seed) {
     float grain = 0.2f + 0.1f * (0.5f + 0.5f * Noise::simplex3(x * 128, y * 128, z * 128, seed));
