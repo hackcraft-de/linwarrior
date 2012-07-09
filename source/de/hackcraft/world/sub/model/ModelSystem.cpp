@@ -1,10 +1,10 @@
 #include "ModelSystem.h"
 
+#include "de/hackcraft/log/Logger.h"
+
 #include "de/hackcraft/world/World.h"
 
-#include <iostream>
-using std::cout;
-using std::endl;
+Logger* ModelSystem::logger = Logger::getLogger("de.hackcraft.world.sub.model.ModelSystem");
 
 ModelSystem* ModelSystem::instance = NULL;
 
@@ -42,7 +42,7 @@ void ModelSystem::clusterObjects() {
         }
         
     } catch (char* s) {
-        cout << "Could not cluster models: " << s << endl;
+        logger->error() << "Could not cluster models: " << s << "\n";
     }
 }
 
@@ -80,7 +80,7 @@ void ModelSystem::setupView(float* pos, float* ori) {
     
     visobjects = geomap.getGeoInterval(min, max);
     assert(visobjects != NULL);
-    //cout << "vis:" << objects->size() << " vs " << mObjects.size() << endl;
+    //cout << "vis:" << objects->size() << " vs " << mObjects.size() << "\n";
     
     visorigin[0] = pos[0];
     visorigin[1] = pos[1];

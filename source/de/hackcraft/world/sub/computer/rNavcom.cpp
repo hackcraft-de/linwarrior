@@ -36,7 +36,7 @@ rNavcom::rNavcom(Entity* obj) {
     vector_set(p, 30.0, 0, 0.0);
     mPOIs.push_back(p);
 
-    //std::cout << "POIs: " << mPOIs[0][0] << " " << mPOIs[1][0] << " " << mPOIs[2][0] << std::endl;
+    //std::cout << "POIs: " << mPOIs[0][0] << " " << mPOIs[1][0] << " " << mPOIs[2][0] << "\n";
 
     mWaypoint = 0;
     mCyclic = false;

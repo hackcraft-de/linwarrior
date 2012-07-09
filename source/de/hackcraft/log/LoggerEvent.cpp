@@ -1,5 +1,6 @@
 #include "LoggerEvent.h"
 
+#include "de/hackcraft/log/Logger.h"
 
 LoggerEvent::LoggerEvent(Logger* logger, int level, const char* message, unsigned int tid) {
     this->logger = logger;

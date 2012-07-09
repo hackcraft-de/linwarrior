@@ -23,7 +23,11 @@ class ChatSystem;
 #include <map>
 #include <string>
 
+class Logger;
+
 class ChatSystem : public Subsystem {
+private:
+    static Logger* logger;
 public:
     ChatSystem();
     virtual ~ChatSystem();

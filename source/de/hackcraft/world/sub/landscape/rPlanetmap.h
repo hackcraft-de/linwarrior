@@ -28,6 +28,8 @@ class rPlanetmap;
 #define maptype std::map
 #endif
 
+class Logger;
+
 // Amount of cached patches.
 #define PLANETMAP_CACHESIZE 512
 
@@ -41,6 +43,8 @@ class rPlanetmap;
  * Procedural Landscape Rendering and Collision.
  */
 class rPlanetmap : public Component {
+private:
+    static Logger* logger;
 public:
     /** Instance counter. */
     static int sInstances;
@@ -132,6 +136,7 @@ protected:
     void drawTrianglePlant(float x, float h, float z, float scale);
     void drawCrossPlant(float x, float h, float z, float scale);
     void drawLeafPlant(float x, float h, float z, float scale);
+    GLenum loadMaterial();
 };
 
 #endif	/* PLANETMAP_H */

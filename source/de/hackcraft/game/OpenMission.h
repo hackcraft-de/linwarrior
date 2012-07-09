@@ -20,6 +20,8 @@
 
 #include "de/hackcraft/world/sub/trigger/TriggerSystem.h"
 
+class Logger;
+
 /**
  * Mission for testing new Mission features.
  */
@@ -37,6 +39,7 @@ private:
     /** For heights - should be replaced by Landscape- or Word-Delegation. */
     rPlanetmap* planetmap;
     World* world;
+    static Logger* logger;
 private:
     virtual void onVictory();
     virtual void onDefeat();

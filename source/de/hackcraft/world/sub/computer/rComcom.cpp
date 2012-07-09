@@ -6,10 +6,6 @@
 
 #include "de/hackcraft/world/World.h"
 
-#include <iostream>
-using std::cout;
-using std::endl;
-
 #include <sstream>
 using std::stringstream;
 

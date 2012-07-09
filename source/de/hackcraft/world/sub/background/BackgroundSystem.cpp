@@ -13,11 +13,11 @@
 #include "de/hackcraft/psi3d/Primitive.h"
 
 #include "de/hackcraft/world/World.h"
+#include "de/hackcraft/log/Logger.h"
 
 #include <cstdio>
 #include <memory>
 #include <cstdlib>
-#include <iostream>
 using namespace std;
 
 #define BKGDETAIL +0
@@ -43,6 +43,7 @@ unsigned int gPermutationTexture256 = 0;
 
 std::map<int, unsigned int> BackgroundSystem::textures;
 
+Logger* BackgroundSystem::logger = Logger::getLogger("de.hackcraft.world.background.BackgroundSystem");
 
 BackgroundSystem::BackgroundSystem() {
     Propmap properties;
@@ -102,7 +103,7 @@ void BackgroundSystem::initTextures() {
      */
 
     if (1) {
-        cout << "Generating Permutation 256..." << endl;
+        logger->info() << "Generating Permutation 256..." << "\n";
         int w = 256;
         int h = 16;
         int bpp = 3;
@@ -133,7 +134,7 @@ void BackgroundSystem::initTextures() {
 
     // Ground Texture
     if (1) {
-        cout << "Generating Ground..." << endl;
+        logger->info() << "Generating Ground..." << "\n";
         int w = 1 << (8 + BKGDETAIL);
         int h = w;
         int bpp = 3;
@@ -162,7 +163,7 @@ void BackgroundSystem::initTextures() {
 
     // Sun Texture
     if (1) {
-        cout << "Generating Sun..." << endl;
+        logger->info() << "Generating Sun..." << "\n";
         int w = 1 << (6 + BKGDETAIL);
         int h = w;
         int bpp = 4;
@@ -203,7 +204,7 @@ void BackgroundSystem::initTextures() {
 
     // Earth Texture
     if (1) {
-        cout << "Generating Earth..." << endl;
+        logger->info() << "Generating Earth..." << "\n";
         int w = 1 << (6 + BKGDETAIL);
         int h = w;
         int bpp = 4;
@@ -247,7 +248,7 @@ void BackgroundSystem::initTextures() {
 
     // Lavos Texture
     if (1) {
-        cout << "Generating Lavos..." << endl;
+        logger->info() << "Generating Lavos..." << "\n";
         int w = 1 << (6 + BKGDETAIL);
         int h = w;
         int bpp = 4;
@@ -292,7 +293,7 @@ void BackgroundSystem::initTextures() {
 
     // Moon Texture
     if (1) {
-        cout << "Generating Moon..." << endl;
+        logger->info() << "Generating Moon..." << "\n";
         int w = 1 << (6 + BKGDETAIL);
         int h = w;
         int bpp = 4;
@@ -336,7 +337,7 @@ void BackgroundSystem::initTextures() {
 
     // Cloud Texture
     if (1) {
-        cout << "Generating Clouds..." << endl;
+        logger->info() << "Generating Clouds..." << "\n";
         int w = 1 << (8 + BKGDETAIL);
         int h = w;
         int bpp = 4;
@@ -370,7 +371,7 @@ void BackgroundSystem::initTextures() {
 
     // Galaxy Box Textures
     if (1) {
-        cout << "Generating Galaxy..." << endl;
+        logger->info() << "Generating Galaxy..." << "\n";
         int w = 1 << (8 + BKGDETAIL);
         int h = w;
         int bpp = 3;
@@ -383,8 +384,8 @@ void BackgroundSystem::initTextures() {
             int rotation = k >> 1;
 
             char names[6][3] = {"-X", "+X", "-Y", "+Y", "-Z", "+Z"};
-            cout << "Generating Galaxy for " << names[k] << "..." << endl;
-            //cout << "Generating Galaxy for " << ((sign<0)?"-":"+") << " Axis " << rotation << "..." << endl;
+            logger->info() << "Generating Galaxy for " << names[k] << "..." << "\n";
+            //logger->info() << "Generating Galaxy for " << ((sign<0)?"-":"+") << " Axis " << rotation << "..." << "\n";
 
             unsigned char* p = texels;
 
@@ -419,10 +420,10 @@ void BackgroundSystem::initTextures() {
                 try {
                     std::string fname = std::string("galaxy") + std::string(names[k]) + std::string(".tga");
                     if (Texfile::saveTGA(fname.c_str(), w, h, bpp, texels)) {
-                        cout << "Could not save image" << endl;
+                        logger->error() << "Could not save image" << "\n";
                     }
                 } catch (char const* s) {
-                    cout << "ERROR: " << s << endl;
+                    logger->error() << s << "\n";
                 }
             }
         }
@@ -793,8 +794,8 @@ void BackgroundSystem::drawGround() {
         memcpy(n, m, sizeof (float) *16);
         matrix_transpose(m);
         matrix_apply2(m, p);
-        //cout << "height over ground: " << p[1] << "\n";
-        //cout << "Position: " << p[0] << " " << p[2] << "\n";
+        //logger->trace() << "height over ground: " << p[1] << "\n";
+        //logger->trace() << "Position: " << p[0] << " " << p[2] << "\n";
 
         glPushMatrix();
         {
@@ -861,7 +862,7 @@ void BackgroundSystem::drawClouds() {
 
             float light = 0.3 + 0.7 * cos((hour - 12.0f) / 12.00f * 0.5f * M_PI);
             
-            //cout << hour << endl;
+            //logger->trace() << hour << "\n";
             srand(12421);
             int n = 50 * cloudiness;
             float density = 1.0 / (1.0 + 0.01 * n);
@@ -1126,8 +1127,8 @@ void BackgroundSystem::drawRain() {
     memcpy(n, m, sizeof (float) *16);
     matrix_transpose(m);
     matrix_apply2(m, pnt);
-    //cout << "height over ground: " << pnt[1] << "\n";
-    //cout << "Position: " << pnt[0] << " " << pnt[2] << "\n";
+    //logger->trace() << "height over ground: " << pnt[1] << "\n";
+    //logger->trace() << "Position: " << pnt[0] << " " << pnt[2] << "\n";
     
     if (raininess > 0) {
 
@@ -1171,7 +1172,7 @@ void BackgroundSystem::drawRain() {
                 glColor4f(0.3, 0.3, 0.5, 0.9);
                 glVertex3fv(p->pos);
                 p->stepEuler(0.1, 0);
-                //std::cout << p->pos[0] << " " << p->pos[1] << " " << p->pos[2] << "\n";
+                //std::logger->trace() << p->pos[0] << " " << p->pos[1] << " " << p->pos[2] << "\n";
                 if (p->pos[1] < -pnt[1]-10) rain.remove(p);
             }
             glEnd();

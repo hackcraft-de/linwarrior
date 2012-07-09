@@ -1,5 +1,7 @@
 #include "LevelStreamLogger.h"
 
+#include "de/hackcraft/log/Logger.h"
+
 #include <SDL/SDL_thread.h>
 
 

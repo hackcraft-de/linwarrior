@@ -347,30 +347,30 @@ struct Particle {
         // Normalised Tangent vector of base circle below particle.
         float inv_len = 1.0f / rdist;
         float tangent[] = {-dist[2] * inv_len, 0, dist[0] * inv_len};
-        //std::cout << "tangent: " << tangent[0] << " " << tangent[1] << " " << tangent[2] << std::endl;
+        //std::cout << "tangent: " << tangent[0] << " " << tangent[1] << " " << tangent[2] << "\n";
 
         // Tangent point.
         float tp[] = {radius * dist[0] * inv_len, base3fv[1], radius * dist[2] * inv_len};
-        //std::cout << "tp: " << tp[0] << " " << tp[1] << " " << tp[2] << std::endl;
+        //std::cout << "tp: " << tp[0] << " " << tp[1] << " " << tp[2] << "\n";
 
         // Normalised Vector from tangent point to cone top tip.
         //float inv_up = 1.0f / sqrtf(radius*radius + height*height);
         float inv_up = 1.0f / sqrtf(tp[0] * tp[0] + tp[2] * tp[2] + height * height);
         float up[] = {-tp[0] * inv_up, height * inv_up, -tp[2] * inv_up};
-        //std::cout << "up: " << up[0] << " " << up[1] << " " << up[2] << std::endl;
+        //std::cout << "up: " << up[0] << " " << up[1] << " " << up[2] << "\n";
 
         // Normalised projection normal vector.
         float norm[3];
         vector_cross(norm, tangent, up);
-        std::cout << "norm: " << norm[0] << " " << norm[1] << " " << norm[2] << std::endl;
+        //std::cout << "norm: " << norm[0] << " " << norm[1] << " " << norm[2] << "\n";
 
         // Plane equation d.
         float d = norm[1] * height;
-        std::cout << "Invariant d: " << d << std::endl;
+        //std::cout << "Invariant d: " << d << "\n";
 
         // Distance of Particle to plane.
         float delta = norm[0] * particle3fv[0] + norm[1] * particle3fv[1] + norm[2] * particle3fv[2] - d;
-        std::cout << "Cone Distance: " << delta << std::endl;
+        //std::cout << "Cone Distance: " << delta << "\n";
 
         if (delta > 0) {
             projection3fv[0] = particle3fv[0] - delta * norm[0];
@@ -435,7 +435,7 @@ struct Particle {
         int maxidx = 0;
 
         for (int i = 0; i < 6; i++) {
-            //cout << dminmax[i] << endl;
+            //cout << dminmax[i] << "\n";
             if (dminmax[i] > 0) return 0;
             if (dminmax[i] > maxval) {
                 maxval = dminmax[i];
@@ -443,7 +443,7 @@ struct Particle {
             }
         }
 
-        //cout << maxval << " " << maxidx << endl;
+        //cout << maxval << " " << maxidx << "\n";
         vector_cpy(projection3fv, particle3fv);
 
         if (maxidx < 3) {
@@ -481,12 +481,12 @@ private:
         //static long long b = 1;
         if (value >= 1.0f && value < 9.0) {
             //a++;
-            //cout << " " << a << " " << b << " " << endl;
+            //cout << " " << a << " " << b << " " << "\n";
             float guess = 1.0f + (value - 1.0f) * 0.45f;
             return 0.5f * (guess + value / guess);
         } else {
             //b++;
-            //cout << " " << a << " " << b << " " << endl;
+            //cout << " " << a << " " << b << " " << "\n";
             return sqrtf(value); //exp(0.5f * log(value));
         }
     }

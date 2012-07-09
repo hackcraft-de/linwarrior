@@ -93,10 +93,10 @@ int main(int argc, char **args) {
         }
         
     } catch (char* s) {
-        cout << "Fatal exception caught:\n" << s << endl;
+        cout << "Fatal exception caught:\n" << s << "\n";
         
     } catch (const char* s) {
-        cout << "Fatal exception caught:\n" << s << endl;
+        cout << "Fatal exception caught:\n" << s << "\n";
     }
     return 0;    
 }

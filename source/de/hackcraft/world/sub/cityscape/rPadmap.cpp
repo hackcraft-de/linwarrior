@@ -60,9 +60,9 @@ rPadmap::rPadmap(Entity* obj) {
             int length = 1;
             bool horizontal = true;
             int increment = +1;
-            //cout << "spiral:" << endl;
+            //cout << "spiral:" << "\n";
             while (true) {
-                //cout << x << " " << y << endl;
+                //cout << x << " " << y << "\n";
                 sSpiral[0].push_back(x);
                 sSpiral[1].push_back(y);
                 stepSpiral(x, y, i, length, horizontal, increment);
@@ -135,7 +135,7 @@ float rPadmap::getHeight(float x, float z) {
     int v0 = int(v) * 2;
     float dv = v - int(v);
 
-    //cout << u0 << " " << v0 << " / " << du << " " << dv << endl;
+    //cout << u0 << " " << v0 << " / " << du << " " << dv << "\n";
 
     float h00 = heights[(v0 + 0) * a + u0 + 0];
     float h10 = heights[(v0 + 1) * a + u0 + 0];
@@ -348,7 +348,7 @@ float rPadmap::constrain(float* worldpos, float radius, float* localpos, Entity*
         float delta = radius_ - nearest;
         if (delta > 0.01) {
             //vector_print(near);
-            //cout << radius << " " << nearest << " " << delta << endl;
+            //cout << radius << " " << nearest << " " << delta << "\n";
 
             vector_scale(nearestV, nearestV, 1.0f / (nearest + 0.000001f));
             vector_scale(nearestV, nearestV, delta * relax);
@@ -358,7 +358,7 @@ float rPadmap::constrain(float* worldpos, float radius, float* localpos, Entity*
         }
         maxdelta = fmax(maxdelta, delta);
     }
-    //cout << "it " << runs << endl;
+    //cout << "it " << runs << "\n";
 
     if (maxdelta > 0) {
         localpos_[0] *= mapscale[0];

@@ -2,33 +2,35 @@
 
 #include "de/hackcraft/io/Filesystem.h"
 
+#include "de/hackcraft/log/Logger.h"
+
 #include "de/hackcraft/proc/Solid.h"
 
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Primitive.h"
 #include "de/hackcraft/psi3d/GLF.h"
 
-#include <iostream>
-using std::cout;
-using std::endl;
+#include <sstream>
 
 #include <string>
 using std::string;
 
 #include <GL/glew.h>
 
-static GLenum loadMaterial() {
+unsigned int rRigged::loadMaterial() {
     static bool fail = false;
     static GLenum prog = 0;
 
     if (prog == 0 && !fail) {
         char* vtx = Filesystem::loadTextFile("data/base/material/base.vert");
-        if (vtx) cout << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
+        if (vtx) logger->debug() << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
         char* fgm = Filesystem::loadTextFile("data/base/material/base3d.frag");
-        if (fgm) cout << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
+        if (fgm) logger->debug() << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
         fail = (vtx == NULL || fgm == NULL) || (vtx[0] == 0 && fgm[0] == 0);
         if (!fail) {
-            prog = GLS::glCompileProgram(vtx, fgm, cout);
+            std::stringstream str;
+            prog = GLS::glCompileProgram(vtx, fgm, str);
+            logger->error() << str.str() << "\n";
         }
         delete[] vtx;
         delete[] fgm;
@@ -43,6 +45,8 @@ static GLenum loadMaterial() {
 
 #define MECHDETAIL 0
 
+Logger* rRigged::logger = Logger::getLogger("de.hackcraft.world.sub.model.rRigged");
+
 std::string rRigged::cname = "RIGGED";
 unsigned int rRigged::cid = 4900;
 
@@ -53,7 +57,7 @@ void rRigged::initMaterials() {
     if (materials.empty()) {
         if (1) {
 
-            cout << "Generating Camoflage..." << endl;
+            logger->info() << "Generating Camoflage..." << "\n";
 
             const int SIZE = 1 << (7 + MECHDETAIL);
             unsigned char* texels = new unsigned char[SIZE * SIZE * SIZE * 3];
@@ -190,7 +194,7 @@ void rRigged::drawMeshes() {
         */
 
         loopi(model->numMeshes) {
-            //cout << "Shader:" << msh->shader << "\n";
+            //logger->trace() << "Shader:" << msh->shader << "\n";
             //float co = colors[msh->shader[0]];
             //glColor3f(co,co,co);
             
@@ -206,7 +210,7 @@ void rRigged::drawMeshes() {
             }
             glBindTexture(GL_TEXTURE_3D, materials[shader]);
 
-            //cout << curr->numverts << " " << curr->numtris << " " << curr->numweights << endl;
+            //logger->trace() << curr->numverts << " " << curr->numtris << " " << curr->numweights << "\n";
             float* vtx = new float[msh->numverts * 3];
             float* nrm = new float[msh->numverts * 3];
             MD5Format::animatedMeshVertices(msh, joints, vtx, nrm);
@@ -262,8 +266,8 @@ void rRigged::drawMeshes() {
             msh = MD5Format::getNextMesh(msh);
         }
         radius = sqrt(radius);
-        //cout << " Model-Dimensions: r = " << radius << " h = " << height << "\n";
-        //cout << " Model-Dimensions: (" << mins[0] << " " << mins[1] << " " << mins[2] << ") (" << maxs[0] << " " << maxs[1] << " " << maxs[2] << ")\n";
+        //logger->trace() << " Model-Dimensions: r = " << radius << " h = " << height << "\n";
+        //logger->trace() << " Model-Dimensions: (" << mins[0] << " " << mins[1] << " " << mins[2] << ") (" << maxs[0] << " " << maxs[1] << " " << maxs[2] << ")\n";
         glUseProgramObjectARB(0);
     }
     glPopAttrib();
@@ -480,7 +484,7 @@ std::string rRigged::resolveFilename(std::string modelname) {
 void rRigged::loadModel(std::string filename) {
     model = MD5Format::mapMD5Mesh(filename.c_str());
 
-    if (!true) cout << MD5Format::getModelStats(model) << endl;
+    if (!true) logger->debug() << MD5Format::getModelStats(model) << "\n";
 
     // Make joints local for later animation and transformation to global.
     MD5Format::joint* joints_ = MD5Format::getJoints(model);

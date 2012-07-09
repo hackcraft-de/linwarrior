@@ -1,5 +1,7 @@
 #include "OpenMission.h"
 
+#include "de/hackcraft/log/Logger.h"
+
 #include "de/hackcraft/util/Propmap.h"
 
 #include "de/hackcraft/world/object/cMech.h"
@@ -23,10 +25,6 @@
 #include "de/hackcraft/world/sub/trigger/TriggerSystem.h"
 
 #include "de/hackcraft/world/sub/weapon/WeaponSystem.h"
-
-#include <iostream>
-using std::cout;
-using std::endl;
 
 #include <sstream>
 using std::stringstream;
@@ -52,11 +50,13 @@ using std::string;
 #define PLAYERPOS   { 0, 0, 0 }
 
 
+Logger* OpenMission::logger = Logger::getLogger("de.hackcraft.game.OpenMission");
+
 void OpenMission::onVictory() {
     //Mission::onVictory();
     if (mState != -1) {
         mState = -1;
-        cout << "onVictory!";
+        logger->debug() << "onVictory!\n";
         ChatSystem::getInstance()->sendMessage(0, 0, group_alliance_player,
                 "DISPLAY",
                 //std::string("   (+) Primary target fullfilled.\n   (+) You Won!\n   (+) Hit ESC to finish Mission\n")
@@ -69,7 +69,7 @@ void OpenMission::onDefeat() {
     //Mission::onDefeat();
     if (mState != -2) {
         mState = -2;
-        cout << "onDefeat!";
+        logger->debug() << "onDefeat!\n";
         ChatSystem::getInstance()->sendMessage(0, 0, group_alliance_player,
                 "DISPLAY",
                 //std::string("   (-) You Lost!\n   (+) Hit ESC to finish Mission\n")
@@ -83,14 +83,14 @@ Entity* OpenMission::init(World* world) {
     
     this->world = world;
 
-    cout << "Loading global properties...\n";
+    logger->info() << "Loading global properties...\n";
     //try {
         globalProperties.load("data/base/global.properties");
     //} catch (...) {
-    //    cout << "Could not load global properties.\n";
+    //    logger->info() << "Could not load global properties.\n";
     //}
     
-    cout << "Setting mission date and time...\n";
+    logger->info() << "Setting mission date and time...\n";
     if (!true) {
         world->getTiming()->setTime(12);
     } else {
@@ -100,34 +100,34 @@ Entity* OpenMission::init(World* world) {
         world->getTiming()->setTime(hour, 60 * (hour - (int) hour));
     }
     
-    cout << "Initialising chat subsystem...\n";
+    logger->info() << "Initialising chat subsystem...\n";
     world->subsystems.push_back(new ChatSystem());
 
-    cout << "Initialising background subsystem...\n";
+    logger->info() << "Initialising background subsystem...\n";
     world->subsystems.push_back(new BackgroundSystem(&globalProperties));
     
-    cout << "Initialising trigger subsystem...\n";
+    logger->info() << "Initialising trigger subsystem...\n";
     triggerSystem = new TriggerSystem();
     world->subsystems.push_back(triggerSystem);
 
-    cout << "Initialising city subsystem...\n";
+    logger->info() << "Initialising city subsystem...\n";
     cityscapeSystem = new CityscapeSystem();
     world->subsystems.push_back(cityscapeSystem);
 
-    cout << "Initialising experimental or preliminary subsystems...\n";
+    logger->info() << "Initialising experimental or preliminary subsystems...\n";
     world->subsystems.push_back(new LandscapeSystem());
     world->subsystems.push_back(new PhysicsSystem());
     world->subsystems.push_back(new WeaponSystem());
     world->subsystems.push_back(new ModelSystem());
 
-    cout << "Initialising planetary maps...\n";
+    logger->info() << "Initialising planetary maps...\n";
     this->planetmap = new rPlanetmap(&globalProperties);
     LandscapeSystem* landscapeSystem = new LandscapeSystem();
     landscapeSystem->add(planetmap);
     world->subsystems.push_front(landscapeSystem);
     //world->spawnObject(planetmap);
 
-    cout << "Initialising call groups...\n";
+    logger->info() << "Initialising call groups...\n";
     {
         group_alliance_player = ChatSystem::getInstance()->getGroup("/call/alliance/player");
         group_alliance_wingmen = ChatSystem::getInstance()->getGroup("/call/alliance/wingmen");
@@ -135,22 +135,22 @@ Entity* OpenMission::init(World* world) {
         group_enemies_all = ChatSystem::getInstance()->getGroup("/call/enemies/all");
     }
 
-    cout << "Initialising default sensitivities...\n";
+    logger->info() << "Initialising default sensitivities...\n";
     {
         inc_sense.insert(World::getInstance()->getGroup(PLR_HUMAN));
         exc_sense.insert(World::getInstance()->getGroup(HLT_DEAD));
     }
 
-    cout << "Initialising Skytide City...\n";
+    logger->info() << "Initialising Skytide City...\n";
     initSkytideCity();
 
-    cout << "Initialising Starcircle Town...\n";
+    logger->info() << "Initialising Starcircle Town...\n";
     initStarcircleTown();
 
-    cout << "Initialising Penta Spaceport...\n";
+    logger->info() << "Initialising Penta Spaceport...\n";
     initPentaSpaceport();
 
-    cout << "Initialising Pyra Nano Corp...\n";
+    logger->info() << "Initialising Pyra Nano Corp...\n";
     initPyraNanoCorp();
 
     initFortifyDefense();
@@ -161,7 +161,7 @@ Entity* OpenMission::init(World* world) {
     //initSpadenixFactory();
 
     if (!true) {
-        cout << "Initialising Experimental Structure...\n";
+        logger->info() << "Initialising Experimental Structure...\n";
         float loc[] = {-70, 0, -70};
 
         float color[16];
@@ -185,7 +185,7 @@ Entity* OpenMission::init(World* world) {
         world->spawnObject(obj);
     }
 
-    cout << "Initialising vehicles...\n";
+    logger->info() << "Initialising vehicles...\n";
     Entity* player = NULL;
     {
         float position[] = PLAYERPOS;
@@ -195,7 +195,7 @@ Entity* OpenMission::init(World* world) {
         player = initPlayerParty(position);
     }
 
-    cout << "Initialising mission triggers...\n";
+    logger->info() << "Initialising mission triggers...\n";
     {
         // Setup Leaving Mission Area Warning-Alert.
         {
@@ -297,7 +297,7 @@ Entity* OpenMission::initPlayerParty(float* position) {
         ChatSystem::getInstance()->addToGroup(group_alliance_player, mech);
         ChatSystem::getInstance()->addToGroup(group_alliance_wingmen, mech);
         ChatSystem::getInstance()->addToGroup(group_alliance_all, mech);
-        cout << "after first spawn\n";
+        logger->debug() << "after first spawn\n";
 
         rTrigger* trigger = new rTrigger();
         trigger->addTag(World::getInstance()->getGroup(FAC_BLUE));
@@ -380,7 +380,7 @@ void OpenMission::initSkytideCity() {
     planetmap->mods.push_back(mod);
 
     //planetmap->getHeight(loc[0],loc[2], color);
-    //cout << "height before: " << loc[1] << "  height after: " << color[3] << endl;
+    //logger->info() << "height before: " << loc[1] << "  height after: " << color[3] << "\n";
 
     capitalCity(loc[0], loc[1], loc[2]);
     //roundForrest(loc[0] + 50, loc[1], loc[2] + 50, 65, 150, 1);
@@ -510,7 +510,7 @@ void OpenMission::initStarcircleTown() {
     planetmap->getHeight(loc[0], loc[2], color);
     loc[1] = color[3];
     loc[1] = 0.0;
-    cout << "STARCIRCLE height: " << loc[1] << endl;
+    logger->info() << "STARCIRCLE height: " << loc[1] << "\n";
 
     rPlanetmap::sMod* mod = new rPlanetmap::sMod();
     mod->pos[0] = loc[0];
@@ -1081,14 +1081,14 @@ void OpenMission::capitalCity(int wx, int wy, int wz) {
                     b++;
                 }
                 b--;
-                //cout << "building at: " << i << " " << h_ << " " << j " - " << a << " " << h << " " << b "\n";
+                //logger->info() << "building at: " << i << " " << h_ << " " << j " - " << a << " " << h << " " << b "\n";
                 for (int x = i; x <= a; x++) {
                     for (int y = j; y <= b; y++) {
                         //buildings[x][y] -= h;
                         //int old = buildings[x][y];
                         buildings[x][y] += h * 100 - h;
                         while (buildings[x][y] < 0) buildings[x][y] += 1;
-                        //cout << old << " => " << buildings[x][y] << " " << (old + h*100 -h) << "\n";
+                        //logger->info() << old << " => " << buildings[x][y] << " " << (old + h*100 -h) << "\n";
                     }
                 }
                 cityscapeSystem->add(new rBuilding(i * 3 * 3 + wx, h_ * 3 + wy, j * 3 * 3 + wz, (a - i + 1)*3, h, (b - j + 1)*3));
@@ -1112,7 +1112,6 @@ void OpenMission::pyramidBuilding(int x, int y, int z) {
 
 #include <iostream>
 using std::cout;
-using std::endl;
 
 //#include <expat.h>
 
@@ -1123,7 +1122,7 @@ struct Data {
 void startElement(void *data, const char *el, const char **attr) {
     Data* d = (Data*) data;
     loopi(d->depth) cout << "\t";
-    cout << el << endl;
+    cout << el << "\n";
     d->depth++;
 }
 

@@ -1,5 +1,7 @@
 #include "rTile.h"
 
+#include "de/hackcraft/log/Logger.h"
+
 #include "de/hackcraft/io/Filesystem.h"
 #include "de/hackcraft/io/Texfile.h"
 
@@ -11,24 +13,25 @@
 
 #include "de/hackcraft/world/World.h"
 
-#include <iostream>
-using std::cout;
-using std::endl;
+#include <sstream>
+
 
 #define ROADTILEDETAIL 0
 
-static GLenum loadMaterial() {
+unsigned int rTile::loadMaterial() {
     static bool fail = false;
     static GLenum prog = 0;
 
     if (prog == 0 && !fail) {
         char* vtx = Filesystem::loadTextFile("data/base/material/base.vert");
-        if (vtx) cout << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
+        if (vtx) logger->debug() << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
         char* fgm = Filesystem::loadTextFile("data/base/material/base2d.frag");
-        if (fgm) cout << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
+        if (fgm) logger->debug() << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
         fail = (vtx == NULL || fgm == NULL) || (vtx[0] == 0 && fgm[0] == 0);
         if (!fail) {
-            prog = GLS::glCompileProgram(vtx, fgm, cout);
+            std::stringstream str;
+            prog = GLS::glCompileProgram(vtx, fgm, str);
+            logger->error() << str << "\n";
         }
         delete[] vtx;
         delete[] fgm;
@@ -38,6 +41,7 @@ static GLenum loadMaterial() {
     return prog;
 }
 
+Logger* rTile::logger = Logger::getLogger("de.hackcraft.world.sub.model.rTile");
 
 int rTile::sInstances = 0;
 std::map<int, long> rTile::sTextures;
@@ -45,7 +49,7 @@ std::map<int, long> rTile::sTextures;
 rTile::rTile(int x, int y, int z, int kind) {
     sInstances++;
     if (sInstances == 1) {
-        cout << "Generating Roads..." << endl;
+        logger->info() << "Generating Roads..." << "\n";
         std::string basepath = std::string("data/base/roads/");
         bool save = false;
 
@@ -75,7 +79,7 @@ rTile::rTile(int x, int y, int z, int kind) {
             std::string fname = basepath + std::string("roadNEWS.tga");
             if (save) {
                 if (Texfile::saveTGA(fname.c_str(), w, h, bpp, texels)) {
-                    cout << "Could not save image: " << fname << endl;
+                    logger->error() << "Could not save image: " << fname << "\n";
                 }
             }
             delete[] texels;
@@ -104,7 +108,7 @@ rTile::rTile(int x, int y, int z, int kind) {
             std::string fname = basepath + std::string("roadTN.tga");
             if (save) {
                 if (Texfile::saveTGA(fname.c_str(), w, h, bpp, texels)) {
-                    cout << "Could not save image: " << fname << endl;
+                    logger->error() << "Could not save image: " << fname << "\n";
                 }
             }
             delete[] texels;
@@ -133,7 +137,7 @@ rTile::rTile(int x, int y, int z, int kind) {
             std::string fname = basepath + std::string("roadTS.tga");
             if (save) {
                 if (Texfile::saveTGA(fname.c_str(), w, h, bpp, texels)) {
-                    cout << "Could not save image: " << fname << endl;
+                    logger->error() << "Could not save image: " << fname << "\n";
                 }
             }
             delete[] texels;
@@ -162,7 +166,7 @@ rTile::rTile(int x, int y, int z, int kind) {
             std::string fname = basepath + std::string("roadTE.tga");
             if (save) {
                 if (Texfile::saveTGA(fname.c_str(), w, h, bpp, texels)) {
-                    cout << "Could not save image: " << fname << endl;
+                    logger->error() << "Could not save image: " << fname << "\n";
                 }
             }
             delete[] texels;
@@ -191,7 +195,7 @@ rTile::rTile(int x, int y, int z, int kind) {
             std::string fname = basepath + std::string("roadTW.tga");
             if (save) {
                 if (Texfile::saveTGA(fname.c_str(), w, h, bpp, texels)) {
-                    cout << "Could not save image: " << fname << endl;
+                    logger->error() << "Could not save image: " << fname << "\n";
                 }
             }
             delete[] texels;
@@ -220,7 +224,7 @@ rTile::rTile(int x, int y, int z, int kind) {
             std::string fname = basepath + std::string("roadNS.tga");
             if (save) {
                 if (Texfile::saveTGA(fname.c_str(), w, h, bpp, texels)) {
-                    cout << "Could not save image: " << fname << endl;
+                    logger->error() << "Could not save image: " << fname << "\n";
                 }
             }
             delete[] texels;
@@ -249,7 +253,7 @@ rTile::rTile(int x, int y, int z, int kind) {
             std::string fname = basepath + std::string("roadEW.tga");
             if (save) {
                 if (Texfile::saveTGA(fname.c_str(), w, h, bpp, texels)) {
-                    cout << "Could not save image: " << fname << endl;
+                    logger->error() << "Could not save image: " << fname << "\n";
                 }
             }
             delete[] texels;
@@ -278,7 +282,7 @@ rTile::rTile(int x, int y, int z, int kind) {
             std::string fname = basepath + std::string("roadNE.tga");
             if (save) {
                 if (Texfile::saveTGA(fname.c_str(), w, h, bpp, texels)) {
-                    cout << "Could not save image: " << fname << endl;
+                    logger->error() << "Could not save image: " << fname << "\n";
                 }
             }
             delete[] texels;
@@ -307,7 +311,7 @@ rTile::rTile(int x, int y, int z, int kind) {
             std::string fname = basepath + std::string("roadSE.tga");
             if (save) {
                 if (Texfile::saveTGA(fname.c_str(), w, h, bpp, texels)) {
-                    cout << "Could not save image: " << fname << endl;
+                    logger->error() << "Could not save image: " << fname << "\n";
                 }
             }
             delete[] texels;
@@ -336,7 +340,7 @@ rTile::rTile(int x, int y, int z, int kind) {
             std::string fname = basepath + std::string("roadSW.tga");
             if (save) {
                 if (Texfile::saveTGA(fname.c_str(), w, h, bpp, texels)) {
-                    cout << "Could not save image: " << fname << endl;
+                    logger->error() << "Could not save image: " << fname << "\n";
                 }
             }
             delete[] texels;
@@ -365,7 +369,7 @@ rTile::rTile(int x, int y, int z, int kind) {
             std::string fname = basepath + std::string("roadNW.tga");
             if (save) {
                 if (Texfile::saveTGA(fname.c_str(), w, h, bpp, texels)) {
-                    cout << "Could not save image: " << fname << endl;
+                    logger->error() << "Could not save image: " << fname << "\n";
                 }
             }
             delete[] texels;
@@ -394,7 +398,7 @@ rTile::rTile(int x, int y, int z, int kind) {
             std::string fname = basepath + std::string("roadPLAZA.tga");
             if (save) {
                 if (Texfile::saveTGA(fname.c_str(), w, h, bpp, texels)) {
-                    cout << "Could not save image: " << fname << endl;
+                    logger->error() << "Could not save image: " << fname << "\n";
                 }
             }
             delete[] texels;

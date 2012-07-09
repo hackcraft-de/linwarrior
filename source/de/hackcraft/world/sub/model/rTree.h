@@ -21,12 +21,15 @@ struct rTree;
 #include <list>
 #include <map>
 
+class Logger;
 class rPlanetmap;
 
 /**
  * Generates and caches proceduraly generated 3d tree models.
  */
 struct rTree : public Component, public IModel {
+private:
+    static Logger* logger;
 public: // SYSTEM
     /** Identifier for this component (all uppercase letters without leading "r"). */
     static std::string cname;

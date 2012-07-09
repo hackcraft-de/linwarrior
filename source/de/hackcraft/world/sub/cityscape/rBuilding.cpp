@@ -3,6 +3,8 @@
 #include "de/hackcraft/io/Texfile.h"
 #include "de/hackcraft/io/Filesystem.h"
 
+#include "de/hackcraft/log/Logger.h"
+
 #include "de/hackcraft/psi3d/macros.h"
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Primitive.h"
@@ -17,24 +19,24 @@
 
 #include <cassert>
 
-#include <iostream>
-using std::cout;
-using std::endl;
+#include <sstream>
 
 #define BUILDINGDETAIL 0
 
-static GLenum loadMaterial() {
+unsigned int rBuilding::loadMaterial() {
     static bool fail = false;
     static GLenum prog = 0;
 
     if (prog == 0 && !fail) {
         char* vtx = Filesystem::loadTextFile("data/base/material/base.vert");
-        if (vtx) cout << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
+        if (vtx) logger->debug() << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
         char* fgm = Filesystem::loadTextFile("data/base/material/base2d.frag");
-        if (fgm) cout << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
+        if (fgm) logger->debug() << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
         fail = (vtx == NULL || fgm == NULL) || (vtx[0] == 0 && fgm[0] == 0);
         if (!fail) {
-            prog = GLS::glCompileProgram(vtx, fgm, cout);
+            std::stringstream str;
+            prog = GLS::glCompileProgram(vtx, fgm, str);
+            logger->error() << str.str() << "\n";
         }
         delete[] vtx;
         delete[] fgm;
@@ -44,7 +46,7 @@ static GLenum loadMaterial() {
     return prog;
 }
 
-
+Logger* rBuilding::logger = Logger::getLogger("de.hackcraft.world.sub.cityscape.rBuilding");
 
 int rBuilding::sInstances = 0;
 std::map<int, long> rBuilding::sTextures;
@@ -55,7 +57,7 @@ rBuilding::rBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
         unsigned int texname;
 
         {
-            cout << "Generating Rooftops..." << endl;
+            logger->info() << "Generating Rooftops..." << "\n";
             int w = 1 << (6 + BUILDINGDETAIL);
             int h = w;
             int bpp = 3;
@@ -79,7 +81,7 @@ rBuilding::rBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
 
         {
             //glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
-            cout << "Generating Facades..." << endl;
+            logger->info() << "Generating Facades..." << "\n";
 
             loopk(17) {
                 int w = 1 << (8 + BUILDINGDETAIL);
@@ -114,10 +116,10 @@ rBuilding::rBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
                         char numb[3] = { char('0' + (k / 10)), char('0' + (k % 10)), '\0' };
                         std::string fname = std::string("data/base/cityscape/facade/facade_") + std::string(numb) + std::string(".tga");
                         if (Texfile::saveTGA(fname.c_str(), w, h, bpp, texels)) {
-                            cout << "Could not save image" << endl;
+                            logger->error() << "Could not save image" << "\n";
                         }
                     } catch (char const* s) {
-                        cout << "ERROR: " << s << endl;
+                        logger->error() << "ERROR: " << s << "\n";
                     }
                 }
                 delete[] texels;
@@ -154,15 +156,15 @@ float rBuilding::constrain(float* worldpos, float radius, float* localpos, Entit
     float maxs[3] = {+w[0]*0.5f + radius, +w[1] + radius, +w[2]*0.5f + radius};
     float localprj[3];
 
-    //cout << endl;
-    //cout << mins[0] << " " << mins[1] << " " << mins[2] << endl;
-    //cout << localpos[0] << " " << localpos[1] << " " << localpos[2] << endl;
-    //cout << maxs[0] << " " << maxs[1] << " " << maxs[2] << endl;
+    //cout << "\n";
+    //cout << mins[0] << " " << mins[1] << " " << mins[2] << "\n";
+    //cout << localpos[0] << " " << localpos[1] << " " << localpos[2] << "\n";
+    //cout << maxs[0] << " " << maxs[1] << " " << maxs[2] << "\n";
 
     float depth = 0;
     depth = Particle::constraintParticleByBox(localpos_, mins, maxs, localprj);
 
-    //cout << depth << endl;
+    //cout << depth << "\n";
 
     if (depth <= 0) return 0;
 

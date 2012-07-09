@@ -2,15 +2,14 @@
 
 #include "de/hackcraft/io/Texfile.h"
 
+#include "de/hackcraft/log/Logger.h"
+
 #include "de/hackcraft/psi3d/macros.h"
 #include "de/hackcraft/psi3d/Primitive.h"
 #include "de/hackcraft/psi3d/Particle.h"
 
 #include <cmath>
 #include <cassert>
-
-#include <iostream>
-using std::cout;
 
 #include <list>
 using std::list;
@@ -19,6 +18,8 @@ using std::list;
 using std::string;
 
 #define ran(seed) (seed = ((seed * 1234567) % 65535))
+
+Logger* rTree::logger = Logger::getLogger("de.hackcraft.world.sub.model.rTree");
 
 std::string rTree::cname = "TREE";
 unsigned int rTree::cid = 4715;
@@ -43,7 +44,7 @@ rTree::rTree(Entity* obj, float* pos, float* rot, int seed, int type, int age) {
 
         loopi(4) {
             string name = string(foliagepath).append(foliagenames[i]);
-            cout << "Loading leaf [" << name << "] ...\n";
+            logger->debug() << "Loading leaf [" << name << "] ...\n";
             unsigned int texname;
             int w, h, bpp;
             unsigned char* texels = Texfile::loadTGA(name.c_str(), &w, &h, &bpp);
@@ -62,7 +63,7 @@ rTree::rTree(Entity* obj, float* pos, float* rot, int seed, int type, int age) {
         
         loopi(4) {
             string name = string(barkpath).append(barknames[i]);
-            cout << "Loading bark [" << name << "] ...\n";
+            logger->debug() << "Loading bark [" << name << "] ...\n";
             unsigned int texname;
             int w, h, bpp;
             unsigned char* texels = Texfile::loadTGA(name.c_str(), &w, &h, &bpp);
@@ -126,7 +127,7 @@ void rTree::drawEffect() {
 
         float color[4];
         glGetFloatv(GL_CURRENT_COLOR, color);
-        //cout << color[3] << "\n";
+        //logger->trace() << color[3] << "\n";
 
         glPushAttrib(GL_ENABLE_BIT);
         {
@@ -137,7 +138,7 @@ void rTree::drawEffect() {
 
             glBindTexture(GL_TEXTURE_2D, sLeaftexs[tree->type % sLeaftexs.size()]);
             int m = tree->leaves.size() / 3;
-            //std::cout << m << std::endl;
+            //logger->trace() << m << "\n";
 
             loopi(m) {
                 float x = tree->leaves[i * 3 + 0];
@@ -196,7 +197,7 @@ rTree::TreeType* rTree::getCompiledTree(int seed, int type, int age) {
 
     TreeType* tree = sTrees[key];
     if (tree != NULL) {
-        //cout << "found cached tree seed: " << seed << " type: " << type << " age: " << age << "\n";
+        //logger->trace() << "found cached tree seed: " << seed << " type: " << type << " age: " << age << "\n";
         return tree;
     }
 
@@ -264,7 +265,7 @@ rTree::TreeType* rTree::getCompiledTree(int seed, int type, int age) {
     //cache.push_front(t);
     sTrees[key] = t;
 
-    std::cout << "Cached Tree " << sTrees.size() << std::endl;
+    logger->debug() << "Cached Tree " << sTrees.size() << "\n";
     return t;
 }
 
@@ -292,7 +293,7 @@ int rTree::drawTreePart(int depth, int maxdepth, float length, int seed, GLuint 
                 glGetFloatv(GL_MODELVIEW_MATRIX, M);
                 float v[] = { 0.0f, 0.0f, 0.0f };
                 matrix_apply2(M, v);
-                //std::cout << "Leaf at: " << std::endl;
+                //logger->trace() << "Leaf at: " << "\n";
                 //matrix_print(M);
                 //vector_print(v);
                 leaves->push_back(v[0]);
@@ -393,7 +394,7 @@ void rTree::drawCaribeanTreeLeaf() {
         //length *= 3;
         float length = 2.5 * l[i];
         float ulength = 1.7 * length;
-        //cout << "len" << i << " = " << length << "\n";
+        //logger->trace() << "len" << i << " = " << length << "\n";
         float tips = 0.7;
         // 0 back
         glNormal3f(0, +1, 0);

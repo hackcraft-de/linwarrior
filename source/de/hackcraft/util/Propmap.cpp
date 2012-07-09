@@ -2,17 +2,19 @@
 
 #include "de/hackcraft/io/Filesystem.h"
 
+#include "de/hackcraft/log/Logger.h"
+
 #include <string>
 using std::string;
 
 #include <sstream>
 using std::stringstream;
 
-#include <iostream>
-using std::cout;
+
+Logger* Propmap::logger = Logger::getLogger("de.hackcraft.util.Propmap");
 
 void Propmap::load(const char* filename) {
-    cout << "Loading Property-File: " << filename << "\n";
+    logger->debug() << "Loading Property-File: " << filename << "\n";
     
     char* contents = Filesystem::loadTextFile(filename);
     if (contents == NULL) throw new string("Could not load property file.");
@@ -42,10 +44,10 @@ void Propmap::load(const char* filename) {
             std::skipws(kv);
             std::getline(kv, value);
             
-            std::cout << ln << "|" << key << "=" << value << "\n";
+            logger->debug() << ln << "|" << key << "=" << value << "\n";
             this->put(&key, &value);
         }
     }
     
-    cout << "Done loading Property-File.\n";
+    logger->debug() << "Done loading Property-File.\n";
 }

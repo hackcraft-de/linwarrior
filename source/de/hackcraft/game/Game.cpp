@@ -35,31 +35,31 @@ mouseInput(true) {
 }
 
 void Game::printHelp() {
-    std::cout << std::endl
-            << "LinWarrior" << std::endl
-            << "  by Benjamin Pickhardt (benjamin.pickhardt*udo.edu)" << std::endl
-            << std::endl
-            << "Build:" << std::endl
-            << "  " << __DATE__ << std::endl
-            << "  " << __TIME__ << std::endl
-            << std::endl
-            << "Options:" << std::endl
-            << std::endl
-            << "  --help          prints this help screen" << std::endl
-            << "  --resolution    followed by resolution WIDTH or WIDTHxHEIGHT" << std::endl
-            << "  --samples       folowed by the number of multisamples 0,2,4,8,... " << std::endl
-            << "  --window        start in windowed mode" << std::endl
-            << "  --joypad        followed by a (default) or b." << std::endl
-            << "                  The a-Type Gamepad is noticeable by zedwise" << std::endl
-            << "                  ordered buttons and b-Type by clockwise buttons" << std::endl
-            //<< "  --mission       followed by mission name (todo)" << std::endl
-            << "  --lockmouse     grab mouse and enable mouselook 0/1" << std::endl
-            << "  --bgm           play background music wav file" << std::endl
-            << std::endl
-            << "  All options can be abbreviated by their first letter:" << std::endl
-            << "    --help is the same as -h" << std::endl
-            << std::endl
-            << std::endl;
+    std::cout << "\n"
+            << "LinWarrior" << "\n"
+            << "  by Benjamin Pickhardt (benjamin.pickhardt*udo.edu)" << "\n"
+            << "\n"
+            << "Build:" << "\n"
+            << "  " << __DATE__ << "\n"
+            << "  " << __TIME__ << "\n"
+            << "\n"
+            << "Options:" << "\n"
+            << "\n"
+            << "  --help          prints this help screen" << "\n"
+            << "  --resolution    followed by resolution WIDTH or WIDTHxHEIGHT" << "\n"
+            << "  --samples       folowed by the number of multisamples 0,2,4,8,... " << "\n"
+            << "  --window        start in windowed mode" << "\n"
+            << "  --joypad        followed by a (default) or b." << "\n"
+            << "                  The a-Type Gamepad is noticeable by zedwise" << "\n"
+            << "                  ordered buttons and b-Type by clockwise buttons" << "\n"
+            //<< "  --mission       followed by mission name (todo)" << "\n"
+            << "  --lockmouse     grab mouse and enable mouselook 0/1" << "\n"
+            << "  --bgm           play background music wav file" << "\n"
+            << "\n"
+            << "  All options can be abbreviated by their first letter:" << "\n"
+            << "    --help is the same as -h" << "\n"
+            << "\n"
+            << "\n";
 }
 
 int Game::parseArgs(int argc, char** args) {
@@ -95,7 +95,7 @@ int Game::parseArgs(int argc, char** args) {
                 this->height = (int) (this->width / aspect);
                 this->height += (this->height % 2); // make even just in case.
             }
-            std::cout << "Resolution: " << this->width << " x " << this->height << std::endl;
+            //std::cout << "Resolution: " << this->width << " x " << this->height << "\n";
         } else if (arg_i("--joypad")) {
             advance_i();
             std::string s = args[i];

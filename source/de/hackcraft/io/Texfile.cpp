@@ -1,12 +1,12 @@
 #include "Texfile.h"
 
-#include <iostream>
-using std::cout;
-using std::endl;
+#include "de/hackcraft/log/Logger.h"
 
 #include <stdio.h>
-
 #include <cassert>
+
+
+Logger* Texfile::logger = Logger::getLogger("de.hackcraft.io.Texfile");
 
 unsigned char* Texfile::warningTexture(const char *fname, int *w, int* h, int* bpp) {
     *w = 8;
@@ -44,7 +44,7 @@ unsigned char* Texfile::loadTGA(const char *fname, int *w, int* h, int* bpp) {
 
     file = fopen(fname, "rb");
     if (file == NULL) {
-        cout << "WARNING: Could not open tga file.\n";
+        logger->error() << "WARNING: Could not open tga file.\n";
         return warningTexture(fname, w, h, bpp);
     };
 
@@ -52,19 +52,19 @@ unsigned char* Texfile::loadTGA(const char *fname, int *w, int* h, int* bpp) {
 
     if (r != 1) {
         fclose(file);
-        cout << "WARNING: Could not read tga header.\n";
+        logger->error() << "WARNING: Could not read tga header.\n";
         return warningTexture(fname, w, h, bpp);
     }
 
     if (tgahead.imagetype != 2) {
         fclose(file);
-        cout << "WARNING: Only uncompressed true color tga images supported.\n";
+        logger->error() << "WARNING: Only uncompressed true color tga images supported.\n";
         return warningTexture(fname, w, h, bpp);
     };
 
     if (tgahead.depth != 24 && tgahead.depth != 32) {
         fclose(file);
-        cout << "WARNING: Only 24 or 32 bit per pixel tga images supported.\n";
+        logger->error() << "WARNING: Only 24 or 32 bit per pixel tga images supported.\n";
         return warningTexture(fname, w, h, bpp);
     }
 
@@ -86,7 +86,7 @@ unsigned char* Texfile::loadTGA(const char *fname, int *w, int* h, int* bpp) {
     if (r != 1) {
         delete[] bmp;
         fclose(file);
-        cout << "WARNING: Could not read tga bitmap data.\n";
+        logger->error() << "WARNING: Could not read tga bitmap data.\n";
         return warningTexture(fname, w, h, bpp);
     }
 

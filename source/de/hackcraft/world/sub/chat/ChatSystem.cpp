@@ -1,9 +1,12 @@
 #include "ChatSystem.h"
 
+#include "de/hackcraft/log/Logger.h"
+
 #include "de/hackcraft/world/World.h"
 
-#include <iostream>
 #include <cassert>
+
+Logger* ChatSystem::logger = Logger::getLogger("de.hackcraft.world.sub.chat.ChatSystem");
 
 ChatSystem* ChatSystem::instance = NULL;
 
@@ -28,26 +31,26 @@ OID ChatSystem::getGroup(std::string name) {
     rChatGroup* group = new rChatGroup();
     group->name = name;
     groups[group->id] = group;
-    std::cout << "Chat group created: " << group->id << " as " << group->name << "\n";
+    logger->debug() << "Chat group created: " << group->id << " as " << group->name << "\n";
     return group->id;
 }
 
 void ChatSystem::addToGroup(OID gid, Entity* member) {
     if (member == NULL) {
-        std::cout << "No object given while trying to add object to chat group.\n";
+        logger->error() << "No object given while trying to add object to chat group.\n";
         return;
     }
     if (groups[gid] == NULL) {
-        std::cout << "No such chat group " << gid << " while trying to add object " << member->oid << " to group.\n";
+        logger->error() << "No such chat group " << gid << " while trying to add object " << member->oid << " to group.\n";
         return;
     }
     rChatMember* chatMember = findChatMemberByEntity(member->oid);
     if (chatMember == NULL) {
-        std::cout << "No member for entity to add to chat group.\n";
+        logger->error() << "No member for entity to add to chat group.\n";
         return;
     }
     
-    std::cout << "Adding object " << chatMember->id << " to chat group " << gid << " " << groups[gid]->name << ".\n";
+    logger->debug() << "Adding object " << chatMember->id << " to chat group " << gid << " " << groups[gid]->name << ".\n";
     groups[gid]->members.push_back(chatMember->id);
 }
 
@@ -73,7 +76,7 @@ rChatMember* ChatSystem::findChatMemberByEntity(OID entityID) {
 }
 
 void ChatSystem::sendMessage(OID delay, OID sender /* = 0 */, OID recvid /* = 0 */, std::string type, std::string text, void* blob) {
-    //std::cout << "sendMessageT(dly=" << delay << ", sdr=" << sender << ", rid=" << recvid << ", txt=" << text << ")\n";
+    //logger->trace() << "sendMessageT(dly=" << delay << ", sdr=" << sender << ", rid=" << recvid << ", txt=" << text << ")\n";
     Timing* timing = World::getInstance()->getTiming();
     timing->advanceDelta();
     rChatMessage* message = new rChatMessage(sender, recvid, timing->getTimekey() + delay, 0, type, text, blob);

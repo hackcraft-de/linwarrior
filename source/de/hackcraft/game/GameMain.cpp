@@ -4,6 +4,8 @@
 
 #include "de/hackcraft/io/Filesystem.h"
 
+#include "de/hackcraft/log/Logger.h"
+
 #include "de/hackcraft/psi3d/GLF.h"
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Console.h"
@@ -11,11 +13,9 @@
 // To dis-/enable zone drawing.
 #include "de/hackcraft/world/sub/trigger/rAlert.h"
 
+#include <sstream>
 #include <iostream>
 #include <cassert>
-
-using std::cout;
-using std::endl;
 
 #ifdef __APPLE__
 #include <OpenAL/alc.h>
@@ -33,6 +33,7 @@ using std::endl;
 
 #include <iosfwd>
 
+Logger* GameMain::logger = Logger::getLogger("de.hackcraft.game.GameMain");
 
 GameMain* GameMain::instance = NULL;
 
@@ -96,10 +97,11 @@ class Widget {
 };
 
 
+Logger* Minion::logger = Logger::getLogger("de.hackcraft.game.Minion");
 
 void Minion::run() {
     unsigned long id = (unsigned long) this;//SDL_ThreadID();
-    cout << "Minion " << id << " at your service!\n";
+    logger->info() << "Minion " << id << " at your service!\n";
     typedef int (*callback)(void*);
     callback job = (callback) 1;
     bool done = false;
@@ -120,13 +122,13 @@ void Minion::run() {
         SDL_mutexV(jobMutex);
         // Work on job if any available.
         if (nextjob != NULL) {
-            cout << "Minion " << id << " is fulfilling your wish!\n";
+            logger->debug() << "Minion " << id << " is fulfilling your wish!\n";
             job = nextjob;
             int result = job(NULL);
-            cout << "Minion " << id << " job is finished with result " << result << "!\n";
+            logger->debug() << "Minion " << id << " job is finished with result " << result << "!\n";
         } else if (job != NULL && nextjob == NULL) {
             // Wait for a job to do.
-            cout << "Minion " << id << " is awaiting your command!\n";
+            logger->debug() << "Minion " << id << " is awaiting your command!\n";
             job = nextjob;
             SDL_Delay(10);
         } else {
@@ -153,15 +155,15 @@ void GameMain::initGL(int width, int height) {
     if (true) {
         std::string glinfo;
         glinfo = (const char*) glGetString(GL_RENDERER);
-        std::cout << glinfo << std::endl << std::endl;
+        logger->debug() << glinfo << "\n";
         glinfo = (const char*) glGetString(GL_VENDOR);
-        std::cout << glinfo << std::endl << std::endl;
+        logger->debug() << glinfo << "\n";
         glinfo = (const char*) glGetString(GL_VERSION);
-        std::cout << glinfo << std::endl << std::endl;
+        logger->debug() << glinfo << "\n";
         glinfo = (const char*) glGetString(GL_EXTENSIONS);
-        std::cout << glinfo << std::endl << std::endl;
+        logger->debug() << glinfo << "\n";
         if (glinfo.find("GL_EXT_texture3D", 0) == std::string::npos) {
-            std::cout << "NO SUPPORT for GL_EXT_texture3D !!!\n";
+            logger->error() << "NO SUPPORT for GL_EXT_texture3D !!!\n";
         }
     }
 
@@ -224,12 +226,14 @@ void GameMain::applyFilter(int width, int height) {
 
     if (postprocess == 0 && !fail) {
         char* vtx = Filesystem::loadTextFile("data/base/prgs/post.vert");
-        if (vtx) cout << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
+        if (vtx) logger->trace() << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
         char* fgm = Filesystem::loadTextFile("data/base/prgs/post.frag");
-        if (fgm) cout << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
+        if (fgm) logger->trace() << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
         fail = (vtx == NULL || fgm == NULL) || (vtx[0] == 0 || fgm[0] == 0);
         if (!fail) {
-            postprocess = GLS::glCompileProgram(vtx, fgm, cout);
+            std::stringstream str;
+            postprocess = GLS::glCompileProgram(vtx, fgm, str);
+            logger->error() << str.str() << "\n";
         }
         delete[] vtx;
         delete[] fgm;
@@ -319,7 +323,7 @@ void GameMain::updateFrame(int elapsed_msec) {
 
 
 void GameMain::drawFrame() {
-    //std::cout << "elapsed: " << (elapsed_msec / 1000.0f) << std::endl;
+    //logger->trace() << "elapsed: " << (elapsed_msec / 1000.0f) << "\n";
     //if (hurlmotion) elapsed = int(elapsed * 1.0f);
 
     static bool picking = false;
@@ -404,7 +408,7 @@ void GameMain::drawFrame() {
     
     if (picking) {
         int entries = glRenderMode(GL_RENDER);
-        cout << "selected: " << entries << endl;
+        logger->debug() << "selected: " << entries << "\n";
         // Picking-Entry: n, minz, maxz, n_names
         GLuint* p = selection;
 
@@ -412,13 +416,13 @@ void GameMain::drawFrame() {
             GLuint n = *p++;
             GLuint minz = *p++;
             GLuint maxz = *p++;
-            cout << n << " " << minz << " " << maxz;
+            logger->trace() << n << " " << minz << " " << maxz << "\n";
 
             loopj(n) {
                 GLuint name = *p++;
-                cout << " " << name;
+                logger->trace() << " " << name;
             }
-            cout << "\n";
+            logger->trace() << "\n";
         }
     }
     //picking = !picking;
@@ -621,24 +625,22 @@ int GameMain::alEnableSystem(bool en) {
     static bool isenabled = false;
 
     if (en && !isenabled) {
-        cout << "Enabling OpenAL\n";
+        logger->info() << "Enabling OpenAL\n";
         dev = alcOpenDevice(NULL);
         if (!dev) {
-            //fprintf(stderr, "Could not open OpenAL device.\n");
-            cout << "Could not open OpenAL device.\n";
+            logger->error() << "Could not open OpenAL device.\n";
             return 1;
         }
         ctx = alcCreateContext(dev, NULL);
         alcMakeContextCurrent(ctx);
         if (!ctx) {
-            //fprintf(stderr, "Could not make OpenAL context current.\n");
-            cout << "Could not make OpenAL context current.\n";
+            logger->error() << "Could not make OpenAL context current.\n";
             return 1;
         }
         isenabled = true;
         return 0;
     } else if (!en && isenabled) {
-        cout << "Disabling OpenAL\n";
+        logger->debug() << "Disabling OpenAL\n";
         alcMakeContextCurrent(NULL);
         alcDestroyContext(ctx);
         alcCloseDevice(dev);
@@ -732,6 +734,7 @@ int GameMain::run(int argc, char** args) {
     //jobQueue.push(job_bgm);
     jobQueue->push(job_render);
 
+    // Remember original stdout/cout stream and redirect cout if enabled.
     std::streambuf* stdout_ = std::cout.rdbuf();
     bool redirectOutput = true;
     if (redirectOutput) {
@@ -739,22 +742,22 @@ int GameMain::run(int argc, char** args) {
         std::cout.rdbuf( oss.rdbuf() );
     }
 
-    std::cout << "LinWarrior 3D  (Build " __DATE__ ") by hackcraft.de" << std::endl << std::endl;
+    std::cout << "LinWarrior 3D  (Build " __DATE__ ") by hackcraft.de" << "\n";
 
-    cout << "Reading Commandline Arguments...\n";
+    logger->info() << "Reading Commandline Arguments...\n";
     if (game.parseArgs(argc, args)) {
         game.printHelp();
         return 1;
     }
     double spf = 1.0 / (double) game.fps;
 
-    cout << "Initializing SDL Video- and -Input-Subsystems...\n";
+    logger->info() << "Initializing SDL Video- and -Input-Subsystems...\n";
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0) {
-        std::cout << "Unable to init SDL: " << SDL_GetError() << std::endl;
+        logger->error() << "Unable to init SDL: " << SDL_GetError() << "\n";
         return 1;
     }
 
-    cout << "Initializing Video-Mode and -Parameters...\n";
+    logger->info() << "Initializing Video-Mode and -Parameters...\n";
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     if (game.multisamples) {
         SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
@@ -764,41 +767,41 @@ int GameMain::run(int argc, char** args) {
     if (game.fullscreen) screen = SDL_SetVideoMode(game.width, game.height, 0, SDL_OPENGLBLIT | SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN);
     else screen = SDL_SetVideoMode(game.width, game.height, 0, SDL_OPENGLBLIT | SDL_HWSURFACE | SDL_DOUBLEBUF);
     if (!screen) {
-        cout << "Unable to set " << game.width << " x " << game.height << "video: " << SDL_GetError() << "\n";
+        logger->error() << "Unable to set " << game.width << " x " << game.height << "video: " << SDL_GetError() << "\n";
         return 1;
     }
 
-    cout << "Initialising GLEW...\n";
+    logger->info() << "Initialising GLEW...\n";
     if (glewInit() != GLEW_OK) {
-        cout << "Unable to init GLEW!\n";
+        logger->error() << "Unable to init GLEW!\n";
         return 1;
     }
 
-    cout << "Setting Custom Window-Title...\n";
+    logger->info() << "Setting Custom Window-Title...\n";
     char* title;
     char* icon;
     SDL_WM_GetCaption(&title, &icon);
     SDL_WM_SetCaption("LinWarrior 3D  (Build " __DATE__ ") by hackcraft.de", icon);
 
-    cout << "Initializing OpenAL audio...\n";
+    logger->info() << "Initializing OpenAL audio...\n";
     if (alEnableSystem(true)) {
-        cout << "Could not enable OpenAL.\n";
+        logger->error() << "Could not enable OpenAL.\n";
     }
     //if (!alutInit(&argc, args)) {
     if (!alutInitWithoutContext(NULL, NULL)) {
-        std::cout << "Unable to init ALUT: " << alGetError() << std::endl;
+        logger->error() << "Unable to init ALUT: " << alGetError() << "\n";
         // Maybe just let it run without sound?
         // Hope for no followup errors.
         //return 1;
     }
-    cout << "ALUT supported file formats: " << alutGetMIMETypes(ALUT_LOADER_BUFFER) << "\n";
-    cout << "ALUT supported memory formats: " << alutGetMIMETypes(ALUT_LOADER_MEMORY) << "\n";
+    logger->debug() << "ALUT supported file formats: " << alutGetMIMETypes(ALUT_LOADER_BUFFER) << "\n";
+    logger->debug() << "ALUT supported memory formats: " << alutGetMIMETypes(ALUT_LOADER_MEMORY) << "\n";
     alGetError();
     //alDopplerFactor(2.0);
     //alSpeedOfSound(343.3*0.1);
 
     if (0) {
-        cout << "Loading Ambient Background Music...\n";
+        logger->info() << "Loading Ambient Background Music...\n";
         try {
             ALuint buffer;
             ALuint source;
@@ -819,22 +822,22 @@ int GameMain::run(int argc, char** args) {
             alSourcei(source, AL_SOURCE_RELATIVE, AL_TRUE);
             alSourcePlay(source);
         } catch (const char* s) {
-            cout << "Sorry no bgm possible.\n" << s << "\n";
+            logger->error() << "Sorry no bgm possible.\n" << s << "\n";
         }
     }
 
-    cout << "Initialising OpenGL Settings...\n";
+    logger->info() << "Initialising OpenGL Settings...\n";
     initGL(screen->w, screen->h);
 
 
-    cout << "Initialising Input Settings...\n";
+    logger->info() << "Initialising Input Settings...\n";
     SDL_ShowCursor(SDL_DISABLE);
     SDL_Joystick* joy0 = SDL_JoystickOpen(0);
 
-    cout << "Installing Cleanup Hook...\n";
+    logger->info() << "Installing Cleanup Hook...\n";
     atexit(cleanup);
 
-    cout << "Breeding Minions...\n";
+    logger->info() << "Breeding Minions...\n";
     int maxminions = 3;
     Minion* minions[maxminions];
 
@@ -845,25 +848,25 @@ int GameMain::run(int argc, char** args) {
 
     bool loadscreen = true;
     if (loadscreen) {
-        cout << "Showing load screen...\n";
+        logger->info() << "Showing load screen...\n";
         glClearColor(0.4, 0.4, 0.45, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         drawPlaque();
         SDL_GL_SwapBuffers();
     }
 
-    cout << "Initialising Mission...\n";
+    logger->info() << "Initialising Mission...\n";
     game.initMission();
 
     // Signal state change.
     state = 1;
     SDL_Delay(200);
 
-    cout << "Entering Mainloop...\n";
+    logger->info() << "Entering Mainloop...\n";
     bool done = false;
     unsigned long start_ms = SDL_GetTicks();
     while (!done) {
-        //cout << "loop\n";
+        //logger->trace() << "loop\n";
 
         // message processing loop
         mouseWheel = 0;
@@ -902,7 +905,7 @@ int GameMain::run(int argc, char** args) {
 
         // Possibly print out info on pushed buttons.
         if (game.printpad) loopi(32) {
-            if (SDL_JoystickGetButton(joy0, i)) std::cout << "Button" << i << std::endl;
+            if (SDL_JoystickGetButton(joy0, i)) logger->trace() << "Button" << i << "\n";
         }
         // Transfer real Joystick-/Gamepad-Input into the virtual gamepad
         // of the player by using a (re-)mapping.
@@ -933,11 +936,11 @@ int GameMain::run(int argc, char** args) {
                     long os_delay_ms = delay_ms - min_delay_ms;
                     alutSleep(os_delay_ms * 0.001);
                     //SDL_Delay(os_delay_ms);
-                    //std::cout << os_delay_ms << std::endl;
+                    //logger->trace() << os_delay_ms << "\n";
                 }
                 // debug timing
-                //std::cout << "framebudget " << frame_ms << "ms of which " << frame_ms - delay_ms << "ms were used, remaining to waste " << delay_ms << "ms." << std::endl;
-                //std::cout << "framebudget " << frame_ms << "ms - " << frame_ms - delay_ms << "ms = " << delay_ms << "ms" << std::endl;
+                //logger->trace() << "framebudget " << frame_ms << "ms of which " << frame_ms - delay_ms << "ms were used, remaining to waste " << delay_ms << "ms." << "\n";
+                //logger->trace() << "framebudget " << frame_ms << "ms - " << frame_ms - delay_ms << "ms = " << delay_ms << "ms" << "\n";
                 // Syncing in the last msecs by hand:
                 int c = 0;
                 while (true) {
@@ -953,7 +956,7 @@ int GameMain::run(int argc, char** args) {
 
     } // end main loop
 
-    cout << "Shutting Down...\n";
+    logger->info() << "Shutting Down...\n";
 
     // Better set global signal and SDL_WaitThread.
 

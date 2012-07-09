@@ -3,6 +3,8 @@
 #include "de/hackcraft/io/Filesystem.h"
 #include "de/hackcraft/io/Texfile.h"
 
+#include "de/hackcraft/log/Logger.h"
+
 #include "de/hackcraft/proc/Distortion.h"
 #include "de/hackcraft/proc/Noise.h"
 #include "de/hackcraft/proc/Solid.h"
@@ -13,11 +15,11 @@
 
 #include <cassert>
 #include <ostream>
-#include <iostream>
-
 using namespace std;
 
 #define GROUNDDETAIL 0
+
+Logger* rPlanetmap::logger = Logger::getLogger("de.hackcraft.world.sub.landscape.rPlanetmap");
 
 int rPlanetmap::sInstances = 0;
 std::vector<long> rPlanetmap::sGrounds;
@@ -109,7 +111,7 @@ void rPlanetmap::init(Propmap* properties) {
     sInstances++;
     if (sInstances == 1) {
         {
-            cout << "Generating solid ground...\n";
+            logger->info() << "Generating solid ground...\n";
             unsigned char seed = 131;
             const int size = 1 << (6 + GROUNDDETAIL);
             unsigned char* texels = new unsigned char[size * size * size * 3];
@@ -156,7 +158,7 @@ void rPlanetmap::init(Propmap* properties) {
                 string("ground_snow") 
             };
             string name = string(basepath).append(names[i]).append(".tga");
-            cout << "Loading [" << name << "] ...\n";
+            logger->debug() << "Loading [" << name << "] ...\n";
             unsigned int texname;
             int w, h, bpp;
             unsigned char* texels = Texfile::loadTGA(name.c_str(), &w, &h, &bpp);
@@ -168,7 +170,7 @@ void rPlanetmap::init(Propmap* properties) {
         {
             string basepath = string("data/base/landscape/grass/");
             string name = string(basepath).append("grass_strip.tga");
-            cout << "Loading [" << name << "] ...\n";
+            logger->debug() << "Loading [" << name << "] ...\n";
             unsigned int texname;
             int w, h, bpp;
             unsigned char* texels = Texfile::loadTGA(name.c_str(), &w, &h, &bpp);
@@ -229,7 +231,7 @@ void rPlanetmap::init(Propmap* properties) {
 
         loopi(14) {
             string name = string(basepath).append(filenames[i]);
-            cout << "Loading [" << name << "] ...\n";
+            logger->debug() << "Loading [" << name << "] ...\n";
             unsigned int texname;
             int w, h, bpp;
             unsigned char* texels = Texfile::loadTGA(name.c_str(), &w, &h, &bpp);
@@ -498,7 +500,7 @@ void rPlanetmap::getCachedHeight(float x, float z, float* const color) {
         }
 
         ptr = patch->heightcolor;
-        cout << "Patch=" << (recycled ? "recycled" : "new") << ", total=" << patches.size() << ", key=" << key << ", ptr=" << ptr << "\n";
+        logger->trace() << "Patch=" << (recycled ? "recycled" : "new") << ", total=" << patches.size() << ", key=" << key << ", ptr=" << ptr << "\n";
     }
     patch->touches++;
 
@@ -616,7 +618,7 @@ float rPlanetmap::constrain(float* worldpos, float radius, float* localpos, Enti
         float delta = radius - nearest;
         if (delta > 0.01) {
             //vector_print(near);
-            //cout << radius << " " << nearest << " " << delta << endl;
+            //cout << radius << " " << nearest << " " << delta << "\n";
 
             vector_scale(nearestV, nearestV, 1.0f / (nearest + 0.000001f));
             vector_scale(nearestV, nearestV, delta * relax);
@@ -626,7 +628,7 @@ float rPlanetmap::constrain(float* worldpos, float radius, float* localpos, Enti
         }
         maxdelta = fmax(maxdelta, delta);
     }
-    //cout << "it " << runs << endl;
+    //cout << "it " << runs << "\n";
 
     if (maxdelta > 0) {
         vector_cpy(worldpos, localpos_);
@@ -650,18 +652,20 @@ int detail = 0;
 
 #define TWODIMTEX
 
-static GLenum loadMaterial() {
+GLenum rPlanetmap::loadMaterial() {
     static bool fail = false;
     static GLenum prog = 0;
 
     if (prog == 0 && !fail) {
         char* vtx = Filesystem::loadTextFile("data/base/material/base.vert");
-        if (vtx) cout << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
+        if (vtx) logger->debug() << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
         char* fgm = Filesystem::loadTextFile("data/base/material/base2d.frag");
-        if (fgm) cout << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
+        if (fgm) logger->debug() << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
         fail = (vtx == NULL || fgm == NULL) || (vtx[0] == 0 && fgm[0] == 0);
         if (!fail) {
-            prog = GLS::glCompileProgram(vtx, fgm, cout);
+            stringstream str;
+            prog = GLS::glCompileProgram(vtx, fgm, str);
+            logger->debug() << str.str() << "\n";
         }
         delete[] vtx;
         delete[] fgm;
@@ -695,7 +699,7 @@ void rPlanetmap::drawSolid() {
     //float back = 16;
     //vec3 bk = {back * fwd[0], back * fwd[1], back * fwd[2]};
 
-    //cout << "here!"<< endl;
+    //cout << "here!"<< "\n";
     if (T % 100 == 0) detail = (detail + 1) % 4;
     detail = 5;
 
@@ -747,7 +751,7 @@ void rPlanetmap::drawSolid() {
 #else
             float ts = 0.3f;
 #endif
-            //cout << x << " " << z << endl;
+            //cout << x << " " << z << "\n";
 
 
             int maxlevels = 3;
@@ -864,7 +868,7 @@ void rPlanetmap::drawSolid() {
 
     // Reset Touches for LRU
     for (maptype<unsigned long, sPatch*>::iterator i = patches.begin(); i != patches.end(); ++i) {
-        //cout << "A2" << endl;
+        //cout << "A2" << "\n";
         sPatch* patch_ = i->second;
         if (patch_ == NULL) continue;
         patch_->touches = 0;
@@ -1034,7 +1038,7 @@ void rPlanetmap::drawEffect() {
         const float s = 6 * step;
         const float x = -((int) (p[0] / step)) * step;
         const float z = -((int) (p[2] / step)) * step;
-        //cout << x << " " << z << endl;
+        //cout << x << " " << z << "\n";
         float color[16];
         
         const int maxplants = sGrowth.size();
@@ -1088,7 +1092,7 @@ void rPlanetmap::drawEffect() {
                 float grassdensity = (totaldensity * 2.00f * key);
                 float visiblegrass = grassdensity;
 
-                //cout << "opacity " << opacity << "  density " << density << endl;
+                //cout << "opacity " << opacity << "  density " << density << "\n";
 
                 // Load LFSR using position, key and some scrambling.
                 unsigned short lfsr16 = (13 * key) ^ (17 * a) ^ (23 * b);

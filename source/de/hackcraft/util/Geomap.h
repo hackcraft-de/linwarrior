@@ -47,14 +47,14 @@ public:
             for (long i = ax - f * 1; i <= bx + f * 1; i += f) {
                 std::list<T>* l = &(geomap[getGeokey(i, j)]);
                 if (l != NULL) {
-                    //cout << "found " << l->size() << endl;
+                    //cout << "found " << l->size() << "\n";
                     found->insert(found->begin(), l->begin(), l->end());
                 }
                 n++;
             }
         }
-        //cout << min2f[0] << ":" << min2f[1] << " - " << max2f[0] << ":" << max2f[1] << " " << n <<  " FOUND " << found->size() << endl;
-        //cout << ax << ":" << az << " - " << bx << ":" << bz << " " << n <<  " FOUND " << found->size() << endl;
+        //cout << min2f[0] << ":" << min2f[1] << " - " << max2f[0] << ":" << max2f[1] << " " << n <<  " FOUND " << found->size() << "\n";
+        //cout << ax << ":" << az << " - " << bx << ":" << bz << " " << n <<  " FOUND " << found->size() << "\n";
 
         return found;
     }
@@ -65,10 +65,10 @@ private:
     
     Geokey getGeokey(long x, long z) {
         Geokey xpart = ((Geokey) ((long(x))&0xFFFFFFFF)) >> 5;
-        //cout << x << " ~ " << xpart << endl;
+        //cout << x << " ~ " << xpart << "\n";
         Geokey zpart = ((Geokey) ((long(z))&0xFFFFFFFF)) >> 5;
         Geokey key = (xpart << 32) | zpart;
-        //cout << key << endl;
+        //cout << key << "\n";
         return key;
     };
 };

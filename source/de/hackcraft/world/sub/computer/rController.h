@@ -23,12 +23,16 @@ struct rController;
 #include <vector>
 #include <string>
 
+class Logger;
+
 /**
  * Autopilot/AI object controller, controlls Mechs.
  * Implements an stack-automaton for object behavior control
  * and plan execution.
  */
 struct rController : public Component, public IComputer {
+private:
+    static Logger* logger;
 public: // SYSTEM
     /** Identifier for this component (all uppercase letters without leading "r"). */
     static std::string cname;

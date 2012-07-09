@@ -23,6 +23,8 @@ class BackgroundSystem;
 #include <map>
 #include <list>
 
+class Logger;
+
 /**
  * A background in form of a SkySphere just like
  * those virtual horizons found in aviation instruments.
@@ -30,6 +32,7 @@ class BackgroundSystem;
  */
 class BackgroundSystem : public Subsystem {
 private:
+    static Logger* logger;
     static std::map<int, unsigned int> textures;
 private:
     /** Time in 24 hours format plus fractions of an hour - influences everything. */

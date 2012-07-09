@@ -1,8 +1,12 @@
 #include "WeaponSystem.h"
 
+#include "de/hackcraft/log/Logger.h"
+
 #include "de/hackcraft/world/World.h"
 
 #include <cassert>
+
+Logger* WeaponSystem::logger = Logger::getLogger("de.hackcraft.world.sub.weapon.WeaponSystem");
 
 WeaponSystem* WeaponSystem::instance = NULL;
 
@@ -94,7 +98,7 @@ void WeaponSystem::clusterObjects() {
         }
         
     } catch (char* s) {
-        std::cout << "Could not cluster models: " << s << "\n";
+        logger->error() << "Could not cluster weapons: " << s << "\n";
     }
     
     try {
@@ -115,7 +119,7 @@ void WeaponSystem::clusterObjects() {
         }
         
     } catch (char* s) {
-        std::cout << "Could not cluster models: " << s << "\n";
+        logger->error() << "Could not cluster targets: " << s << "\n";
     }
 }
 
@@ -172,7 +176,7 @@ void WeaponSystem::setupView(float* pos, float* ori) {
     }
     
     visobjects = geoWeapons.getGeoInterval(min, max);
-    //cout << "vis:" << objects->size() << " vs " << mObjects.size() << endl;
+    //cout << "vis:" << objects->size() << " vs " << mObjects.size() << "\n";
     
     visorigin[0] = pos[0];
     visorigin[1] = pos[1];
@@ -268,7 +272,7 @@ std::list<rTarget*>* WeaponSystem::filterByRange(Entity* ex, float* origin, floa
         float min[] = {origin[0] - maxrange_, origin[2] - maxrange_};
         float max[] = {origin[0] + maxrange_, origin[2] + maxrange_};
         objects = geoTargets.getGeoInterval(min, max);
-        //cout << "clustered:" << objects->size() << " vs " << mObjects.size() << endl;
+        //cout << "clustered:" << objects->size() << " vs " << mObjects.size() << "\n";
     }
 
     for(rTarget* target: *objects) {

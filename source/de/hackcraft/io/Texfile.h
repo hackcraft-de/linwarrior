@@ -9,11 +9,16 @@
 #ifndef TEXFILE_H
 #define	TEXFILE_H
 
+class Logger;
+
 /**
  * Class for loading (uncompressed tga) textures.
  */
 struct Texfile {
-
+private:
+    static Logger* logger;
+    
+public:
     /**
      * Utility function that generates a warning image.
      * Used by loaders in case of failure.

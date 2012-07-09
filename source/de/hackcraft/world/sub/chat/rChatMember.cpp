@@ -5,10 +5,6 @@
 #include "de/hackcraft/psi3d/Console.h"
 #include "de/hackcraft/psi3d/GLS.h"
 
-#include <iostream>
-using std::cout;
-using std::endl;
-
 #include <sstream>
 using std::stringstream;
 

@@ -4,16 +4,13 @@
 
 #include <cassert>
 
-#include <iostream>
-using std::cout;
-using std::endl;
-
 #include <sstream>
 using std::stringstream;
 
 #include <string>
 using std::string;
 
+Logger* World::logger = Logger::getLogger("de.hackcraft.world.World");
 
 World* World::instance = NULL;
 
@@ -71,19 +68,19 @@ OID World::getGroup(std::string name) {
     group->gid = (OID) group;
     group->name = name;
     mGroupIndex[group->gid] = group;
-    cout << "Group created: " << group->gid << " as " << group->name << "\n";
+    logger->info() << "Group created: " << group->gid << " as " << group->name << "\n";
     return group->gid;
 }
 
 void World::addToGroup(OID gid, Entity* member) {
     if (member == NULL) {
-        cout << "No object given while trying to add object to group.\n";
+        logger->error() << "No object given while trying to add object to group.\n";
     }
     if (mGroupIndex[gid] == NULL) {
-        cout << "No such group " << gid << " while trying to add object " << member->oid << " to group.\n";
+        logger->error() << "No such group " << gid << " while trying to add object " << member->oid << " to group.\n";
         return;
     }
-    cout << "Adding object " << member->oid << " to group " << gid << " " << mGroupIndex[gid]->name << ".\n";
+    logger->debug() << "Adding object " << member->oid << " to group " << gid << " " << mGroupIndex[gid]->name << ".\n";
     mGroupIndex[gid]->members.push_back(member->oid);
 }
 
@@ -92,7 +89,7 @@ void World::addToGroup(OID gid, Entity* member) {
 
 void World::sendMessage(OID delay, OID sender /* = 0 */, OID recvid /* = 0 */, string type, string text, void* blob) {
     /*
-    //cout << "sendMessageT(dly=" << delay << ", sdr=" << sender << ", gid=" << groupid << ", txt=" << text << ")" << endl;
+    //logger->trace() << "sendMessageT(dly=" << delay << ", sdr=" << sender << ", gid=" << groupid << ", txt=" << text << ")" << "\n";
     mTiming.advanceDelta();
     Message* message = new Message(sender, recvid, mTiming.getTimekey() + delay, 0, type, text, blob);
     assert(message != NULL);
@@ -108,7 +105,7 @@ void World::spawnObject(Entity *object) {
 
     OID serid = getOID();
     assert(serid != 0);
-    cout << serid << " spawning at deltacycle " << mTiming.getDeltacycle() << endl;
+    logger->debug() << serid << " spawning at deltacycle " << mTiming.getDeltacycle() << "\n";
     mIndex[serid] = object;
     object->oid = serid;
     object->seconds = 0;
@@ -116,7 +113,7 @@ void World::spawnObject(Entity *object) {
 
     mObjects.push_back(object);
     object->spawn();
-    // cout << serid << " spawn complete.\n";
+    // logger->debug() << serid << " spawn complete.\n";
 }
 
 void World::fragObject(Entity *object) {
@@ -141,13 +138,13 @@ void World::bagFragged() {
 // Simulation Step
 
 void World::advanceTime(int deltamsec) {
-    //cout << "advanceTime()\n";
+    //logger->trace() << "advanceTime()\n";
     mTiming.advanceTime(deltamsec);
     
     for (Subsystem* sub : subsystems) {
         sub->advanceTime(deltamsec);
     }
-    //cout << getSerial() << ": " << mHour << " " << mMinute << " " << mSecond << " " << mDeltacycle << endl;
+    //logger->trace() << getSerial() << ": " << mHour << " " << mMinute << " " << mSecond << " " << mDeltacycle << "\n";
 }
 
 void World::clusterObjects() {
@@ -171,7 +168,7 @@ void World::clusterObjects() {
             sub->clusterObjects();
         }
     } catch (char* s) {
-        cout << "Could not cluster world: " << s << endl;
+        logger->error() << "Could not cluster world: " << s << "\n";
     }
 }
 
@@ -210,7 +207,7 @@ void World::dispatchMessages() {
 }
 
 void World::animateObjects() {
-    //cout << "animateObjects()\n";
+    //logger->trace() << "animateObjects()\n";
     float spf = mTiming.getSPF();
 
     foreachNoInc(i, mObjects) {
@@ -225,7 +222,7 @@ void World::animateObjects() {
 }
 
 void World::transformObjects() {
-    //cout << "transformObjects()\n";
+    //logger->trace() << "transformObjects()\n";
 
     foreachNoInc(i, mObjects) {
         Entity* object = *i++;
@@ -252,7 +249,7 @@ void World::setupView(float* pos, float* ori) {
     
     mVisobjects = getGeoInterval(min, max, true);
     assert(mVisobjects != NULL);
-    //cout << "vis:" << objects->size() << " vs " << mObjects.size() << endl;
+    //logger->trace() << "vis:" << objects->size() << " vs " << mObjects.size() << "\n";
     
     mVisorigin[0] = pos[0];
     mVisorigin[1] = pos[1];
@@ -264,7 +261,7 @@ void World::setupView(float* pos, float* ori) {
 }
 
 bool World::drawBack() {
-    //cout << "drawBack()\n";
+    //logger->trace() << "drawBack()\n";
     bool any = false;
     for (Subsystem* sub : subsystems) {
         any |= sub->drawBack();
@@ -278,7 +275,7 @@ bool World::drawBack() {
 }
 
 void World::drawSolid() {
-    //cout << "drawSolid()\n";
+    //logger->trace() << "drawSolid()\n";
     float* origin = mVisorigin;
     std::list<Entity*>* objects = (mVisobjects == NULL) ? &mObjects : mVisobjects;
 
@@ -304,7 +301,7 @@ void World::drawSolid() {
 }
 
 void World::drawEffect() {
-    //cout << "drawEffect()\n";
+    //logger->trace() << "drawEffect()\n";
     float* origin = mVisorigin;
     std::list<Entity*>* objects = (mVisobjects == NULL) ? &mObjects : mVisobjects;
 
@@ -351,8 +348,8 @@ void World::drawEffect() {
 
 std::list<Entity*>* World::getGeoInterval(float* min2f, float* max2f, bool addunclustered) {
     std::list<Entity*>* found = mGeomap.getGeoInterval(min2f, max2f);
-    //cout << min2f[0] << ":" << min2f[1] << " - " << max2f[0] << ":" << max2f[1] << " " << n <<  " FOUND " << found->size() << endl;
-    //cout << ax << ":" << az << " - " << bx << ":" << bz << " " << n <<  " FOUND " << found->size() << endl;
+    //logger->trace() << min2f[0] << ":" << min2f[1] << " - " << max2f[0] << ":" << max2f[1] << " " << n <<  " FOUND " << found->size() << "\n";
+    //logger->trace() << ax << ":" << az << " - " << bx << ":" << bz << " " << n <<  " FOUND " << found->size() << "\n";
 
     if (addunclustered && !mUncluster.empty()) {
         found->insert(found->begin(), mUncluster.begin(), mUncluster.end());
@@ -416,7 +413,7 @@ std::list<Entity*>* World::filterByRange(Entity* ex, float* origin, float minran
         float min[] = {origin[0] - maxrange_, origin[2] - maxrange_};
         float max[] = {origin[0] + maxrange_, origin[2] + maxrange_};
         objects = getGeoInterval(min, max);
-        //cout << "clustered:" << objects->size() << " vs " << mObjects.size() << endl;
+        //logger->trace() << "clustered:" << objects->size() << " vs " << mObjects.size() << "\n";
     }
 
     for(Entity* object: *objects) {
@@ -482,7 +479,7 @@ std::list<Entity*>* World::filterByBeam(Entity* ex, float* pointa, float* pointb
         float b = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
         float delta = a / b;
 
-        //cout << "delta: " << delta << "\n";
+        //logger->trace() << "delta: " << delta << "\n";
 
         if (delta < -0.01) continue;
         if (delta > +1.01) continue;

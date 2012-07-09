@@ -12,7 +12,6 @@
 #include <iostream>
 
 using std::cout;
-using std::endl;
 
 /**
  * Models a Textbuffer by implementing a Gap-Buffer.
@@ -187,7 +186,7 @@ public: // Output
                 pos--;
             }
             rows[i] = &bufferData[pos] + ((pos==0)?0:1);
-            //cout << "Row " << i << ": " << pos << endl;
+            //cout << "Row " << i << ": " << pos << "\n";
             pos--;
         }
 
@@ -211,7 +210,7 @@ public: // Output
                 }
                 src++;
             }
-            //cout << "]" << endl;
+            //cout << "]" << "\n";
         }
     }
 
@@ -233,7 +232,7 @@ public: // Output
                 std::cout << bufferData[i];
             }
         }
-        std::cout << std::endl;
+        std::cout << "\n";
     }
 
     void print() {
@@ -243,7 +242,7 @@ public: // Output
         for (unsigned long long i = bufferPost; i < bufferSize; i++) {
             std::cout << bufferData[i];
         }
-        std::cout << std::endl;
+        std::cout << "\n";
     }
 
 public: // Testing

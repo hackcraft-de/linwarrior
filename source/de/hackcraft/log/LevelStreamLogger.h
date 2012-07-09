@@ -12,9 +12,9 @@
 
 class LevelStreamLogger;
 
-#include "de/hackcraft/log/Logger.h"
-
 #include <sstream>
+
+class Logger;
 
 /**
  * This class is used by the Logger class - don't use directly!

@@ -12,9 +12,9 @@
 
 class LoggerEvent;
 
-#include "de/hackcraft/log/Logger.h"
-
 #include <string>
+
+class Logger;
 
 class LoggerEvent {
 public:

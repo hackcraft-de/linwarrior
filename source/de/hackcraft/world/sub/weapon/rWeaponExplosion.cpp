@@ -1,5 +1,7 @@
 #include "rWeaponExplosion.h"
 
+#include "de/hackcraft/log/Logger.h"
+
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Primitive.h"
 
@@ -301,7 +303,7 @@ void rWeaponExplosion::drawEffect() {
         float maxSize = 0.0f;
         glGetFloatv(GL_POINT_SIZE_MAX_ARB, &maxSize);
         glPointSize(maxSize);
-        std::cout << maxSize << std::endl;
+        logger->trace() << maxSize << "\n";
         glPointParameterfARB(GL_POINT_SIZE_MAX_ARB, maxSize);
         glPointParameterfARB(GL_POINT_SIZE_MIN_ARB, 1.0f);
         glPointParameterfARB(GL_POINT_FADE_THRESHOLD_SIZE_ARB, 50.0f);

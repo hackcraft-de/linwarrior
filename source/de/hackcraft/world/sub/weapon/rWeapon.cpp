@@ -1,5 +1,7 @@
 #include "rWeapon.h"
 
+#include "de/hackcraft/log/Logger.h"
+
 #include "de/hackcraft/proc/Noise.h"
 #include "de/hackcraft/proc/Distortion.h"
 
@@ -8,10 +10,8 @@
 
 #include "de/hackcraft/world/World.h"
 
-#include <iostream>
-using std::cout;
-using std::endl;
 
+Logger* rWeapon::logger = Logger::getLogger("de.hackcraft.world.sub.weapon.rWeapon");
 
 int rWeapon::sInstances = 0;
 std::map<int, long> rWeapon::sTextures;
@@ -23,7 +23,7 @@ rWeapon::rWeapon(Entity* obj) {
     if (sInstances == 1) {
         // Haze Texture
         if (1) {
-            cout << "Generating Haze..." << endl;
+            logger->info() << "Generating Haze..." << "\n";
             int w = 1 << 7;
             int h = w;
             int bpp = 4;
@@ -130,13 +130,13 @@ int rWeapon::damageByParticle(float* worldpos, float radius, int roles, float da
     float worldpos_[3];
     vector_cpy(worldpos_, worldpos);
     std::list<Entity*>* range = World::getInstance()->filterByRange(object, worldpos, 0.0f, maxrange, -1, NULL);
-    //cout << "damageByParticle: "  << World::getInstance()->getNames(range) << endl;
+    //cout << "damageByParticle: "  << World::getInstance()->getNames(range) << "\n";
     if (!range->empty()) {
 
         for(Entity* targetObject: *range) {
             float localpos_[3];
             float depth = targetObject->constrain(worldpos_, radius, localpos_, NULL);
-            //cout << object->nameable->name << " depth: " << depth << endl;
+            //cout << object->nameable->name << " depth: " << depth << "\n";
             if (depth == 0) continue;
             damaged++;
             targetObject->damage(localpos_, scaled_damage, object);

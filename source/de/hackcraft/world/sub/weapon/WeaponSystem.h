@@ -22,10 +22,14 @@ class WeaponSystem;
 
 #include <map>
 
+class Logger;
+
 /**
  * Manages weapons, targets and ranging-/targeting-devices.
  */
 class WeaponSystem : public Subsystem {
+private:
+    static Logger* logger;
 public:
     WeaponSystem();
     virtual ~WeaponSystem();

@@ -19,10 +19,14 @@ class rBuilding;
 
 #include <map>
 
+class Logger;
+
 /**
  * Models a building of varying size.
  */
 class rBuilding : public Component {
+private:
+    static Logger* logger;
 protected:
     static int sInstances;
     static std::map<int, long> sTextures;
@@ -41,6 +45,8 @@ public:
     rBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z);
     virtual float constrain(float* worldpos, float radius = 0.0f, float* localpos = NULL, Entity* enactor = NULL);
     virtual void drawSolid();
+    
+    unsigned int loadMaterial();
 };
 
 

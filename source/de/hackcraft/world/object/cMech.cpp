@@ -4,6 +4,8 @@
 
 #include "de/hackcraft/io/Pad.h"
 
+#include "de/hackcraft/log/Logger.h"
+
 #include "de/hackcraft/psi3d/macros.h"
 #include "de/hackcraft/psi3d/GLS.h"
 
@@ -33,10 +35,6 @@
 #include <vector>
 using std::vector;
 
-#include <iostream>
-using std::cout;
-using std::endl;
-
 #include <string>
 using std::string;
 
@@ -46,12 +44,12 @@ using std::stringstream;
 #include <map>
 using std::map;
 
+#include <typeinfo>
+
+
 #define EXPERIMENT true
 
-#include "de/hackcraft/world/sub/model/ModelSystem.h"
-// -------------------------------------------------------------------
-
-#include <typeinfo>
+Logger* cMech::logger = Logger::getLogger("de.hackcraft.world.object.cMech");
 
 int cMech::sInstances = 0;
 std::map<int, long> cMech::sTextures;
@@ -63,14 +61,14 @@ cMech::cMech(Propmap* props) {
     int n;
     float x, y, z;
     
-    cout << cnf.getProperty("mech.model", "no model") << "\n";
+    logger->debug() << cnf.getProperty("mech.model", "no model") << "\n";
     
-    cout << cnf.getProperty("mech.pos", "no position") << "\n";
+    logger->debug() << cnf.getProperty("mech.pos", "no position") << "\n";
     n = sscanf(cnf.getProperty("mech.pos", "0 0 0").c_str(), " ( %f , %f , %f ) ", &x, &y, &z);
     vec3 pos;
     vector_set(pos, x, y, z);
     
-    cout << cnf.getProperty("mech.rot", "no rotation") << "\n";
+    logger->debug() << cnf.getProperty("mech.rot", "no rotation") << "\n";
     n = sscanf(cnf.getProperty("mech.rot", "0 0 0").c_str(), " ( %f , %f , %f ) ", &x, &y, &z);
     vec3 rot;
     vector_set(rot, x, y, z);
@@ -97,27 +95,27 @@ cMech::cMech(Propmap* props) {
         string wpn = cnf.getProperty(s, std::string(""));
         
         if (wpn.compare("Plasma") == 0) {
-            cout << wpn << " selected for " << mpts[i] << "\n";
+            logger->debug() << wpn << " selected for " << mpts[i] << "\n";
             mountWeapon(mpts[i], new rWeaponPlasmagun());
             
         } else if (wpn.compare("Homing") == 0) {
-            cout << wpn << " selected for " << mpts[i] << "\n";
+            logger->debug() << wpn << " selected for " << mpts[i] << "\n";
             mountWeapon(mpts[i], new rWeaponHoming());
             
         } else if (wpn.compare("Raybeam") == 0) {
-            cout << wpn << " selected for " << mpts[i] << "\n";
+            logger->debug() << wpn << " selected for " << mpts[i] << "\n";
             mountWeapon(mpts[i], new rWeaponRaybeam());
             
         } else if (wpn.compare("Machinegun") == 0) {
-            cout << wpn << " selected for " << mpts[i] << "\n";
+            logger->debug() << wpn << " selected for " << mpts[i] << "\n";
             mountWeapon(mpts[i], new rWeaponMachinegun());
             
         } else if (wpn.compare("Explosion") == 0) {
-            cout << wpn << " selected for " << mpts[i] << "\n";
+            logger->debug() << wpn << " selected for " << mpts[i] << "\n";
             mountWeapon(mpts[i], new rWeaponExplosion());
             
         } else {
-            cout << "No weapon selected for " << mpts[i] << "\n";
+            logger->warn() << "No weapon selected for " << mpts[i] << "\n";
         }
     }
 
@@ -195,14 +193,14 @@ void cMech::init(float* pos, float* rot, string modelName) {
                 alSourcei(*soundsource, AL_LOOPING, AL_FALSE);
             }
         } catch (...) {
-            cout << "Sorry, no mech sound possible.";
+            logger->warn() << "Sorry, no mech sound possible.\n";
         }
     }
 
     try {                
         rigged->loadModel(rigged->resolveFilename(modelName));
     } catch (const char* s) {
-        cout << "CATCHING: " << s << endl;
+        logger->error() << "CATCHING: " << s << "\n";
         rigged->loadModel(rigged->resolveFilename("frogger"));
     }
 
@@ -307,7 +305,7 @@ cMech::~cMech() {
 }
 /*
 void cMech::message(Message* message) {
-    cout << "I (" << this->oid << ":" << this->name << ") just received: \"" << message->getText() << "\" from sender " << message->getSender() << endl;
+    cout << "I (" << this->oid << ":" << this->name << ") just received: \"" << message->getText() << "\" from sender " << message->getSender() << "\n";
     forcom->message(message);
 }
 */
@@ -801,7 +799,7 @@ void cMech::damage(float* localpos, float damage, Entity* enactor) {
     if (!target->alife || damage == 0.0f) return;
 
     if (!target->damage(localpos, damage, enactor)) {
-        cout << "cMech::damageByParticle(): DEAD\n";
+        logger->debug() << "cMech::damageByParticle(): DEAD\n";
         //explosion->fire();
         explosion->triggeren = true;
         explosion->trigger = true;

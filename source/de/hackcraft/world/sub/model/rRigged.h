@@ -18,10 +18,14 @@ struct rRigged;
 
 #include <map>
 
+class Logger;
+
 /**
  * Encapsulates a rigged mesh in md5mesh format.
  */
 struct rRigged : public Component, public IModel {
+private:
+    static Logger* logger;
 public: // SYSTEM
     /** Identifier for this component (all uppercase letters without leading "r"). */
     static std::string cname;
@@ -135,6 +139,8 @@ public:
     virtual void transform();
     virtual void drawSolid();
     virtual void drawEffect();
+    
+    unsigned int loadMaterial();
 };
 
 

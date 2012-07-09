@@ -9,6 +9,8 @@
 #ifndef RTILE_H
 #define	RTILE_H
 
+class rTile;
+
 #include "de/hackcraft/lang/OID.h"
 
 #include "de/hackcraft/psi3d/math3d.h"
@@ -17,10 +19,14 @@
 
 #include <map>
 
+class Logger;
+
 /**
  * Models an urban street-tile of different types.
  */
 class rTile : public Component {
+private:
+    static Logger* logger;
 public:
     /** Possible models of tile. */
 
@@ -59,6 +65,8 @@ public:
     /** Initializes a tile of a certain kind at the given tile-grid position. */
     rTile(int x, int y, int z, int kind);
     virtual void drawSolid();
+    
+    unsigned int loadMaterial();
 };
 
 #endif	/* RTILE_H */

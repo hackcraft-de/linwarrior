@@ -13,6 +13,8 @@ class World;
 
 #include "de/hackcraft/lang/OID.h"
 
+#include "de/hackcraft/log/Logger.h"
+
 #include "de/hackcraft/util/Geomap.h"
 #include "de/hackcraft/util/Timing.h"
 
@@ -36,6 +38,8 @@ class Entity;
  * Cares about spawning, indexing, searching, messaging, updating, rendering.
  */
 class World : public Subsystem {
+private:
+    static Logger* logger;
 public:
     /** The current World instance (singleton) other objects may */
     /** only affect that current instance. */

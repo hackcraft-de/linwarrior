@@ -1,5 +1,7 @@
 #include "rController.h"
 
+#include "de/hackcraft/log/Logger.h"
+
 #include "de/hackcraft/world/Entity.h"
 #include "de/hackcraft/world/World.h"
 
@@ -9,11 +11,8 @@
 
 #include <cstdlib>
 #include <cassert>
-#include <iostream>
 #include <sstream>
 
-using std::cout;
-using std::endl;
 using std::string;
 
 #define debug_state !true
@@ -23,6 +22,8 @@ using std::string;
 // -------------------------------------------------------------
 
 #define NEARTO 23
+
+Logger* rController::logger = Logger::getLogger("de.hackcraft.world.sub.computer.rController");
 
 std::string rController::cname = "CONTROLLER";
 unsigned int rController::cid = 3637;
@@ -86,7 +87,7 @@ void rController::doit(OID aim, float* go, bool fire, float distance) {
 void rController::printState() {
     int framesize = getFrameSize();
     string framename = getFrameName();
-    cout << "CtrlSt of " << object->name.c_str() << "#" << object->oid << "  Frame: " << framename << "  Framesize:" << framesize << "  Stack: " << commandStack.size() << endl;
+    logger->debug() << "CtrlSt of " << object->name.c_str() << "#" << object->oid << "  Frame: " << framename << "  Framesize:" << framesize << "  Stack: " << commandStack.size() << "\n";
 }
 
 string rController::getFrameName() {
@@ -130,7 +131,7 @@ void rController::push(OID value) {
 
 void rController::pop(std::string reason) {
     if (debug_transitions) {
-        cout << object->name.c_str() << "#" << object->oid << ".pop(" << reason << ")\n";
+        logger->debug() << object->name.c_str() << "#" << object->oid << ".pop(" << reason << ")\n";
     }
     int size = getFrameSize(); // Important: eval outside loop-condition!
     loopi(size) commandStack.pop_back();
@@ -140,7 +141,7 @@ void rController::pop(std::string reason) {
 }
 
 void rController::animate(float spf) {
-    if (debug_state) cout << "cController::process()\n";
+    if (debug_state) logger->debug() << "cController::process()\n";
 
     if (!active || !enabled || object == NULL) return;
 
@@ -159,11 +160,11 @@ void rController::animate(float spf) {
             break;
         case REPEAT: repeatInstructions();
             break;
-        default: cout << "Invalid Instruction Request!\n";
+        default: logger->error() << "Invalid Instruction Request!\n";
             break;
     }
     if (debug_step) {
-        cout << "=> ";
+        logger->debug() << "=> ";
         printState();
     }
 }
@@ -227,7 +228,7 @@ void rController::waitEvent() {
 
 void rController::pushAttackEnemy(OID entity) {
     if (debug_transitions) {
-        cout << object->name.c_str() << "#" << object->oid << ".pushAttackEnemy( " << entity << " )\n";
+        logger->debug() << object->name.c_str() << "#" << object->oid << ".pushAttackEnemy( " << entity << " )\n";
     }
     {
         //OID self = mDevice->mSerial;
@@ -283,7 +284,7 @@ void rController::attackEnemy() {
 
 void rController::pushFollowLeader(OID entity, bool patrol) {
     if (debug_transitions) {
-        cout << object->name.c_str() << "#" << object->oid << ".pushFollowLeader( " << entity << ", " << patrol << " )\n";
+        logger->debug() << object->name.c_str() << "#" << object->oid << ".pushFollowLeader( " << entity << ", " << patrol << " )\n";
     }
     push(patrol ? 1 : 0);
     push(entity);
@@ -314,7 +315,7 @@ void rController::followLeader() {
 void rController::pushGotoDestination(float* v, bool patrol) {
     if (v == NULL) return;
     if (debug_transitions) {
-        cout << object->name.c_str() << "#" << object->oid << ".pushGotoDestination( <" << v[0] << "," << v[1] << "," << v[2] << ">, " << patrol << " )\n";
+        logger->debug() << object->name.c_str() << "#" << object->oid << ".pushGotoDestination( <" << v[0] << "," << v[1] << "," << v[2] << ">, " << patrol << " )\n";
     }
     unsigned long *p = (unsigned long*) v;
     push(patrol ? !0 : 0);
@@ -339,7 +340,7 @@ void rController::gotoDestination() {
     float* v = (float*)((void*) p);
 
     {
-        if (debug_state) cout << "going " << ((patrol > 0) ? "patrolling" : "directly") << " to <" << v[0] << "," << v[1] << "," << v[2] << " >\n";
+        if (debug_state) logger->debug() << "going " << ((patrol > 0) ? "patrolling" : "directly") << " to <" << v[0] << "," << v[1] << "," << v[2] << " >\n";
         float* u = new float[3];
         vector_set(u, v[0],v[1],v[2]);
         this->doit(0, u, false);
@@ -347,7 +348,7 @@ void rController::gotoDestination() {
     }
     
     float range = walkrange;
-    if (debug_state) cout << "DestinationRange " << range << endl;
+    if (debug_state) logger->debug() << "DestinationRange " << range << "\n";
     if (range < 8.0f) {
         this->doit(0, NULL, false);
         pop("Destination was reached (within destination range).");
@@ -368,7 +369,7 @@ void rController::gotoDestination() {
 
 void rController::pushRepeatInstructions(int n) {
     if (debug_transitions) {
-        cout << object->name.c_str() << "#" << object->oid << ".pushRepeatInstructions( " << n << " )\n";
+        logger->debug() << object->name.c_str() << "#" << object->oid << ".pushRepeatInstructions( " << n << " )\n";
     }
     push(n);
     push(REPEAT);
@@ -383,17 +384,17 @@ void rController::repeatInstructions() {
     }
 
     unsigned int first = getFrameSize();
-    if (debug_state) cout << "first " << first << " -> opcode " << opcode << endl;
+    if (debug_state) logger->debug() << "first " << first << " -> opcode " << opcode << "\n";
     unsigned int last = first;
 
     loopi(n) {
         int opcode = getParameter(last);
         last += getFrameSizeOf(opcode);
-        if (debug_state) cout << "last " << last << " -> opcode " << opcode << endl;
+        if (debug_state) logger->debug() << "last " << last << " -> opcode " << opcode << "\n";
     }
 
     int size = last - first;
-    if (debug_state) cout << size << " = " << last << " - " << first << endl;
+    if (debug_state) logger->debug() << size << " = " << last << " - " << first << "\n";
 
     loopi(size) {
         push(getParameter(last - 1));

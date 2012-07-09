@@ -18,6 +18,7 @@
 #include <SDL/SDL.h>
 #include <string>
 
+class Logger;
 
 /**
  * Models a minion worker thread that fetches jobs
@@ -25,6 +26,7 @@
  */
 class Minion : public Thread {
 private:
+    static Logger* logger;
     /** Pointing to the main job-mutex. */
     SDL_mutex* jobMutex;
     /** Pointing to the main job-queue. */
@@ -39,6 +41,8 @@ public:
  * Actually it is just a collection of what would be functions otherwise.
  */
 class GameMain {
+private:
+    static Logger* logger;
 public:
     friend class Minion;
     /** Points to the main instance, necessary because of c-callbacks/threads. */

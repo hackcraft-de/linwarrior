@@ -10,9 +10,6 @@
 
 #include "de/hackcraft/world/sub/trigger/rTrigger.h"
 
-#include <ostream>
-using std::cout;
-using std::endl;
 
 std::string rAlert::cname = "ALERT";
 unsigned int rAlert::cid = 5688;
@@ -44,7 +41,7 @@ rAlert::rAlert(Entity* obj, float* center, float* range, int shapetype, std::str
 
 
 float rAlert::detect(rTrigger* trigger) {
-    //std::cout << "called" << std::endl;
+    //std::cout << "called" << "\n";
     // Don't react on scanning and shooting.
     if (trigger == NULL) return 0;
     if (once && fired) return 0;
@@ -90,7 +87,7 @@ float rAlert::detect(rTrigger* trigger) {
         default:
             break;
     }
-    //std::cout << depth << std::endl;
+    //std::cout << depth << "\n";
     // Is that possible intruder yet unknown.
     if (intruders.find(trigger->id) == intruders.end()) {
         // The intruder was outside and now there is an intrusion.
@@ -98,7 +95,7 @@ float rAlert::detect(rTrigger* trigger) {
             intruders.insert(trigger->id);
             if (posedge) {
                 fired = true;
-                //cout << "fusedelay=" << fusedelay << endl;
+                //cout << "fusedelay=" << fusedelay << "\n";
                 ChatSystem::getInstance()->sendMessage(fusedelay, object->oid, receiver, msgtype, msgtext, NULL);
             }
         }
@@ -112,7 +109,7 @@ float rAlert::detect(rTrigger* trigger) {
             }
         }
     }
-    //if (fired) cout << "FIRED" << endl;
+    //if (fired) cout << "FIRED" << "\n";
     //return depth;
     return 0.0f;
 }

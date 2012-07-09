@@ -23,6 +23,8 @@ class rWeapon;
 #define WEAPONSOUND true
 #define EXPLOSIONSOUND true
 
+class Logger;
+
 /**
  * Base-Class of all weapons.
  * Defines "all you need" for designing different kinds of weapons and
@@ -30,6 +32,9 @@ class rWeapon;
  * drawing themselves, their bullets, missiles, dust, smoke and other particles.
  */
 class rWeapon : public Component, public IModel {
+protected:
+    /** Each class should have its own logger - here temporary for all weapons. */
+    static Logger* logger;
 public: // SYSTEM
     /** Instance counter. */
     static int sInstances;

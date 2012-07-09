@@ -38,6 +38,8 @@ struct rCollider;
 struct rWeapon;
 struct rWeaponExplosion;
 
+class Logger;
+
 // Gamepad Mapping
 #define MECH_CHASSIS_LR_AXIS  AX_LR1
 #define MECH_TURRET_LR_AXIS   AX_LR2
@@ -56,6 +58,8 @@ struct rWeaponExplosion;
  * Models Mechlike Objects.
  */
 class cMech : public Entity {
+private:
+    static Logger* logger;
 protected:
 
     /** Instance counter. */

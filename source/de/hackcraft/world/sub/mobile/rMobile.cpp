@@ -7,9 +7,6 @@
 
 #include <GL/glew.h>
 
-#include <iostream>
-using std::cout;
-using std::endl;
 
 std::string rMobile::cname = "MOBILE";
 unsigned int rMobile::cid = 6337;
@@ -128,7 +125,7 @@ void rMobile::animate(float spf) {
     }
 
     if ((walkrange < 200.0f) || (aimrange < 200.0f)) {
-        //cout << "aimrange " << aimrange << " \t walkrange " << walkrange << endl;
+        //cout << "aimrange " << aimrange << " \t walkrange " << walkrange << "\n";
     }
 
     // Apply turret steering values and get exceeding over limit values.

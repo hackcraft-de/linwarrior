@@ -24,11 +24,15 @@ class ModelSystem;
 #include <unordered_map>
 #include <vector>
 
+class Logger;
+
 /**
  * Manages small to medium scale model rendering,
  * collision and so on.
  */
 class ModelSystem : public Subsystem {
+private:
+    static Logger* logger;
 public:
     ModelSystem();
     virtual ~ModelSystem();
