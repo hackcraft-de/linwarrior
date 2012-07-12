@@ -86,16 +86,6 @@ int job_output(void* data) {
     return 0;
 }
 
-/*
- * Models an all-in-one widget:
- * Button, Toggle-Button, Label, TextArea, TextField, Console, Panel
- * Basically a clickable and editable text.
- * Should render to a texture/screen.
- */
-class Widget {
-    GapBuffer text;
-};
-
 
 Logger* Minion::logger = Logger::getLogger("de.hackcraft.game.Minion");
 
