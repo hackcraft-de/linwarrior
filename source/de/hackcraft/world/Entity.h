@@ -104,6 +104,7 @@ public: // Basic Object attributes for managing.
 
 public: // Components
 
+    /** Components of subsystems this entity is built from. */
     std::vector<Component*> components;
 
 public: // Experimental Component "Managing"
@@ -131,26 +132,12 @@ public:
         pad = NULL;
         radius = 0.1f;
         seconds = 0;
-        //if (roleprotos.empty()) {
-            //registerRole(new rNameable, FIELDOFS(nameable), ROLEPTR(cObject::nameable));
-            //registerRole(new rTraceable, FIELDOFS(traceable), ROLEPTR(cObject::traceable));
-            //registerRole(new rDamageable, FIELDOFS(damageable), ROLEPTR(cObject::damageable));
-            //registerRole(new rControlled, FIELDOFS(controlled), ROLEPTR(cObject::controlled));
-        //}
-        //rRole* r = GETROLE(FIELDOFS(nameable));
-        //std::cout << "TEST: " << r << " vs " << nameable << "\n";
     }
 
     virtual ~Entity() {
     }
 
     /*
-    static void registerRole(rComponent* prototype, OID attribute_offset, rComponent* cObject::* ptr = NULL) {
-        roleprotos[prototype->role] = prototype;
-        roleoffsets[prototype->role] = attribute_offset;
-        std::cout << "NEW ROLE " << prototype->role << " @ " << attribute_offset << " # " << ptr << "\n";
-    }
-
     bool anyRoles(std::set<OID>* test) {
         std::set<OID> result;
         std::set_intersection(roleset.begin(), roleset.end(), test->begin(), test->end(), std::inserter(result, result.begin()));
@@ -169,14 +156,12 @@ public:
     }
 
     // Add a role this objects has to play.
-    
     void addRole(OID role, rRole* roleobj = NULL) {
         roles[role] = roleobj;
         roleset.insert(role);
     }
 
     // Remove a role this object wont play anymore.
-
     void remRole(OID role, bool deleteobj = false) {
         if (deleteobj) delete roles[role];
         roles.erase(role);
@@ -184,82 +169,68 @@ public:
     }
      */
 
-    /** Check wether this Object has at least one of the given tags. */
-
+    /** Check whether this Object has at least one of the given tags. */
     bool anyTags(std::set<OID>* tagset) {
         std::set<OID> result;
         std::set_intersection(tags.begin(), tags.end(), tagset->begin(), tagset->end(), std::inserter(result, result.begin()));
         return (!result.empty());
     }
 
-    /** Check wether this Object has all the given tags. */
-
+    /** Check whether this Object has all the given tags. */
     bool allTags(std::set<OID>* tagset) {
         std::set<OID> result;
         std::set_intersection(tags.begin(), tags.end(), tagset->begin(), tagset->end(), std::inserter(result, result.begin()));
         return (result.size() == tagset->size());
     }
 
-    /** Check wether this Object has the given tag. */
-
+    /** Check whether this Object has the given tag. */
     bool hasTag(OID tag) {
         return (tags.find(tag) != tags.end());
     }
 
     /** Add a tag to this object. */
-
     void addTag(OID tag) {
         tags.insert(tag);
     }
 
     /** Remove a tag from this object. */
-
     void remTag(OID tag) {
         tags.erase(tag);
     }
 
     /** Called right after object was spawned into the world. */
-
     virtual void spawn() {
     }
 
     /** Called right after object has been removed from object list and index. */
-
     virtual void frag() {
     }
 
     /** Called to glMultiply in the Object's camera matrix. */
-
     virtual void camera() {
     }
 
     /** Called to set Object's location, orientation and vel. as audio listener. */
-
     virtual void listener() {
     }
 
     /** Called to advance internal timers,animation state and pose, check gamepad. */
-
     virtual void animate(float dt) {
     }
 
-    /** Deprecated, use animate? Called to precalculate neccessary transformations - matrices, mountpoints, pos .. */
-
+    /** Deprecated, use animate? Called to precalculate necessary transformations - matrices, mountpoints, pos .. */
     virtual void transform() {
     }
 
     /** Called to render solid non-translucent parts of the object. */
-
     virtual void drawSolid() {
     }
 
     /** Called to render translucent object-parts and visual effects. */
-
     virtual void drawEffect() {
     }
 
     /** Called to render HUD-contents as seen when looking through the objects-eyes. */
-
     virtual void drawHUD() {
     }
 
