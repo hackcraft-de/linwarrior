@@ -221,65 +221,41 @@ public:
     /** Called right after object was spawned into the world. */
 
     virtual void spawn() {
-        for (auto i = components.begin(); i != components.end(); i++) {
-            (*i)->spawn();
-        }
     }
 
     /** Called right after object has been removed from object list and index. */
 
     virtual void frag() {
-        for (auto i = components.begin(); i != components.end(); i++) {
-            (*i)->frag();
-        }
     }
 
     /** Called to glMultiply in the Object's camera matrix. */
 
     virtual void camera() {
-        for (auto i = components.begin(); i != components.end(); i++) {
-            (*i)->camera();
-        }
     }
 
     /** Called to set Object's location, orientation and vel. as audio listener. */
 
     virtual void listener() {
-        for (auto i = components.begin(); i != components.end(); i++) {
-            (*i)->listener();
-        }
     }
 
     /** Called to advance internal timers,animation state and pose, check gamepad. */
 
     virtual void animate(float dt) {
-        for (auto i = components.begin(); i != components.end(); i++) {
-            (*i)->animate(dt);
-        }
     }
 
     /** Deprecated, use animate? Called to precalculate neccessary transformations - matrices, mountpoints, pos .. */
 
     virtual void transform() {
-        for (auto i = components.begin(); i != components.end(); i++) {
-            (*i)->transform();
-        }
     }
 
     /** Called to render solid non-translucent parts of the object. */
 
     virtual void drawSolid() {
-        for (auto i = components.begin(); i != components.end(); i++) {
-            (*i)->drawSolid();
-        }
     }
 
     /** Called to render translucent object-parts and visual effects. */
 
     virtual void drawEffect() {
-        for (auto i = components.begin(); i != components.end(); i++) {
-            (*i)->drawEffect();
-        }
     }
 
     /** Called to render HUD-contents as seen when looking through the objects-eyes. */
@@ -295,9 +271,6 @@ public:
      * @enactor the object dealing the damage to this object.
      */
     virtual void damage(float* localpos, float damage, Entity* enactor = NULL) {
-        for (auto i = components.begin(); i != components.end(); i++) {
-            (*i)->damage(localpos, damage, enactor);
-        }
     }
 
     /**
@@ -312,12 +285,7 @@ public:
      * @return the intrusion depth.
      */
     virtual float constrain(float* worldpos, float radius = 0.0f, float* localpos = NULL, Entity* enactor = NULL) {
-        double maxdepth = 0.0f;
-        for (auto i = components.begin(); i != components.end(); i++) {
-            double depth = (*i)->constrain(worldpos, radius, localpos, enactor);
-            maxdepth = fmax(maxdepth, depth);
-        }
-        return float(maxdepth);
+        return 0.0f;
     }
 
 };
