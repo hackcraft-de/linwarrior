@@ -199,40 +199,31 @@ public:
     }
 
     /** Called right after object was spawned into the world. */
-    virtual void spawn() {
-    }
+    virtual void spawn() {}
 
     /** Called right after object has been removed from object list and index. */
-    virtual void frag() {
-    }
+    virtual void frag() {}
 
     /** Called to glMultiply in the Object's camera matrix. */
-    virtual void camera() {
-    }
+    virtual void camera() {}
 
     /** Called to set Object's location, orientation and vel. as audio listener. */
-    virtual void listener() {
-    }
+    virtual void listener() {}
 
     /** Called to advance internal timers,animation state and pose, check gamepad. */
-    virtual void animate(float dt) {
-    }
+    virtual void animate(float dt) {}
 
     /** Deprecated, use animate? Called to precalculate necessary transformations - matrices, mountpoints, pos .. */
-    virtual void transform() {
-    }
+    virtual void transform() {}
 
     /** Called to render solid non-translucent parts of the object. */
-    virtual void drawSolid() {
-    }
+    virtual void drawSolid() {}
 
     /** Called to render translucent object-parts and visual effects. */
-    virtual void drawEffect() {
-    }
+    virtual void drawEffect() {}
 
     /** Called to render HUD-contents as seen when looking through the objects-eyes. */
-    virtual void drawHUD() {
-    }
+    virtual void drawHUD() {}
 
     /**
      * Called to deal damage to the object with the damage arriving at or
@@ -241,8 +232,7 @@ public:
      * @damage amount of damage to deal to the object.
      * @enactor the object dealing the damage to this object.
      */
-    virtual void damage(float* localpos, float damage, Entity* enactor = NULL) {
-    }
+    virtual void damage(float* localpos, float damage, Entity* enactor = NULL) {}
 
     /**
      * Called to constrain the given world position particle (with radius) to
