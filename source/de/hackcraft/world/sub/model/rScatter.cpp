@@ -51,24 +51,24 @@ rScatter::~rScatter() {
 }
 
 void rScatter::drawEffect() {
-    glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_TEXTURE_BIT);
+    GL::glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_TEXTURE_BIT);
     {
-        glDisable(GL_CULL_FACE);
-        glEnable(GL_TEXTURE_2D);
-        glColor4f(0.3, 0.7, 0.3, 1);
-        glBindTexture(GL_TEXTURE_2D, sTextures[0]);
+        GL::glDisable(GL_CULL_FACE);
+        GL::glEnable(GL_TEXTURE_2D);
+        GL::glColor4f(0.3, 0.7, 0.3, 1);
+        GL::glBindTexture(GL_TEXTURE_2D, sTextures[0]);
 
         foreachNoInc(i, decalParticles) {
             Particle* p = *i++;
-            glPushMatrix();
+            GL::glPushMatrix();
             {
-                glTranslatef(p->pos[0], p->pos[1], p->pos[2]);
-                glRotatef(p->spawn, 0, 1, 0);
+                GL::glTranslatef(p->pos[0], p->pos[1], p->pos[2]);
+                GL::glRotatef(p->spawn, 0, 1, 0);
                 //glAxis(0.9);
                 Primitive::glXYCenteredTextureSquare();
             }
-            glPopMatrix();
+            GL::glPopMatrix();
         }
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 }

@@ -57,8 +57,8 @@ int job_render(void* data) {
     while (state == 0) {
         //float s = 0.5 + 0.4 * sin(i * M_PI / 10.0);
         //float c = 0.5 + 0.4 * cos(i * M_PI / 10.0);
-        //glClearColor(0.1+s, 0.1+c, 0.9, 1.0);
-        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        //GL::glClearColor(0.1+s, 0.1+c, 0.9, 1.0);
+        //GL::glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         //cMain::drawPlaque();
         //cMain::drawLog();
         //SDL_GL_SwapBuffers();
@@ -144,65 +144,65 @@ GameMain::GameMain() {
 void GameMain::initGL(int width, int height) {
     if (true) {
         std::string glinfo;
-        glinfo = (const char*) glGetString(GL_RENDERER);
+        glinfo = (const char*) GL::glGetString(GL_RENDERER);
         logger->debug() << glinfo << "\n";
-        glinfo = (const char*) glGetString(GL_VENDOR);
+        glinfo = (const char*) GL::glGetString(GL_VENDOR);
         logger->debug() << glinfo << "\n";
-        glinfo = (const char*) glGetString(GL_VERSION);
+        glinfo = (const char*) GL::glGetString(GL_VERSION);
         logger->debug() << glinfo << "\n";
-        glinfo = (const char*) glGetString(GL_EXTENSIONS);
+        glinfo = (const char*) GL::glGetString(GL_EXTENSIONS);
         logger->debug() << glinfo << "\n";
         if (glinfo.find("GL_EXT_texture3D", 0) == std::string::npos) {
             logger->error() << "NO SUPPORT for GL_EXT_texture3D !!!\n";
         }
     }
 
-    glViewport(0, 0, width, height);
+    GL::glViewport(0, 0, width, height);
 
     rgba fogColor = {1.0, 1.0, 1.0, 1.0};
     //float fogDensity = 0.003f; // original
     float fogDensity = 0.006f;
 
-    glEnable(GL_BLEND);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_MULTISAMPLE);
+    GL::glEnable(GL_BLEND);
+    GL::glEnable(GL_DEPTH_TEST);
+    GL::glEnable(GL_MULTISAMPLE);
 
     //glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-    //glEnable(GL_LINE_SMOOTH);
-    //glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-    //glEnable(GL_POLYGON_SMOOTH);
+    //GL::glEnable(GL_LINE_SMOOTH);
+    //GL::glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+    //GL::glEnable(GL_POLYGON_SMOOTH);
 
 
-    glClearAccum(0.0, 0.0, 0.0, 0.0);
-    glClearColor(0.0, 0.125, 0.0, 0.0);
-    //glClearDepth(1.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT);
+    GL::glClearAccum(0.0, 0.0, 0.0, 0.0);
+    GL::glClearColor(0.0, 0.125, 0.0, 0.0);
+    //GL::glClearDepth(1.0);
+    GL::glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT);
 
-    glShadeModel(GL_SMOOTH);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //glDepthMask(GL_TRUE);
-    //glDepthFunc(GL_LEQUAL);
+    GL::glShadeModel(GL_SMOOTH);
+    GL::glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //GL::glDepthMask(GL_TRUE);
+    //GL::glDepthFunc(GL_LEQUAL);
 
-    glFogi(GL_FOG_MODE, GL_EXP);
-    glFogfv(GL_FOG_COLOR, fogColor);
-    glFogf(GL_FOG_DENSITY, fogDensity);
+    GL::glFogi(GL_FOG_MODE, GL_EXP);
+    GL::glFogfv(GL_FOG_COLOR, fogColor);
+    GL::glFogf(GL_FOG_DENSITY, fogDensity);
 
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    GL::glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
     // Lighting
     {
-        glEnable(GL_LIGHTING);
+        GL::glEnable(GL_LIGHTING);
         float p[] = {0, 500, 0, 1};
         float a[] = {0.95, 0.5, 0.5, 1};
-        glLightfv(GL_LIGHT0, GL_POSITION, p);
-        glLightfv(GL_LIGHT0, GL_AMBIENT, a);
-        glLightfv(GL_LIGHT0, GL_DIFFUSE, a);
-        glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.0);
-        glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.001);
-        glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.00001);
-        glEnable(GL_COLOR_MATERIAL);
-        //glEnable(GL_NORMALIZE);
-        glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+        GL::glLightfv(GL_LIGHT0, GL_POSITION, p);
+        GL::glLightfv(GL_LIGHT0, GL_AMBIENT, a);
+        GL::glLightfv(GL_LIGHT0, GL_DIFFUSE, a);
+        GL::glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.0);
+        GL::glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.001);
+        GL::glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.00001);
+        GL::glEnable(GL_COLOR_MATERIAL);
+        //GL::glEnable(GL_NORMALIZE);
+        GL::glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
     }
 
     // Init instant console font.
@@ -212,7 +212,7 @@ void GameMain::initGL(int width, int height) {
 
 void GameMain::applyFilter(int width, int height) {
     static bool fail = false;
-    static GLenum postprocess = 0;
+    static GL::GLenum postprocess = 0;
 
     if (postprocess == 0 && !fail) {
         char* vtx = Filesystem::loadTextFile("data/base/prgs/post.vert");
@@ -231,51 +231,51 @@ void GameMain::applyFilter(int width, int height) {
 
     if (fail) return;
 
-    glFlush();
+    GL::glFlush();
 
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
-        glDisable(GL_LIGHTING);
-        glDisable(GL_FOG);
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_CULL_FACE);
-        glEnable(GL_TEXTURE_2D);
-        glColor4f(1, 1, 1, 1);
+        GL::glDisable(GL_LIGHTING);
+        GL::glDisable(GL_FOG);
+        GL::glDisable(GL_DEPTH_TEST);
+        GL::glDisable(GL_CULL_FACE);
+        GL::glEnable(GL_TEXTURE_2D);
+        GL::glColor4f(1, 1, 1, 1);
 
-        glUseProgramObjectARB(postprocess);
+        GL::glUseProgramObjectARB(postprocess);
         {
             // Capture Color.
             static long screencolor = 0;
             if (screencolor == 0) screencolor = GLS::glBindTextureMipmap2D(0, true, true, false, false, width, height, NULL);
-            glUniform1i(glGetUniformLocation(postprocess, "tex"), 0);
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, screencolor);
-            glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, 0, 0, width, height, 0);
+            GL::glUniform1i(GL::glGetUniformLocation(postprocess, "tex"), 0);
+            GL::glActiveTexture(GL_TEXTURE0);
+            GL::glBindTexture(GL_TEXTURE_2D, screencolor);
+            GL::glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, 0, 0, width, height, 0);
 
             // Capture Depth.
             static long screendepth = 0;
             if (screendepth == 0) screendepth = GLS::glBindTextureMipmap2D(0, true, true, false, false, width, height, NULL, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT);
-            glUniform1i(glGetUniformLocation(postprocess, "dep"), 1);
-            glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, screendepth);
-            glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, width, height);
+            GL::glUniform1i(GL::glGetUniformLocation(postprocess, "dep"), 1);
+            GL::glActiveTexture(GL_TEXTURE1);
+            GL::glBindTexture(GL_TEXTURE_2D, screendepth);
+            GL::glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, width, height);
 
-            glBegin(GL_QUADS);
+            GL::glBegin(GL_QUADS);
             {
-                glTexCoord2i(1, 0);
-                glVertex3f(+1.0f, -1.0f, 0);
-                glTexCoord2i(0, 0);
-                glVertex3f(-1.0f, -1.0f, 0);
-                glTexCoord2i(0, 1);
-                glVertex3f(-1.0f, +1.0f, 0);
-                glTexCoord2i(1, 1);
-                glVertex3f(+1.0f, +1.0f, 0);
+                GL::glTexCoord2i(1, 0);
+                GL::glVertex3f(+1.0f, -1.0f, 0);
+                GL::glTexCoord2i(0, 0);
+                GL::glVertex3f(-1.0f, -1.0f, 0);
+                GL::glTexCoord2i(0, 1);
+                GL::glVertex3f(-1.0f, +1.0f, 0);
+                GL::glTexCoord2i(1, 1);
+                GL::glVertex3f(+1.0f, +1.0f, 0);
             }
-            glEnd();
+            GL::glEnd();
         }
-        glUseProgramObjectARB(0);
+        GL::glUseProgramObjectARB(0);
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 }
 
 
@@ -302,12 +302,12 @@ void GameMain::updateFrame(int elapsed_msec) {
         game.world->animateObjects();
 
         // Calculate positions through transformations.
-        glPushMatrix();
+        GL::glPushMatrix();
         {
-            glLoadIdentity();
+            GL::glLoadIdentity();
             game.world->transformObjects();
         }
-        glPopMatrix();
+        GL::glPopMatrix();
     }
 }
 
@@ -318,18 +318,18 @@ void GameMain::drawFrame() {
 
     static bool picking = false;
     const int SELECTIONSIZE = 1024;
-    GLuint selection[SELECTIONSIZE];
+    GL::GLuint selection[SELECTIONSIZE];
     if (picking) {
         // With Projection:
-        //glGetIntegerv(GL_VIEWPORT, viewport);
+        //GL::glGetIntegerv(GL_VIEWPORT, viewport);
         //gluPickMatrix(cx, viewport[3]-cy, 5, 5, viewport);
         //gluPerspective(45,ratio,0.1,1000);
-        glSelectBuffer(SELECTIONSIZE, selection);
-        glRenderMode(GL_SELECT);
-        glInitNames();
+        GL::glSelectBuffer(SELECTIONSIZE, selection);
+        GL::glRenderMode(GL_SELECT);
+        GL::glInitNames();
         // With Modelview:
     } else {
-        glRenderMode(GL_RENDER);
+        GL::glRenderMode(GL_RENDER);
     }
 
     // Draw area zones while paused (debug/editmode kind of).
@@ -343,25 +343,25 @@ void GameMain::drawFrame() {
 
     // SOLID / WIREFRAME drawing scheme.
     if (!game.wireframe) {
-        glClearColor(0.2, 0.2, 0.2, 1.0);
-        glEnable(GL_FOG);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        glEnable(GL_CULL_FACE);
-        glEnable(GL_LIGHTING);
-        glClear(GL_DEPTH_BUFFER_BIT); // With Background.
+        GL::glClearColor(0.2, 0.2, 0.2, 1.0);
+        GL::glEnable(GL_FOG);
+        GL::glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        GL::glEnable(GL_CULL_FACE);
+        GL::glEnable(GL_LIGHTING);
+        GL::glClear(GL_DEPTH_BUFFER_BIT); // With Background.
     } else {
-        glClearColor(0.2, 0.2, 0.2, 1.0);
-        glEnable(GL_FOG);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        //glDisable(GL_CULL_FACE);
-        glDisable(GL_LIGHTING);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // W/o background.
+        GL::glClearColor(0.2, 0.2, 0.2, 1.0);
+        GL::glEnable(GL_FOG);
+        GL::glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        //GL::glDisable(GL_CULL_FACE);
+        GL::glDisable(GL_LIGHTING);
+        GL::glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // W/o background.
     }
 
     GLS::glPushPerspectiveProjection(game.fov, 0.07, 300);
     {
         // Setup camera.
-        glLoadIdentity();
+        GL::glLoadIdentity();
         if (game.camera) {
             game.camera->camera();
             game.camera->listener();
@@ -389,27 +389,27 @@ void GameMain::drawFrame() {
 
     float motionblur = 0.0f;
     if (game.nightvision > 0.0001f) {
-        glFlush();
+        GL::glFlush();
         GLS::glAccumBlurInverse(0.83f);
     } else if (motionblur > 0.0001) {
-        glFlush();
+        GL::glFlush();
         GLS::glAccumBlur(motionblur);
     }
     
     if (picking) {
-        int entries = glRenderMode(GL_RENDER);
+        int entries = GL::glRenderMode(GL_RENDER);
         logger->debug() << "selected: " << entries << "\n";
         // Picking-Entry: n, minz, maxz, n_names
-        GLuint* p = selection;
+        GL::GLuint* p = selection;
 
         loopi(entries) {
-            GLuint n = *p++;
-            GLuint minz = *p++;
-            GLuint maxz = *p++;
+            GL::GLuint n = *p++;
+            GL::GLuint minz = *p++;
+            GL::GLuint maxz = *p++;
             logger->trace() << n << " " << minz << " " << maxz << "\n";
 
             loopj(n) {
-                GLuint name = *p++;
+                GL::GLuint name = *p++;
                 logger->trace() << " " << name;
             }
             logger->trace() << "\n";
@@ -424,33 +424,33 @@ void GameMain::drawFrame() {
 void GameMain::drawLog() {
     GLS::glPushOrthoProjection(-0.0,+1.0,-1.0,+0.0,-100,+100);
     {
-        glPushAttrib(GL_ALL_ATTRIB_BITS);
+        GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
-            glDisable(GL_CULL_FACE);
-            glDisable(GL_LIGHTING);
-            glDisable(GL_DEPTH_TEST);
-            glDepthMask(false);
-            glColor4f(1,1,1,1);
-            glPushMatrix();
+            GL::glDisable(GL_CULL_FACE);
+            GL::glDisable(GL_LIGHTING);
+            GL::glDisable(GL_DEPTH_TEST);
+            GL::glDepthMask(false);
+            GL::glColor4f(1,1,1,1);
+            GL::glPushMatrix();
             {
-                glLoadIdentity();
-                glScalef(1.0/120.0, 1.0/60.0, 1.0);
-                glTranslatef(0,1.0,-100);
+                GL::glLoadIdentity();
+                GL::glScalef(1.0/120.0, 1.0/60.0, 1.0);
+                GL::glTranslatef(0,1.0,-100);
                 char buffer[256*128];
                 log.printConsole(buffer, 120, 60/3);
                 Console::glDrawConsole(buffer, 120*60/3, 120, 0);
 
-                glTranslatef(0,-60/3.0f,0);
+                GL::glTranslatef(0,-60/3.0f,0);
                 console.printConsole(buffer, 120, 60/3);
                 Console::glDrawConsole(buffer, 120*60/3, 120, 0);
 
-                glTranslatef(0,-60/3.0f,0);
+                GL::glTranslatef(0,-60/3.0f,0);
                 cmdline.printConsole(buffer, 120, 60/3);
                 Console::glDrawConsole(buffer, 120*60/3, 120, 0);
             }
-            glPopMatrix();
+            GL::glPopMatrix();
         }
-        glPopAttrib();
+        GL::glPopAttrib();
     }
     GLS::glPopProjection();
 }
@@ -643,68 +643,68 @@ int GameMain::alEnableSystem(bool en) {
 
 
 void GameMain::drawPlaque() {
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
-        glDisable(GL_LIGHTING);
-        glDisable(GL_FOG);
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_CULL_FACE);
+        GL::glDisable(GL_LIGHTING);
+        GL::glDisable(GL_FOG);
+        GL::glDisable(GL_DEPTH_TEST);
+        GL::glDisable(GL_CULL_FACE);
         GLS::glPushOrthoProjection();
         {
-            glPushMatrix();
+            GL::glPushMatrix();
             {
-                glLoadIdentity();
-                glTranslatef(0, 1, 0);
-                glScalef(1.0f / 80.0f, 1.0f / 40.0f, 1.0f);
+                GL::glLoadIdentity();
+                GL::glTranslatef(0, 1, 0);
+                GL::glScalef(1.0f / 80.0f, 1.0f / 40.0f, 1.0f);
                 
-                glDisable(GL_TEXTURE_2D);
-                glBegin(GL_QUADS);
+                GL::glDisable(GL_TEXTURE_2D);
+                GL::glBegin(GL_QUADS);
                 {
-                    glColor4f(0.6, 0.6, 0.6, 1);
-                    glVertex3f(0,0,0);
-                    glVertex3f(80,0,0);
-                    glVertex3f(80,-1,0);
-                    glVertex3f(0,-1,0);
+                    GL::glColor4f(0.6, 0.6, 0.6, 1);
+                    GL::glVertex3f(0,0,0);
+                    GL::glVertex3f(80,0,0);
+                    GL::glVertex3f(80,-1,0);
+                    GL::glVertex3f(0,-1,0);
 
-                    glColor4f(0.8, 0.8, 0.8, 0.9);
-                    glVertex3f(0,-1,0);
-                    glColor4f(0.5, 0.5, 0.5, 0.6);
-                    glVertex3f(80,-1,0);
-                    glColor4f(0.5, 0.5, 0.5, 0.3);
-                    glVertex3f(80,-39,0);
-                    glColor4f(0.5, 0.5, 0.5, 0.6);
-                    glVertex3f(0,-39,0);
+                    GL::glColor4f(0.8, 0.8, 0.8, 0.9);
+                    GL::glVertex3f(0,-1,0);
+                    GL::glColor4f(0.5, 0.5, 0.5, 0.6);
+                    GL::glVertex3f(80,-1,0);
+                    GL::glColor4f(0.5, 0.5, 0.5, 0.3);
+                    GL::glVertex3f(80,-39,0);
+                    GL::glColor4f(0.5, 0.5, 0.5, 0.6);
+                    GL::glVertex3f(0,-39,0);
 
-                    glColor4f(0.6, 0.6, 0.6, 1);
-                    glVertex3f(0,-39,0);
-                    glVertex3f(80,-39,0);
-                    glVertex3f(80,-40,0);
-                    glVertex3f(0,-40,0);
+                    GL::glColor4f(0.6, 0.6, 0.6, 1);
+                    GL::glVertex3f(0,-39,0);
+                    GL::glVertex3f(80,-39,0);
+                    GL::glVertex3f(80,-40,0);
+                    GL::glVertex3f(0,-40,0);
                 }
-                glEnd();
+                GL::glEnd();
                 
-                glColor4f(1, 1, 0, 1);
+                GL::glColor4f(1, 1, 0, 1);
                 GLF::glprint("LinWarrior 3D  (Build " __DATE__ ") by hackcraft.de");
                 
-                glColor4f(0, 1, 0, 1);
-                glTranslatef(0, -34, 0);
+                GL::glColor4f(0, 1, 0, 1);
+                GL::glTranslatef(0, -34, 0);
                 GLF::glprint("IJKL-Keys   : Aim Weapons");
-                glTranslatef(0, -1, 0);
+                GL::glTranslatef(0, -1, 0);
                 GLF::glprint("Cursor-Keys : Steer Base");
-                glTranslatef(0, -1, 0);
+                GL::glTranslatef(0, -1, 0);
                 GLF::glprint("SEDF-Keys   : Main Action Buttons");
-                glTranslatef(0, -1, 0);
+                GL::glTranslatef(0, -1, 0);
                 GLF::glprint("AW-/RG-Keys : Left/Right Action Buttons");
-                glTranslatef(0, -1, 0);
-                glTranslatef(0, -1, 0);
-                glColor4f(1, 1, 0, 1);
+                GL::glTranslatef(0, -1, 0);
+                GL::glTranslatef(0, -1, 0);
+                GL::glColor4f(1, 1, 0, 1);
                 GLF::glprint("PROCESSING DATA...this may take a while...");
             }
-            glPopMatrix();
+            GL::glPopMatrix();
         }
         GLS::glPopProjection();
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 }
 
 
@@ -762,7 +762,7 @@ int GameMain::run(int argc, char** args) {
     }
 
     logger->info() << "Initialising GLEW...\n";
-    if (glewInit() != GLEW_OK) {
+    if (GL::glewInit() != GLEW_OK) {
         logger->error() << "Unable to init GLEW!\n";
         return 1;
     }
@@ -839,8 +839,8 @@ int GameMain::run(int argc, char** args) {
     bool loadscreen = true;
     if (loadscreen) {
         logger->info() << "Showing load screen...\n";
-        glClearColor(0.4, 0.4, 0.45, 1.0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        GL::glClearColor(0.4, 0.4, 0.45, 1.0);
+        GL::glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         drawPlaque();
         SDL_GL_SwapBuffers();
     }
@@ -901,14 +901,14 @@ int GameMain::run(int argc, char** args) {
         // of the player by using a (re-)mapping.
         updatePad(game.pad1, joy0, game.map1);
         // After securing Matrix: update world and draw frame.
-        //glPushMatrix();
+        //GL::glPushMatrix();
         {
             //cout << "[\n";
             updateFrame(spf * 1000.0f);
             drawFrame();
             //cout << "]\n";
         }
-        //glPopMatrix();
+        //GL::glPopMatrix();
 
         // Lock framerate and give back idle time to the os,
         // other processes or threads.

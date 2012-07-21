@@ -26,7 +26,7 @@
 
 unsigned int rBuilding::loadMaterial() {
     static bool fail = false;
-    static GLenum prog = 0;
+    static GL::GLenum prog = 0;
 
     if (prog == 0 && !fail) {
         char* vtx = Filesystem::loadTextFile("data/base/material/base.vert");
@@ -184,104 +184,104 @@ void rBuilding::drawSolid() {
     float r[] = {0, 0, 0};
     float* w = buildingRooms;
 
-    glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_TEXTURE_BIT);
+    GL::glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_TEXTURE_BIT);
     {
         GLS::glUseProgram_fglittexture();
-        glUseProgramObjectARB(loadMaterial());
+        GL::glUseProgramObjectARB(loadMaterial());
 
         long roof = sTextures[0];
         long wall = sTextures[1 + (((int) (p[0]*1.234567 + p[2]*7.654321)) % (sTextures.size() - 1))];
 
-        glColor3f(1.0f, 1.0f, 1.0f);
+        GL::glColor3f(1.0f, 1.0f, 1.0f);
 
-        glPushMatrix();
+        GL::glPushMatrix();
         {
-            if (r[1] < -0.00001f || r[1] > 0.00001f) glRotatef(r[1] * 0.017453f, 0, 1, 0);
-            glTranslatef(p[0] - w[0]*0.5f, p[1], p[2] - w[2]*0.5f);
+            if (r[1] < -0.00001f || r[1] > 0.00001f) GL::glRotatef(r[1] * 0.017453f, 0, 1, 0);
+            GL::glTranslatef(p[0] - w[0]*0.5f, p[1], p[2] - w[2]*0.5f);
             //cPrimitives::glBlockFlat(w[0], w[1], w[2], wall, wall, wall, wall, roof, roof);
             const float n2 = 0.707107f; // 1.0f / sqrtf(2);
             const float n3 = 0.577350f; // 1.0f / sqrtf(3);
-            glBindTexture(GL_TEXTURE_2D, roof);
-            glBegin(GL_QUADS);
+            GL::glBindTexture(GL_TEXTURE_2D, roof);
+            GL::glBegin(GL_QUADS);
             {
-                glNormal3f(0, 1, 0);
+                GL::glNormal3f(0, 1, 0);
 
-                glTexCoord2f(0, 0);
-                glVertex3f(0, w[1], 0);
+                GL::glTexCoord2f(0, 0);
+                GL::glVertex3f(0, w[1], 0);
 
-                glTexCoord2f(0, w[2]);
-                glVertex3f(0, w[1], w[2]);
+                GL::glTexCoord2f(0, w[2]);
+                GL::glVertex3f(0, w[1], w[2]);
 
-                glTexCoord2f(w[0], w[2]);
-                glVertex3f(w[0], w[1], w[2]);
+                GL::glTexCoord2f(w[0], w[2]);
+                GL::glVertex3f(w[0], w[1], w[2]);
 
-                glTexCoord2f(w[0], 0);
-                glVertex3f(w[0], w[1], 0);
+                GL::glTexCoord2f(w[0], 0);
+                GL::glVertex3f(w[0], w[1], 0);
             }
-            glEnd();
-            glBindTexture(GL_TEXTURE_2D, wall);
-            glBegin(GL_TRIANGLE_STRIP);
+            GL::glEnd();
+            GL::glBindTexture(GL_TEXTURE_2D, wall);
+            GL::glBegin(GL_TRIANGLE_STRIP);
             {
                 float tx = 0;
                 //float f = 1.0f / 9.0f * 2.0f;
                 float f = 1.0f / 9.0f;
                 float ty = w[1] * f;
 
-                glNormal3f(-n2, 0, -n2);
-                glTexCoord2f(tx, 0);
-                glVertex3f(0, 0, 0);
+                GL::glNormal3f(-n2, 0, -n2);
+                GL::glTexCoord2f(tx, 0);
+                GL::glVertex3f(0, 0, 0);
 
-                glNormal3f(-n3, n3, -n3);
-                glTexCoord2f(tx, ty);
-                glVertex3f(0, w[1], 0);
-
-                tx += w[0] * f;
-
-                glNormal3f(+n2, 0, -n2);
-                glTexCoord2f(tx, 0);
-                glVertex3f(w[0], 0, 0);
-
-                glNormal3f(+n3, n3, -n3);
-                glTexCoord2f(tx, ty);
-                glVertex3f(w[0], w[1], 0);
-
-                tx += w[2] * f;
-
-                glNormal3f(+n2, 0, +n2);
-                glTexCoord2f(tx, 0);
-                glVertex3f(w[0], 0, w[2]);
-
-                glNormal3f(+n3, n3, +n3);
-                glTexCoord2f(tx, ty);
-                glVertex3f(w[0], w[1], w[2]);
+                GL::glNormal3f(-n3, n3, -n3);
+                GL::glTexCoord2f(tx, ty);
+                GL::glVertex3f(0, w[1], 0);
 
                 tx += w[0] * f;
 
-                glNormal3f(-n2, 0, +n2);
-                glTexCoord2f(tx, 0);
-                glVertex3f(0, 0, w[2]);
+                GL::glNormal3f(+n2, 0, -n2);
+                GL::glTexCoord2f(tx, 0);
+                GL::glVertex3f(w[0], 0, 0);
 
-                glNormal3f(-n3, n3, +n3);
-                glTexCoord2f(tx, ty);
-                glVertex3f(0, w[1], w[2]);
+                GL::glNormal3f(+n3, n3, -n3);
+                GL::glTexCoord2f(tx, ty);
+                GL::glVertex3f(w[0], w[1], 0);
 
                 tx += w[2] * f;
 
-                glNormal3f(-n2, 0, -n2);
-                glTexCoord2f(tx, 0);
-                glVertex3f(0, 0, 0);
+                GL::glNormal3f(+n2, 0, +n2);
+                GL::glTexCoord2f(tx, 0);
+                GL::glVertex3f(w[0], 0, w[2]);
 
-                glNormal3f(-n3, n3, -n3);
-                glTexCoord2f(tx, ty);
-                glVertex3f(0, w[1], 0);
+                GL::glNormal3f(+n3, n3, +n3);
+                GL::glTexCoord2f(tx, ty);
+                GL::glVertex3f(w[0], w[1], w[2]);
+
+                tx += w[0] * f;
+
+                GL::glNormal3f(-n2, 0, +n2);
+                GL::glTexCoord2f(tx, 0);
+                GL::glVertex3f(0, 0, w[2]);
+
+                GL::glNormal3f(-n3, n3, +n3);
+                GL::glTexCoord2f(tx, ty);
+                GL::glVertex3f(0, w[1], w[2]);
+
+                tx += w[2] * f;
+
+                GL::glNormal3f(-n2, 0, -n2);
+                GL::glTexCoord2f(tx, 0);
+                GL::glVertex3f(0, 0, 0);
+
+                GL::glNormal3f(-n3, n3, -n3);
+                GL::glTexCoord2f(tx, ty);
+                GL::glVertex3f(0, w[1], 0);
             }
-            glEnd();
+            GL::glEnd();
 
             if (!true) Primitive::glAxis();
         }
-        glPopMatrix();
-        glUseProgramObjectARB(0);
+        GL::glPopMatrix();
+        GL::glUseProgramObjectARB(0);
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 }
 

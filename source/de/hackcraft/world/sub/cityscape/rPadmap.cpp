@@ -158,38 +158,38 @@ void rPadmap::animate(float spf) {
 void rPadmap::drawSolid() {
     //return; // !!
 
-    glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_TEXTURE_BIT);
+    GL::glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_TEXTURE_BIT);
     {
-        glEnable(GL_TEXTURE_2D);
-        //glDisable(GL_CULL_FACE);
-        glColor4f(1, 1, 1, 1);
+        GL::glEnable(GL_TEXTURE_2D);
+        //GL::glDisable(GL_CULL_FACE);
+        GL::glColor4f(1, 1, 1, 1);
 
-        glPushMatrix();
+        GL::glPushMatrix();
         {
-            glTranslatef(this->pos0[0], this->pos0[1], this->pos0[2]);
-            glScalef(mapscale[0], mapscale[1], mapscale[2]);
+            GL::glTranslatef(this->pos0[0], this->pos0[1], this->pos0[2]);
+            GL::glScalef(mapscale[0], mapscale[1], mapscale[2]);
 
             int a = dims[0];
             int b = dims[1];
 
             /*
-            glBegin(GL_TRIANGLE_STRIP);
-            glVertex3f(0, 0, 0);
-            glVertex3f(0, 0, b);
-            glVertex3f(a, 0, 0);
-            glVertex3f(a, 0, b);
-            glEnd();
+            GL::glBegin(GL_TRIANGLE_STRIP);
+            GL::glVertex3f(0, 0, 0);
+            GL::glVertex3f(0, 0, b);
+            GL::glVertex3f(a, 0, 0);
+            GL::glVertex3f(a, 0, b);
+            GL::glEnd();
              */
 
 
             // Draw pad tops
             {
-                glBindTexture(GL_TEXTURE_2D, sTextures[KIND_ROAD_JUNKTION]);
-                //glColor4f(0, 0, 1, 1);
-                glNormal3f(0, 1, 0);
+                GL::glBindTexture(GL_TEXTURE_2D, sTextures[KIND_ROAD_JUNKTION]);
+                //GL::glColor4f(0, 0, 1, 1);
+                GL::glNormal3f(0, 1, 0);
                 int z = 0;
                 for (int j = 0; j < b - 1; j += 2) {
-                    glBegin(GL_TRIANGLE_STRIP);
+                    GL::glBegin(GL_TRIANGLE_STRIP);
                     int x = 0;
                     for (int i = 0; i < a - 1; i += 2) {
                         bool stumble = (i == 0);
@@ -198,30 +198,30 @@ void rPadmap::drawSolid() {
                                     || (heights[(j + 1) * a + i - 1] != heights[(j + 1) * a + i]);
                         }
                         if (stumble) {
-                            glEnd();
-                            glBegin(GL_TRIANGLE_STRIP);
-                            glTexCoord2f(x, z);
-                            glVertex3f(x, heights[(j + 0) * a + i], z);
-                            glTexCoord2f(x, z + 1);
-                            glVertex3f(x, heights[(j + 1) * a + i], z + 1);
+                            GL::glEnd();
+                            GL::glBegin(GL_TRIANGLE_STRIP);
+                            GL::glTexCoord2f(x, z);
+                            GL::glVertex3f(x, heights[(j + 0) * a + i], z);
+                            GL::glTexCoord2f(x, z + 1);
+                            GL::glVertex3f(x, heights[(j + 1) * a + i], z + 1);
                         }
-                        glTexCoord2f(x + 1, z);
-                        glVertex3f(x + 1, heights[(j + 0) * a + i + 1], z);
-                        glTexCoord2f(x + 1, z + 1);
-                        glVertex3f(x + 1, heights[(j + 1) * a + i + 1], z + 1);
+                        GL::glTexCoord2f(x + 1, z);
+                        GL::glVertex3f(x + 1, heights[(j + 0) * a + i + 1], z);
+                        GL::glTexCoord2f(x + 1, z + 1);
+                        GL::glVertex3f(x + 1, heights[(j + 1) * a + i + 1], z + 1);
                         x++;
                     }
-                    glEnd();
+                    GL::glEnd();
                     z++;
                 }
             } // Draw pad tops
 
-            //glDisable(GL_TEXTURE_2D);
+            //GL::glDisable(GL_TEXTURE_2D);
             // Draw east-west cliffs
             {
-                glBindTexture(GL_TEXTURE_2D, sTextures[KIND_ROAD_EASTWEST]);
-                //glColor4f(1, 0, 1, 1);
-                glNormal3f(0, 0, 1);
+                GL::glBindTexture(GL_TEXTURE_2D, sTextures[KIND_ROAD_EASTWEST]);
+                //GL::glColor4f(1, 0, 1, 1);
+                GL::glNormal3f(0, 0, 1);
                 int x = 0;
                 for (int i = 0; i < a; i += 2) {
                     int z = 1;
@@ -229,16 +229,16 @@ void rPadmap::drawSolid() {
                         bool stumble = (heights[(j - 1) * a + (i + 0)] != heights[(j + 0) * a + (i + 0)])
                                 || (heights[(j - 1) * a + (i + 1)] != heights[(j + 0) * a + (i + 1)]);
                         if (stumble) {
-                            glBegin(GL_TRIANGLE_STRIP);
-                            glTexCoord2f(x + 1, heights[(j - 1) * a + i + 1]);
-                            glVertex3f(x + 1, heights[(j - 1) * a + i + 1], z);
-                            glTexCoord2f(x + 0, heights[(j - 1) * a + i + 0]);
-                            glVertex3f(x + 0, heights[(j - 1) * a + i + 0], z);
-                            glTexCoord2f(x + 1, heights[(j - 0) * a + i + 1]);
-                            glVertex3f(x + 1, heights[(j - 0) * a + i + 1], z);
-                            glTexCoord2f(x + 0, heights[(j - 0) * a + i + 0]);
-                            glVertex3f(x + 0, heights[(j - 0) * a + i + 0], z);
-                            glEnd();
+                            GL::glBegin(GL_TRIANGLE_STRIP);
+                            GL::glTexCoord2f(x + 1, heights[(j - 1) * a + i + 1]);
+                            GL::glVertex3f(x + 1, heights[(j - 1) * a + i + 1], z);
+                            GL::glTexCoord2f(x + 0, heights[(j - 1) * a + i + 0]);
+                            GL::glVertex3f(x + 0, heights[(j - 1) * a + i + 0], z);
+                            GL::glTexCoord2f(x + 1, heights[(j - 0) * a + i + 1]);
+                            GL::glVertex3f(x + 1, heights[(j - 0) * a + i + 1], z);
+                            GL::glTexCoord2f(x + 0, heights[(j - 0) * a + i + 0]);
+                            GL::glVertex3f(x + 0, heights[(j - 0) * a + i + 0], z);
+                            GL::glEnd();
                         }
                         z++;
                     }
@@ -246,12 +246,12 @@ void rPadmap::drawSolid() {
                 }
             } // Draw east-west cliffs
 
-            //glDisable(GL_TEXTURE_2D);
+            //GL::glDisable(GL_TEXTURE_2D);
             // Draw north-south cliffs
             {
-                glBindTexture(GL_TEXTURE_2D, sTextures[KIND_ROAD_NORTHSOUTH]);
-                //glColor4f(0, 1, 1, 1);
-                glNormal3f(1, 0, 0);
+                GL::glBindTexture(GL_TEXTURE_2D, sTextures[KIND_ROAD_NORTHSOUTH]);
+                //GL::glColor4f(0, 1, 1, 1);
+                GL::glNormal3f(1, 0, 0);
                 int z = 0;
                 for (int j = 0; j < b; j += 2) {
                     int x = 1;
@@ -259,16 +259,16 @@ void rPadmap::drawSolid() {
                         bool stumble = (heights[(j + 0) * a + i - 1] != heights[(j + 0) * a + i])
                                 || (heights[(j + 1) * a + i - 1] != heights[(j + 1) * a + i]);
                         if (stumble) {
-                            glBegin(GL_TRIANGLE_STRIP);
-                            glTexCoord2f(z + 0, heights[(j + 0) * a + i - 1]);
-                            glVertex3f(x, heights[(j + 0) * a + i - 1], z + 0);
-                            glTexCoord2f(z + 1, heights[(j + 1) * a + i - 1]);
-                            glVertex3f(x, heights[(j + 1) * a + i - 1], z + 1);
-                            glTexCoord2f(z + 0, heights[(j + 0) * a + i - 0]);
-                            glVertex3f(x, heights[(j + 0) * a + i + 0], z + 0);
-                            glTexCoord2f(z + 1, heights[(j + 1) * a + i - 0]);
-                            glVertex3f(x, heights[(j + 1) * a + i + 0], z + 1);
-                            glEnd();
+                            GL::glBegin(GL_TRIANGLE_STRIP);
+                            GL::glTexCoord2f(z + 0, heights[(j + 0) * a + i - 1]);
+                            GL::glVertex3f(x, heights[(j + 0) * a + i - 1], z + 0);
+                            GL::glTexCoord2f(z + 1, heights[(j + 1) * a + i - 1]);
+                            GL::glVertex3f(x, heights[(j + 1) * a + i - 1], z + 1);
+                            GL::glTexCoord2f(z + 0, heights[(j + 0) * a + i - 0]);
+                            GL::glVertex3f(x, heights[(j + 0) * a + i + 0], z + 0);
+                            GL::glTexCoord2f(z + 1, heights[(j + 1) * a + i - 0]);
+                            GL::glVertex3f(x, heights[(j + 1) * a + i + 0], z + 1);
+                            GL::glEnd();
                         }
                         x++;
                     }
@@ -277,9 +277,9 @@ void rPadmap::drawSolid() {
             } // Draw north-south cliffs
 
         }
-        glPopMatrix();
+        GL::glPopMatrix();
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 }
 
 float rPadmap::constrain(float* worldpos, float radius, float* localpos, Entity* enactor) {

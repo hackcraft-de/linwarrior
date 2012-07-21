@@ -100,18 +100,18 @@ void rWeapon::playSourceIfNotPlaying() {
 
 void rWeapon::transform() {
     { // Current Pose-Matrix and Sound-Source-Position update.
-        glPushMatrix();
+        GL::glPushMatrix();
         {
-            glLoadIdentity();
-            glTranslatef(pos0[0], pos0[1], pos0[2]);
+            GL::glLoadIdentity();
+            GL::glTranslatef(pos0[0], pos0[1], pos0[2]);
             GLS::glRotateq(ori0);
-            glTranslatef(pos1[0], pos1[1], pos1[2]);
+            GL::glTranslatef(pos1[0], pos1[1], pos1[2]);
             GLS::glRotateq(ori1);
             // FIXME: All weapon's forward are inverted, therefore rotate.
-            glRotatef(180, 0, 1, 0);
-            glGetFloatv(GL_MODELVIEW_MATRIX, weaponPosef);
+            GL::glRotatef(180, 0, 1, 0);
+            GL::glGetFloatv(GL_MODELVIEW_MATRIX, weaponPosef);
         }
-        glPopMatrix();
+        GL::glPopMatrix();
         if (alIsSource(soundSource)) {
             alSourcefv(soundSource, AL_POSITION, &weaponPosef[12]);
         }
@@ -119,7 +119,7 @@ void rWeapon::transform() {
 }
 
 void rWeapon::transformTo() {
-    glMultMatrixf(weaponPosef);
+    GL::glMultMatrixf(weaponPosef);
 }
 
 int rWeapon::damageByParticle(float* worldpos, float radius, int roles, float damage) {

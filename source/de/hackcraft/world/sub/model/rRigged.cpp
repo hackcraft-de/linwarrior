@@ -15,11 +15,11 @@
 #include <string>
 using std::string;
 
-#include <GL/glew.h>
+#include "de/hackcraft/opengl/GL.h"
 
 unsigned int rRigged::loadMaterial() {
     static bool fail = false;
-    static GLenum prog = 0;
+    static GL::GLenum prog = 0;
 
     if (prog == 0 && !fail) {
         char* vtx = Filesystem::loadTextFile("data/base/material/base.vert");
@@ -136,40 +136,40 @@ void rRigged::initMaterials() {
 
     
 void rRigged::drawBones() {
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
         GLS::glUseProgram_fgplaincolor();
 
         loopi(model->numJoints) {
-            glPushMatrix();
+            GL::glPushMatrix();
             {
-                glTranslatef(joints[i].v[0], joints[i].v[1], joints[i].v[2]);
+                GL::glTranslatef(joints[i].v[0], joints[i].v[1], joints[i].v[2]);
                 GLS::glRotateq(joints[i].q);
                 Primitive::glAxis(0.7);
             }
-            glPopMatrix();
-            glColor3f(0.5, 0.5, 0.5);
-            glBegin(GL_LINES);
+            GL::glPopMatrix();
+            GL::glColor3f(0.5, 0.5, 0.5);
+            GL::glBegin(GL_LINES);
             {
                 int j = joints[i].parent;
                 if (j >= 0) {
-                    glVertex3fv(joints[i].v);
-                    glVertex3fv(joints[j].v);
+                    GL::glVertex3fv(joints[i].v);
+                    GL::glVertex3fv(joints[j].v);
                 }
             }
-            glEnd();
+            GL::glEnd();
         }
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 }
 
 void rRigged::drawMeshes() {
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
         GLS::glUseProgram_fglittexture3d();
-        glUseProgramObjectARB(loadMaterial());
-        glColor4f(1, 1, 1, 1);
-        glFrontFace(GL_CW);
+        GL::glUseProgramObjectARB(loadMaterial());
+        GL::glColor4f(1, 1, 1, 1);
+        GL::glFrontFace(GL_CW);
 
         // Get first mesh of model to iterate through.
         MD5Format::mesh* msh = MD5Format::getFirstMesh(model);
@@ -196,7 +196,7 @@ void rRigged::drawMeshes() {
         loopi(model->numMeshes) {
             //logger->trace() << "Shader:" << msh->shader << "\n";
             //float co = colors[msh->shader[0]];
-            //glColor3f(co,co,co);
+            //GL::glColor3f(co,co,co);
             
             string shader = string(msh->shader);
             if (shader.compare("camo") == 0) {
@@ -208,7 +208,7 @@ void rRigged::drawMeshes() {
                     default: break;
                 }
             }
-            glBindTexture(GL_TEXTURE_3D, materials[shader]);
+            GL::glBindTexture(GL_TEXTURE_3D, materials[shader]);
 
             //logger->trace() << curr->numverts << " " << curr->numtris << " " << curr->numweights << "\n";
             float* vtx = new float[msh->numverts * 3];
@@ -219,29 +219,29 @@ void rRigged::drawMeshes() {
             // For 3d texturing.
             float* vox = baseverts[i];
             //
-            glBegin(GL_TRIANGLES);
+            GL::glBegin(GL_TRIANGLES);
             const float s = 0.25f;
             for (int j = 0; j < msh->numtris; j++) {
                 int k = tris[j].a;
                 //glTexCoord2fv(verts[k].tmap);
-                //glTexCoord3fv(&vox[3 * k]);
-                glNormal3fv(&nrm[3 * k]);
-                glTexCoord3f(vox[3 * k + 0] * s, vox[3 * k + 1] * s, vox[3 * k + 2] * s);
-                glVertex3fv(&vtx[3 * k]);
+                //GL::glTexCoord3fv(&vox[3 * k]);
+                GL::glNormal3fv(&nrm[3 * k]);
+                GL::glTexCoord3f(vox[3 * k + 0] * s, vox[3 * k + 1] * s, vox[3 * k + 2] * s);
+                GL::glVertex3fv(&vtx[3 * k]);
                 k = tris[j].b;
                 //glTexCoord2fv(verts[k].tmap);
-                //glTexCoord3fv(&vox[3 * k]);
-                glNormal3fv(&nrm[3 * k]);
-                glTexCoord3f(vox[3 * k + 0] * s, vox[3 * k + 1] * s, vox[3 * k + 2] * s);
-                glVertex3fv(&vtx[3 * k]);
+                //GL::glTexCoord3fv(&vox[3 * k]);
+                GL::glNormal3fv(&nrm[3 * k]);
+                GL::glTexCoord3f(vox[3 * k + 0] * s, vox[3 * k + 1] * s, vox[3 * k + 2] * s);
+                GL::glVertex3fv(&vtx[3 * k]);
                 k = tris[j].c;
                 //glTexCoord2fv(verts[k].tmap);
-                //glTexCoord3fv(&vox[3 * k]);
-                glNormal3fv(&nrm[3 * k]);
-                glTexCoord3f(vox[3 * k + 0] * s, vox[3 * k + 1] * s, vox[3 * k + 2] * s);
-                glVertex3fv(&vtx[3 * k]);
+                //GL::glTexCoord3fv(&vox[3 * k]);
+                GL::glNormal3fv(&nrm[3 * k]);
+                GL::glTexCoord3f(vox[3 * k + 0] * s, vox[3 * k + 1] * s, vox[3 * k + 2] * s);
+                GL::glVertex3fv(&vtx[3 * k]);
             }
-            glEnd();
+            GL::glEnd();
             // Calculate boundaries of current pose.
             {
                 int nvtx = msh->numverts;
@@ -268,9 +268,9 @@ void rRigged::drawMeshes() {
         radius = sqrt(radius);
         //logger->trace() << " Model-Dimensions: r = " << radius << " h = " << height << "\n";
         //logger->trace() << " Model-Dimensions: (" << mins[0] << " " << mins[1] << " " << mins[2] << ") (" << maxs[0] << " " << maxs[1] << " " << maxs[2] << ")\n";
-        glUseProgramObjectARB(0);
+        GL::glUseProgramObjectARB(0);
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 }
 
 void rRigged::poseJumping(float spf) {
@@ -571,31 +571,31 @@ void rRigged::transform() {
 void rRigged::drawSolid() {
     if (!active) return;
     if (model == NULL) return;
-    glPushMatrix();
+    GL::glPushMatrix();
     {
-        glTranslatef(pos0[0], pos0[1], pos0[2]);
+        GL::glTranslatef(pos0[0], pos0[1], pos0[2]);
         GLS::glRotateq(ori0);
         //cPrimitives::glAxis(3.0f);
         drawMeshes();
     }
-    glPopMatrix();
+    GL::glPopMatrix();
 }
 
 void rRigged::drawEffect() {
     if (!active) return;
     if (model == NULL) return;
     if (DRAWJOINTS) {
-        glPushMatrix();
+        GL::glPushMatrix();
         {
-            glTranslatef(pos0[0], pos0[1], pos0[2]);
+            GL::glTranslatef(pos0[0], pos0[1], pos0[2]);
             GLS::glRotateq(ori0);
             drawBones();
         }
-        glPopMatrix();
+        GL::glPopMatrix();
     }
     // Draw jumpjet exaust if jet is somewhat on.
     if (jetting > 0.3f) {
-        glPushAttrib(GL_ALL_ATTRIB_BITS);
+        GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
             GLS::glUseProgram_fgaddcolor();
 
@@ -610,30 +610,30 @@ void rRigged::drawEffect() {
             loopi(5) {
                 if (jet[i] >= 0) {
                     float* v = joints[jet[i]].v;
-                    glPushMatrix();
+                    GL::glPushMatrix();
                     {
                         float f = jetting * 0.5f;
 
-                        glTranslatef(pos0[0], pos0[1], pos0[2]);
+                        GL::glTranslatef(pos0[0], pos0[1], pos0[2]);
                         GLS::glRotateq(ori0);
-                        glTranslatef(v[0], v[1], v[2]);
+                        GL::glTranslatef(v[0], v[1], v[2]);
 
                         float n[16];
                         GLS::glGetTransposeInverseRotationMatrix(n);
-                        glMultMatrixf(n);
+                        GL::glMultMatrixf(n);
 
-                        glColor4f(1, 1, 0.3, 0.6);
+                        GL::glColor4f(1, 1, 0.3, 0.6);
                         Primitive::glDisk(7, f + 0.0003 * (rand() % 100));
-                        glColor4f(1, 0.5, 0.3, 0.7);
+                        GL::glColor4f(1, 0.5, 0.3, 0.7);
                         Primitive::glDisk(7, f * 0.6 + 0.001 * (rand() % 100));
-                        glColor4f(1, 1, 1, 0.8);
+                        GL::glColor4f(1, 1, 1, 0.8);
                         Primitive::glDisk(7, f * 0.3 + 0.001 * (rand() % 100));
                     }
-                    glPopMatrix();
+                    GL::glPopMatrix();
                 } // if
             } // loopi
         }
-        glPopAttrib();
+        GL::glPopAttrib();
     }
 }
 

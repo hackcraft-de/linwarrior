@@ -13,7 +13,7 @@ struct Console;
 
 #include "de/hackcraft/psi3d/GLF.h"
 
-#include <GL/glew.h>
+#include "de/hackcraft/opengl/GL.h"
 
 // memset, memmove
 #include <string.h>
@@ -124,27 +124,27 @@ struct Console {
         unsigned char* bufferstr = (unsigned char*) (buffer);
         unsigned int* asciibinds = GLF::getFont();
         if (asciibinds == NULL) return;
-        glPushAttrib(GL_ENABLE_BIT);
+        GL::glPushAttrib(GL_ENABLE_BIT);
         {
-            glDisable(GL_CULL_FACE);
-            glEnable(GL_TEXTURE_2D);
-            glPushMatrix();
+            GL::glDisable(GL_CULL_FACE);
+            GL::glEnable(GL_TEXTURE_2D);
+            GL::glPushMatrix();
             {
                 int i, col = 0;
                 for (i = 0; i < (buffersize); i++) {
                     if ((i % (bufferwidth)) == 0) {
-                        glTranslatef(-col, -1, 0);
+                        GL::glTranslatef(-col, -1, 0);
                         col = 0;
                     }
                     if (bufferstr[i] != 0) GLF::glTexturedSquare(asciibinds[bufferstr[i]]);
                     if (bufferpos == i) GLF::glTexturedSquare(asciibinds[0]);
-                    glTranslatef(1, 0, 0);
+                    GL::glTranslatef(1, 0, 0);
                     col++;
                 }
             }
-            glPopMatrix();
+            GL::glPopMatrix();
         }
-        glPopAttrib();
+        GL::glPopAttrib();
     }
 
     /**

@@ -8,7 +8,7 @@
 
 #include "de/hackcraft/world/sub/weapon/rTarcom.h"
 
-#include <GL/glew.h>
+#include "de/hackcraft/opengl/GL.h"
 
 #include <cassert>
 
@@ -120,64 +120,64 @@ void rTarget::animate(float spf) {
 void rTarget::drawHUD() {
     if (!active) return;
 
-    //glColor4f(0,0.1,0,0.2);
-    glBegin(GL_QUADS);
-    glVertex3f(1, 1, 0);
-    glVertex3f(0, 1, 0);
-    glVertex3f(0, 0, 0);
-    glVertex3f(1, 0, 0);
-    glEnd();
-    glColor4f(0.3, 0.3, 0.3, 0.3);
+    //GL::glColor4f(0,0.1,0,0.2);
+    GL::glBegin(GL_QUADS);
+    GL::glVertex3f(1, 1, 0);
+    GL::glVertex3f(0, 1, 0);
+    GL::glVertex3f(0, 0, 0);
+    GL::glVertex3f(1, 0, 0);
+    GL::glEnd();
+    GL::glColor4f(0.3, 0.3, 0.3, 0.3);
     for (int i = 1; i <= 5; i += 4) {
-        if (i == 1) glColor4f(1, 1, 1, 0.9);
-        glLineWidth(i);
-        glPushMatrix();
+        if (i == 1) GL::glColor4f(1, 1, 1, 0.9);
+        GL::glLineWidth(i);
+        GL::glPushMatrix();
         {
-            //glLoadIdentity();
-            glTranslatef(0.0f, 0.4f, 0.0f);
-            glScalef(0.333f, 0.3f, 1.0f);
-            //glTranslatef(0.8, 0.1, 0);
-            //glScalef(0.06, 0.08, 1.0);
+            //GL::glLoadIdentity();
+            GL::glTranslatef(0.0f, 0.4f, 0.0f);
+            GL::glScalef(0.333f, 0.3f, 1.0f);
+            //GL::glTranslatef(0.8, 0.1, 0);
+            //GL::glScalef(0.06, 0.08, 1.0);
             // Left Arm
             int left = rTarget::LEFT;
-            if (i != 1) glColor4f(1 - hp[left]*0.01, hp[left]*0.01, 0.4, 0.2);
+            if (i != 1) GL::glColor4f(1 - hp[left]*0.01, hp[left]*0.01, 0.4, 0.2);
             Primitive::glLineSquare(0.1f);
             // Torsor&Head
-            glTranslatef(1, 0, 0);
-            glScalef(1, 1.5, 1);
+            GL::glTranslatef(1, 0, 0);
+            GL::glScalef(1, 1.5, 1);
             int body = rTarget::BODY;
-            if (i != 1) glColor4f(1 - hp[body]*0.01, hp[body]*0.01, 0.4, 0.2);
+            if (i != 1) GL::glColor4f(1 - hp[body]*0.01, hp[body]*0.01, 0.4, 0.2);
             Primitive::glLineSquare(0.1f);
             // Right Arm&Shoulder
-            glTranslatef(1, 0, 0);
-            glScalef(1, 1.0f / 1.5f, 1);
+            GL::glTranslatef(1, 0, 0);
+            GL::glScalef(1, 1.0f / 1.5f, 1);
             int right = rTarget::RIGHT;
-            if (i != 1) glColor4f(1 - hp[right]*0.01, hp[right]*0.01, 0.4, 0.2);
+            if (i != 1) GL::glColor4f(1 - hp[right]*0.01, hp[right]*0.01, 0.4, 0.2);
             Primitive::glLineSquare(0.1f);
             // Legs
-            glTranslatef(-1.6, -1, 0);
-            glScalef(2.2, 1, 1);
+            GL::glTranslatef(-1.6, -1, 0);
+            GL::glScalef(2.2, 1, 1);
             int legs = rTarget::LEGS;
-            if (i != 1) glColor4f(1 - hp[legs]*0.01, hp[legs]*0.01, 0.4, 0.2);
+            if (i != 1) GL::glColor4f(1 - hp[legs]*0.01, hp[legs]*0.01, 0.4, 0.2);
             Primitive::glLineSquare(0.1f);
         }
-        glPopMatrix();
+        GL::glPopMatrix();
     }
 
-    glPushMatrix();
+    GL::glPushMatrix();
     {
-        glColor4f(0.09, 0.99, 0.09, 1);
-        glScalef(1.0f / 20.0f, 1.0f / 10.0f, 1.0f);
-        glTranslatef(0, 1, 0);
+        GL::glColor4f(0.09, 0.99, 0.09, 1);
+        GL::glScalef(1.0f / 20.0f, 1.0f / 10.0f, 1.0f);
+        GL::glTranslatef(0, 1, 0);
         GLF::glprint("hackcraft.de");
-        glTranslatef(0, 9, 0);
+        GL::glTranslatef(0, 9, 0);
         int left = rTarget::LEFT;
         int body = rTarget::BODY;
         int right = rTarget::RIGHT;
         int legs = rTarget::LEGS;
         GLF::glprintf("L %3.0f  T %3.0f  R %3.0f\n       B %3.0f", hp[left], hp[body], hp[right], hp[legs]);
     }
-    glPopMatrix();
+    GL::glPopMatrix();
 }
 
 bool rTarget::isEnemy(rTarcom* tarcom) {

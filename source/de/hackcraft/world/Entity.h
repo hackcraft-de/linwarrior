@@ -24,8 +24,6 @@ class Entity;
 #include "de/hackcraft/psi3d/math3d.h"
 #include "de/hackcraft/psi3d/macros.h"
 
-#include <GL/glew.h>
-
 #ifdef __APPLE__
 #include <OpenAL/al.h>
 #include <ALUT/alut.h>

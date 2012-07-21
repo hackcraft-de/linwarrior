@@ -2,7 +2,7 @@
 
 #include "de/hackcraft/psi3d/GLS.h"
 
-#include <GL/glew.h>
+#include "de/hackcraft/opengl/GL.h"
 
 
 std::string rCamera::cname = "CAMERA";
@@ -26,56 +26,56 @@ void rCamera::camera() {
     float shake = 0.004f * intensity;
     float jerk = 0.95f * intensity;
 
-    glPushMatrix();
+    GL::glPushMatrix();
     {
         // Get inverse components of head pos and ori.
-        glLoadIdentity();
-        glTranslatef(pos0[0], pos0[1], pos0[2]);
+        GL::glLoadIdentity();
+        GL::glTranslatef(pos0[0], pos0[1], pos0[2]);
         GLS::glRotateq(ori0);
-        glTranslatef(pos1[0], pos1[1], pos1[2]);
+        GL::glTranslatef(pos1[0], pos1[1], pos1[2]);
         GLS::glRotateq(ori1);
         // FIXME: Camera forward is inverted, therefore rotate.
-        glRotatef(180, 0, 1, 0);
+        GL::glRotatef(180, 0, 1, 0);
 
         GLS::glGetTransposeInverseRotationMatrix(rot_inv);
         GLS::glGetInverseTranslationMatrix(pos_inv);
         // Compose Camera Matrix from inverse components
-        glLoadIdentity();
-        glMultMatrixf(rot_inv);
-        glRotatef(grand() * jerk, 1, 0, 0);
-        glRotatef(grand() * jerk, 0, 1, 0);
-        glRotatef(grand() * jerk, 0, 0, 1);
-        glMultMatrixf(pos_inv);
-        glTranslatef(grand() * shake, grand() * shake, grand() * shake);
-        glGetFloatv(GL_MODELVIEW_MATRIX, cam);
+        GL::glLoadIdentity();
+        GL::glMultMatrixf(rot_inv);
+        GL::glRotatef(grand() * jerk, 1, 0, 0);
+        GL::glRotatef(grand() * jerk, 0, 1, 0);
+        GL::glRotatef(grand() * jerk, 0, 0, 1);
+        GL::glMultMatrixf(pos_inv);
+        GL::glTranslatef(grand() * shake, grand() * shake, grand() * shake);
+        GL::glGetFloatv(GL_MODELVIEW_MATRIX, cam);
         //matrix_print(cam);
     }
-    glPopMatrix();
+    GL::glPopMatrix();
 
     int cs = abs(camerastate);
     if (cs == 1) { // 1st
-        glMultMatrixf(cam);
+        GL::glMultMatrixf(cam);
     } else if (cs == 2) { // 3rd
-        glTranslatef(0, 0, -5);
-        glRotatef(15, 1, 0, 0);
-        glMultMatrixf(cam);
+        GL::glTranslatef(0, 0, -5);
+        GL::glRotatef(15, 1, 0, 0);
+        GL::glMultMatrixf(cam);
     } else if (cs == 3) { // 3rd Far
-        glTranslatef(0, 0, -15);
-        glRotatef(15, 1, 0, 0);
-        glMultMatrixf(cam);
+        GL::glTranslatef(0, 0, -15);
+        GL::glRotatef(15, 1, 0, 0);
+        GL::glMultMatrixf(cam);
     } else if (cs == 4) { // Reverse 3rd Far
-        glTranslatef(0, 0, -15);
-        glRotatef(15, 1, 0, 0);
-        glRotatef(180, 0, 1, 0);
-        glMultMatrixf(cam);
+        GL::glTranslatef(0, 0, -15);
+        GL::glRotatef(15, 1, 0, 0);
+        GL::glRotatef(180, 0, 1, 0);
+        GL::glMultMatrixf(cam);
     } else if (cs == 5) { // Map Near
-        glTranslatef(0, 0, -50);
-        glRotatef(90, 1, 0, 0);
-        glMultMatrixf(pos_inv);
+        GL::glTranslatef(0, 0, -50);
+        GL::glRotatef(90, 1, 0, 0);
+        GL::glMultMatrixf(pos_inv);
     } else if (cs == 6) { // Map Far
-        glTranslatef(0, 0, -100);
-        glRotatef(90, 1, 0, 0);
-        glMultMatrixf(pos_inv);
+        GL::glTranslatef(0, 0, -100);
+        GL::glRotatef(90, 1, 0, 0);
+        GL::glMultMatrixf(pos_inv);
     } // if camerastate
 }
 

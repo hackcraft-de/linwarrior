@@ -223,11 +223,11 @@ void rWeaponExplosion::animate(float spf) {
 void rWeaponExplosion::drawSolid() {
     return; // !!
 
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
         GLS::glUseProgram_fglitcolor();
 
-        glColor4f(0.7, 0.7, 0.7, 1.0);
+        GL::glColor4f(0.7, 0.7, 0.7, 1.0);
 
         const float size = 0.8 * this->weaponScale;
         const float length = size * 0.4;
@@ -240,7 +240,7 @@ void rWeaponExplosion::drawSolid() {
         const float c3 = radius * cos(240 * PI_OVER_180);
 
         float m[16];
-        glGetFloatv(GL_MODELVIEW_MATRIX, m);
+        GL::glGetFloatv(GL_MODELVIEW_MATRIX, m);
 
         foreachNoInc(i, missileParticles) {
             Particle* s = *i++;
@@ -260,25 +260,25 @@ void rWeaponExplosion::drawSolid() {
             b[15] = 1;
             //matrix_print(b);
 
-            glPushMatrix();
+            GL::glPushMatrix();
             {
-                glTranslatef(s->pos[0], s->pos[1], s->pos[2]);
-                glMultMatrixf(b);
+                GL::glTranslatef(s->pos[0], s->pos[1], s->pos[2]);
+                GL::glMultMatrixf(b);
                 //glNormAxis();
-                glBegin(GL_TRIANGLE_FAN);
-                glNormal3f(0, 0, 1);
-                glVertex3f(0, 0, length);
-                glVertex3f(s1, c1, 0);
-                glVertex3f(s2, c2, 0);
-                glVertex3f(s3, c3, 0);
-                glVertex3f(s1, c1, 0);
-                glEnd();
+                GL::glBegin(GL_TRIANGLE_FAN);
+                GL::glNormal3f(0, 0, 1);
+                GL::glVertex3f(0, 0, length);
+                GL::glVertex3f(s1, c1, 0);
+                GL::glVertex3f(s2, c2, 0);
+                GL::glVertex3f(s3, c3, 0);
+                GL::glVertex3f(s1, c1, 0);
+                GL::glEnd();
             }
-            glPopMatrix();
+            GL::glPopMatrix();
         }
 
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 }
 
 void rWeaponExplosion::drawEffect() {
@@ -286,13 +286,13 @@ void rWeaponExplosion::drawEffect() {
 
 #if 0
     // Experiment with hardware Point-Sprites
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
         GLS::glUseProgram_fgaddtexture();
-        glBindTexture(GL_TEXTURE_2D, sTextures[0]);
+        GL::glBindTexture(GL_TEXTURE_2D, sTextures[0]);
         /*
-        glTexEnvf(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
-        glEnable(GL_POINT_SPRITE);
+        GL::glTexEnvf(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
+        GL::glEnable(GL_POINT_SPRITE);
         glPointSize(90.0f);
          */
 
@@ -301,18 +301,18 @@ void rWeaponExplosion::drawEffect() {
         float quadratic[] = {1.0f, 0.0f, 0.0f};
         glPointParameterfvARB(GL_POINT_DISTANCE_ATTENUATION_ARB, quadratic);
         float maxSize = 0.0f;
-        glGetFloatv(GL_POINT_SIZE_MAX_ARB, &maxSize);
+        GL::glGetFloatv(GL_POINT_SIZE_MAX_ARB, &maxSize);
         glPointSize(maxSize);
         logger->trace() << maxSize << "\n";
         glPointParameterfARB(GL_POINT_SIZE_MAX_ARB, maxSize);
         glPointParameterfARB(GL_POINT_SIZE_MIN_ARB, 1.0f);
         glPointParameterfARB(GL_POINT_FADE_THRESHOLD_SIZE_ARB, 50.0f);
-        glTexEnvf(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE);
-        glEnable(GL_POINT_SPRITE_ARB);
+        GL::glTexEnvf(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE);
+        GL::glEnable(GL_POINT_SPRITE_ARB);
 
         /*
-        glEnable(GL_POINT_SPRITE_NV);
-        glTexEnvf(GL_POINT_SPRITE_NV,GL_COORD_REPLACE_NV,GL_TRUE);
+        GL::glEnable(GL_POINT_SPRITE_NV);
+        GL::glTexEnvf(GL_POINT_SPRITE_NV,GL_COORD_REPLACE_NV,GL_TRUE);
         //glPointParameterf(GL_POINT_SPRITE_R_MODE_NV,GL_ZERO);
         glPointSize(100.0);
          */
@@ -322,24 +322,24 @@ void rWeaponExplosion::drawEffect() {
         foreachNoInc(i, missileParticles) {
             Particle* s = *i++;
 
-            glBegin(GL_POINTS);
+            GL::glBegin(GL_POINTS);
 
             foreachNoInc(j, s->trail) {
                 Particle* smoke = *j++;
                 float m = (0.0f + 0.7 * smoke->fuel);
                 float a = 1.0f; //fmin(1.0f, smoke->fuel);
-                glColor4f(a*m, a * m * 0.8, a * m * 0.6, 0.9);
-                glVertex3f(smoke->pos[0], smoke->pos[1], smoke->pos[2]);
+                GL::glColor4f(a*m, a * m * 0.8, a * m * 0.6, 0.9);
+                GL::glVertex3f(smoke->pos[0], smoke->pos[1], smoke->pos[2]);
             }
-            glEnd();
+            GL::glEnd();
         }
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 
     return;
 #endif
 
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
         GLS::glUseProgram_fgaddtexture();
 
@@ -348,50 +348,50 @@ void rWeaponExplosion::drawEffect() {
 
         // Draw Missile's trails.
 
-        glBindTexture(GL_TEXTURE_2D, sTextures[0]);
+        GL::glBindTexture(GL_TEXTURE_2D, sTextures[0]);
 
         foreachNoInc(i, missileParticles) {
             Particle* s = *i++;
 
             foreachNoInc(j, s->trail) {
                 Particle* smoke = *j++;
-                glPushMatrix();
+                GL::glPushMatrix();
                 {
-                    glTranslatef(smoke->pos[0], smoke->pos[1], smoke->pos[2]);
-                    glMultMatrixf(n);
+                    GL::glTranslatef(smoke->pos[0], smoke->pos[1], smoke->pos[2]);
+                    GL::glMultMatrixf(n);
                     float m = (0.0f + 0.7 * smoke->fuel);
                     float a = 1.0f; //fmin(1.0f, smoke->fuel);
-                    glColor4f(a*m, a * m * 0.8, a * m * 0.6, 0.1);
+                    GL::glColor4f(a*m, a * m * 0.8, a * m * 0.6, 0.1);
                     //float size = 0.1 + 0.3 * pow(1.0 + smoke->timer, 3.5);
                     //float size = 5.0f / (1.0f + 1.0f * smoke->fuel);
                     float size = 3.0f + 5.0f / (1.0f + 9.0f * smoke->fuel);
                     Primitive::glXYCenteredTextureSquare(size);
                 }
-                glPopMatrix();
+                GL::glPopMatrix();
             }
         }
 
         GLS::glUseProgram_fgplaintexture();
-        glDisable(GL_CULL_FACE);
-        //glEnable(GL_ALPHA_TEST);
+        GL::glDisable(GL_CULL_FACE);
+        //GL::glEnable(GL_ALPHA_TEST);
 
         foreachNoInc(i, castoffParticles) {
             Particle* smoke = *i++;
-            glPushMatrix();
+            GL::glPushMatrix();
             {
-                glTranslatef(smoke->pos[0], smoke->pos[1], smoke->pos[2]);
-                glMultMatrixf(n);
+                GL::glTranslatef(smoke->pos[0], smoke->pos[1], smoke->pos[2]);
+                GL::glMultMatrixf(n);
                 float total = smoke->fuel + smoke->timer;
                 float alpha = smoke->fuel / total;
                 float beta = 1.0f - alpha;
                 float grey = fmax(alpha, beta) * 0.7;
-                glColor4f(grey, grey, grey, 0.5 + cos(0.5 * M_PI * alpha));
+                GL::glColor4f(grey, grey, grey, 0.5 + cos(0.5 * M_PI * alpha));
                 float size = 0.5f + 1.5f * (smoke->timer / total);
                 Primitive::glXYCenteredTextureSquare(size);
             }
-            glPopMatrix();
+            GL::glPopMatrix();
         }
 
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 }

@@ -718,22 +718,22 @@ void cMech::drawSolid() {
             float s = mobile->jetthrottle;
             float a[] = {0.0f, 0.0f, 0.0f, 1.0f};
             float d[] = {0.9f * s, 0.9f * s, 0.4f * s, 1.0f};
-            //glPushMatrix();
+            //GL::glPushMatrix();
             {
-                //glLoadIdentity();
-                //glTranslatef(traceable->pos[0], traceable->pos[1]+1, traceable->pos[2]);
+                //GL::glLoadIdentity();
+                //GL::glTranslatef(traceable->pos[0], traceable->pos[1]+1, traceable->pos[2]);
                 //glLightfv(light, GL_POSITION, zero);
-                glLightfv(light, GL_POSITION, p);
-                glLightfv(light, GL_AMBIENT, a);
-                glLightfv(light, GL_DIFFUSE, d);
-                glLightf(light, GL_CONSTANT_ATTENUATION, 1.0);
-                glLightf(light, GL_LINEAR_ATTENUATION, 0.001);
-                glLightf(light, GL_QUADRATIC_ATTENUATION, 0.005);
-                glEnable(light);
+                GL::glLightfv(light, GL_POSITION, p);
+                GL::glLightfv(light, GL_AMBIENT, a);
+                GL::glLightfv(light, GL_DIFFUSE, d);
+                GL::glLightf(light, GL_CONSTANT_ATTENUATION, 1.0);
+                GL::glLightf(light, GL_LINEAR_ATTENUATION, 0.001);
+                GL::glLightf(light, GL_QUADRATIC_ATTENUATION, 0.005);
+                GL::glEnable(light);
             }
-            //glPopMatrix();
+            //GL::glPopMatrix();
         } else {
-            glDisable(light);
+            GL::glDisable(light);
         }
     }
 }
@@ -743,17 +743,17 @@ void cMech::drawEffect() {
 }
 
 void cMech::drawHUD() {
-    glPushAttrib(GL_ALL_ATTRIB_BITS /* more secure */);
+    GL::glPushAttrib(GL_ALL_ATTRIB_BITS /* more secure */);
     {
         GLS::glUseProgram_bkplaincolor();
-        glDisable(GL_CULL_FACE);
-        glLineWidth(2);
+        GL::glDisable(GL_CULL_FACE);
+        GL::glLineWidth(2);
 
         GLS::glPushOrthoProjection();
         {
-            glPushMatrix();
+            GL::glPushMatrix();
             {
-                glLoadIdentity();
+                GL::glLoadIdentity();
 
                 float bk[] = {0.0, 0.2, 0.3, 0.2};
                 //float bk[] = {0, 0, 0, 0.0};
@@ -773,35 +773,35 @@ void cMech::drawHUD() {
 
                     loopi(5) {
                         if (displays[j][i] == NULL) continue;
-                        glPushMatrix();
+                        GL::glPushMatrix();
                         {
-                            glScalef(sx, sy, 1);
-                            glTranslatef(i, 3 - j, 0);
-                            glColor4fv(bk);
+                            GL::glScalef(sx, sy, 1);
+                            GL::glTranslatef(i, 3 - j, 0);
+                            GL::glColor4fv(bk);
                             displays[j][i]->drawHUD();
                         }
-                        glPopMatrix();
+                        GL::glPopMatrix();
                     }
                 }
 
                 if (true) {
-                    glPushMatrix();
+                    GL::glPushMatrix();
                     {
-                        glTranslatef(0.25, 0.25, 0);
-                        glScalef(0.5, 0.5, 1);
-                        glTranslatef(0, 0, 0);
-                        glColor4fv(bk);
+                        GL::glTranslatef(0.25, 0.25, 0);
+                        GL::glScalef(0.5, 0.5, 1);
+                        GL::glTranslatef(0, 0, 0);
+                        GL::glColor4fv(bk);
                         forcom->drawHUD();
                     }
-                    glPopMatrix();
+                    GL::glPopMatrix();
                 }
 
             }
-            glPopMatrix();
+            GL::glPopMatrix();
         }
         GLS::glPopProjection();
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 }
 
 void cMech::damage(float* localpos, float damage, Entity* enactor) {

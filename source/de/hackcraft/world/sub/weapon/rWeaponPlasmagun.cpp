@@ -96,81 +96,81 @@ void rWeaponPlasmagun::animate(float spf) {
 
 void rWeaponPlasmagun::drawSolid() {
     if (drawWeapon) {
-        glPushAttrib(GL_ALL_ATTRIB_BITS);
+        GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
             GLS::glUseProgram_fglitcolor();
 
-            glPushMatrix();
+            GL::glPushMatrix();
             {
                 transformTo();
-                glRotatef(-90, 1, 0, 0);
+                GL::glRotatef(-90, 1, 0, 0);
 
                 // Scale
                 float scale = weaponScale;
-                glScalef(scale, scale, scale);
+                GL::glScalef(scale, scale, scale);
                 float seconds = 0;
                 if (object) seconds = object->seconds;
 
                 if (this->ready() == 0 && remainingAmmo != 0) {
-                    glColor4f(0.2, 0.2, 0.3, 1);
-                    glPushMatrix();
+                    GL::glColor4f(0.2, 0.2, 0.3, 1);
+                    GL::glPushMatrix();
                     {
-                        glScalef(0.02, 0.02, 0.02);
-                        glTranslatef(0, (0.5 + 0.5 * sin(seconds * 2 * M_PI))* 1.7 / 0.02, 0);
-                        glRotatef(seconds * 2 * 360, 1, 3, 7);
+                        GL::glScalef(0.02, 0.02, 0.02);
+                        GL::glTranslatef(0, (0.5 + 0.5 * sin(seconds * 2 * M_PI))* 1.7 / 0.02, 0);
+                        GL::glRotatef(seconds * 2 * 360, 1, 3, 7);
                         Primitive::glUnitBlock();
                     }
-                    glPopMatrix();
-                    glColor4f(0.2, 0.3, 0.2, 1);
-                    glPushMatrix();
+                    GL::glPopMatrix();
+                    GL::glColor4f(0.2, 0.3, 0.2, 1);
+                    GL::glPushMatrix();
                     {
-                        glScalef(0.02, 0.02, 0.02);
-                        glTranslatef(0, (0.5 + 0.5 * cos(seconds * 2 * M_PI))* 1.7 / 0.02, 0);
-                        glRotatef(seconds * 2 * 360, 1, 3, 7);
+                        GL::glScalef(0.02, 0.02, 0.02);
+                        GL::glTranslatef(0, (0.5 + 0.5 * cos(seconds * 2 * M_PI))* 1.7 / 0.02, 0);
+                        GL::glRotatef(seconds * 2 * 360, 1, 3, 7);
                         Primitive::glUnitBlock();
                     }
-                    glPopMatrix();
-                    glColor4f(0.3, 0.2, 0.2, 1);
-                    glPushMatrix();
+                    GL::glPopMatrix();
+                    GL::glColor4f(0.3, 0.2, 0.2, 1);
+                    GL::glPushMatrix();
                     {
-                        glScalef(0.02, 0.02, 0.02);
-                        glTranslatef(0, (0.5 - 0.5 * sin(seconds * 2 * M_PI))* 1.7 / 0.02, 0);
-                        glRotatef(seconds * 2 * 360, 1, 3, 7);
+                        GL::glScalef(0.02, 0.02, 0.02);
+                        GL::glTranslatef(0, (0.5 - 0.5 * sin(seconds * 2 * M_PI))* 1.7 / 0.02, 0);
+                        GL::glRotatef(seconds * 2 * 360, 1, 3, 7);
                         Primitive::glUnitBlock();
                     }
-                    glPopMatrix();
+                    GL::glPopMatrix();
                 }
 
-                glColor4f(0.2, 0.2, 0.3, 1.0);
-                glPushMatrix();
+                GL::glColor4f(0.2, 0.2, 0.3, 1.0);
+                GL::glPushMatrix();
                 {
-                    glScalef(0.1, 0.14, 0.12);
+                    GL::glScalef(0.1, 0.14, 0.12);
                     Primitive::glCenterUnitBlock();
                 }
-                glPopMatrix();
+                GL::glPopMatrix();
 
-                glColor4f(0.1, 0.1, 0.1, 1.0);
-                glPushMatrix();
+                GL::glColor4f(0.1, 0.1, 0.1, 1.0);
+                GL::glPushMatrix();
                 {
-                    glTranslatef(0.0, 0.8, 0);
-                    glScalef(0.03, 0.8, 0.03);
-                    glTranslatef(2.0, 0, 0);
+                    GL::glTranslatef(0.0, 0.8, 0);
+                    GL::glScalef(0.03, 0.8, 0.03);
+                    GL::glTranslatef(2.0, 0, 0);
                     Primitive::glCenterUnitCylinder(7);
-                    glTranslatef(-4.0, 0, 0);
+                    GL::glTranslatef(-4.0, 0, 0);
                     Primitive::glCenterUnitCylinder(7);
                 }
-                glPopMatrix();
+                GL::glPopMatrix();
             }
-            glPopMatrix();
+            GL::glPopMatrix();
         }
-        glPopAttrib();
+        GL::glPopAttrib();
     }
 }
 
 void rWeaponPlasmagun::drawEffect() {
     if (shrapnelParticles.empty()) return;
 
-    glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_ALL_ATTRIB_BITS);
+    GL::glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_ALL_ATTRIB_BITS);
     {
         GLS::glUseProgram_fgaddcolor();
 
@@ -179,20 +179,20 @@ void rWeaponPlasmagun::drawEffect() {
 
         foreachNoInc(i, shrapnelParticles) {
             Particle* s = *i++;
-            glPushMatrix();
+            GL::glPushMatrix();
             {
-                glTranslatef(s->pos[0], s->pos[1], s->pos[2]);
-                glMultMatrixf(n);
-                glColor4f(0.1, 0.1, 0.6, 0.99f);
+                GL::glTranslatef(s->pos[0], s->pos[1], s->pos[2]);
+                GL::glMultMatrixf(n);
+                GL::glColor4f(0.1, 0.1, 0.6, 0.99f);
                 Primitive::glDisk(9, 1.9 * 0.1f);
-                glColor4f(0.8, 0.8, 0.1, 0.6f);
+                GL::glColor4f(0.8, 0.8, 0.1, 0.6f);
                 Primitive::glDisk(7, 1.9 * 0.07f);
             }
-            glPopMatrix();
+            GL::glPopMatrix();
         }
 
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 }
 
 void rWeaponPlasmagun::drawHUD() {
@@ -203,33 +203,33 @@ void rWeaponPlasmagun::drawHUD() {
     float i = 0.1;
     float j = 0.9;
     float r = i + (remainingAmmo / (float) clipSize) * (j - i);
-    glBegin(GL_QUADS);
-    glColor4f(1, 1, 0, b);
-    glVertex3f(i, j, 0.0);
-    glVertex3f(i, i, 0.0);
-    glColor4f(1, 0, 0, b);
-    glVertex3f(r, i, 0.0);
-    glVertex3f(r, j, 0.0);
-    glEnd();
+    GL::glBegin(GL_QUADS);
+    GL::glColor4f(1, 1, 0, b);
+    GL::glVertex3f(i, j, 0.0);
+    GL::glVertex3f(i, i, 0.0);
+    GL::glColor4f(1, 0, 0, b);
+    GL::glVertex3f(r, i, 0.0);
+    GL::glVertex3f(r, j, 0.0);
+    GL::glEnd();
 
     // Clips
     float l = 0.1;
     float h = 0.15;
     r = i + (remainingClips / (float) depotSize) * (j - i);
-    glBegin(GL_QUADS);
-    glColor4f(0, 0, 0, a);
-    glVertex3f(l, i + h, 0.0);
-    glVertex3f(l, i, 0.0);
-    glColor4f(1, 1, 1, a);
-    glVertex3f(r, i, 0.0);
-    glVertex3f(r, i + h, 0.0);
-    glEnd();
+    GL::glBegin(GL_QUADS);
+    GL::glColor4f(0, 0, 0, a);
+    GL::glVertex3f(l, i + h, 0.0);
+    GL::glVertex3f(l, i, 0.0);
+    GL::glColor4f(1, 1, 1, a);
+    GL::glVertex3f(r, i, 0.0);
+    GL::glVertex3f(r, i + h, 0.0);
+    GL::glEnd();
 
-    glBegin(GL_LINES);
-    glColor4f(0, 0, 1, b);
-    glVertex3f(0.25, 0.5, 0.0);
-    glColor4f(1, 1, 1, a);
-    glVertex3f(0.75, 0.5, 0.0);
-    glEnd();
+    GL::glBegin(GL_LINES);
+    GL::glColor4f(0, 0, 1, b);
+    GL::glVertex3f(0.25, 0.5, 0.0);
+    GL::glColor4f(1, 1, 1, a);
+    GL::glVertex3f(0.75, 0.5, 0.0);
+    GL::glEnd();
 }
 

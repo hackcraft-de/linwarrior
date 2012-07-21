@@ -119,6 +119,14 @@
             <in>LoggerEvent.cpp</in>
             <in>LoggerEvent.h</in>
           </df>
+          <df name="openal">
+          </df>
+          <df name="opengl">
+            <in>GL.cpp</in>
+            <in>GL.h</in>
+            <in>GLU.cpp</in>
+            <in>GLU.h</in>
+          </df>
           <df name="proc">
             <in>Ambient.cpp</in>
             <in>Ambient.h</in>
@@ -155,6 +163,14 @@
             <in>Propmap.h</in>
             <in>Timing.cpp</in>
             <in>Timing.h</in>
+          </df>
+          <df name="widget">
+            <in>Border.cpp</in>
+            <in>Border.h</in>
+            <in>Layout.cpp</in>
+            <in>Layout.h</in>
+            <in>Widget.cpp</in>
+            <in>Widget.h</in>
           </df>
           <df name="world">
             <df name="object">

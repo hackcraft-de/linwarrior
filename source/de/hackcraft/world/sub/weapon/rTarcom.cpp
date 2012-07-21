@@ -127,54 +127,54 @@ void rTarcom::animate(float spf) {
 void rTarcom::drawHUD() {
     if (!active) return;
 
-    //glColor4f(0,0.1,0,0.2);
-    glBegin(GL_QUADS);
-    glVertex3f(1, 1, 0);
-    glVertex3f(0, 1, 0);
-    glVertex3f(0, 0, 0);
-    glVertex3f(1, 0, 0);
-    glEnd();
-    glPushMatrix();
+    //GL::glColor4f(0,0.1,0,0.2);
+    GL::glBegin(GL_QUADS);
+    GL::glVertex3f(1, 1, 0);
+    GL::glVertex3f(0, 1, 0);
+    GL::glVertex3f(0, 0, 0);
+    GL::glVertex3f(1, 0, 0);
+    GL::glEnd();
+    GL::glPushMatrix();
     {
-        glScalef(0.5, 0.5, 1);
-        glTranslatef(1, 1, 0);
-        glColor4f(0.8, 0.8, 0.8, 0.5);
-        glBegin(GL_LINE_STRIP);
-        glVertex3f(-0.7, +0.7, 0);
-        glVertex3f(+0.0, +0.0, 0);
-        glVertex3f(+0.7, +0.7, 0);
-        glEnd();
-        glColor4f(0.0, 0.4, 0.0, 0.5);
+        GL::glScalef(0.5, 0.5, 1);
+        GL::glTranslatef(1, 1, 0);
+        GL::glColor4f(0.8, 0.8, 0.8, 0.5);
+        GL::glBegin(GL_LINE_STRIP);
+        GL::glVertex3f(-0.7, +0.7, 0);
+        GL::glVertex3f(+0.0, +0.0, 0);
+        GL::glVertex3f(+0.7, +0.7, 0);
+        GL::glEnd();
+        GL::glColor4f(0.0, 0.4, 0.0, 0.5);
         Primitive::glDisk(16, 1.0f);
         const float r2 = 0.7;
-        glColor4f(0.0, 0.6, 0.0, 0.5);
-        glScalef(r2, r2, 1);
+        GL::glColor4f(0.0, 0.6, 0.0, 0.5);
+        GL::glScalef(r2, r2, 1);
         Primitive::glDisk(16, 1.0f);
-        glScalef(1.0 / r2, 1.0 / r2, 1);
+        GL::glScalef(1.0 / r2, 1.0 / r2, 1);
         quat ori_;
         quat_cpy(ori_, ori0);
         quat_conj(ori_);
-        glRotatef(90, 1, 0, 0);
+        GL::glRotatef(90, 1, 0, 0);
         GLS::glRotateq(ori_);
-        glRotatef(-90, 1, 0, 0);
-        glPointSize(3);
-        glBegin(GL_POINTS);
+        GL::glRotatef(-90, 1, 0, 0);
+        GL::glPointSize(3);
+        GL::glBegin(GL_POINTS);
         {
-            glColor4f(1, 1, 1, 1);
-            glVertex3f(0, 0, 0);
+            GL::glColor4f(1, 1, 1, 1);
+            GL::glVertex3f(0, 0, 0);
         }
-        glEnd();
+        GL::glEnd();
 
         for(rTarget* o: *farTargets) {
-            glBegin(GL_POINTS);
+            GL::glBegin(GL_POINTS);
             {
-                glColor4f(0.5, 0.5, 0.5, 1);
-                if (o->hasTag(World::getInstance()->getGroup(FAC_RED))) glColor4f(1, 0, 0, 1);
-                else if (o->hasTag(World::getInstance()->getGroup(FAC_GREEN))) glColor4f(0, 1, 0, 1);
-                else if (o->hasTag(World::getInstance()->getGroup(FAC_BLUE))) glColor4f(0, 0, 1, 1);
-                else if (o->hasTag(World::getInstance()->getGroup(FAC_YELLOW))) glColor4f(0, 1, 0, 1);
+                GL::glColor4f(0.5, 0.5, 0.5, 1);
+                if (o->hasTag(World::getInstance()->getGroup(FAC_RED))) GL::glColor4f(1, 0, 0, 1);
+                else if (o->hasTag(World::getInstance()->getGroup(FAC_GREEN))) GL::glColor4f(0, 1, 0, 1);
+                else if (o->hasTag(World::getInstance()->getGroup(FAC_BLUE))) GL::glColor4f(0, 0, 1, 1);
+                else if (o->hasTag(World::getInstance()->getGroup(FAC_YELLOW))) GL::glColor4f(0, 1, 0, 1);
                 assert(o->object != NULL);
-                if (o->object->oid == selected) glColor4f(1, 0, 1, 1);
+                if (o->object->oid == selected) GL::glColor4f(1, 0, 1, 1);
                 float dx = o->pos0[0] - pos0[0];
                 float dz = o->pos0[2] - pos0[2];
                 float r = sqrtf(dx * dx + dz * dz);
@@ -182,18 +182,18 @@ void rTarcom::drawHUD() {
                 dz /= r;
                 float f = 0.01 * r;
                 if (f < r2) {
-                    glVertex3f(f * dx, -f * dz, 0);
+                    GL::glVertex3f(f * dx, -f * dz, 0);
                 } else {
                     float r3 = r2 + (1.1 - r2) * log(1 + (f - r2));
                     if (r3 < 1.0) {
-                        glVertex3f(r3 * dx, -r3 * dz, 0);
+                        GL::glVertex3f(r3 * dx, -r3 * dz, 0);
                     }
                 }
             }
-            glEnd();
+            GL::glEnd();
         }
     }
-    glPopMatrix();
+    GL::glPopMatrix();
 }
 
 bool rTarcom::isAllied(std::set<OID>* tags) {

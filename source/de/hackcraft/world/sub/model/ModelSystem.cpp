@@ -2,6 +2,8 @@
 
 #include "de/hackcraft/log/Logger.h"
 
+#include "de/hackcraft/opengl/GL.h"
+
 #include "de/hackcraft/world/World.h"
 
 #include <cassert>
@@ -60,9 +62,9 @@ void ModelSystem::transformObjects() {
     //cout << "transformObjects()\n";
 
     for (IModel* model: models) {
-        glPushMatrix();
+        GL::glPushMatrix();
         model->transform();
-        glPopMatrix();
+        GL::glPopMatrix();
     }
 }
 
@@ -105,11 +107,11 @@ void ModelSystem::drawSolid() {
         
         if (d2 > maxrange2) continue;
         
-        glPushMatrix();
+        GL::glPushMatrix();
         {
             model->drawSolid();
         }
-        glPopMatrix();
+        GL::glPopMatrix();
     }
 }
 
@@ -129,11 +131,11 @@ void ModelSystem::drawEffect() {
         
         if (d2 > maxrange2) continue;
         
-        glPushMatrix();
+        GL::glPushMatrix();
         {
             model->drawEffect();
         }
-        glPopMatrix();
+        GL::glPopMatrix();
     }
 }
 

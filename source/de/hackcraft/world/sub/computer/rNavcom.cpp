@@ -49,15 +49,15 @@ rNavcom::rNavcom(Entity* obj) {
 }
 
 void rNavcom::drawPOI(float x, float y, float s) {
-    glBegin(GL_LINE_STRIP);
+    GL::glBegin(GL_LINE_STRIP);
     {
-        glVertex3f(x, y - s, 0);
-        glVertex3f(x + s, y, 0);
-        glVertex3f(x, y + s, 0);
-        glVertex3f(x - s, y, 0);
-        glVertex3f(x, y - s, 0);
+        GL::glVertex3f(x, y - s, 0);
+        GL::glVertex3f(x + s, y, 0);
+        GL::glVertex3f(x, y + s, 0);
+        GL::glVertex3f(x - s, y, 0);
+        GL::glVertex3f(x, y - s, 0);
     }
-    glEnd();
+    GL::glEnd();
 }
 
 void rNavcom::animate(float spf) {
@@ -66,23 +66,23 @@ void rNavcom::animate(float spf) {
 void rNavcom::drawHUD() {
     if (!active) return;
 
-    glBegin(GL_QUADS);
-    glVertex3f(1, 1, 0);
-    glVertex3f(0, 1, 0);
-    glVertex3f(0, 0, 0);
-    glVertex3f(1, 0, 0);
-    glEnd();
+    GL::glBegin(GL_QUADS);
+    GL::glVertex3f(1, 1, 0);
+    GL::glVertex3f(0, 1, 0);
+    GL::glVertex3f(0, 0, 0);
+    GL::glVertex3f(1, 0, 0);
+    GL::glEnd();
     float x = pos0[0];
     float z = pos0[2];
     float s = 0.005;
 
-    glPushMatrix();
+    GL::glPushMatrix();
     {
-        glScalef(0.5, 0.5, 1);
-        glTranslatef(1, 1, 0);
+        GL::glScalef(0.5, 0.5, 1);
+        GL::glTranslatef(1, 1, 0);
 
         // Draw all points of interrest (debug).
-        glColor4f(0.6, 0.6, 0.6, 0.7);
+        GL::glColor4f(0.6, 0.6, 0.6, 0.7);
 
         for (std::vector<float>& poi: mPOIs) {
             float u = s * (poi[0] - x);
@@ -91,20 +91,20 @@ void rNavcom::drawHUD() {
         }
 
         // Draw Route lines with gradient towards current waypoint.
-        glBegin(GL_LINE_STRIP);
+        GL::glBegin(GL_LINE_STRIP);
 
         int i = 0;
         for (int route: mRoute) {
-            if (i++ != mWaypoint) glColor4f(0.6, 0.6, 0.6, 0.7);
-            else glColor4f(1, 0, 0, 0.7);
+            if (i++ != mWaypoint) GL::glColor4f(0.6, 0.6, 0.6, 0.7);
+            else GL::glColor4f(1, 0, 0, 0.7);
             float u = s * (mPOIs[route][0] - x);
             float v = s * (mPOIs[route][2] - z);
-            glVertex3f(+u, -v, 0);
+            GL::glVertex3f(+u, -v, 0);
         }
-        glEnd();
+        GL::glEnd();
 
         // Mark next waypoint and check if reached.
-        glColor4f(1, 0, 0, 0.3);
+        GL::glColor4f(1, 0, 0, 0.3);
 
         i = 0;
         for (int route: mRoute) {
@@ -126,48 +126,48 @@ void rNavcom::drawHUD() {
         {
             quat ori_;
             quat_cpy(ori_, ori0);
-            glRotatef(90, 1, 0, 0);
+            GL::glRotatef(90, 1, 0, 0);
             GLS::glRotateq(ori_);
-            glRotatef(-90, 1, 0, 0);
-            glColor4f(0.9, 0.9, 0.9, 0.9);
-            glBegin(GL_LINE_STRIP);
-            glVertex3f(-0.07, -0.2, 0);
-            glVertex3f(+0.0, +0.0, 0);
-            glVertex3f(+0.07, -0.2, 0);
-            glEnd();
+            GL::glRotatef(-90, 1, 0, 0);
+            GL::glColor4f(0.9, 0.9, 0.9, 0.9);
+            GL::glBegin(GL_LINE_STRIP);
+            GL::glVertex3f(-0.07, -0.2, 0);
+            GL::glVertex3f(+0.0, +0.0, 0);
+            GL::glVertex3f(+0.07, -0.2, 0);
+            GL::glEnd();
         }
 
     }
-    glPopMatrix();
+    GL::glPopMatrix();
 
     // Overlay information text: time, date, direction, location.
-    glPushMatrix();
+    GL::glPushMatrix();
     {
         World* world = World::getInstance();
 
-        glColor4f(0.99, 0.99, 0.19, 1);
-        glTranslatef(0, 1, 0);
-        glScalef(1.0f / 20.0f, 1.0f / 10.0f, 1.0f);
-        glColor4f(0.09, 0.99, 0.09, 1);
+        GL::glColor4f(0.99, 0.99, 0.19, 1);
+        GL::glTranslatef(0, 1, 0);
+        GL::glScalef(1.0f / 20.0f, 1.0f / 10.0f, 1.0f);
+        GL::glColor4f(0.09, 0.99, 0.09, 1);
 
-        glTranslatef(0, -0, 0);
+        GL::glTranslatef(0, -0, 0);
         int x = int(pos0[0]);
         int z = int(pos0[2]);
         GLF::glprintf("Merc: %06i %06i", x, z);
 
-        glTranslatef(0, -1, 0);
+        GL::glTranslatef(0, -1, 0);
         GLF::glprintf("Alt: %3.2f", (pos0[1]));
 
-        glTranslatef(0, -1, 0);
+        GL::glTranslatef(0, -1, 0);
         float angle = atan2(ori0[1], ori0[3]);
         GLF::glprintf("MKS: %2i", int(64 - angle * 64 / M_PI) % 64);
         
-        glTranslatef(0, -6, 0);
+        GL::glTranslatef(0, -6, 0);
         GLF::glprintf("Date: %s", world->getTiming()->getDate().c_str());
 
-        glTranslatef(0, -1, 0);
+        GL::glTranslatef(0, -1, 0);
         GLF::glprintf("Time: %s", world->getTiming()->getTime().c_str());
     }
-    glPopMatrix();
+    GL::glPopMatrix();
 }
 

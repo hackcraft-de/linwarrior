@@ -5,7 +5,7 @@
 #include "de/hackcraft/psi3d/Primitive.h"
 #include "de/hackcraft/psi3d/Particle.h"
 
-#include <GL/glew.h>
+#include "de/hackcraft/opengl/GL.h"
 
 std::string rCollider::cname = "COLLIDER";
 unsigned int rCollider::cid = 4109;
@@ -60,12 +60,12 @@ void rCollider::animate(float spf) {
 void rCollider::drawEffect() {
     return; // !!
 
-    glPushMatrix();
+    GL::glPushMatrix();
     {
-        glTranslatef(pos0[0], pos0[1], pos0[2]);
+        GL::glTranslatef(pos0[0], pos0[1], pos0[2]);
         GLS::glRotateq(ori0);
 
-        glPushAttrib(GL_ALL_ATTRIB_BITS);
+        GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
             GLS::glUseProgram_fgplaincolor();
 
@@ -81,47 +81,47 @@ void rCollider::drawEffect() {
                 const int n = 12;
                 const float a_inc = M_PI * 2.0 / (double) n;
                 // XZ-Bottom-Plane
-                glColor4fv(c1);
+                GL::glColor4fv(c1);
                 a = 0;
-                glBegin(GL_LINE_STRIP);
+                GL::glBegin(GL_LINE_STRIP);
 
                 loopi(n + 1) {
                     float rx = sin(a) * range[0];
                     float rz = cos(a) * range[2];
                     a += a_inc;
-                    glVertex3f(center[0] + rx, center[1] - range[1], center[2] + rz);
+                    GL::glVertex3f(center[0] + rx, center[1] - range[1], center[2] + rz);
                 }
-                glEnd();
+                GL::glEnd();
                 // XZ-Top-Plane
-                glColor4fv(c1);
+                GL::glColor4fv(c1);
                 a = 0;
-                glBegin(GL_LINE_STRIP);
+                GL::glBegin(GL_LINE_STRIP);
 
                 loopi(n + 1) {
                     float rx = sin(a) * range[0];
                     float rz = cos(a) * range[2];
                     a += a_inc;
-                    glVertex3f(center[0] + rx, center[1] + range[1], center[2] + rz);
+                    GL::glVertex3f(center[0] + rx, center[1] + range[1], center[2] + rz);
                 }
-                glEnd();
+                GL::glEnd();
                 // Sides
-                glColor4fv(c2);
+                GL::glColor4fv(c2);
                 a = 0;
-                glBegin(GL_LINES);
+                GL::glBegin(GL_LINES);
 
                 loopi(n) {
                     float rx = sin(a) * range[0];
                     float rz = cos(a) * range[2];
                     a += a_inc;
-                    glVertex3f(center[0] + rx, center[1] - range[1], center[2] + rz);
-                    glVertex3f(center[0] + rx, center[1] + range[1], center[2] + rz);
+                    GL::glVertex3f(center[0] + rx, center[1] - range[1], center[2] + rz);
+                    GL::glVertex3f(center[0] + rx, center[1] + range[1], center[2] + rz);
                 }
-                glEnd();
+                GL::glEnd();
                 //break;
             }
         }
-        glPopAttrib();
+        GL::glPopAttrib();
     }
-    glPopMatrix();
+    GL::glPopMatrix();
 }
 

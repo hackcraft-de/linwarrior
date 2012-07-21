@@ -461,7 +461,7 @@ bool BackgroundSystem::drawBack() {
 
     // Sample and set unlit base ambient haze color.
     rgba haze = {0, 0, 0, 0};
-    glFogfv(GL_FOG_COLOR, haze);
+    GL::glFogfv(GL_FOG_COLOR, haze);
     if (1) {
         unsigned char s = 131;
         int samples = 23;
@@ -497,32 +497,32 @@ bool BackgroundSystem::drawBack() {
         float s = sin(t) * 0.5f + 0.5f;
         float a[] = {0.25f * s * haze[0], 0.25f * s * haze[1], 0.25f * s * s * haze[2], 1.00f};
         float d[] = {0.90f * s + (1 - s)*0.00f, 0.90f * s + (1 - s)*0.00f, 0.40f * s + (1.00f - s)*0.20f, 1.00f};
-        glLightfv(GL_LIGHT0, GL_POSITION, p);
-        glLightfv(GL_LIGHT0, GL_AMBIENT, a);
-        glLightfv(GL_LIGHT0, GL_DIFFUSE, d);
-        //glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.0);
-        //glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.0001);
-        //glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.000001);
-        glEnable(GL_LIGHT0);
+        GL::glLightfv(GL_LIGHT0, GL_POSITION, p);
+        GL::glLightfv(GL_LIGHT0, GL_AMBIENT, a);
+        GL::glLightfv(GL_LIGHT0, GL_DIFFUSE, d);
+        //GL::glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.0);
+        //GL::glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.0001);
+        //GL::glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.000001);
+        GL::glEnable(GL_LIGHT0);
     }
 
     // Horizon fog.
     if (1) {
-        glFogfv(GL_FOG_COLOR, haze);
+        GL::glFogfv(GL_FOG_COLOR, haze);
         if (1) {
             float density = 0.008*1.1;
-            glFogi(GL_FOG_MODE, GL_EXP2);
-            glFogf(GL_FOG_DENSITY, density);
+            GL::glFogi(GL_FOG_MODE, GL_EXP2);
+            GL::glFogf(GL_FOG_DENSITY, density);
         } else {
-            glFogi(GL_FOG_MODE, GL_LINEAR);
-            glFogf(GL_FOG_START, 95.0f);
-            glFogf(GL_FOG_START, 0.0f);
-            glFogf(GL_FOG_END, 100.0f);
+            GL::glFogi(GL_FOG_MODE, GL_LINEAR);
+            GL::glFogf(GL_FOG_START, 95.0f);
+            GL::glFogf(GL_FOG_START, 0.0f);
+            GL::glFogf(GL_FOG_END, 100.0f);
         }
     }
 
-    GLint mode;
-    glGetIntegerv(GL_POLYGON_MODE, &mode);
+    GL::GLint mode;
+    GL::glGetIntegerv(GL_POLYGON_MODE, &mode);
     if (mode == GL_FILL) {
         drawGalaxy();
         drawOrbit();
@@ -547,137 +547,137 @@ bool BackgroundSystem::drawBack() {
 }
 
 void BackgroundSystem::drawGalaxy() {
-    glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_TEXTURE_BIT);
+    GL::glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_TEXTURE_BIT);
     {
         GLS::glUseProgram_bkplaintexture();
 
-        glColor4f(1, 1, 1, 1);
+        GL::glColor4f(1, 1, 1, 1);
 
-        glPushMatrix();
+        GL::glPushMatrix();
         {
             // Load current Camera Matrix and
             // set Position (4th Column) = 0.
             float m[16];
-            glGetFloatv(GL_MODELVIEW_MATRIX, m);
+            GL::glGetFloatv(GL_MODELVIEW_MATRIX, m);
             loop3i(m[12 + i] = 0);
-            glLoadIdentity();
-            glMultMatrixf(m);
-            glScalef(100, 100, 100);
+            GL::glLoadIdentity();
+            GL::glMultMatrixf(m);
+            GL::glScalef(100, 100, 100);
 
             float angle = 180 - ((360 / 24.00f) * hour + 90);
             // Sun travels: dawn 0600:East, 1200:South, dusk 1800:West (2400:North -> other side of the globe).
             // 0000/2400: 0 degree, 0600: 90 degree, 1200: 180 degree, 1800: 270 degree, ...
             // Moon is traveling about 180 degree behind/ahead.
             // Well, that is, if you're down-under then east, north, west (not east, south, west).
-            glRotatef(-90, 0, 1, 0);
-            //	glRotatef(45+7.5, 0, 0, 1); // Longitude? Aquator Angle Offset -> Germany. and for example Poland, GB and Canada.
-            glRotatef(55, 0, 0, 1);
-            glRotatef(0, 0, 0, 1); // Aquator.
+            GL::glRotatef(-90, 0, 1, 0);
+            //	GL::glRotatef(45+7.5, 0, 0, 1); // Longitude? Aquator Angle Offset -> Germany. and for example Poland, GB and Canada.
+            GL::glRotatef(55, 0, 0, 1);
+            GL::glRotatef(0, 0, 0, 1); // Aquator.
 
-            glRotatef(180 + angle, 1, 0, 0);
+            GL::glRotatef(180 + angle, 1, 0, 0);
 
             // NEG X
             if (1) {
-                glBindTexture(GL_TEXTURE_2D, textures[T_GALAXY_NEGX]);
-                glBegin(GL_QUADS);
-                glTexCoord2i(0, 0);
-                glVertex3f(-1, -1, -1);
-                glTexCoord2i(1, 0);
-                glVertex3f(-1, +1, -1);
-                glTexCoord2i(1, 1);
-                glVertex3f(-1, +1, +1);
-                glTexCoord2i(0, 1);
-                glVertex3f(-1, -1, +1);
-                glEnd();
+                GL::glBindTexture(GL_TEXTURE_2D, textures[T_GALAXY_NEGX]);
+                GL::glBegin(GL_QUADS);
+                GL::glTexCoord2i(0, 0);
+                GL::glVertex3f(-1, -1, -1);
+                GL::glTexCoord2i(1, 0);
+                GL::glVertex3f(-1, +1, -1);
+                GL::glTexCoord2i(1, 1);
+                GL::glVertex3f(-1, +1, +1);
+                GL::glTexCoord2i(0, 1);
+                GL::glVertex3f(-1, -1, +1);
+                GL::glEnd();
             }
             // POS X
-            glBindTexture(GL_TEXTURE_2D, textures[T_GALAXY_POSX]);
-            glBegin(GL_QUADS);
-            glTexCoord2i(1, 0);
-            glVertex3f(+1, +1, -1);
-            glTexCoord2i(0, 0);
-            glVertex3f(+1, -1, -1);
-            glTexCoord2i(0, 1);
-            glVertex3f(+1, -1, +1);
-            glTexCoord2i(1, 1);
-            glVertex3f(+1, +1, +1);
-            glEnd();
+            GL::glBindTexture(GL_TEXTURE_2D, textures[T_GALAXY_POSX]);
+            GL::glBegin(GL_QUADS);
+            GL::glTexCoord2i(1, 0);
+            GL::glVertex3f(+1, +1, -1);
+            GL::glTexCoord2i(0, 0);
+            GL::glVertex3f(+1, -1, -1);
+            GL::glTexCoord2i(0, 1);
+            GL::glVertex3f(+1, -1, +1);
+            GL::glTexCoord2i(1, 1);
+            GL::glVertex3f(+1, +1, +1);
+            GL::glEnd();
             // NEG Y
             if (1) {
-                glBindTexture(GL_TEXTURE_2D, textures[T_GALAXY_NEGY]);
-                glBegin(GL_QUADS);
-                glTexCoord2i(0, 0);
-                glVertex3f(-1, -1, -1);
-                glTexCoord2i(1, 0);
-                glVertex3f(-1, -1, +1);
-                glTexCoord2i(1, 1);
-                glVertex3f(+1, -1, +1);
-                glTexCoord2i(0, 1);
-                glVertex3f(+1, -1, -1);
-                glEnd();
+                GL::glBindTexture(GL_TEXTURE_2D, textures[T_GALAXY_NEGY]);
+                GL::glBegin(GL_QUADS);
+                GL::glTexCoord2i(0, 0);
+                GL::glVertex3f(-1, -1, -1);
+                GL::glTexCoord2i(1, 0);
+                GL::glVertex3f(-1, -1, +1);
+                GL::glTexCoord2i(1, 1);
+                GL::glVertex3f(+1, -1, +1);
+                GL::glTexCoord2i(0, 1);
+                GL::glVertex3f(+1, -1, -1);
+                GL::glEnd();
             }
             // POS Y
-            glBindTexture(GL_TEXTURE_2D, textures[T_GALAXY_POSY]);
-            glBegin(GL_QUADS);
-            glTexCoord2i(1, 0);
-            glVertex3f(-1, +1, +1);
-            glTexCoord2i(0, 0);
-            glVertex3f(-1, +1, -1);
-            glTexCoord2i(0, 1);
-            glVertex3f(+1, +1, -1);
-            glTexCoord2i(1, 1);
-            glVertex3f(+1, +1, +1);
-            glEnd();
+            GL::glBindTexture(GL_TEXTURE_2D, textures[T_GALAXY_POSY]);
+            GL::glBegin(GL_QUADS);
+            GL::glTexCoord2i(1, 0);
+            GL::glVertex3f(-1, +1, +1);
+            GL::glTexCoord2i(0, 0);
+            GL::glVertex3f(-1, +1, -1);
+            GL::glTexCoord2i(0, 1);
+            GL::glVertex3f(+1, +1, -1);
+            GL::glTexCoord2i(1, 1);
+            GL::glVertex3f(+1, +1, +1);
+            GL::glEnd();
             // NEG Z
             if (1) {
-                glBindTexture(GL_TEXTURE_2D, textures[T_GALAXY_NEGZ]);
-                glBegin(GL_QUADS);
-                glTexCoord2i(0, 0);
-                glVertex3f(-1, -1, -1);
-                glTexCoord2i(1, 0);
-                glVertex3f(+1, -1, -1);
-                glTexCoord2i(1, 1);
-                glVertex3f(+1, +1, -1);
-                glTexCoord2i(0, 1);
-                glVertex3f(-1, +1, -1);
-                glEnd();
+                GL::glBindTexture(GL_TEXTURE_2D, textures[T_GALAXY_NEGZ]);
+                GL::glBegin(GL_QUADS);
+                GL::glTexCoord2i(0, 0);
+                GL::glVertex3f(-1, -1, -1);
+                GL::glTexCoord2i(1, 0);
+                GL::glVertex3f(+1, -1, -1);
+                GL::glTexCoord2i(1, 1);
+                GL::glVertex3f(+1, +1, -1);
+                GL::glTexCoord2i(0, 1);
+                GL::glVertex3f(-1, +1, -1);
+                GL::glEnd();
             }
             // POS Z
-            glBindTexture(GL_TEXTURE_2D, textures[T_GALAXY_POSZ]);
-            glBegin(GL_QUADS);
-            glTexCoord2i(1, 0);
-            glVertex3f(+1, -1, +1);
-            glTexCoord2i(0, 0);
-            glVertex3f(-1, -1, +1);
-            glTexCoord2i(0, 1);
-            glVertex3f(-1, +1, +1);
-            glTexCoord2i(1, 1);
-            glVertex3f(+1, +1, +1);
-            glEnd();
+            GL::glBindTexture(GL_TEXTURE_2D, textures[T_GALAXY_POSZ]);
+            GL::glBegin(GL_QUADS);
+            GL::glTexCoord2i(1, 0);
+            GL::glVertex3f(+1, -1, +1);
+            GL::glTexCoord2i(0, 0);
+            GL::glVertex3f(-1, -1, +1);
+            GL::glTexCoord2i(0, 1);
+            GL::glVertex3f(-1, +1, +1);
+            GL::glTexCoord2i(1, 1);
+            GL::glVertex3f(+1, +1, +1);
+            GL::glEnd();
         }
-        glPopMatrix();
+        GL::glPopMatrix();
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 }
 
 void BackgroundSystem::drawUpperDome() {
-    glPushAttrib(GL_ALL_ATTRIB_BITS | GL_ENABLE_BIT | GL_CURRENT_BIT);
+    GL::glPushAttrib(GL_ALL_ATTRIB_BITS | GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
         GLS::glUseProgram_bkplaincolor();
 
         // Load current Camera Matrix and
         // set Position (4th Column) = 0.
         float m[16];
-        glGetFloatv(GL_MODELVIEW_MATRIX, m);
+        GL::glGetFloatv(GL_MODELVIEW_MATRIX, m);
         loop3i(m[12 + i] = 0);
         m[12 + 1] = heightshift;
 
-        glPushMatrix();
+        GL::glPushMatrix();
         {
-            glLoadIdentity();
-            glMultMatrixf(m);
-            //glScalef(100, 100 * 0.3, 100); //*0.25 original
-            glScalef(100, 100 * 0.25, 100); // original
+            GL::glLoadIdentity();
+            GL::glMultMatrixf(m);
+            //GL::glScalef(100, 100 * 0.3, 100); //*0.25 original
+            GL::glScalef(100, 100 * 0.25, 100); // original
 
             int vsteps = DOME_YRES;
             double vf = 0.5 * M_PI / (double) vsteps;
@@ -691,51 +691,51 @@ void BackgroundSystem::drawUpperDome() {
             for (int i = 1; i <= vsteps; i++) {
                 float s2 = sin(i * vf);
                 float c2 = cos(i * vf);
-                glBegin(GL_TRIANGLE_STRIP);
+                GL::glBegin(GL_TRIANGLE_STRIP);
                 for (int j = 0; j <= hsteps; j++) {
                     float s = sin(h);
                     float c = cos(h);
 
                     rgba colour1;
                     Ambient::sky(s1*c, c1 + 0.0001f, s1 * s, colour1, hour);
-                    glColor4fv(colour1);
+                    GL::glColor4fv(colour1);
                     //glNormal3f(s1*c, c1, s1 * s);
-                    glVertex3f(s1*c, c1, s1 * s);
+                    GL::glVertex3f(s1*c, c1, s1 * s);
 
                     rgba colour2;
                     Ambient::sky(s2*c, c2 + 0.0001f, s2 * s, colour2, hour);
-                    glColor4fv(colour2);
+                    GL::glColor4fv(colour2);
                     //glNormal3f(s2*c, c2, s2 * s);
-                    glVertex3f(s2*c, c2, s2 * s);
+                    GL::glVertex3f(s2*c, c2, s2 * s);
                     h += hf;
                 } // for hsteps
-                glEnd();
+                GL::glEnd();
                 s1 = s2;
                 c1 = c2;
             } // for vsteps
         }
-        glPopMatrix();
+        GL::glPopMatrix();
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 }
 
 void BackgroundSystem::drawLowerDome() {
-    glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
+    GL::glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
         GLS::glUseProgram_bkplaincolor();
 
         // Load current Camera Matrix and
         // set Position (4th Column) = 0.
         float m[16];
-        glGetFloatv(GL_MODELVIEW_MATRIX, m);
+        GL::glGetFloatv(GL_MODELVIEW_MATRIX, m);
         loop3i(m[12 + i] = 0);
         m[12 + 1] = heightshift;
 
-        glPushMatrix();
+        GL::glPushMatrix();
         {
-            glLoadIdentity();
-            glMultMatrixf(m);
-            glScalef(100, 100 * 0.1, 100);
+            GL::glLoadIdentity();
+            GL::glMultMatrixf(m);
+            GL::glScalef(100, 100 * 0.1, 100);
 
             int vsteps = DOME_YRES;
             double vf = 0.5f * M_PI / (double) vsteps;
@@ -749,44 +749,44 @@ void BackgroundSystem::drawLowerDome() {
             for (int i = 1; i <= vsteps; i++) {
                 float s2 = -sin(i * vf);
                 float c2 = -cos(i * vf);
-                glBegin(GL_TRIANGLE_STRIP);
+                GL::glBegin(GL_TRIANGLE_STRIP);
                 for (int j = 0; j <= hsteps; j++) {
                     float s = sin(h);
                     float c = cos(h);
 
                     rgba colour2;
                     Ambient::sky(s2*c, c2 - 0.0001f, s2 * s, colour2, hour);
-                    glColor4fv(colour2);
-                    //glNormal3f(s2*c, c2, s2 * s);
-                    glVertex3f(s2*c, c2, s2 * s);
+                    GL::glColor4fv(colour2);
+                    //GL::glNormal3f(s2*c, c2, s2 * s);
+                    GL::glVertex3f(s2*c, c2, s2 * s);
 
                     rgba colour1;
                     Ambient::sky(s1*c, c1 - 0.0001f, s1 * s, colour1, hour);
-                    glColor4fv(colour1);
-                    //glNormal3f(s1*c, c1, s1 * s);
-                    glVertex3f(s1*c, c1, s1 * s);
+                    GL::glColor4fv(colour1);
+                    //GL::glNormal3f(s1*c, c1, s1 * s);
+                    GL::glVertex3f(s1*c, c1, s1 * s);
                     h += hf;
                 };
-                glEnd();
+                GL::glEnd();
                 s1 = s2;
                 c1 = c2;
             } // for vsteps
         }
-        glPopMatrix();
+        GL::glPopMatrix();
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 }
 
 void BackgroundSystem::drawGround() {
-    glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_TEXTURE_BIT);
+    GL::glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_TEXTURE_BIT);
     {
         GLS::glUseProgram_bkplaintexture();
 
-        glBindTexture(GL_TEXTURE_2D, textures[T_ICE]);
+        GL::glBindTexture(GL_TEXTURE_2D, textures[T_ICE]);
 
         // Get current Camera-Matrix.
         float m[16];
-        glGetFloatv(GL_MODELVIEW_MATRIX, m);
+        GL::glGetFloatv(GL_MODELVIEW_MATRIX, m);
         // Position from 4th Col.
         float p[3];
         loop3i(p[i] = m[12 + i]);
@@ -800,11 +800,11 @@ void BackgroundSystem::drawGround() {
         //logger->trace() << "height over ground: " << p[1] << "\n";
         //logger->trace() << "Position: " << p[0] << " " << p[2] << "\n";
 
-        glPushMatrix();
+        GL::glPushMatrix();
         {
-            glLoadIdentity();
-            glMultMatrixf(n); // Transpose to undo previous transpose.
-            glTranslatef(0, p[1], 0);
+            GL::glLoadIdentity();
+            GL::glMultMatrixf(n); // Transpose to undo previous transpose.
+            GL::glTranslatef(0, p[1], 0);
 
             rgba color2;
             Ambient::sky(0, -1, 0, color2, hour);
@@ -816,52 +816,52 @@ void BackgroundSystem::drawGround() {
             float dx = -p[0] / tdiv;
             float dz = -p[2] / tdiv;
 
-            glBegin(GL_TRIANGLE_FAN);
-            glColor4f(color2[0], color2[1], color2[2], 1.0f);
-            //glColor4f(0.1,0.1,0.3,0.93); // water
-            glColor4f(1, 1, 1, 1);
-            glNormal3f(0, 1, 0);
-            glTexCoord2f(dx, dz);
-            glVertex3f(0.0, 0.0, 0.0);
-            glColor4f(color2[0], color2[1], color2[2], 0.0f);
-            //glColor4f(0.1,0.1,0.4,0); // water
-            glColor4f(1, 1, 1, 1);
+            GL::glBegin(GL_TRIANGLE_FAN);
+            GL::glColor4f(color2[0], color2[1], color2[2], 1.0f);
+            //GL::glColor4f(0.1,0.1,0.3,0.93); // water
+            GL::glColor4f(1, 1, 1, 1);
+            GL::glNormal3f(0, 1, 0);
+            GL::glTexCoord2f(dx, dz);
+            GL::glVertex3f(0.0, 0.0, 0.0);
+            GL::glColor4f(color2[0], color2[1], color2[2], 0.0f);
+            //GL::glColor4f(0.1,0.1,0.4,0); // water
+            GL::glColor4f(1, 1, 1, 1);
             float e = 20.0 * M_PI / 180.0f;
 
             loopi(19) {
-                glNormal3f(0, 1, 0);
-                glTexCoord3f(cos(-i * e) * radius / tdiv + dx, sin(-i * e) * radius / tdiv + dz, 0);
-                glVertex3f(cos(-i * e) * radius, 0, sin(-i * e) * radius);
+                GL::glNormal3f(0, 1, 0);
+                GL::glTexCoord3f(cos(-i * e) * radius / tdiv + dx, sin(-i * e) * radius / tdiv + dz, 0);
+                GL::glVertex3f(cos(-i * e) * radius, 0, sin(-i * e) * radius);
             } // loopi 19
-            glEnd();
+            GL::glEnd();
         }
-        glPopMatrix();
+        GL::glPopMatrix();
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 }
 
 void BackgroundSystem::drawClouds() {
-    glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
+    GL::glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
         GLS::glUseProgram_bkplaintexture();
         //SGL::glUseProgram_2();
 
-        glBindTexture(GL_TEXTURE_2D, textures[T_CLOUDS]);
+        GL::glBindTexture(GL_TEXTURE_2D, textures[T_CLOUDS]);
 
         // Load current Camera Matrix and
         // set Position (4th Column) = 0.
         float m[16];
-        glGetFloatv(GL_MODELVIEW_MATRIX, m);
+        GL::glGetFloatv(GL_MODELVIEW_MATRIX, m);
         loop3i(m[12 + i] = 0);
         //m[12 + 0] = m[12 + 2] = 0;
         m[12 + 1] = heightshift;
 
-        glPushMatrix();
+        GL::glPushMatrix();
         {
-            glLoadIdentity();
-            glMultMatrixf(m);
-            glScalef(100, 100 * 0.24, 100);
-            //glScalef(100, 100 * 0.125, 100); // original
+            GL::glLoadIdentity();
+            GL::glMultMatrixf(m);
+            GL::glScalef(100, 100 * 0.24, 100);
+            //GL::glScalef(100, 100 * 0.125, 100); // original
 
             float light = 0.3 + 0.7 * cos((hour - 12.0f) / 12.00f * 0.5f * M_PI);
             
@@ -874,7 +874,7 @@ void BackgroundSystem::drawClouds() {
             for (int j = 1; j <= 2; j++) {
                 
                 float trad = j * 0.5 * windspeed * 24.0f * (hour / 24.00f) * 2 * M_PI;
-                glRotatef(trad / 0.017453f, 1, 0.1, 1);
+                GL::glRotatef(trad / 0.017453f, 1, 0.1, 1);
 
                 for (int i = 0; i < n; i++) {
                     //float xrad = -(rand() % 157) * 0.01f;
@@ -900,84 +900,84 @@ void BackgroundSystem::drawClouds() {
                     quat_apply(y, qxy, y);
                     quat_apply(z, qxy, z);
 
-                    glColor4f(1,1,1,1);
-                    glVertex3f(1*x[0]+z[0], 1+z[1], 0+z[2]);
-                    glVertex3f(0, 1, 0);
-                    glVertex3f(0, 0, 0);
-                    glVertex3f(1, 0, 0);
-                    glEnd();
+                    GL::glColor4f(1,1,1,1);
+                    GL::glVertex3f(1*x[0]+z[0], 1+z[1], 0+z[2]);
+                    GL::glVertex3f(0, 1, 0);
+                    GL::glVertex3f(0, 0, 0);
+                    GL::glVertex3f(1, 0, 0);
+                    GL::glEnd();
                     */
 
-                    glPushMatrix();
+                    GL::glPushMatrix();
                     {
-                        glRotatef(yrad / PI_OVER_180, 0, 1, 0);
-                        glRotatef(xrad / PI_OVER_180, 1, 0, 0);
-                        glTranslatef(0, 0, 1.7);
-                        glColor4f(light, light, light, density);
+                        GL::glRotatef(yrad / PI_OVER_180, 0, 1, 0);
+                        GL::glRotatef(xrad / PI_OVER_180, 1, 0, 0);
+                        GL::glTranslatef(0, 0, 1.7);
+                        GL::glColor4f(light, light, light, density);
                         Primitive::glXYCenteredTextureSquare(1);
                     }
-                    glPopMatrix();
+                    GL::glPopMatrix();
                 }
                 density *= density;
             }
 
         }
-        glPopMatrix();
+        GL::glPopMatrix();
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 }
 
 /*
 void cDomeBackground::drawMountains() {
     srand(762381);
-    glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
+    GL::glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
         SGL::glUseProgram_bkplaintexture();
-        glDisable(GL_CULL_FACE);
+        GL::glDisable(GL_CULL_FACE);
 
-        glBindTexture(GL_TEXTURE_2D, textures[T_MOUNTAIN]);
+        GL::glBindTexture(GL_TEXTURE_2D, textures[T_MOUNTAIN]);
         glColor3fv(bottomColor);
 
         // Load current Camera Matrix and
         // set Position (4th Column) = 0.
         float m[16];
-        glGetFloatv(GL_MODELVIEW_MATRIX, m);
+        GL::glGetFloatv(GL_MODELVIEW_MATRIX, m);
         loop3i(m[12 + i] = 0);
         //m[12 + 0] = m[12 + 2] = 0;
         m[12 + 1] = heightshift;
 
-        glPushMatrix();
+        GL::glPushMatrix();
         {
             int n = 30;
             float f = 1.0;
             for (int i = 0; i < n; i++) {
-                glLoadIdentity();
-                glMultMatrixf(m);
-                glScalef(90, 100 * 0.2, 90);
+                GL::glLoadIdentity();
+                GL::glMultMatrixf(m);
+                GL::glScalef(90, 100 * 0.2, 90);
 
                 float w = (0.3 + (rand() % 100) * 0.005f) * 0.5 * f;
                 float rad = 0.01f * (rand() % 628);
-                glRotatef(rad / 0.017453, 0, 1, 0);
-                glTranslatef(0, 0, 1);
+                GL::glRotatef(rad / 0.017453, 0, 1, 0);
+                GL::glTranslatef(0, 0, 1);
 
                 float u = 1.2 * f;
-                glBegin(GL_QUADS);
-                glTexCoord2f(0, 1);
-                glVertex3f(-w, u, 1);
-                glTexCoord2f(0, 0);
-                glVertex3f(-w, -0.01, 1);
-                glTexCoord2f(1, 0);
-                glVertex3f(+w, -0.01, 1);
-                glTexCoord2f(1, 1);
-                glVertex3f(+w, u, 1);
-                glEnd();
+                GL::glBegin(GL_QUADS);
+                GL::glTexCoord2f(0, 1);
+                GL::glVertex3f(-w, u, 1);
+                GL::glTexCoord2f(0, 0);
+                GL::glVertex3f(-w, -0.01, 1);
+                GL::glTexCoord2f(1, 0);
+                GL::glVertex3f(+w, -0.01, 1);
+                GL::glTexCoord2f(1, 1);
+                GL::glVertex3f(+w, u, 1);
+                GL::glEnd();
 
                 f = f * 0.95f;
             }
         }
-        glPopMatrix();
+        GL::glPopMatrix();
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 }
  */
 
@@ -987,7 +987,7 @@ void BackgroundSystem::drawSun() {
 
     // Setup rotation only matrix.
     float m[16];
-    glGetFloatv(GL_MODELVIEW_MATRIX, m);
+    GL::glGetFloatv(GL_MODELVIEW_MATRIX, m);
     // 4th Row = 0.
     m[0 * 4 + 3] = m[1 * 4 + 3] = m[2 * 4 + 3] = 0.0f;
     // 4th Col = 0.
@@ -995,15 +995,15 @@ void BackgroundSystem::drawSun() {
     m[3 * 4 + 3] = 1.0f;
     //m[12 + 1] += heightshift;
 
-    glPushAttrib(GL_ALL_ATTRIB_BITS | GL_ENABLE_BIT | GL_CURRENT_BIT);
+    GL::glPushAttrib(GL_ALL_ATTRIB_BITS | GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
         GLS::glUseProgram_bkaddtexture();
 
-        glPushMatrix();
+        GL::glPushMatrix();
         {
-            glLoadIdentity();
-            glMultMatrixf(m);
-            //glScalef(1,0.3f,1);
+            GL::glLoadIdentity();
+            GL::glMultMatrixf(m);
+            //GL::glScalef(1,0.3f,1);
 
             const float scale = 0.1 * 2400.0f;
             float sun = 15 * 80 * 0.15;
@@ -1017,37 +1017,37 @@ void BackgroundSystem::drawSun() {
             // Moon is traveling about 180 degree behind/ahead.
             // Well, that is, if you're down-under then east, north, west (not east, south, west).
 
-            glRotatef(-90, 0, 1, 0);
+            GL::glRotatef(-90, 0, 1, 0);
             // Longitude? Aquator Angle Offset -> Germany. and for example Poland, GB and Canada.
-            //glRotatef(45+7.5, 0, 0, 1);
-            glRotatef(55, 0, 0, 1);
-            glRotatef(0, 0, 0, 1); // Aquator.
+            //GL::glRotatef(45+7.5, 0, 0, 1);
+            GL::glRotatef(55, 0, 0, 1);
+            GL::glRotatef(0, 0, 0, 1); // Aquator.
 
-            glRotatef(angle, 1, 0, 0);
-            glTranslatef(0, 0, scale);
-            glColor4f(1, 0.95, 0.8, 1);
-            glBindTexture(GL_TEXTURE_2D, textures[T_SUN]);
+            GL::glRotatef(angle, 1, 0, 0);
+            GL::glTranslatef(0, 0, scale);
+            GL::glColor4f(1, 0.95, 0.8, 1);
+            GL::glBindTexture(GL_TEXTURE_2D, textures[T_SUN]);
             Primitive::glXYCenteredTextureSquare(sun);
         }
-        glPopMatrix();
+        GL::glPopMatrix();
 
-        glPushMatrix();
+        GL::glPushMatrix();
         {
-            glLoadIdentity();
+            GL::glLoadIdentity();
             const float scale = 0.1 * 2400.0f;
             static float angle = 0;
             angle -= 1;
             angle = 180 - ((360 / 24.00f) * hour + 90);
-            glRotatef(-90, 0, 1, 0);
-            glRotatef(55, 0, 0, 1);
-            glRotatef(0, 0, 0, 1); // Aquator.
-            glRotatef(angle, 1, 0, 0);
-            glTranslatef(0, 0, scale);
+            GL::glRotatef(-90, 0, 1, 0);
+            GL::glRotatef(55, 0, 0, 1);
+            GL::glRotatef(0, 0, 0, 1); // Aquator.
+            GL::glRotatef(angle, 1, 0, 0);
+            GL::glTranslatef(0, 0, scale);
             // Calculate sun/moon direction vector and set as light when above horizon.
             {
                 mat4 m;
                 vec3 v = { 0, 0, 0 };
-                glGetFloatv(GL_MODELVIEW_MATRIX, m);
+                GL::glGetFloatv(GL_MODELVIEW_MATRIX, m);
                 matrix_apply2(m, v);
                 vector_norm(v, v);
                 if (v[1] < 0.0f) vector_scale(v, v, -1.0f);
@@ -1055,9 +1055,9 @@ void BackgroundSystem::drawSun() {
                 vector_cpy(light, v);
             }
         }
-        glPopMatrix();
+        GL::glPopMatrix();
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 }
 
 void BackgroundSystem::drawOrbit() {
@@ -1065,7 +1065,7 @@ void BackgroundSystem::drawOrbit() {
 
     // Setup rotation only matrix.
     float m[16];
-    glGetFloatv(GL_MODELVIEW_MATRIX, m);
+    GL::glGetFloatv(GL_MODELVIEW_MATRIX, m);
     // 4th Row = 0.
     m[0 * 4 + 3] = m[1 * 4 + 3] = m[2 * 4 + 3] = 0.0f;
     // 4th Col = 0.
@@ -1073,15 +1073,15 @@ void BackgroundSystem::drawOrbit() {
     m[3 * 4 + 3] = 1.0f;
     //m[12 + 1] += heightshift;
 
-    glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
+    GL::glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
         GLS::glUseProgram_bkplaintexture();
 
-        glPushMatrix();
+        GL::glPushMatrix();
         {
-            glLoadIdentity();
-            glMultMatrixf(m);
-            //glScalef(1,0.3f,1);
+            GL::glLoadIdentity();
+            GL::glMultMatrixf(m);
+            //GL::glScalef(1,0.3f,1);
 
             const float scale = 0.1 * 2400.0f;
             float sun = 15 * 80 * 0.1;
@@ -1097,20 +1097,20 @@ void BackgroundSystem::drawOrbit() {
             // Moon is traveling about 180 degree behind/ahead.
             // Well, that is, if you're down-under then east, north, west (not east, south, west).
 
-            glRotatef(-90, 0, 1, 0);
-            //	glRotatef(45+7.5, 0, 0, 1); // Longitude? Aquator Angle Offset -> Germany. and for example Poland, GB and Canada.
-            glRotatef(55, 0, 0, 1);
-            glRotatef(0, 0, 0, 1); // Aquator.
+            GL::glRotatef(-90, 0, 1, 0);
+            //	GL::glRotatef(45+7.5, 0, 0, 1); // Longitude? Aquator Angle Offset -> Germany. and for example Poland, GB and Canada.
+            GL::glRotatef(55, 0, 0, 1);
+            GL::glRotatef(0, 0, 0, 1); // Aquator.
 
-            glRotatef(angle + 180, 1, 0, 0);
-            glTranslatef(0, 0, scale);
-            glColor4f(0.8, 0.8, 0.8, 0.99);
-            glBindTexture(GL_TEXTURE_2D, textures[T_EARTH]);
+            GL::glRotatef(angle + 180, 1, 0, 0);
+            GL::glTranslatef(0, 0, scale);
+            GL::glColor4f(0.8, 0.8, 0.8, 0.99);
+            GL::glBindTexture(GL_TEXTURE_2D, textures[T_EARTH]);
             Primitive::glXYCenteredTextureSquare(moon);
         }
-        glPopMatrix();
+        GL::glPopMatrix();
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 }
 
 void BackgroundSystem::drawRain() {
@@ -1119,7 +1119,7 @@ void BackgroundSystem::drawRain() {
 
     // Get current Camera-Matrix.
     float m[16];
-    glGetFloatv(GL_MODELVIEW_MATRIX, m);
+    GL::glGetFloatv(GL_MODELVIEW_MATRIX, m);
     // Position from 4th Col.
     float pnt[3];
     loop3i(pnt[i] = m[12 + i]);
@@ -1153,35 +1153,35 @@ void BackgroundSystem::drawRain() {
         }
     }
     
-    glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
+    GL::glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
         GLS::glUseProgram_fgplaincolor();
-        glLineWidth(1.25);
+        GL::glLineWidth(1.25);
 
-        glPushMatrix();
+        GL::glPushMatrix();
         {
-            //glLoadIdentity();
-            //glMultMatrixf(n);
+            //GL::glLoadIdentity();
+            //GL::glMultMatrixf(n);
 
-            glBegin(GL_LINES);
+            GL::glBegin(GL_LINES);
 
             foreachNoInc(i, rain) {
                 Particle* p = *i++;
                 float end[3];
                 vector_scale(end, p->vel, -0.4f);
                 vector_add(end, end, p->pos);
-                glColor4f(0.8, 0.8, 0.8, 0.3);
-                glVertex3fv(end);
-                glColor4f(0.3, 0.3, 0.5, 0.9);
-                glVertex3fv(p->pos);
+                GL::glColor4f(0.8, 0.8, 0.8, 0.3);
+                GL::glVertex3fv(end);
+                GL::glColor4f(0.3, 0.3, 0.5, 0.9);
+                GL::glVertex3fv(p->pos);
                 p->stepEuler(0.1, 0);
                 //std::logger->trace() << p->pos[0] << " " << p->pos[1] << " " << p->pos[2] << "\n";
                 if (p->pos[1] < -pnt[1]-10) rain.remove(p);
             }
-            glEnd();
+            GL::glEnd();
         }
-        glPopMatrix();
+        GL::glPopMatrix();
 
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 }

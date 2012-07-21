@@ -93,28 +93,28 @@ void rTree::animate(float spf) {
 }
 
 void rTree::drawSolid() {
-    glPushAttrib(GL_ENABLE_BIT);
+    GL::glPushAttrib(GL_ENABLE_BIT);
     {
         GLS::glUseProgram_fglitcolor();
-        glDisable(GL_CULL_FACE);
-        glDisable(GL_LIGHTING);
+        GL::glDisable(GL_CULL_FACE);
+        GL::glDisable(GL_LIGHTING);
 
-        glPushMatrix();
+        GL::glPushMatrix();
         {
-            glTranslatef(this->pos0[0], this->pos0[1], this->pos0[2]);
-            //glRotatef(this->ori0[1], 0, 1, 0);
+            GL::glTranslatef(this->pos0[0], this->pos0[1], this->pos0[2]);
+            //GL::glRotatef(this->ori0[1], 0, 1, 0);
             GLS::glRotateq(this->ori0);
-            glCallList(tree->list);
+            GL::glCallList(tree->list);
         }
-        glPopMatrix();
+        GL::glPopMatrix();
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 }
 
 void rTree::drawEffect() {
-    glPushMatrix();
+    GL::glPushMatrix();
     {
-        glTranslatef(this->pos0[0], this->pos0[1], this->pos0[2]);
+        GL::glTranslatef(this->pos0[0], this->pos0[1], this->pos0[2]);
         GLS::glRotateq(this->ori0);
 
         // Construct Billboarding Matrix.
@@ -126,17 +126,17 @@ void rTree::drawEffect() {
         vector_cross(&n[8], &n[0], &n[4]);
 
         float color[4];
-        glGetFloatv(GL_CURRENT_COLOR, color);
+        GL::glGetFloatv(GL_CURRENT_COLOR, color);
         //logger->trace() << color[3] << "\n";
 
-        glPushAttrib(GL_ENABLE_BIT);
+        GL::glPushAttrib(GL_ENABLE_BIT);
         {
             GLS::glUseProgram_fglittexture();
-            glDisable(GL_CULL_FACE);
-            glEnable(GL_ALPHA_TEST);
-            glAlphaFunc(GL_GREATER, 0.58f);
+            GL::glDisable(GL_CULL_FACE);
+            GL::glEnable(GL_ALPHA_TEST);
+            GL::glAlphaFunc(GL_GREATER, 0.58f);
 
-            glBindTexture(GL_TEXTURE_2D, sLeaftexs[tree->type % sLeaftexs.size()]);
+            GL::glBindTexture(GL_TEXTURE_2D, sLeaftexs[tree->type % sLeaftexs.size()]);
             int m = tree->leaves.size() / 3;
             //logger->trace() << m << "\n";
 
@@ -156,27 +156,27 @@ void rTree::drawEffect() {
                 x += dx * shake;
                 y += dy * shake;
                 z += dz * shake;
-                glNormal3f(0, 1, 0);
-                glColor4f(light, light, light, color[3]);
+                GL::glNormal3f(0, 1, 0);
+                GL::glColor4f(light, light, light, color[3]);
                 //float v[] = { x, y, z };
                 //vector_print(v);
-                glPushMatrix();
+                GL::glPushMatrix();
                 {
-                    glTranslatef(x, y, z);
-                    //glTranslatef(x, y, z);
-                    //glColor4f(1,0,0,1);
-                    glMultMatrixf(n);
-                    glRotatef(sin(seconds * 0.5f + i * 0.3f) * swirl, 0, 0, 1);
+                    GL::glTranslatef(x, y, z);
+                    //GL::glTranslatef(x, y, z);
+                    //GL::glColor4f(1,0,0,1);
+                    GL::glMultMatrixf(n);
+                    GL::glRotatef(sin(seconds * 0.5f + i * 0.3f) * swirl, 0, 0, 1);
                     Primitive::glXYCenteredTextureSquare(size);
                     //cPrimitives::glDisk();
                     //cPrimitives::glAxis(1.1f);
                 }
-                glPopMatrix();
+                GL::glPopMatrix();
             }
         }
-        glPopAttrib();
+        GL::glPopAttrib();
     }
-    glPopMatrix();
+    GL::glPopMatrix();
 }
 
 float rTree::constrain(float* worldpos, float radius, float* localpos, Entity* enactor) {
@@ -203,11 +203,11 @@ rTree::TreeType* rTree::getCompiledTree(int seed, int type, int age) {
 
     // There was no such tree cached - so lets compile a displaylist.
 
-    static GLint leaf_displaylists[] = {-1, -1, -1, -1, -1, -1, -1, -1};
+    static GL::GLint leaf_displaylists[] = {-1, -1, -1, -1, -1, -1, -1, -1};
     if (type < 5) {
         if (leaf_displaylists[type] == -1) {
-            leaf_displaylists[type] = glGenLists(1);
-            glNewList(leaf_displaylists[type], GL_COMPILE);
+            leaf_displaylists[type] = GL::glGenLists(1);
+            GL::glNewList(leaf_displaylists[type], GL_COMPILE);
             switch (type) {
                 case 0: drawRubberTreeLeaf();
                     break;
@@ -218,22 +218,22 @@ rTree::TreeType* rTree::getCompiledTree(int seed, int type, int age) {
                 case 3: drawButterflyTreeLeaf();
                     break;
             };
-            glEndList();
+            GL::glEndList();
         }
     }
 
-    static GLuint trunk_displaylists[] = {-1, -1, -1, -1, -1, -1, -1, -1};
+    static GL::GLuint trunk_displaylists[] = {-1, -1, -1, -1, -1, -1, -1, -1};
     if ((int) trunk_displaylists[type] == -1) {
-        trunk_displaylists[type] = glGenLists(1);
-        glNewList(trunk_displaylists[type], GL_COMPILE);
-        //glColor3f(0.1f, 0.1f, 0.0f);
-        glColor3f(0.2f, 0.2f, 0.2f);
-        glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, sBarktexs[type % sBarktexs.size()]);
+        trunk_displaylists[type] = GL::glGenLists(1);
+        GL::glNewList(trunk_displaylists[type], GL_COMPILE);
+        //GL::glColor3f(0.1f, 0.1f, 0.0f);
+        GL::glColor3f(0.2f, 0.2f, 0.2f);
+        GL::glEnable(GL_TEXTURE_2D);
+        GL::glBindTexture(GL_TEXTURE_2D, sBarktexs[type % sBarktexs.size()]);
         //Primitive::glCenterUnitCylinder(5, 5);
         //Primitive::glCenterUnitBlock();
         drawTrunk(5, 5);
-        glEndList();
+        GL::glEndList();
     }
 
     TreeType* t = new TreeType();
@@ -241,26 +241,26 @@ rTree::TreeType* rTree::getCompiledTree(int seed, int type, int age) {
     t->seed = seed;
     t->type = type;
     t->age = age;
-    t->list = glGenLists(1);
+    t->list = GL::glGenLists(1);
     t->height = log(age);
-    glPushAttrib(GL_ENABLE_BIT);
+    GL::glPushAttrib(GL_ENABLE_BIT);
     {
         //GLS::glUseProgram_fglitcolor();
-        //glColor4f(0.3f, 0.3f, 0.1f, 1.0f);
+        //GL::glColor4f(0.3f, 0.3f, 0.1f, 1.0f);
         GLS::glUseProgram_fglittexture();
-        glColor3f(0.9f, 0.9f, 0.9f);
-        glPushMatrix();
+        GL::glColor3f(0.9f, 0.9f, 0.9f);
+        GL::glPushMatrix();
         {
-            glLoadIdentity();
-            glNewList(t->list, GL_COMPILE_AND_EXECUTE);
+            GL::glLoadIdentity();
+            GL::glNewList(t->list, GL_COMPILE_AND_EXECUTE);
             float s = 2.5f + age * 0.3;
-            glScalef(s, s, s);
+            GL::glScalef(s, s, s);
             drawTreePart(0, age, 0.3f + age * 0.1, t->seed, trunk_displaylists[type], leaf_displaylists[type], &t->leaves, &t->height);
-            glEndList();
+            GL::glEndList();
         }
-        glPopMatrix();
+        GL::glPopMatrix();
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 
     //cache.push_front(t);
     sTrees[key] = t;
@@ -269,28 +269,28 @@ rTree::TreeType* rTree::getCompiledTree(int seed, int type, int age) {
     return t;
 }
 
-int rTree::drawTreePart(int depth, int maxdepth, float length, int seed, GLuint trunk_displaylist, GLuint leaf_displaylist, std::vector<float>* leaves, float* totalheight) {
+int rTree::drawTreePart(int depth, int maxdepth, float length, int seed, GL::GLuint trunk_displaylist, GL::GLuint leaf_displaylist, std::vector<float>* leaves, float* totalheight) {
     //
     const float height = length * (maxdepth - depth);
     const float width = 1.25f * (0.06 * length + (maxdepth - depth)*(maxdepth - depth) * length * 0.02f);
     bool draw_poly_leaves = !true;
     // Draw Trunk and leaf if at max depth.
-    glPushMatrix();
+    GL::glPushMatrix();
     {
-        glScalef(width * 0.5f, height * 0.5f, width * 0.5f);
-        glTranslatef(0, 1, 0);
-        glCallList(trunk_displaylist);
+        GL::glScalef(width * 0.5f, height * 0.5f, width * 0.5f);
+        GL::glTranslatef(0, 1, 0);
+        GL::glCallList(trunk_displaylist);
         if (depth > 0) {
             const float s = 3.6f;
             if (draw_poly_leaves) {
-                glScalef(s * height / width, s * 0.5f, s * height / width);
-                glTranslatef(0, 0.5f, 0);
-                glCallList(leaf_displaylist);
+                GL::glScalef(s * height / width, s * 0.5f, s * height / width);
+                GL::glTranslatef(0, 0.5f, 0);
+                GL::glCallList(leaf_displaylist);
             } else if (leaves) {
-                glScalef(s * height / width, s * 0.5f, s * height / width);
-                glTranslatef(0, 0.5f, 0);
+                GL::glScalef(s * height / width, s * 0.5f, s * height / width);
+                GL::glTranslatef(0, 0.5f, 0);
                 mat4 M;
-                glGetFloatv(GL_MODELVIEW_MATRIX, M);
+                GL::glGetFloatv(GL_MODELVIEW_MATRIX, M);
                 float v[] = { 0.0f, 0.0f, 0.0f };
                 matrix_apply2(M, v);
                 //logger->trace() << "Leaf at: " << "\n";
@@ -305,7 +305,7 @@ int rTree::drawTreePart(int depth, int maxdepth, float length, int seed, GLuint 
             }
         }
     }
-    glPopMatrix();
+    GL::glPopMatrix();
     // Draw Offsprings
 
     // Recursion end?
@@ -329,64 +329,64 @@ int rTree::drawTreePart(int depth, int maxdepth, float length, int seed, GLuint 
         angley = 130 * i - yvar + rnums[j++] % (2 * yvar);
         const float xvar = 27.0f;
         anglex = int(60.0f - xvar + (rnums[j++] % 100)*0.01f * (2.0f * xvar)*(1.0f - float(maxdepth - depth) / float(maxdepth)));
-        glPushMatrix();
+        GL::glPushMatrix();
         {
-            glTranslatef(0, (i + 2) * height / float(n + 1) - width * 0.5f, 0);
-            glRotatef(angley, 0, 1, 0);
-            glRotatef(anglex, 1, 0, 0);
+            GL::glTranslatef(0, (i + 2) * height / float(n + 1) - width * 0.5f, 0);
+            GL::glRotatef(angley, 0, 1, 0);
+            GL::glRotatef(anglex, 1, 0, 0);
             r = drawTreePart(depth + 1, maxdepth, length, r, trunk_displaylist, leaf_displaylist, leaves, totalheight);
         }
-        glPopMatrix();
+        GL::glPopMatrix();
     };
     return r;
 }
 
 void rTree::drawRubberTreeLeaf() {
-    glBegin(GL_TRIANGLE_FAN);
+    GL::glBegin(GL_TRIANGLE_FAN);
     // 0 back
-    glNormal3f(0, +1, 0);
-    glColor3f(0.2f, 0.1f, 0.0f);
-    glVertex3f(0.0, 0.0, 0.0);
+    GL::glNormal3f(0, +1, 0);
+    GL::glColor3f(0.2f, 0.1f, 0.0f);
+    GL::glVertex3f(0.0, 0.0, 0.0);
     // 1 right
-    glNormal3f(-1, +1, 0);
-    glColor3f(0.0f, 0.4f, 0.0f);
-    glVertex3f(+0.3, +0.1, +0.1);
+    GL::glNormal3f(-1, +1, 0);
+    GL::glColor3f(0.0f, 0.4f, 0.0f);
+    GL::glVertex3f(+0.3, +0.1, +0.1);
     // 2 right
-    glColor3f(0.0f, 0.3f, 0.0f);
-    glVertex3f(+0.4, +0.2, +0.2);
+    GL::glColor3f(0.0f, 0.3f, 0.0f);
+    GL::glVertex3f(+0.4, +0.2, +0.2);
     // 3 right
-    glColor3f(0.0f, 0.4f, 0.0f);
-    glVertex3f(+0.35, +0.2, +0.5);
+    GL::glColor3f(0.0f, 0.4f, 0.0f);
+    GL::glVertex3f(+0.35, +0.2, +0.5);
     // 4 right
-    glColor3f(0.0f, 0.3f, 0.0f);
-    glVertex3f(+0.15, +0.1, +0.8);
+    GL::glColor3f(0.0f, 0.3f, 0.0f);
+    GL::glVertex3f(+0.15, +0.1, +0.8);
     // 5 tip
-    glNormal3f(+1, +1, 0);
-    glColor3f(0.0f, 0.2f, 0.0f);
-    glVertex3f(0.0, 0.0, +1.1);
+    GL::glNormal3f(+1, +1, 0);
+    GL::glColor3f(0.0f, 0.2f, 0.0f);
+    GL::glVertex3f(0.0, 0.0, +1.1);
     // 4 left
-    glColor3f(0.0f, 0.3f, 0.0f);
-    glVertex3f(-0.15, +0.1, +0.8);
+    GL::glColor3f(0.0f, 0.3f, 0.0f);
+    GL::glVertex3f(-0.15, +0.1, +0.8);
     // 3 left
-    glColor3f(0.0f, 0.4f, 0.0f);
-    glVertex3f(-0.35, +0.2, +0.5);
+    GL::glColor3f(0.0f, 0.4f, 0.0f);
+    GL::glVertex3f(-0.35, +0.2, +0.5);
     // 2 left
-    glColor3f(0.0f, 0.3f, 0.0f);
-    glVertex3f(-0.4, +0.2, +0.2);
+    GL::glColor3f(0.0f, 0.3f, 0.0f);
+    GL::glVertex3f(-0.4, +0.2, +0.2);
     // 1 left
-    glColor3f(0.0f, 0.4f, 0.0f);
-    glVertex3f(-0.3, +0.1, +0.0);
+    GL::glColor3f(0.0f, 0.4f, 0.0f);
+    GL::glVertex3f(-0.3, +0.1, +0.0);
     // 0 back
-    glNormal3f(0, +1, 0);
-    glColor3f(0.2f, 0.1f, 0.0f);
-    glVertex3f(0.0, 0.0, 0.0);
-    glEnd();
+    GL::glNormal3f(0, +1, 0);
+    GL::glColor3f(0.2f, 0.1f, 0.0f);
+    GL::glVertex3f(0.0, 0.0, 0.0);
+    GL::glEnd();
 }
 
 void rTree::drawCaribeanTreeLeaf() {
     const float step = 6 * M_PI / 180.0f;
     float alpha = step * 0.5;
-    glBegin(GL_TRIANGLES);
+    GL::glBegin(GL_TRIANGLES);
 
     loopi(5) {
         float l[] = {1.0, 0.7, 0.5, 0.3, 0.2};
@@ -397,54 +397,54 @@ void rTree::drawCaribeanTreeLeaf() {
         //logger->trace() << "len" << i << " = " << length << "\n";
         float tips = 0.7;
         // 0 back
-        glNormal3f(0, +1, 0);
-        glColor3f(0.0f, 0.3f, 0.0f);
-        glVertex3f(0.0, 0.0, 0.0);
-        glColor3f(0.5f, 0.4f, 0.2f);
+        GL::glNormal3f(0, +1, 0);
+        GL::glColor3f(0.0f, 0.3f, 0.0f);
+        GL::glVertex3f(0.0, 0.0, 0.0);
+        GL::glColor3f(0.5f, 0.4f, 0.2f);
         // 1
-        glNormal3f(0, +1, 0);
-        glVertex3f(length * sin(alpha), ulength * cos(alpha), 0.0);
+        GL::glNormal3f(0, +1, 0);
+        GL::glVertex3f(length * sin(alpha), ulength * cos(alpha), 0.0);
         // 2
-        glNormal3f(0, +1, 0);
-        glVertex3f(tips * length * sin(alpha + step), tips * ulength * cos(alpha + step), 0.0);
+        GL::glNormal3f(0, +1, 0);
+        GL::glVertex3f(tips * length * sin(alpha + step), tips * ulength * cos(alpha + step), 0.0);
         // 0 back
-        glNormal3f(0, +1, 0);
-        glColor3f(0.0f, 0.3f, 0.0f);
-        glVertex3f(0.0, 0.0, 0.0);
-        glColor3f(0.5f, 0.4f, 0.2f);
+        GL::glNormal3f(0, +1, 0);
+        GL::glColor3f(0.0f, 0.3f, 0.0f);
+        GL::glVertex3f(0.0, 0.0, 0.0);
+        GL::glColor3f(0.5f, 0.4f, 0.2f);
         // 1
-        glNormal3f(0, +1, 0);
-        glVertex3f(length * sin(-alpha), ulength * cos(-alpha), 0.0);
+        GL::glNormal3f(0, +1, 0);
+        GL::glVertex3f(length * sin(-alpha), ulength * cos(-alpha), 0.0);
         // 2
-        glNormal3f(0, +1, 0);
-        glVertex3f(tips * length * sin(-alpha - step), tips * ulength * cos(-alpha - step), 0.0);
+        GL::glNormal3f(0, +1, 0);
+        GL::glVertex3f(tips * length * sin(-alpha - step), tips * ulength * cos(-alpha - step), 0.0);
         //
         alpha += 2 * step;
     }
-    glEnd();
+    GL::glEnd();
 }
 
 void rTree::drawHalmTreeLeaf() {
     return;
-    glPushMatrix();
+    GL::glPushMatrix();
     {
-        glScalef(0.2, 0.6, 1.7);
+        GL::glScalef(0.2, 0.6, 1.7);
         drawRubberTreeLeaf();
     }
-    glPopMatrix();
+    GL::glPopMatrix();
 }
 
 void rTree::drawButterflyTreeLeaf() {
-    glPushMatrix();
+    GL::glPushMatrix();
     {
-        glRotatef(-30, 0, 1, 0);
+        GL::glRotatef(-30, 0, 1, 0);
         drawHalmTreeLeaf();
-        glRotatef(30, 0, 1, 0);
+        GL::glRotatef(30, 0, 1, 0);
         drawHalmTreeLeaf();
-        glRotatef(30, 0, 1, 0);
+        GL::glRotatef(30, 0, 1, 0);
         drawHalmTreeLeaf();
     }
-    glPopMatrix();
+    GL::glPopMatrix();
 }
 
 void rTree::drawTrunk(float segments, float vrepeat) {
@@ -453,16 +453,16 @@ void rTree::drawTrunk(float segments, float vrepeat) {
     float angle = 0.0f;
     float r1 = 0.75f;
     float r2 = 1.20f;
-    glBegin(GL_TRIANGLE_STRIP);
+    GL::glBegin(GL_TRIANGLE_STRIP);
     for (int i=0; i<=segments; i++) {
         float r1_ = r1 * (1.00f + (rand()%100) * 0.002f);
         float r2_ = r2 * (1.00f + (rand()%100) * 0.004f);
-        glTexCoord3f(0.5f+0.499f*sin(angle), 0.999f * vrepeat, 0.5f+0.499f*cos(angle));
-        glVertex3f(sin(angle)*r1_, +1.0f, cos(angle)*r1_);
-        glTexCoord3f(0.5f+0.499f*sin(angle), 0.001f, 0.5f+0.499f*cos(angle));
-        glVertex3f(sin(angle)*r2_, -1.0f, cos(angle)*r2_);
+        GL::glTexCoord3f(0.5f+0.499f*sin(angle), 0.999f * vrepeat, 0.5f+0.499f*cos(angle));
+        GL::glVertex3f(sin(angle)*r1_, +1.0f, cos(angle)*r1_);
+        GL::glTexCoord3f(0.5f+0.499f*sin(angle), 0.001f, 0.5f+0.499f*cos(angle));
+        GL::glVertex3f(sin(angle)*r2_, -1.0f, cos(angle)*r2_);
         angle += anglestep;
     };
-    glEnd();
+    GL::glEnd();
 }
 

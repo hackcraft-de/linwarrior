@@ -22,36 +22,36 @@ void rWepcom::drawHUD() {
     if (!active) return;
 
     float h = 1.0f / 7.0f * (1 + (weapons.size() + 1) / 2);
-    glBegin(GL_QUADS);
-    glVertex3f(1, h, 0);
-    glVertex3f(0, h, 0);
-    glVertex3f(0, 0, 0);
-    glVertex3f(1, 0, 0);
-    glEnd();
-    glPushMatrix();
+    GL::glBegin(GL_QUADS);
+    GL::glVertex3f(1, h, 0);
+    GL::glVertex3f(0, h, 0);
+    GL::glVertex3f(0, 0, 0);
+    GL::glVertex3f(1, 0, 0);
+    GL::glEnd();
+    GL::glPushMatrix();
     {
-        glScalef(1.0f / 2.0f, 1.0f / 7.0f, 1.0f);
-        glTranslatef(0, 0.5, 0);
+        GL::glScalef(1.0f / 2.0f, 1.0f / 7.0f, 1.0f);
+        GL::glTranslatef(0, 0.5, 0);
 
         loopi(weapons.size()) {
-            glLineWidth(5);
-            if (weapons[i]->ready()) glColor4f(0.4f, 1.0f, 0.4f, 0.2f);
-            else glColor4f(0.8f, 0.0f, 0.0f, 0.2f);
+            GL::glLineWidth(5);
+            if (weapons[i]->ready()) GL::glColor4f(0.4f, 1.0f, 0.4f, 0.2f);
+            else GL::glColor4f(0.8f, 0.0f, 0.0f, 0.2f);
             Primitive::glLineSquare(0.1f);
-            glLineWidth(1);
-            glColor4f(1.0f, 1.0f, 1.0f, 0.9f);
+            GL::glLineWidth(1);
+            GL::glColor4f(1.0f, 1.0f, 1.0f, 0.9f);
             Primitive::glLineSquare(0.1f);
-            glPushMatrix();
+            GL::glPushMatrix();
             {
                 weapons[i]->drawHUD();
             }
-            glPopMatrix();
-            //glTranslatef(0, 1, 0);
-            if (i & 1) glTranslatef(-1, 1, 0);
-            else glTranslatef(1, 0, 0);
+            GL::glPopMatrix();
+            //GL::glTranslatef(0, 1, 0);
+            if (i & 1) GL::glTranslatef(-1, 1, 0);
+            else GL::glTranslatef(1, 0, 0);
         }
     }
-    glPopMatrix();
+    GL::glPopMatrix();
 }
 
 

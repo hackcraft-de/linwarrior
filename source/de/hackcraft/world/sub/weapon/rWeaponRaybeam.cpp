@@ -94,46 +94,46 @@ void rWeaponRaybeam::animate(float spf) {
 
 void rWeaponRaybeam::drawSolid() {
     if (drawWeapon) {
-        glPushAttrib(GL_ALL_ATTRIB_BITS);
+        GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
             GLS::glUseProgram_fglitcolor();
 
-            glPushMatrix();
+            GL::glPushMatrix();
             {
                 transformTo();
-                glRotatef(-90, 1, 0, 0);
+                GL::glRotatef(-90, 1, 0, 0);
 
                 // Scale
                 float scale = weaponScale;
-                glScalef(scale, scale, scale);
+                GL::glScalef(scale, scale, scale);
 
                 if (this->ready() == 0 && remainingAmmo != 0) {
                 }
 
-                glColor4f(0.3, 0.2, 0.3, 1.0);
-                glPushMatrix();
+                GL::glColor4f(0.3, 0.2, 0.3, 1.0);
+                GL::glPushMatrix();
                 {
-                    glScalef(0.1, 0.14, 0.12);
+                    GL::glScalef(0.1, 0.14, 0.12);
                     Primitive::glCenterUnitBlock();
                 }
-                glPopMatrix();
+                GL::glPopMatrix();
 
-                glColor4f(0.1, 0.1, 0.1, 1.0);
-                glPushMatrix();
+                GL::glColor4f(0.1, 0.1, 0.1, 1.0);
+                GL::glPushMatrix();
                 {
-                    glTranslatef(0.0, 0.7, 0);
-                    glScalef(0.03, 0.7, 0.03);
+                    GL::glTranslatef(0.0, 0.7, 0);
+                    GL::glScalef(0.03, 0.7, 0.03);
                     Primitive::glCenterUnitCylinder(7);
-                    glTranslatef(0.0, 1.0, 0);
-                    glScalef(2.0, 0.1, 2.0);
-                    glColor4f(0.4, 0.4, 0.4, 1.0);
+                    GL::glTranslatef(0.0, 1.0, 0);
+                    GL::glScalef(2.0, 0.1, 2.0);
+                    GL::glColor4f(0.4, 0.4, 0.4, 1.0);
                     Primitive::glCenterUnitCylinder(7);
                 }
-                glPopMatrix();
+                GL::glPopMatrix();
             }
-            glPopMatrix();
+            GL::glPopMatrix();
         }
-        glPopAttrib();
+        GL::glPopAttrib();
     }
 }
 
@@ -188,16 +188,16 @@ void rWeaponRaybeam::drawEffect() {
     if (lifeindex > sizeof (app) / sizeof (appearance) - 1) lifeindex = sizeof (app) / sizeof (appearance) - 1;
     if (lifeindex < 0) lifeindex = 0;
 
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
         GLS::glUseProgram_fgaddcolor();
 
-        glPushMatrix();
+        GL::glPushMatrix();
         {
             transformTo();
 
             float m[16];
-            glGetFloatv(GL_MODELVIEW_MATRIX, m);
+            GL::glGetFloatv(GL_MODELVIEW_MATRIX, m);
             float* mpnt = &m[12]; // Vector that points to the Mountpoint relative to the eye.
             //vector_print(mpnt);
             float* mfwd = &m[8]; // Mountpoint-Forward Vector relative to the eye.
@@ -215,22 +215,22 @@ void rWeaponRaybeam::drawEffect() {
             right[0] *= -w;
             right[1] *= -w;
             right[2] *= -w;
-            glBegin(GL_TRIANGLE_STRIP);
-            glColor4fv(app[lifeindex].ocolor);
-            glVertex3f(-right[0], -right[1], -right[2] - 2 * w);
-            glVertex3f(-right[0], -right[1], -right[2] - app[lifeindex].length);
-            glColor4fv(app[lifeindex].icolor);
-            glVertex3f(0, 0.0, 0);
-            glVertex3f(0, 0.0, -app[lifeindex].length);
-            glColor4fv(app[lifeindex].ocolor);
-            glVertex3f(+right[0], +right[1], +right[2] - 2 * w);
-            glVertex3f(+right[0], +right[1], +right[2] - app[lifeindex].length);
-            glEnd();
+            GL::glBegin(GL_TRIANGLE_STRIP);
+            GL::glColor4fv(app[lifeindex].ocolor);
+            GL::glVertex3f(-right[0], -right[1], -right[2] - 2 * w);
+            GL::glVertex3f(-right[0], -right[1], -right[2] - app[lifeindex].length);
+            GL::glColor4fv(app[lifeindex].icolor);
+            GL::glVertex3f(0, 0.0, 0);
+            GL::glVertex3f(0, 0.0, -app[lifeindex].length);
+            GL::glColor4fv(app[lifeindex].ocolor);
+            GL::glVertex3f(+right[0], +right[1], +right[2] - 2 * w);
+            GL::glVertex3f(+right[0], +right[1], +right[2] - app[lifeindex].length);
+            GL::glEnd();
 
         }
-        glPopMatrix();
+        GL::glPopMatrix();
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 }
 
 void rWeaponRaybeam::drawHUD() {
@@ -241,32 +241,32 @@ void rWeaponRaybeam::drawHUD() {
     float i = 0.1;
     float j = 0.9;
     float r = i + (remainingAmmo / (float) clipSize) * (j - i);
-    glBegin(GL_QUADS);
-    glColor4f(1, 1, 0, b);
-    glVertex3f(i, j, 0.0);
-    glVertex3f(i, i, 0.0);
-    glColor4f(1, 0, 0, b);
-    glVertex3f(r, i, 0.0);
-    glVertex3f(r, j, 0.0);
-    glEnd();
+    GL::glBegin(GL_QUADS);
+    GL::glColor4f(1, 1, 0, b);
+    GL::glVertex3f(i, j, 0.0);
+    GL::glVertex3f(i, i, 0.0);
+    GL::glColor4f(1, 0, 0, b);
+    GL::glVertex3f(r, i, 0.0);
+    GL::glVertex3f(r, j, 0.0);
+    GL::glEnd();
 
     // Clips
     float l = 0.1;
     float h = 0.15;
     r = i + (remainingClips / (float) depotSize) * (j - i);
-    glBegin(GL_QUADS);
-    glColor4f(0, 0, 0, a);
-    glVertex3f(l, i + h, 0.0);
-    glVertex3f(l, i, 0.0);
-    glColor4f(1, 1, 1, a);
-    glVertex3f(r, i, 0.0);
-    glVertex3f(r, i + h, 0.0);
-    glEnd();
+    GL::glBegin(GL_QUADS);
+    GL::glColor4f(0, 0, 0, a);
+    GL::glVertex3f(l, i + h, 0.0);
+    GL::glVertex3f(l, i, 0.0);
+    GL::glColor4f(1, 1, 1, a);
+    GL::glVertex3f(r, i, 0.0);
+    GL::glVertex3f(r, i + h, 0.0);
+    GL::glEnd();
 
-    glBegin(GL_LINES);
-    glColor4f(1, 0.3, 0.3, b);
-    glVertex3f(0.25, 0.5, 0.0);
-    glColor4f(1, 0.6, 0.6, a);
-    glVertex3f(0.75, 0.5, 0.0);
-    glEnd();
+    GL::glBegin(GL_LINES);
+    GL::glColor4f(1, 0.3, 0.3, b);
+    GL::glVertex3f(0.25, 0.5, 0.0);
+    GL::glColor4f(1, 0.6, 0.6, a);
+    GL::glVertex3f(0.75, 0.5, 0.0);
+    GL::glEnd();
 }

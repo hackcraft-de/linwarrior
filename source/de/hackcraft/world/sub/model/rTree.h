@@ -83,7 +83,7 @@ private:
     static std::map<OID,TreeType*> sTrees;
 
     static TreeType* getCompiledTree(int seed, int type, int age);
-    static int drawTreePart(int depth, int maxdepth, float length, int seed, GLuint trunk_displaylist, GLuint leaf_displaylist, std::vector<float>* leaves, float* totalheight);
+    static int drawTreePart(int depth, int maxdepth, float length, int seed, GL::GLuint trunk_displaylist, GL::GLuint leaf_displaylist, std::vector<float>* leaves, float* totalheight);
     static void drawRubberTreeLeaf();
     static void drawCaribeanTreeLeaf();
     static void drawHalmTreeLeaf();

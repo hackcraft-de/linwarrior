@@ -9,11 +9,11 @@
 #ifndef _GLFONT_H
 #define	_GLFONT_H
 
-#include <GL/glew.h>
+#include "de/hackcraft/opengl/GL.h"
+#include "de/hackcraft/opengl/GLU.h"
 
 #include <stdlib.h>
 #include <stdio.h>
-
 #include <stdarg.h>
 #include <cmath>
 
@@ -398,28 +398,28 @@ struct GLF {
         unsigned int start_ascii = 0;
         unsigned int end_ascii = 255;
         unsigned int* binds = (unsigned int*) malloc(sizeof (unsigned int) * 256);
-        glPushAttrib(GL_TEXTURE_BIT);
-        glEnable(GL_TEXTURE_2D);
-        glGenTextures(end_ascii - start_ascii, binds);
+        GL::glPushAttrib(GL_TEXTURE_BIT);
+        GL::glEnable(GL_TEXTURE_2D);
+        GL::glGenTextures(end_ascii - start_ascii, binds);
         unsigned char* rgba = (unsigned char*) malloc(sizeof (char) *8 * 16 * 4); /* glTexImage2D *needs* dynamic memory.*/
         unsigned int i;
         for (i = 0; i <= end_ascii; i++) {
-            glBindTexture(GL_TEXTURE_2D, binds[i]);
-            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+            GL::glBindTexture(GL_TEXTURE_2D, binds[i]);
+            GL::glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
             unsigned char ascii = (start_ascii + i);
             getFontBitmap_8_16_rgba(font, rgba, ascii);
             if (MIPMAPPEDFONT) {
-                gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, 8, 16, GL_RGBA, GL_UNSIGNED_BYTE, (void*) rgba);
+                GLU::gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, 8, 16, GL_RGBA, GL_UNSIGNED_BYTE, (void*) rgba);
             } else {
-                glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 16, 0, GL_RGBA, GL_UNSIGNED_BYTE, (void*) rgba);
+                GL::glTexImage2D(GL_TEXTURE_2D, 0, 4, 8, 16, 0, GL_RGBA, GL_UNSIGNED_BYTE, (void*) rgba);
             }
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            GL::glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+            GL::glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+            GL::glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            GL::glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         }
         free(rgba);
-        glPopAttrib();
+        GL::glPopAttrib();
         return binds;
     }
 
@@ -431,17 +431,17 @@ struct GLF {
      * @param bind
      */
     static void glTexturedSquare(unsigned int bind) {
-        glBindTexture(GL_TEXTURE_2D, (unsigned int) bind);
-        glBegin(GL_QUADS);
-        glTexCoord2f(0, 0);
-        glVertex3f(0, 0, 0);
-        glTexCoord2f(1, 0);
-        glVertex3f(1, 0, 0);
-        glTexCoord2f(1, 1);
-        glVertex3f(1, -1, 0);
-        glTexCoord2f(0, 1);
-        glVertex3f(0, -1, 0);
-        glEnd();
+        GL::glBindTexture(GL_TEXTURE_2D, (unsigned int) bind);
+        GL::glBegin(GL_QUADS);
+        GL::glTexCoord2f(0, 0);
+        GL::glVertex3f(0, 0, 0);
+        GL::glTexCoord2f(1, 0);
+        GL::glVertex3f(1, 0, 0);
+        GL::glTexCoord2f(1, 1);
+        GL::glVertex3f(1, -1, 0);
+        GL::glTexCoord2f(0, 1);
+        GL::glVertex3f(0, -1, 0);
+        GL::glEnd();
     }
 
     /**
@@ -455,30 +455,30 @@ struct GLF {
         int len = strlen(buf);
         unsigned int* asciibinds = getFont();
         if (asciibinds == NULL) return;
-        glPushAttrib(GL_ENABLE_BIT);
+        GL::glPushAttrib(GL_ENABLE_BIT);
         {
-            glDisable(GL_CULL_FACE);
-            glEnable(GL_TEXTURE_2D);
-            glPushMatrix();
+            GL::glDisable(GL_CULL_FACE);
+            GL::glEnable(GL_TEXTURE_2D);
+            GL::glPushMatrix();
             {
                 int i, col = 0;
                 for (i = 0; i < len; i++) {
                     if (buf[i] == '\n') {
-                        glTranslatef(-col, -1, 0);
+                        GL::glTranslatef(-col, -1, 0);
                         col = 0;
                     } else if (buf[i] == '\t') {
-                        glTranslatef((col + 1) % 5, 0, 0);
+                        GL::glTranslatef((col + 1) % 5, 0, 0);
                         col += ((col + 1) % 5);
                     } else {
                         glTexturedSquare(asciibinds[(unsigned char)buf[i]]);
-                        glTranslatef(1, 0, 0);
+                        GL::glTranslatef(1, 0, 0);
                         col++;
                     }
                 }
             }
-            glPopMatrix();
+            GL::glPopMatrix();
         }
-        glPopAttrib();
+        GL::glPopAttrib();
     }
 
     /**
@@ -506,7 +506,6 @@ struct GLF {
 
 #include "de/hackcraft/psi3d/Console.h"
 
-#include <GL/glew.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
 
@@ -516,9 +515,9 @@ unsigned int* gInstantfont = NULL;
 Console gCon[4];
 
 void Init() {
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_BLEND);
-    glEnable(GL_TEXTURE_2D);
+    GL::glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    GL::glEnable(GL_BLEND);
+    GL::glEnable(GL_TEXTURE_2D);
     glUploadFont();
 
     Console* con = NULL;
@@ -544,55 +543,55 @@ void Init() {
 
 void Reshape(int w, int h) {
     glViewport(0, 0, w, h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
+    GL::glMatrixMode(GL_PROJECTION);
+    GL::glLoadIdentity();
     gluPerspective(60, (double) w / (double) h, 0.001, 100);
-    glMatrixMode(GL_MODELVIEW);
+    GL::glMatrixMode(GL_MODELVIEW);
     glutPostRedisplay();
 }
 
 void Draw() {
-    //  glClearColor(0.3, 0.3, 0.7, 0.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //  GL::glClearColor(0.3, 0.3, 0.7, 0.0);
+    GL::glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     static float t = 0;
     t += 0.3;
 
     Console* con = NULL;
 
-    glDisable(GL_BLEND);
-    glColor3f(0, 0, 0.6);
-    glPushMatrix();
-    glTranslatef(0, 0, -35);
-    glRotatef(t * 10, 1, 2, 3);
-    glTranslatef(-20, +15, 0);
+    GL::glDisable(GL_BLEND);
+    GL::glColor3f(0, 0, 0.6);
+    GL::glPushMatrix();
+    GL::glTranslatef(0, 0, -35);
+    GL::glRotatef(t * 10, 1, 2, 3);
+    GL::glTranslatef(-20, +15, 0);
     con = &gCon[1];
     glDrawConsole(con->buffer, con->size, con->width, con->cursor);
-    glPopMatrix();
-    glEnable(GL_BLEND);
+    GL::glPopMatrix();
+    GL::glEnable(GL_BLEND);
 
     con = &gCon[1];
     bnprintf(con->buffer, con->size, con->width, &con->cursor, "123");
 
-    glColor3f(0.1, 0.4, 0.1);
-    glPushMatrix();
-    glTranslatef(-19.0 / 2.0, +7.5, -14);
+    GL::glColor3f(0.1, 0.4, 0.1);
+    GL::glPushMatrix();
+    GL::glTranslatef(-19.0 / 2.0, +7.5, -14);
     glPrintf("Console System Test");
-    glPopMatrix();
+    GL::glPopMatrix();
 
-    glColor3f(0.1, 0.4, 0.1);
-    glPushMatrix();
-    glTranslatef(-12.0 / 2.0, -6.5, -14);
+    GL::glColor3f(0.1, 0.4, 0.1);
+    GL::glPushMatrix();
+    GL::glTranslatef(-12.0 / 2.0, -6.5, -14);
     glPrintf("Instant Font");
-    glPopMatrix();
+    GL::glPopMatrix();
 
-    glColor3f(0, 0.3, 0.7);
-    glPushMatrix();
-    glTranslatef(-5, +5, -20);
-    glScalef(0.6, 1.2, 1);
+    GL::glColor3f(0, 0.3, 0.7);
+    GL::glPushMatrix();
+    GL::glTranslatef(-5, +5, -20);
+    GL::glScalef(0.6, 1.2, 1);
     con = &gCon[0];
     glDrawConsole(con->buffer, con->size, con->width, con->cursor);
-    glPopMatrix();
+    GL::glPopMatrix();
 
     glutSwapBuffers();
 }

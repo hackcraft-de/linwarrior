@@ -5,7 +5,7 @@
 
 #include "de/hackcraft/world/World.h"
 
-#include <GL/glew.h>
+#include "de/hackcraft/opengl/GL.h"
 
 
 std::string rMobile::cname = "MOBILE";
@@ -236,28 +236,28 @@ void rMobile::drawSolid() {
 
 void rMobile::drawEffect() {
     /*
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
         SGL::glUseProgram_fgaddcolor();
 
         // Draw colored base.
-        glPushMatrix();
+        GL::glPushMatrix();
         {
-            glTranslatef(traceable->pos[0], traceable->pos[1], traceable->pos[2]);
+            GL::glTranslatef(traceable->pos[0], traceable->pos[1], traceable->pos[2]);
             SGL::glRotateq(traceable->ori);
-            glTranslatef(0, +0.1, 0);
-            glRotatef(90, 1, 0, 0);
-            //glColor4f(0.1,0.1,0.1,0.9);
+            GL::glTranslatef(0, +0.1, 0);
+            GL::glRotatef(90, 1, 0, 0);
+            //GL::glColor4f(0.1,0.1,0.1,0.9);
             //cPrimitives::glDisk(4, 1.3f);
-            if (hasTag(RED)) glColor4f(1, 0, 0, 0.9);
-            else if (hasTag(GREEN)) glColor4f(0, 1, 0, 0.9);
-            else if (hasTag(BLUE)) glColor4f(0, 0, 1, 0.9);
-            else glColor4f(1, 1, 0, 0.9);
+            if (hasTag(RED)) GL::glColor4f(1, 0, 0, 0.9);
+            else if (hasTag(GREEN)) GL::glColor4f(0, 1, 0, 0.9);
+            else if (hasTag(BLUE)) GL::glColor4f(0, 0, 1, 0.9);
+            else GL::glColor4f(1, 1, 0, 0.9);
             cPrimitives::glDisk(1, -1.3f);
         }
-        glPopMatrix();
+        GL::glPopMatrix();
     }
-    glPopAttrib();
+    GL::glPopAttrib();
      */
 }
 

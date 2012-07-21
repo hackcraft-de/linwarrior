@@ -1,5 +1,7 @@
 #include "World.h"
 
+#include "de/hackcraft/opengl/GL.h"
+
 #include "de/hackcraft/world/Entity.h"
 
 #include <cassert>
@@ -226,9 +228,9 @@ void World::transformObjects() {
 
     foreachNoInc(i, mObjects) {
         Entity* object = *i++;
-        glPushMatrix();
+        GL::glPushMatrix();
         object->transform();
-        glPopMatrix();
+        GL::glPopMatrix();
     }
 
     for (Subsystem* sub : subsystems) {
@@ -268,7 +270,7 @@ bool World::drawBack() {
     }
     
     if (!any) {
-        glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+        GL::glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     }
     
     return true;
@@ -288,11 +290,11 @@ void World::drawSolid() {
         float z = object->pos0[2] - origin[2];
         float d2 = x * x + z * z;
         if (d2 > maxrange2) continue;
-        glPushMatrix();
+        GL::glPushMatrix();
         {
             object->drawSolid();
         }
-        glPopMatrix();
+        GL::glPopMatrix();
     }
 
     for (Subsystem* sub : subsystems) {
@@ -313,29 +315,29 @@ void World::drawEffect() {
         float z = object->pos0[2] - origin[2];
         float d2 = x * x + z*z;
         if (d2 > maxrange2) continue;
-        glPushMatrix();
+        GL::glPushMatrix();
         {
             object->drawEffect();
         }
-        glPopMatrix();
+        GL::glPopMatrix();
     }
 
     if (!true) {
-        glPushAttrib(GL_ALL_ATTRIB_BITS);
+        GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
-            glDisable(GL_CULL_FACE);
-            glDisable(GL_TEXTURE_2D);
-            glDisable(GL_TEXTURE_3D);
+            GL::glDisable(GL_CULL_FACE);
+            GL::glDisable(GL_TEXTURE_2D);
+            GL::glDisable(GL_TEXTURE_3D);
             //float d = 2000;
             //float min[] = {-d, 0, -d};
             //float max[] = {+d, 40, +d};
-            glPushMatrix();
+            GL::glPushMatrix();
             {
                 // Draw Geomap information.
             }
-            glPopMatrix();
+            GL::glPopMatrix();
         }
-        glPopAttrib();
+        GL::glPopAttrib();
     }
 
     for (Subsystem* sub : subsystems) {
@@ -509,7 +511,6 @@ std::list<Entity*>* World::filterByBeam(Entity* ex, float* pointa, float* pointb
 
 float World::constrainParticle(Entity* ex, float* worldpos, float radius) {
     float depth = 0;
-    float maxrange = 25;
 
     bool groundplane = !true;
     if (groundplane && (worldpos[1] - radius < 0.0f)) {
@@ -521,14 +522,15 @@ float World::constrainParticle(Entity* ex, float* worldpos, float radius) {
         depth += sub->constrainParticle(ex, worldpos, radius);
     }
     
-    std::list<Entity*>* range = filterByRange(ex, worldpos, 0.0f, maxrange, -1, NULL);
-    if (!range->empty()) {
-
-        for(Entity* object: *range) {
-            depth += object->constrain(worldpos, radius, NULL, ex);
-        }
-    }
-    delete range;
+//    float maxrange = 25;
+//    std::list<Entity*>* range = filterByRange(ex, worldpos, 0.0f, maxrange, -1, NULL);
+//    if (!range->empty()) {
+//
+//        for(Entity* object: *range) {
+//            depth += object->constrain(worldpos, radius, NULL, ex);
+//        }
+//    }
+//    delete range;
     return depth;
 }
 

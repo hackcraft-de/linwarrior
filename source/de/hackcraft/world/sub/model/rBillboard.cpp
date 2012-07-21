@@ -3,7 +3,7 @@
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/GLF.h"
 
-#include <GL/glew.h>
+#include "de/hackcraft/opengl/GL.h"
 
 std::string rBillboard::cname = "NAMEABLE";
 unsigned int rBillboard::cid = 8730;
@@ -35,31 +35,31 @@ Component* rBillboard::clone() {
 void rBillboard::drawEffect() {
     if (!effect) return;
 
-    glPushMatrix();
+    GL::glPushMatrix();
     {
-        glPushAttrib(GL_ALL_ATTRIB_BITS);
+        GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
             GLS::glUseProgram_fgplaintexture();
-            glColor4fv(color);
+            GL::glColor4fv(color);
 
             float s = 0.75;
-            glTranslatef(pos0[0], pos0[1], pos0[2]);
+            GL::glTranslatef(pos0[0], pos0[1], pos0[2]);
             GLS::glRotateq(ori0);
-            glTranslatef(pos1[0], pos1[1], pos1[2]);
+            GL::glTranslatef(pos1[0], pos1[1], pos1[2]);
             bool billboard = true;
             if (!billboard) GLS::glRotateq(ori1);
-            glScalef(s, s, s);
+            GL::glScalef(s, s, s);
             if (billboard) {
                 float n[16];
                 GLS::glGetTransposeInverseRotationMatrix(n);
-                glMultMatrixf(n);
+                GL::glMultMatrixf(n);
             }
             int l = name.length();
-            glTranslatef(-l * 0.5f, 0, 0);
+            GL::glTranslatef(-l * 0.5f, 0, 0);
             GLF::glprint(name.c_str());
         }
-        glPopAttrib();
+        GL::glPopAttrib();
     }
-    glPopMatrix();
+    GL::glPopMatrix();
 }
 

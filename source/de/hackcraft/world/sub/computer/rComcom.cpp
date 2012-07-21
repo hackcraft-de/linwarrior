@@ -44,24 +44,24 @@ void rComcom::animate(float spf) {
 void rComcom::drawHUD() {
     if (!active) return;
 
-    //glColor4f(0,0.1,0,0.2);
-    glBegin(GL_QUADS);
-    glVertex3f(1, 1, 0);
-    glVertex3f(0, 1, 0);
-    glVertex3f(0, 0, 0);
-    glVertex3f(1, 0, 0);
-    glEnd();
-    glPushMatrix();
+    //GL::glColor4f(0,0.1,0,0.2);
+    GL::glBegin(GL_QUADS);
+    GL::glVertex3f(1, 1, 0);
+    GL::glVertex3f(0, 1, 0);
+    GL::glVertex3f(0, 0, 0);
+    GL::glVertex3f(1, 0, 0);
+    GL::glEnd();
+    GL::glPushMatrix();
     {
-        glColor4f(0, 1, 0, 0.9);
-        //glColor4f(0.99, 0.99, 0.19, 1);
+        GL::glColor4f(0, 1, 0, 0.9);
+        //GL::glColor4f(0.99, 0.99, 0.19, 1);
         Console* console = (Console*) mConsole;
         float w = console->width;
         float h = console->size / console->width;
-        glTranslatef(0, 1.0f + (1.0f / h), 0);
-        glScalef(1.0f / w, 1.0f / h, 1.0f);
+        GL::glTranslatef(0, 1.0f + (1.0f / h), 0);
+        GL::glScalef(1.0f / w, 1.0f / h, 1.0f);
         Console::Console_draw(console);
     }
-    glPopMatrix();
+    GL::glPopMatrix();
 }
 

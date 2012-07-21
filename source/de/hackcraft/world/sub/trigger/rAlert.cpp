@@ -133,20 +133,20 @@ void rAlert::drawSystemEffect() {
 
     //if (!sDrawzone) return;
 
-    glPushMatrix();
+    GL::glPushMatrix();
     {
-        glPushAttrib(GL_ALL_ATTRIB_BITS);
+        GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
             GLS::glUseProgram_fgplaincolor();
             /*
-            glDisable(GL_LIGHTING);
-            glDisable(GL_FOG);
-            glDisable(GL_CULL_FACE);
+            GL::glDisable(GL_LIGHTING);
+            GL::glDisable(GL_FOG);
+            GL::glDisable(GL_CULL_FACE);
              */
 
-            glLineWidth(3);
-            glLineStipple(0.01, 0xFC);
-            glEnable(GL_LINE_STIPPLE);
+            GL::glLineWidth(3);
+            GL::glLineStipple(0.01, 0xFC);
+            GL::glEnable(GL_LINE_STIPPLE);
             switch (s->type) {
                 case rShape::CYLINDER:
                 {
@@ -154,85 +154,85 @@ void rAlert::drawSystemEffect() {
                     const int n = 12;
                     const float a_inc = M_PI * 2.0 / (double) n;
                     // XZ-Bottom-Plane
-                    glColor4fv(c1);
+                    GL::glColor4fv(c1);
                     a = 0;
-                    glBegin(GL_LINE_STRIP);
+                    GL::glBegin(GL_LINE_STRIP);
 
                     loopi(n + 1) {
                         float rx = sin(a) * range[0];
                         float rz = cos(a) * range[2];
                         a += a_inc;
-                        glVertex3f(center[0] + rx, center[1] - range[1], center[2] + rz);
+                        GL::glVertex3f(center[0] + rx, center[1] - range[1], center[2] + rz);
                     }
-                    glEnd();
+                    GL::glEnd();
                     // XZ-Top-Plane
-                    glColor4fv(c1);
+                    GL::glColor4fv(c1);
                     a = 0;
-                    glBegin(GL_LINE_STRIP);
+                    GL::glBegin(GL_LINE_STRIP);
 
                     loopi(n + 1) {
                         float rx = sin(a) * range[0];
                         float rz = cos(a) * range[2];
                         a += a_inc;
-                        glVertex3f(center[0] + rx, center[1] + range[1], center[2] + rz);
+                        GL::glVertex3f(center[0] + rx, center[1] + range[1], center[2] + rz);
                     }
-                    glEnd();
+                    GL::glEnd();
                     // Sides
-                    glColor4fv(c2);
+                    GL::glColor4fv(c2);
                     a = 0;
-                    glBegin(GL_LINES);
+                    GL::glBegin(GL_LINES);
 
                     loopi(n) {
                         float rx = sin(a) * range[0];
                         float rz = cos(a) * range[2];
                         a += a_inc;
-                        glVertex3f(center[0] + rx, center[1] - range[1], center[2] + rz);
-                        glVertex3f(center[0] + rx, center[1] + range[1], center[2] + rz);
+                        GL::glVertex3f(center[0] + rx, center[1] - range[1], center[2] + rz);
+                        GL::glVertex3f(center[0] + rx, center[1] + range[1], center[2] + rz);
                     }
-                    glEnd();
+                    GL::glEnd();
                     break;
                 }
                 case rShape::BOX:
                 {
                     // Front-XY-Plane
-                    glColor4fv(c1);
-                    glBegin(GL_LINE_STRIP);
+                    GL::glColor4fv(c1);
+                    GL::glBegin(GL_LINE_STRIP);
                     {
-                        glVertex3f(center[0] - range[0], center[1] - range[1], center[2] - range[2]);
-                        glVertex3f(center[0] + range[0], center[1] - range[1], center[2] - range[2]);
-                        glVertex3f(center[0] + range[0], center[1] + range[1], center[2] - range[2]);
-                        glVertex3f(center[0] - range[0], center[1] + range[1], center[2] - range[2]);
-                        glVertex3f(center[0] - range[0], center[1] - range[1], center[2] - range[2]);
+                        GL::glVertex3f(center[0] - range[0], center[1] - range[1], center[2] - range[2]);
+                        GL::glVertex3f(center[0] + range[0], center[1] - range[1], center[2] - range[2]);
+                        GL::glVertex3f(center[0] + range[0], center[1] + range[1], center[2] - range[2]);
+                        GL::glVertex3f(center[0] - range[0], center[1] + range[1], center[2] - range[2]);
+                        GL::glVertex3f(center[0] - range[0], center[1] - range[1], center[2] - range[2]);
                     }
-                    glEnd();
+                    GL::glEnd();
                     // Back-XY-Plane
-                    glColor4fv(c1);
-                    glBegin(GL_LINE_STRIP);
+                    GL::glColor4fv(c1);
+                    GL::glBegin(GL_LINE_STRIP);
                     {
-                        glVertex3f(center[0] - range[0], center[1] - range[1], center[2] + range[2]);
-                        glVertex3f(center[0] + range[0], center[1] - range[1], center[2] + range[2]);
-                        glVertex3f(center[0] + range[0], center[1] + range[1], center[2] + range[2]);
-                        glVertex3f(center[0] - range[0], center[1] + range[1], center[2] + range[2]);
-                        glVertex3f(center[0] - range[0], center[1] - range[1], center[2] + range[2]);
+                        GL::glVertex3f(center[0] - range[0], center[1] - range[1], center[2] + range[2]);
+                        GL::glVertex3f(center[0] + range[0], center[1] - range[1], center[2] + range[2]);
+                        GL::glVertex3f(center[0] + range[0], center[1] + range[1], center[2] + range[2]);
+                        GL::glVertex3f(center[0] - range[0], center[1] + range[1], center[2] + range[2]);
+                        GL::glVertex3f(center[0] - range[0], center[1] - range[1], center[2] + range[2]);
                     }
-                    glEnd();
+                    GL::glEnd();
                     // Front-Back-Lines
-                    glColor4fv(c2);
-                    glBegin(GL_LINES);
+                    GL::glColor4fv(c2);
+                    GL::glBegin(GL_LINES);
                     {
-                        glVertex3f(center[0] - range[0], center[1] - range[1], center[2] - range[2]);
-                        glVertex3f(center[0] - range[0], center[1] - range[1], center[2] + range[2]);
+                        GL::glVertex3f(center[0] - range[0], center[1] - range[1], center[2] - range[2]);
+                        GL::glVertex3f(center[0] - range[0], center[1] - range[1], center[2] + range[2]);
 
-                        glVertex3f(center[0] + range[0], center[1] - range[1], center[2] - range[2]);
-                        glVertex3f(center[0] + range[0], center[1] - range[1], center[2] + range[2]);
+                        GL::glVertex3f(center[0] + range[0], center[1] - range[1], center[2] - range[2]);
+                        GL::glVertex3f(center[0] + range[0], center[1] - range[1], center[2] + range[2]);
 
-                        glVertex3f(center[0] + range[0], center[1] + range[1], center[2] - range[2]);
-                        glVertex3f(center[0] + range[0], center[1] + range[1], center[2] + range[2]);
+                        GL::glVertex3f(center[0] + range[0], center[1] + range[1], center[2] - range[2]);
+                        GL::glVertex3f(center[0] + range[0], center[1] + range[1], center[2] + range[2]);
 
-                        glVertex3f(center[0] - range[0], center[1] + range[1], center[2] - range[2]);
-                        glVertex3f(center[0] - range[0], center[1] + range[1], center[2] + range[2]);
+                        GL::glVertex3f(center[0] - range[0], center[1] + range[1], center[2] - range[2]);
+                        GL::glVertex3f(center[0] - range[0], center[1] + range[1], center[2] + range[2]);
                     }
-                    glEnd();
+                    GL::glEnd();
                     break;
                 }
                 case rShape::SPHERE:
@@ -241,41 +241,41 @@ void rAlert::drawSystemEffect() {
                     const int n = 12;
                     const float a_inc = M_PI * 2.0 / (double) n;
                     // XZ-Plane
-                    glColor4fv(c2);
+                    GL::glColor4fv(c2);
                     a = 0;
-                    glBegin(GL_LINE_STRIP);
+                    GL::glBegin(GL_LINE_STRIP);
 
                     loopi(n + 1) {
                         float rx = sin(a) * range[0];
                         float rz = cos(a) * range[2];
                         a += a_inc;
-                        glVertex3f(center[0] + rx, center[1], center[2] + rz);
+                        GL::glVertex3f(center[0] + rx, center[1], center[2] + rz);
                     }
-                    glEnd();
+                    GL::glEnd();
                     // XY-Plane
-                    glColor4fv(c3);
+                    GL::glColor4fv(c3);
                     a = 0;
-                    glBegin(GL_LINE_STRIP);
+                    GL::glBegin(GL_LINE_STRIP);
 
                     loopi(n + 1) {
                         float rx = sin(a) * range[0];
                         float ry = cos(a) * range[1];
                         a += a_inc;
-                        glVertex3f(center[0] + rx, center[1] + ry, center[2]);
+                        GL::glVertex3f(center[0] + rx, center[1] + ry, center[2]);
                     }
-                    glEnd();
+                    GL::glEnd();
                     // YZ-Plane
-                    glColor4fv(c1);
+                    GL::glColor4fv(c1);
                     a = 0;
-                    glBegin(GL_LINE_STRIP);
+                    GL::glBegin(GL_LINE_STRIP);
 
                     loopi(n + 1) {
                         float rz = sin(a) * range[2];
                         float ry = cos(a) * range[1];
                         a += a_inc;
-                        glVertex3f(center[0], center[1] + ry, center[2] + rz);
+                        GL::glVertex3f(center[0], center[1] + ry, center[2] + rz);
                     }
-                    glEnd();
+                    GL::glEnd();
                     break;
                 }
                 case rShape::CONE:
@@ -284,30 +284,30 @@ void rAlert::drawSystemEffect() {
                     const int n = 12;
                     const float a_inc = M_PI * 2.0 / (double) n;
                     // XZ-Bottom-Plane
-                    glColor4fv(c1);
+                    GL::glColor4fv(c1);
                     a = 0;
-                    glBegin(GL_LINE_STRIP);
+                    GL::glBegin(GL_LINE_STRIP);
 
                     loopi(n + 1) {
                         float rx = sin(a) * range[0];
                         float rz = cos(a) * range[2];
                         a += a_inc;
-                        glVertex3f(center[0] + rx, center[1] - range[1], center[2] + rz);
+                        GL::glVertex3f(center[0] + rx, center[1] - range[1], center[2] + rz);
                     }
-                    glEnd();
+                    GL::glEnd();
                     // Sides
-                    glColor4fv(c2);
+                    GL::glColor4fv(c2);
                     a = 0;
-                    glBegin(GL_LINES);
+                    GL::glBegin(GL_LINES);
 
                     loopi(n) {
                         float rx = sin(a) * range[0];
                         float rz = cos(a) * range[2];
                         a += a_inc;
-                        glVertex3f(center[0] + rx, center[1] - range[1], center[2] + rz);
-                        glVertex3f(center[0], center[1] + range[1], center[2]);
+                        GL::glVertex3f(center[0] + rx, center[1] - range[1], center[2] + rz);
+                        GL::glVertex3f(center[0], center[1] + range[1], center[2]);
                     }
-                    glEnd();
+                    GL::glEnd();
                     break;
                 }
                 default:
@@ -317,9 +317,9 @@ void rAlert::drawSystemEffect() {
             }
 
         }
-        glPopAttrib();
+        GL::glPopAttrib();
     }
-    glPopMatrix();
+    GL::glPopMatrix();
 
     //glPopName();
 }

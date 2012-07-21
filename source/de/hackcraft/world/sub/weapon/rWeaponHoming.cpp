@@ -159,61 +159,61 @@ void rWeaponHoming::animate(float spf) {
 void rWeaponHoming::drawSolid() {
     // Missile barrels
     if (drawWeapon) {
-        glPushAttrib(GL_ALL_ATTRIB_BITS);
+        GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
             GLS::glUseProgram_fglitcolor();
 
-            glPushMatrix();
+            GL::glPushMatrix();
             {
                 transformTo();
-                glRotatef(-90, 1, 0, 0);
+                GL::glRotatef(-90, 1, 0, 0);
 
                 // Scale
                 float scale = weaponScale;
-                glScalef(scale, scale, scale);
+                GL::glScalef(scale, scale, scale);
 
-                glColor4f(0.3, 0.3, 0.3, 1.0);
-                glPushMatrix();
+                GL::glColor4f(0.3, 0.3, 0.3, 1.0);
+                GL::glPushMatrix();
                 {
-                    glTranslatef(0, 0.75, 0);
-                    glScalef(0.065, 0.75, 0.065);
+                    GL::glTranslatef(0, 0.75, 0);
+                    GL::glScalef(0.065, 0.75, 0.065);
                     Primitive::glCenterUnitCylinder(7);
 
                 }
-                glPopMatrix();
+                GL::glPopMatrix();
 
-                glColor4f(0.3, 0.3, 0.2, 1.0);
-                glPushMatrix();
+                GL::glColor4f(0.3, 0.3, 0.2, 1.0);
+                GL::glPushMatrix();
                 {
-                    glScalef(0.1, 0.14, 0.12);
+                    GL::glScalef(0.1, 0.14, 0.12);
                     Primitive::glCenterUnitBlock();
                 }
-                glPopMatrix();
+                GL::glPopMatrix();
 
-                glColor4f(0.1, 0.1, 0.1, 1.0);
+                GL::glColor4f(0.1, 0.1, 0.1, 1.0);
                 if (this->ready() == 0 && remainingAmmo != 0 && object != NULL) {
-                    glRotatef(object->seconds * 1 * 90, 0, 1, 0);
+                    GL::glRotatef(object->seconds * 1 * 90, 0, 1, 0);
                 }
                 int n = 4;
 
                 loopi(n) {
-                    glPushMatrix();
+                    GL::glPushMatrix();
                     {
-                        glRotatef(i * 360 / n, 0, 1, 0);
-                        glTranslatef(0.075, 0.8, 0);
-                        glScalef(0.06, 0.8, 0.06);
+                        GL::glRotatef(i * 360 / n, 0, 1, 0);
+                        GL::glTranslatef(0.075, 0.8, 0);
+                        GL::glScalef(0.06, 0.8, 0.06);
                         Primitive::glCenterUnitCylinder(7);
                     }
-                    glPopMatrix();
+                    GL::glPopMatrix();
                 }
             }
-            glPopMatrix();
+            GL::glPopMatrix();
         }
-        glPopAttrib();
+        GL::glPopAttrib();
     }
 
     // Missiles themselves:
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
         GLS::glUseProgram_fglitcolor();
 
@@ -228,8 +228,8 @@ void rWeaponHoming::drawSolid() {
         const float c3 = radius * cos(240 * PI_OVER_180);
 
         float m[16];
-        glGetFloatv(GL_MODELVIEW_MATRIX, m);
-        glColor4f(0.7, 0.7, 0.7, 1.0);
+        GL::glGetFloatv(GL_MODELVIEW_MATRIX, m);
+        GL::glColor4f(0.7, 0.7, 0.7, 1.0);
 
         foreachNoInc(i, missileParticles) {
             Particle* s = *i++;
@@ -249,31 +249,31 @@ void rWeaponHoming::drawSolid() {
             b[15] = 1;
             //matrix_print(b);
 
-            glPushMatrix();
+            GL::glPushMatrix();
             {
-                glTranslatef(s->pos[0], s->pos[1], s->pos[2]);
-                glMultMatrixf(b);
+                GL::glTranslatef(s->pos[0], s->pos[1], s->pos[2]);
+                GL::glMultMatrixf(b);
                 //glNormAxis();
-                glBegin(GL_TRIANGLE_FAN);
-                glNormal3f(0, 0, 1);
-                glVertex3f(0, 0, length);
-                glVertex3f(s1, c1, 0);
-                glVertex3f(s2, c2, 0);
-                glVertex3f(s3, c3, 0);
-                glVertex3f(s1, c1, 0);
-                glEnd();
+                GL::glBegin(GL_TRIANGLE_FAN);
+                GL::glNormal3f(0, 0, 1);
+                GL::glVertex3f(0, 0, length);
+                GL::glVertex3f(s1, c1, 0);
+                GL::glVertex3f(s2, c2, 0);
+                GL::glVertex3f(s3, c3, 0);
+                GL::glVertex3f(s1, c1, 0);
+                GL::glEnd();
             }
-            glPopMatrix();
+            GL::glPopMatrix();
         }
 
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 }
 
 void rWeaponHoming::drawEffect() {
     if (missileParticles.empty()) return;
 
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
         GLS::glUseProgram_fgaddcolor();
 
@@ -285,45 +285,45 @@ void rWeaponHoming::drawEffect() {
         foreachNoInc(i, missileParticles) {
             Particle* s = *i++;
 
-            glPushMatrix();
+            GL::glPushMatrix();
             {
-                glTranslatef(s->pos[0], s->pos[1], s->pos[2]);
-                glMultMatrixf(n);
+                GL::glTranslatef(s->pos[0], s->pos[1], s->pos[2]);
+                GL::glMultMatrixf(n);
                 float size = 2.5 + 2.5 * 0.01f * (rand() % 100);
-                glColor4f(0.8, 0.5, 0.1, 0.99f);
+                GL::glColor4f(0.8, 0.5, 0.1, 0.99f);
                 Primitive::glDisk(9 + WEAPONDETAIL, size * 0.1f);
                 size = 2.5 + 2.5 * 0.01f * (rand() % 100);
-                glColor4f(0.9, 0.9, 0.9, 0.99f);
+                GL::glColor4f(0.9, 0.9, 0.9, 0.99f);
                 Primitive::glDisk(7 + WEAPONDETAIL, size * 0.07f);
             }
-            glPopMatrix();
+            GL::glPopMatrix();
         } // missiles
 
         // Draw Missile's trails.
         GLS::glUseProgram_fgaddtexture();
 
-        glBindTexture(GL_TEXTURE_2D, sTextures[0]);
+        GL::glBindTexture(GL_TEXTURE_2D, sTextures[0]);
 
         foreachNoInc(i, missileParticles) {
             Particle* s = *i++;
 
             foreachNoInc(j, s->trail) {
                 Particle* smoke = *j++;
-                glPushMatrix();
+                GL::glPushMatrix();
                 {
-                    glTranslatef(smoke->pos[0], smoke->pos[1], smoke->pos[2]);
-                    glMultMatrixf(n);
+                    GL::glTranslatef(smoke->pos[0], smoke->pos[1], smoke->pos[2]);
+                    GL::glMultMatrixf(n);
                     float m = 2 * smoke->fuel;
-                    glColor4f(m, m * 0.8, m * 0.6, 0.05 + smoke->fuel);
+                    GL::glColor4f(m, m * 0.8, m * 0.6, 0.05 + smoke->fuel);
                     float size = 0.1 + 0.2 * pow(1.0 + smoke->timer, 2.0);
                     Primitive::glDisk(5 + WEAPONDETAIL, size);
                 }
-                glPopMatrix();
+                GL::glPopMatrix();
             } // trails
         } // missiles
 
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 }
 
 void rWeaponHoming::drawHUD() {
@@ -334,38 +334,38 @@ void rWeaponHoming::drawHUD() {
     float i = 0.1;
     float j = 0.9;
     float r = i + (remainingAmmo / (float) clipSize) * (j - i);
-    glBegin(GL_QUADS);
-    glColor4f(1, 1, 0, b);
-    glVertex3f(i, j, 0.0);
-    glVertex3f(i, i, 0.0);
-    glColor4f(1, 0, 0, b);
-    glVertex3f(r, i, 0.0);
-    glVertex3f(r, j, 0.0);
-    glEnd();
+    GL::glBegin(GL_QUADS);
+    GL::glColor4f(1, 1, 0, b);
+    GL::glVertex3f(i, j, 0.0);
+    GL::glVertex3f(i, i, 0.0);
+    GL::glColor4f(1, 0, 0, b);
+    GL::glVertex3f(r, i, 0.0);
+    GL::glVertex3f(r, j, 0.0);
+    GL::glEnd();
 
     // Clips
     float l = 0.1;
     float h = 0.15;
     r = i + (remainingClips / (float) depotSize) * (j - i);
-    glBegin(GL_QUADS);
-    glColor4f(0, 0, 0, a);
-    glVertex3f(l, i + h, 0.0);
-    glVertex3f(l, i, 0.0);
-    glColor4f(1, 1, 1, a);
-    glVertex3f(r, i, 0.0);
-    glVertex3f(r, i + h, 0.0);
-    glEnd();
+    GL::glBegin(GL_QUADS);
+    GL::glColor4f(0, 0, 0, a);
+    GL::glVertex3f(l, i + h, 0.0);
+    GL::glVertex3f(l, i, 0.0);
+    GL::glColor4f(1, 1, 1, a);
+    GL::glVertex3f(r, i, 0.0);
+    GL::glVertex3f(r, i + h, 0.0);
+    GL::glEnd();
 
-    glBegin(GL_LINES);
-    glColor4f(0.3, 1, 0.3, b);
-    glVertex3f(0.4, 0.4, 0.0);
-    glVertex3f(0.6, 0.6, 0.0);
-    glVertex3f(0.6, 0.4, 0.0);
-    glVertex3f(0.4, 0.6, 0.0);
-    glVertex3f(0.5, 0.4, 0.0);
-    glVertex3f(0.5, 0.6, 0.0);
-    glVertex3f(0.4, 0.5, 0.0);
-    glVertex3f(0.6, 0.5, 0.0);
-    glEnd();
+    GL::glBegin(GL_LINES);
+    GL::glColor4f(0.3, 1, 0.3, b);
+    GL::glVertex3f(0.4, 0.4, 0.0);
+    GL::glVertex3f(0.6, 0.6, 0.0);
+    GL::glVertex3f(0.6, 0.4, 0.0);
+    GL::glVertex3f(0.4, 0.6, 0.0);
+    GL::glVertex3f(0.5, 0.4, 0.0);
+    GL::glVertex3f(0.5, 0.6, 0.0);
+    GL::glVertex3f(0.4, 0.5, 0.0);
+    GL::glVertex3f(0.6, 0.5, 0.0);
+    GL::glEnd();
 }
 

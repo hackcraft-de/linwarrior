@@ -2,6 +2,8 @@
 
 #include "de/hackcraft/log/Logger.h"
 
+#include "de/hackcraft/opengl/GL.h"
+
 #include "de/hackcraft/world/IModel.h"
 #include "de/hackcraft/world/World.h"
 
@@ -161,9 +163,9 @@ void WeaponSystem::transformObjects() {
 
     for (std::pair<OID,rWeapon*> p : weapons) {
         IModel* model = p.second;
-        glPushMatrix();
+        GL::glPushMatrix();
         model->transform();
-        glPopMatrix();
+        GL::glPopMatrix();
     }
 }
 
@@ -205,11 +207,11 @@ void WeaponSystem::drawSolid() {
         
         if (d2 > maxrange2) continue;
         
-        glPushMatrix();
+        GL::glPushMatrix();
         {
             model->drawSolid();
         }
-        glPopMatrix();
+        GL::glPopMatrix();
     }
 }
 
@@ -229,11 +231,11 @@ void WeaponSystem::drawEffect() {
         
         if (d2 > maxrange2) continue;
         
-        glPushMatrix();
+        GL::glPushMatrix();
         {
             model->drawEffect();
         }
-        glPopMatrix();
+        GL::glPopMatrix();
     }
 }
 

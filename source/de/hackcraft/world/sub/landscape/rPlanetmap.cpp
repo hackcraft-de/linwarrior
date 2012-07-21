@@ -659,7 +659,7 @@ int detail = 0;
 
 unsigned int rPlanetmap::loadMaterial() {
     static bool fail = false;
-    static GLenum prog = 0;
+    static GL::GLenum prog = 0;
 
     if (prog == 0 && !fail) {
         char* vtx = Filesystem::loadTextFile("data/base/material/base.vert");
@@ -684,7 +684,7 @@ void rPlanetmap::drawSolid() {
 
     // Get current Camera-Matrix.
     float m[16];
-    glGetFloatv(GL_MODELVIEW_MATRIX, m);
+    GL::glGetFloatv(GL_MODELVIEW_MATRIX, m);
     // Position from 4th Col.
     float p[3];
     loop3i(p[i] = m[12 + i]);
@@ -718,24 +718,24 @@ void rPlanetmap::drawSolid() {
 
     //detail = 8;
     T++;
-    glPushMatrix();
+    GL::glPushMatrix();
     {
-        glPushAttrib(GL_ALL_ATTRIB_BITS);
+        GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
-            glUseProgramObjectARB(loadMaterial());
+            GL::glUseProgramObjectARB(loadMaterial());
             
-            glEnable(GL_LIGHTING);
-            glEnable(GL_FOG);
-            glEnable(GL_COLOR_MATERIAL);
-            //glEnable(GL_NORMALIZE);
+            GL::glEnable(GL_LIGHTING);
+            GL::glEnable(GL_FOG);
+            GL::glEnable(GL_COLOR_MATERIAL);
+            //GL::glEnable(GL_NORMALIZE);
 #ifdef TWODIMTEX
-            glDisable(GL_TEXTURE_3D);
-            glEnable(GL_TEXTURE_2D);
-            glBindTexture(GL_TEXTURE_2D, sGrounds[groundtype]);
+            GL::glDisable(GL_TEXTURE_3D);
+            GL::glEnable(GL_TEXTURE_2D);
+            GL::glBindTexture(GL_TEXTURE_2D, sGrounds[groundtype]);
 #else
-            glDisable(GL_TEXTURE_2D);
-            glEnable(GL_TEXTURE_3D);
-            glBindTexture(GL_TEXTURE_3D, sGrounds[0]);
+            GL::glDisable(GL_TEXTURE_2D);
+            GL::glEnable(GL_TEXTURE_3D);
+            GL::glBindTexture(GL_TEXTURE_3D, sGrounds[0]);
 #endif
             
             float step = 64;
@@ -768,8 +768,8 @@ void rPlanetmap::drawSolid() {
             // From outer to inner ring
             for (int k = 1; k <= maxlevels; k++) {
 
-                //glDepthMask(false);
-                glColor4f(0, 0, 1, 1);
+                //GL::glDepthMask(false);
+                GL::glColor4f(0, 0, 1, 1);
 
                 float s_ = (areashrink * s) - 4 * step;
                 if (k == maxlevels) s_ = 0;
@@ -778,7 +778,7 @@ void rPlanetmap::drawSolid() {
                 z = -((int) (p[2] / step)) * step;
 
                 for (float i = x - s; i < x + s; i += step) {
-                    glBegin(GL_TRIANGLE_STRIP);
+                    GL::glBegin(GL_TRIANGLE_STRIP);
                     bool skip = false;
                     for (float j = z - s; j <= z + s; j += step) {
 
@@ -810,9 +810,9 @@ void rPlanetmap::drawSolid() {
                             skip = true;
                             continue;
                         } else if (skip) {
-                            glEnd();
+                            GL::glEnd();
                             skip = false;
-                            glBegin(GL_TRIANGLE_STRIP);
+                            GL::glBegin(GL_TRIANGLE_STRIP);
                         }
 
                         getCachedHeight(i + step, j, color);
@@ -823,15 +823,15 @@ void rPlanetmap::drawSolid() {
                         //float alpha = (d2 < dext) ? 1 : 1.0f/(1.0f + 0.002f*(d2-dext));
                         color[3] = alpha;
 
-                        //glNormal3f(0,1,0);
-                        glNormal3fv(&color[4]);
-                        glColor4f(fmin(1.0f, color[0]), fmin(1.0f, color[1]), fmin(1.0f, color[2]), fmin(1.0f, color[3]));
+                        //GL::glNormal3f(0,1,0);
+                        GL::glNormal3fv(&color[4]);
+                        GL::glColor4f(fmin(1.0f, color[0]), fmin(1.0f, color[1]), fmin(1.0f, color[2]), fmin(1.0f, color[3]));
 #ifdef TWODIMTEX
-                        glTexCoord2f((i + step) * ts, j * ts);
+                        GL::glTexCoord2f((i + step) * ts, j * ts);
 #else
-                        glTexCoord3f((i + step) * ts, h0*ts, j * ts);
+                        GL::glTexCoord3f((i + step) * ts, h0*ts, j * ts);
 #endif
-                        glVertex3f(i + step, h0, j);
+                        GL::glVertex3f(i + step, h0, j);
 
                         //
 
@@ -847,17 +847,17 @@ void rPlanetmap::drawSolid() {
                         //alpha = (d2 < dext) ? 1 : 1.0f/(1.0f + 0.002f*(d2-dext));
                         color[3] = alpha;
 
-                        //glNormal3f(0,1,0);
-                        glNormal3fv(&color[4]);
-                        glColor4f(fmin(1.0f, color[0]), fmin(1.0f, color[1]), fmin(1.0f, color[2]), fmin(1.0f, color[3]));
+                        //GL::glNormal3f(0,1,0);
+                        GL::glNormal3fv(&color[4]);
+                        GL::glColor4f(fmin(1.0f, color[0]), fmin(1.0f, color[1]), fmin(1.0f, color[2]), fmin(1.0f, color[3]));
 #ifdef TWODIMTEX
-                        glTexCoord2f((i + 0) * ts, j * ts);
+                        GL::glTexCoord2f((i + 0) * ts, j * ts);
 #else
-                        glTexCoord3f((i + 0) * ts, h1*ts, j * ts);
+                        GL::glTexCoord3f((i + 0) * ts, h1*ts, j * ts);
 #endif
-                        glVertex3f(i + 0, h1, j);
+                        GL::glVertex3f(i + 0, h1, j);
                     }
-                    glEnd();
+                    GL::glEnd();
                 }
 
                 s *= areashrink;
@@ -865,11 +865,11 @@ void rPlanetmap::drawSolid() {
 
             } // for k rings
 
-            glUseProgramObjectARB(0);
+            GL::glUseProgramObjectARB(0);
         }
-        glPopAttrib();
+        GL::glPopAttrib();
     }
-    glPopMatrix();
+    GL::glPopMatrix();
 
     // Reset Touches for LRU
     for (maptype<unsigned long, sPatch*>::iterator i = patches.begin(); i != patches.end(); ++i) {
@@ -881,96 +881,96 @@ void rPlanetmap::drawSolid() {
 }
 
 void rPlanetmap::drawBillboardPlant(float x__, float h, float z__, float scale, float* unrotateMatrix) {
-    glTranslatef(x__, h - 0.2, z__);
-    glMultMatrixf(unrotateMatrix);
-    glScalef(scale, scale, scale);
+    GL::glTranslatef(x__, h - 0.2, z__);
+    GL::glMultMatrixf(unrotateMatrix);
+    GL::glScalef(scale, scale, scale);
     static unsigned int dlist = 0;
     if (dlist == 0) {
-        dlist = glGenLists(1);
-        glNewList(dlist, GL_COMPILE_AND_EXECUTE);
+        dlist = GL::glGenLists(1);
+        GL::glNewList(dlist, GL_COMPILE_AND_EXECUTE);
         Primitive::glXCenteredTextureSquare();
         //glAxis(0.9);
-        glEndList();
+        GL::glEndList();
     } else {
-        glCallList(dlist);
+        GL::glCallList(dlist);
     }
 }
 
 void rPlanetmap::drawStarPlant(float x__, float h, float z__, float scale) {
-    glTranslatef(x__, h - 0.2-0.3, z__);
-    glScalef(scale, scale, scale);
+    GL::glTranslatef(x__, h - 0.2-0.3, z__);
+    GL::glScalef(scale, scale, scale);
     static unsigned int dlist = 0;
     if (dlist == 0) {
-        dlist = glGenLists(1);
-        glNewList(dlist, GL_COMPILE_AND_EXECUTE);
+        dlist = GL::glGenLists(1);
+        GL::glNewList(dlist, GL_COMPILE_AND_EXECUTE);
         Primitive::glBrush();
-        glEndList();
+        GL::glEndList();
     } else {
-        glCallList(dlist);
+        GL::glCallList(dlist);
     }
 }
 
 void rPlanetmap::drawTrianglePlant(float x__, float h, float z__, float scale) {
-    glTranslatef(x__, h - 0.2, z__);
-    glScalef(scale, scale, scale);
+    GL::glTranslatef(x__, h - 0.2, z__);
+    GL::glScalef(scale, scale, scale);
     static unsigned int dlist = 0;
     if (dlist == 0) {
-        dlist = glGenLists(1);
-        glNewList(dlist, GL_COMPILE_AND_EXECUTE);
+        dlist = GL::glGenLists(1);
+        GL::glNewList(dlist, GL_COMPILE_AND_EXECUTE);
         Primitive::glSharp();
-        glEndList();
+        GL::glEndList();
     } else {
-        glCallList(dlist);
+        GL::glCallList(dlist);
     }
 }
 
 void rPlanetmap::drawCrossPlant(float x__, float h, float z__, float scale) {
-    glTranslatef(x__, h - 0.2, z__);
-    glScalef(scale, scale, scale);
+    GL::glTranslatef(x__, h - 0.2, z__);
+    GL::glScalef(scale, scale, scale);
     static unsigned int dlist = 0;
     if (dlist == 0) {
-        dlist = glGenLists(1);
-        glNewList(dlist, GL_COMPILE_AND_EXECUTE);
+        dlist = GL::glGenLists(1);
+        GL::glNewList(dlist, GL_COMPILE_AND_EXECUTE);
         Primitive::glStar();
-        glEndList();
+        GL::glEndList();
     } else {
-        glCallList(dlist);
+        GL::glCallList(dlist);
     }
 }
 
 void rPlanetmap::drawLeafPlant(float x__, float h, float z__, float scale) {
-    glTranslatef(x__, h - 0.2, z__);
-    glScalef(scale, scale, scale);
+    GL::glTranslatef(x__, h - 0.2, z__);
+    GL::glScalef(scale, scale, scale);
     static unsigned int dlist = 0;
     if (dlist == 0) {
-        dlist = glGenLists(1);
-        glNewList(dlist, GL_COMPILE_AND_EXECUTE);
+        dlist = GL::glGenLists(1);
+        GL::glNewList(dlist, GL_COMPILE_AND_EXECUTE);
         //ploth(x=0,1, sin(x)/(1+1.7*x)+0.1*x)
         
         for (int j = 0; j < 7; j++) {
             
-            glRotatef(j * 135.0 + 0.10*(rand()%100), 0,1,0);
+            GL::glRotatef(j * 135.0 + 0.10*(rand()%100), 0,1,0);
 
             float w = (1.7 - j * 0.05) / 4.0;
             float h = (1.0 + j * 0.01) / 4.0;
             float l = (1.0 - j * 0.05) / 4.0;
-            glBegin(GL_TRIANGLE_STRIP);
+            GL::glBegin(GL_TRIANGLE_STRIP);
             for (int i = 0; i <= 6; i++) {
                 double f = double(i) / 6.0;
                 double x = 4.0 * f;
                 double y = 4.0 * (sin(x) / (1.0 + 1.7 * x) + (0.1 + 0.03 * j) * x);
-                glTexCoord2f(0.0f, 1.0-f);
-                glVertex3d(l * x, h * y, -w);
-                glTexCoord2f(1.0f, 1.0-f);
-                glVertex3d(l * x, h * y, +w);
+                GL::glTexCoord2f(0.0f, 1.0-f);
+                GL::glVertex3d(l * x, h * y, -w);
+                GL::glTexCoord2f(1.0f, 1.0-f);
+                GL::glVertex3d(l * x, h * y, +w);
             }
-            glEnd();
+            GL::glEnd();
         }
         
         
-        glEndList();
+        GL::glEndList();
     } else {
-        glCallList(dlist);
+        GL::glCallList(dlist);
     }
 }
 
@@ -995,7 +995,7 @@ void rPlanetmap::drawEffect() {
 
     // Get current Camera-Matrix.
     float m[16];
-    glGetFloatv(GL_MODELVIEW_MATRIX, m);
+    GL::glGetFloatv(GL_MODELVIEW_MATRIX, m);
     // Position from 4th Col.
     float p[3];
     loop3i(p[i] = m[12 + i]);
@@ -1025,18 +1025,18 @@ void rPlanetmap::drawEffect() {
     // nan?
     if (p[0] != p[0] || p[2] != p[2]) return;
 
-    glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_TEXTURE_BIT);
+    GL::glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_TEXTURE_BIT);
     {
-        glDisable(GL_CULL_FACE);
-        glEnable(GL_LIGHTING);
-        glEnable(GL_TEXTURE_2D);
-        glEnable(GL_FOG);
+        GL::glDisable(GL_CULL_FACE);
+        GL::glEnable(GL_LIGHTING);
+        GL::glEnable(GL_TEXTURE_2D);
+        GL::glEnable(GL_FOG);
 
-        glEnable(GL_ALPHA_TEST);
-        glAlphaFunc(GL_GREATER, 0.45f);
+        GL::glEnable(GL_ALPHA_TEST);
+        GL::glAlphaFunc(GL_GREATER, 0.45f);
 
-        glColor4f(0.8f, 0.8f, 0.8f, 1);
-        glNormal3f(0, 1, 0);
+        GL::glColor4f(0.8f, 0.8f, 0.8f, 1);
+        GL::glNormal3f(0, 1, 0);
 
         const float step = 16;
         //const float near = (step*2)*(step*2);
@@ -1117,10 +1117,10 @@ void rPlanetmap::drawEffect() {
                     getCachedHeight(x__, z__, color);
                     float h = color[Landscape::BUMP];
                     
-                    glColor4f(0.2,0.4,0.2,opacity);
-                    glBindTexture(GL_TEXTURE_2D, sGrasses[0]);
+                    GL::glColor4f(0.2,0.4,0.2,opacity);
+                    GL::glBindTexture(GL_TEXTURE_2D, sGrasses[0]);
                     
-                    glBegin(GL_TRIANGLE_STRIP);
+                    GL::glBegin(GL_TRIANGLE_STRIP);
                     {
 
                         loopj(17) {
@@ -1136,10 +1136,10 @@ void rPlanetmap::drawEffect() {
                             getCachedHeight(x_ + f*step+u, z_ + f*step+v, color);
                             h = color[Landscape::BUMP];
 
-                            glTexCoord2f(6*f,0);
-                            glVertex3f(x_ + f*step+u, h-1, z_ + f*step+v);
-                            glTexCoord2f(6*f,1);
-                            glVertex3f(x_ + f*step+u, h+7, z_ + f*step+v);
+                            GL::glTexCoord2f(6*f,0);
+                            GL::glVertex3f(x_ + f*step+u, h-1, z_ + f*step+v);
+                            GL::glTexCoord2f(6*f,1);
+                            GL::glVertex3f(x_ + f*step+u, h+7, z_ + f*step+v);
                         }
                         loopj(17) {
                             float f = j * 0.0625f;
@@ -1154,18 +1154,18 @@ void rPlanetmap::drawEffect() {
                             getCachedHeight(x_ + f*step+u, z_ + step-f*step+v, color);
                             h = color[Landscape::BUMP];
 
-                            glTexCoord2f(6*f,0);
-                            glVertex3f(x_ + f*step+u, h-1, z_ + step-f*step+v);
-                            glTexCoord2f(6*f,1);
-                            glVertex3f(x_ + f*step+u, h+7, z_ + step-f*step+v);
+                            GL::glTexCoord2f(6*f,0);
+                            GL::glVertex3f(x_ + f*step+u, h-1, z_ + step-f*step+v);
+                            GL::glTexCoord2f(6*f,1);
+                            GL::glVertex3f(x_ + f*step+u, h+7, z_ + step-f*step+v);
                         }
                     }
-                    glEnd();
+                    GL::glEnd();
                     
                 }
 
                 loopi(visibleplants) {
-                    glPushMatrix();
+                    GL::glPushMatrix();
                     {
                         lfsr16 = Noise::LFSR16(lfsr16);
                         a = lfsr16;
@@ -1190,9 +1190,9 @@ void rPlanetmap::drawEffect() {
                         float scale = plantscale * sGrowth[tex]->size * (0.35f + 0.65f * sizef + 0.008f * plantdensity);
 
                         float shift = -0.1 + 0.2f * b2f * (((lfsr16 >> 3) ^ (lfsr16>>7) ^ a ^ b) & 0xFF);
-                        glColor4f(0.9 + shift, 1.0-fabs(shift), 0.9f-shift, opacity);
-                        //glColor4f(1, 1, 1, opacity);
-                        glBindTexture(GL_TEXTURE_2D, sGrowth[tex]->texture);
+                        GL::glColor4f(0.9 + shift, 1.0-fabs(shift), 0.9f-shift, opacity);
+                        //GL::glColor4f(1, 1, 1, opacity);
+                        GL::glBindTexture(GL_TEXTURE_2D, sGrowth[tex]->texture);
 
                         switch (sGrowth[tex]->rendertype) {
                             case Growth::BILLBOARD:
@@ -1215,13 +1215,13 @@ void rPlanetmap::drawEffect() {
                                 break;
                         }
                     }
-                    glPopMatrix();
+                    GL::glPopMatrix();
                 } // loopi visibleplants
 
                 lfsr16 = lfsr16tmp;
 
                 loopi(visibletrees) {
-                    glPushMatrix();
+                    GL::glPushMatrix();
                     {
                         lfsr16 = Noise::LFSR16(lfsr16);
                         a = lfsr16;
@@ -1248,12 +1248,12 @@ void rPlanetmap::drawEffect() {
                         //tree->ori0[1] = a + b;
                         float axis[] = {0, 1, 0};
                         quat_rotaxis(tree->ori0, (a+b) * PI_OVER_180, axis);
-                        glColor4f(0.15f, 0.09f, 0.03f, opacity);
+                        GL::glColor4f(0.15f, 0.09f, 0.03f, opacity);
                         tree->drawSolid();
-                        glColor4f(1, 1, 1, opacity);
+                        GL::glColor4f(1, 1, 1, opacity);
                         tree->drawEffect();
                     }
-                    glPopMatrix();
+                    GL::glPopMatrix();
                 } // loopi visibletrees
 
                 j += step*zlook;
@@ -1262,6 +1262,6 @@ void rPlanetmap::drawEffect() {
             i += step*xlook;
         } // while i x
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 }
 

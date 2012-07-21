@@ -20,7 +20,7 @@
 
 unsigned int rTile::loadMaterial() {
     static bool fail = false;
-    static GLenum prog = 0;
+    static GL::GLenum prog = 0;
 
     if (prog == 0 && !fail) {
         char* vtx = Filesystem::loadTextFile("data/base/material/base.vert");
@@ -418,23 +418,23 @@ void rTile::drawSolid() {
     float* p = this->pos0;
     float r[] = {0, 0, 0};
 
-    glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_TEXTURE_BIT);
+    GL::glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_TEXTURE_BIT);
     {
         GLS::glUseProgram_fglittexture();
-        glUseProgramObjectARB(loadMaterial());
+        GL::glUseProgramObjectARB(loadMaterial());
 
         long ground = sTextures[tileKind];
-        glColor4f(1, 1, 1, 1);
-        glBindTexture(GL_TEXTURE_2D, ground);
+        GL::glColor4f(1, 1, 1, 1);
+        GL::glBindTexture(GL_TEXTURE_2D, ground);
 
-        glPushMatrix();
+        GL::glPushMatrix();
         {
             float x = p[0] - 4.50f;
             float y = p[1] + 0.08f;
             float z = p[2] - 4.50f;
-            if (r[1] < -0.01f || r[1] > 0.01f) glRotatef(r[1], 0, 1, 0);
-            glTranslatef(x, y, z);
-            GLfloat p[][3] = {
+            if (r[1] < -0.01f || r[1] > 0.01f) GL::glRotatef(r[1], 0, 1, 0);
+            GL::glTranslatef(x, y, z);
+            GL::GLfloat p[][3] = {
                 {0, 0, 0},
                 {9, 0, 0},
                 {0, 0, 9},
@@ -442,23 +442,23 @@ void rTile::drawSolid() {
             };
             const float a = 0.01;
             const float b = 0.99;
-            GLfloat t[][2] = {
+            GL::GLfloat t[][2] = {
                 {a, a},
                 {b, a},
                 {b, b},
                 {a, b},
             };
-            glBegin(GL_QUADS);
-            glNormal3f(0, 1, 0);
+            GL::glBegin(GL_QUADS);
+            GL::glNormal3f(0, 1, 0);
             Primitive::glVertex3fv2fv(p[1], t[0]);
             Primitive::glVertex3fv2fv(p[0], t[1]);
             Primitive::glVertex3fv2fv(p[2], t[2]);
             Primitive::glVertex3fv2fv(p[3], t[3]);
-            glEnd();
+            GL::glEnd();
         }
-        glPopMatrix();
-        glUseProgramObjectARB(0);
+        GL::glPopMatrix();
+        GL::glUseProgramObjectARB(0);
     }
-    glPopAttrib();
+    GL::glPopAttrib();
 }
 
