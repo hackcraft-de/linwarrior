@@ -30,7 +30,7 @@ private:
     /** Pointing to the main job-mutex. */
     SDL_mutex* jobMutex;
     /** Pointing to the main job-queue. */
-    std::queue<int (*)(void*) >* jobQueue;
+    std::queue<Runnable*>* jobQueue;
 public:
     void run();
 };
@@ -62,7 +62,7 @@ private:
     SDL_mutex* jobMutex;
 
     /** The job queue itself - minions grab jobs here. */
-    std::queue<int(*)(void*)>* jobQueue;
+    std::queue<Runnable*>* jobQueue;
 
     /** stdout is redirected to this stringstream. */
     std::stringstream oss;

@@ -49,42 +49,52 @@ void cleanup() {
 }
 
 
-int state = 0;
+class JobRender : public Runnable {
+public:
+    int state;
+    
+    JobRender() {
+        state = 0;
+    };
 
-
-int job_render(void* data) {
-    int i = 0;
-    while (state == 0) {
-        //float s = 0.5 + 0.4 * sin(i * M_PI / 10.0);
-        //float c = 0.5 + 0.4 * cos(i * M_PI / 10.0);
-        //GL::glClearColor(0.1+s, 0.1+c, 0.9, 1.0);
-        //GL::glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        //cMain::drawPlaque();
-        //cMain::drawLog();
-        //SDL_GL_SwapBuffers();
-        SDL_Delay(1.0 / DEFAULT_FPS * 1000.0);
-        i++;
+    void run() {
+        int i = 0;
+        while (state == 0) {
+            //float s = 0.5 + 0.4 * sin(i * M_PI / 10.0);
+            //float c = 0.5 + 0.4 * cos(i * M_PI / 10.0);
+            //GL::glClearColor(0.1+s, 0.1+c, 0.9, 1.0);
+            //GL::glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            //cMain::drawPlaque();
+            //cMain::drawLog();
+            //SDL_GL_SwapBuffers();
+            SDL_Delay(1.0 / DEFAULT_FPS * 1000.0);
+            i++;
+        }
     }
-    return 0;
-}
+
+};
 
 
-int job_bgm(void* data) {
-    while (true) {
-        //cout << "Buffering BGM.\n";
-        SDL_Delay(1000);
+class JobBGM : public Runnable {
+public:
+    void run() {
+        while (true) {
+            //cout << "Buffering BGM.\n";
+            SDL_Delay(1000);
+        }
     }
-    return 0;
-}
+};
 
 
-int job_output(void* data) {
-    while (true) {
-        GameMain::instance->updateLog();
-        SDL_Delay(200);
+class JobOutput : public Runnable {
+public:
+    void run() {
+        while (true) {
+            GameMain::instance->updateLog();
+            SDL_Delay(200);
+        }
     }
-    return 0;
-}
+};
 
 
 Logger* Minion::logger = Logger::getLogger("de.hackcraft.game.Minion");
@@ -92,8 +102,7 @@ Logger* Minion::logger = Logger::getLogger("de.hackcraft.game.Minion");
 void Minion::run() {
     unsigned long id = (unsigned long) this;//SDL_ThreadID();
     logger->info() << "Minion " << id << " at your service!\n";
-    typedef int (*callback)(void*);
-    callback job = (callback) 1;
+    Runnable* job = (Runnable*) this;
     bool done = false;
 
     jobMutex = GameMain::instance->jobMutex;
@@ -101,7 +110,7 @@ void Minion::run() {
 
     while (!done) {
         // Grab a new job.
-        int (*nextjob)(void*) = NULL;
+        Runnable* nextjob = NULL;
         SDL_mutexP(jobMutex);
         {
             if (!jobQueue->empty()) {
@@ -114,7 +123,8 @@ void Minion::run() {
         if (nextjob != NULL) {
             logger->debug() << "Minion " << id << " is fulfilling your wish!\n";
             job = nextjob;
-            int result = job(NULL);
+            job->run();
+            int result = 0;
             logger->debug() << "Minion " << id << " job is finished with result " << result << "!\n";
         } else if (job != NULL && nextjob == NULL) {
             // Wait for a job to do.
@@ -131,7 +141,7 @@ void Minion::run() {
 GameMain::GameMain() {
     instance = this;
     jobMutex = SDL_CreateMutex();
-    jobQueue = new std::queue<int(*)(void*)>();
+    jobQueue = new std::queue<Runnable*>();
     mouseWheel = 0;
     overlayEnabled = !true;
 
@@ -721,13 +731,18 @@ void GameMain::updateLog() {
 
 
 int GameMain::run(int argc, char** args) {
+    
+    //JobBGM* job_bgm = new JobBGM();
     //jobQueue.push(job_bgm);
-    jobQueue->push(job_render);
+    
+    //JobRender* job_render = new JobRender();
+    //jobQueue->push(job_render);
 
     // Remember original stdout/cout stream and redirect cout if enabled.
     std::streambuf* stdout_ = std::cout.rdbuf();
     bool redirectOutput = true;
     if (redirectOutput) {
+        JobOutput* job_output = new JobOutput();
         jobQueue->push(job_output);
         std::cout.rdbuf( oss.rdbuf() );
     }
@@ -849,8 +864,8 @@ int GameMain::run(int argc, char** args) {
     game.initMission();
 
     // Signal state change.
-    state = 1;
-    SDL_Delay(200);
+    //job_render->state = 1;
+    //SDL_Delay(200);
 
     logger->info() << "Entering Mainloop...\n";
     bool done = false;
