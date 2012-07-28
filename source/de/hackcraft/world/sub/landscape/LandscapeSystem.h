@@ -36,8 +36,12 @@ public:
     
     /** Draw all Object's effects (calls their drawEffect method). */
     virtual void drawEffect();
+    
+    static LandscapeSystem* getInstance();
 private:
     rPlanetmap* planetmap;
+
+    static LandscapeSystem* instance;
 };
 
 #endif	/* LANDSCAPESYSTEM_H */

@@ -4,8 +4,14 @@
 
 #include "de/hackcraft/world/sub/landscape/rPlanetmap.h"
 
+
+LandscapeSystem* LandscapeSystem::instance = NULL;
+
+
 LandscapeSystem::LandscapeSystem() {
     planetmap = NULL;
+    
+    instance = this;
 }
 
 LandscapeSystem::~LandscapeSystem() {
@@ -44,3 +50,9 @@ void LandscapeSystem::drawEffect() {
         planetmap->drawEffect();
     }
 };
+
+
+LandscapeSystem* LandscapeSystem::getInstance() {
+    return instance;
+}
+

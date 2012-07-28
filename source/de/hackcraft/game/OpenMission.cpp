@@ -136,10 +136,7 @@ Entity* OpenMission::init(World* world) {
 
     logger->info() << "Initialising planetary maps...\n";
     this->planetmap = new rPlanetmap(&globalProperties);
-    LandscapeSystem* landscapeSystem = new LandscapeSystem();
-    landscapeSystem->add(planetmap);
-    world->subsystems.push_front(landscapeSystem);
-    //world->spawnObject(planetmap);
+    LandscapeSystem::getInstance()->add(planetmap);
 
     logger->info() << "Initialising call groups...\n";
     {
