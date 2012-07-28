@@ -48,6 +48,14 @@ void Facade::getInterrior(float x, float y, float* color4fv, unsigned char seed)
     Distortion::fade4(alpha, dark, lite, color4fv);
 }
 
+void getInterriorLight(float x, float y, float* color4fv, unsigned char seed = 121) {
+    
+    float zero[] = { 0.99f, 0.99f, 0.70f, 1.0f };
+    float one[] = { 0.60f, 0.40f, 0.20f, 1.0f };
+    float alpha = sqrt(1.0f - fabs(sin(0.80f * y * M_PI)));
+    Distortion::fade4(alpha, zero, one, color4fv);
+}
+
 void getBlinds(float x, float y, float* color4fv, unsigned char seed) {
     float y_ = fmod(y, 1.0f);
     
@@ -258,6 +266,11 @@ void Facade::getFacade(float x, float y, int gx, int gy, float age, float* c3f, 
     // Interrior Room Pattern.
     float interrior[4];
     getInterrior(gx + x + dx, gy + y + dy, interrior);
+    
+    // Interrior Lighting.
+    float interriorLight[4];
+    getInterriorLight(x + 3*dx, y + 3*dy, interriorLight);
+    Distortion::fade4(0.7, interrior, interriorLight, interrior);
     
     // Blinds
     float blinds[4];
