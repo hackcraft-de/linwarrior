@@ -13,6 +13,11 @@ PhysicsSystem* PhysicsSystem::instance = NULL;
 Logger* PhysicsSystem::logger = Logger::getLogger("de.hackcraft.world.sub.physics.PhysicsSystem");
 
 
+PhysicsSystem* PhysicsSystem::getInstance() {
+    return instance;
+}
+
+
 PhysicsSystem::PhysicsSystem() {
     // Earth : -9.80665f
     // Mars  : -3.69f
@@ -94,7 +99,3 @@ float PhysicsSystem::constrainParticle(Entity* ex, float* worldpos, float radius
     return maxdepth;
 }
 
-
-PhysicsSystem* PhysicsSystem::getInstance() {
-    return instance;
-}

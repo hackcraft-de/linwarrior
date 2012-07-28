@@ -6,17 +6,17 @@
 TriggerSystem* TriggerSystem::instance = NULL;
 
 
+TriggerSystem* TriggerSystem::getInstance() {
+    return instance;
+}
+
+
 TriggerSystem::TriggerSystem() {
     instance = this;
 }
 
 
 TriggerSystem::~TriggerSystem() {
-}
-
-
-TriggerSystem* TriggerSystem::getInstance() {
-    return instance;
 }
 
 

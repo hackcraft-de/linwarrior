@@ -26,6 +26,9 @@ class rTraceable;
 
 class PhysicsSystem : public Subsystem {
 public:
+    static PhysicsSystem* getInstance();
+    
+public:
     PhysicsSystem();
     virtual ~PhysicsSystem();
     
@@ -38,29 +41,40 @@ public:
     
     float getAirdensity();
     
+public:
+    virtual float constrainParticle(Entity* ex, float* worldpos, float radius);
     
-     /** Advance simulation time for one frame. */
+public:
+    /** Advance simulation time for one frame. */
     virtual void advanceTime(int deltamsec) {};
+    
     /** Re-build spatial clustering of objects. */
     virtual void clusterObjects() {};
+    
     /** Deliver overdue messages to objects. */
     virtual void dispatchMessages() {};
+    
     /** Let all objects process input, adjust pose and calculate physics. */
     virtual void animateObjects();
+    
     /** Let all objects calculate transformation matrices etc. */
     virtual void transformObjects() {};
+    
     /** Setup structures for rendering */
     virtual void setupView(float* pos, float* ori) {};
-   /** Draw all Object's solid surfaces (calls their drawSolid method). */
+    
+    /** Draws background (skybox). 
+     * @return False if the background was not painted or is not covered completely - true otherwise.
+     */
+    virtual bool drawBack() { return false; };
+    
+    /** Draw all Object's solid surfaces (calls their drawSolid method). */
     virtual void drawSolid() {};
+    
     /** Draw all Object's effects (calls their drawEffect method). */
     virtual void drawEffect() {};
     
-    virtual float constrainParticle(Entity* ex, float* worldpos, float radius);
-    
-    static PhysicsSystem* getInstance();
 private:
-    
     /** List of allocated components of this type. */
     std::vector<rCollider*> colliders;
     /** Index on id of leased components of this type. */
@@ -83,6 +97,7 @@ private:
     /** Velocity "damping" when on ground (0.14 ok). */
     float gndfriction;
     
+private:
     static PhysicsSystem* instance;
     
     static Logger* logger;

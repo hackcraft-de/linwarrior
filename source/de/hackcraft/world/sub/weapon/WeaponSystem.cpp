@@ -19,6 +19,11 @@ Logger* WeaponSystem::logger = Logger::getLogger("de.hackcraft.world.sub.weapon.
 WeaponSystem* WeaponSystem::instance = NULL;
 
 
+WeaponSystem* WeaponSystem::getInstance() {
+    return instance;
+}
+
+
 WeaponSystem::WeaponSystem() {
     instance = this;
     
@@ -27,24 +32,25 @@ WeaponSystem::WeaponSystem() {
     vector_zero(visorigin);
 }
 
+
 WeaponSystem::~WeaponSystem() {
 }
 
-WeaponSystem* WeaponSystem::getInstance() {
-    return instance;
-}
 
 void WeaponSystem::add(rTarcom* tarcom){
     tarcoms[tarcom->getId()] = tarcom;
 }
 
+
 void WeaponSystem::add(rWepcom* wepcom){
     wepcoms[wepcom->getId()] = wepcom;
 }
 
+
 void WeaponSystem::add(rWeapon* weapon){
     weapons[weapon->getId()] = weapon;
 }
+
 
 void WeaponSystem::add(rTarget* target){
     targets[target->getId()] = target;

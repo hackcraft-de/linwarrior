@@ -14,17 +14,21 @@ Logger* ChatSystem::logger = Logger::getLogger("de.hackcraft.world.sub.chat.Chat
 
 ChatSystem* ChatSystem::instance = NULL;
 
-ChatSystem::ChatSystem() {
-    instance = this;
-}
-
-ChatSystem::~ChatSystem() {
-}
 
 ChatSystem* ChatSystem::getInstance() {
     assert(instance != NULL);
     return instance;
 }
+
+
+ChatSystem::ChatSystem() {
+    instance = this;
+}
+
+
+ChatSystem::~ChatSystem() {
+}
+
 
 OID ChatSystem::getGroup(std::string name) {
     for (std::map<OID,rChatGroup*>::iterator i = groups.begin(); i != groups.end(); i++) {
@@ -38,6 +42,7 @@ OID ChatSystem::getGroup(std::string name) {
     logger->debug() << "Chat group created: " << group->id << " as " << group->name << "\n";
     return group->id;
 }
+
 
 void ChatSystem::addToGroup(OID gid, Entity* member) {
     if (member == NULL) {
@@ -58,9 +63,11 @@ void ChatSystem::addToGroup(OID gid, Entity* member) {
     groups[gid]->members.push_back(chatMember->id);
 }
 
+
 void ChatSystem::add(rChatMember* member) {
     members[member->id] = member;
 }
+
 
 rChatMember* ChatSystem::findChatMemberByEntity(OID entityID) {
     if (memberByEntity.find(entityID) != memberByEntity.end()) {
@@ -79,6 +86,7 @@ rChatMember* ChatSystem::findChatMemberByEntity(OID entityID) {
     return NULL;
 }
 
+
 void ChatSystem::sendMessage(OID delay, OID sender /* = 0 */, OID recvid /* = 0 */, std::string type, std::string text, void* blob) {
     //logger->trace() << "sendMessageT(dly=" << delay << ", sdr=" << sender << ", rid=" << recvid << ", txt=" << text << ")\n";
     Timing* timing = World::getInstance()->getTiming();
@@ -86,6 +94,7 @@ void ChatSystem::sendMessage(OID delay, OID sender /* = 0 */, OID recvid /* = 0 
     rChatMessage* message = new rChatMessage(sender, recvid, timing->getTimekey() + delay, 0, type, text, blob);
     mMessages.push(message);
 }
+
 
 void ChatSystem::dispatchMessages() {
     // TODO: Remove return statement to enable dispatchMessages.

@@ -23,6 +23,7 @@
 #include <memory>
 #include <cstdlib>
 
+
 #define BKGDETAIL +0
 
 #define DOME_XRES 2*6
@@ -44,11 +45,22 @@ enum Texids {
 
 unsigned int gPermutationTexture256 = 0;
 
+BackgroundSystem* BackgroundSystem::instance = NULL;
+
 std::map<int, unsigned int> BackgroundSystem::textures;
 
 Logger* BackgroundSystem::logger = Logger::getLogger("de.hackcraft.world.background.BackgroundSystem");
 
+
+BackgroundSystem* BackgroundSystem::getInstance() {
+    return instance;    
+}
+
+
 BackgroundSystem::BackgroundSystem() {
+    
+    instance = this;
+    
     Propmap properties;
     properties.put("backscape.windspeed", "0.1");
     properties.put("backscape.raininess", "0.0");
@@ -59,6 +71,9 @@ BackgroundSystem::BackgroundSystem() {
 
 
 BackgroundSystem::BackgroundSystem(Propmap* properties) {
+    
+    instance = this;
+    
     init(properties);
 }
 

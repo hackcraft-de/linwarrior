@@ -8,9 +8,16 @@
 
 #include <cassert>
 
+
 Logger* ModelSystem::logger = Logger::getLogger("de.hackcraft.world.sub.model.ModelSystem");
 
 ModelSystem* ModelSystem::instance = NULL;
+
+
+ModelSystem* ModelSystem::getInstance() {
+    return instance;
+}
+
 
 ModelSystem::ModelSystem() {
     instance = this;
@@ -20,11 +27,13 @@ ModelSystem::ModelSystem() {
     vector_zero(visorigin);
 }
 
+
 ModelSystem::~ModelSystem() {
 }
 
-ModelSystem* ModelSystem::getInstance() {
-    return instance;
+
+void ModelSystem::add(IModel* model) {
+    models.push_back(model);
 }
 
 

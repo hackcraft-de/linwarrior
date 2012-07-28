@@ -11,16 +11,21 @@
 #include "de/hackcraft/world/sub/model/ModelSystem.h"
 
 #include "de/hackcraft/world/sub/weapon/WeaponSystem.h"
-//#include "de/hackcraft/world/sub/weapon/rTarcom.h"
 #include "de/hackcraft/world/sub/weapon/rTarget.h"
 #include "de/hackcraft/world/sub/weapon/rWeapon.h"
-//#include "de/hackcraft/world/sub/weapon/rWepcom.h"
 
 
 #include <cassert>
 #include <ctime>
     
+
 MissionSystem* MissionSystem::instance = NULL;
+
+
+MissionSystem* MissionSystem::getInstance() {
+    return instance;
+}
+
 
 MissionSystem::MissionSystem() {
     instance = this;
@@ -28,9 +33,10 @@ MissionSystem::MissionSystem() {
     mState = 0;
 }
 
-void MissionSystem::advanceTime(int deltamsec) {
-    checkConditions();
+
+MissionSystem::~MissionSystem() {
 }
+
 
 void MissionSystem::checkConditions() {
     
@@ -66,6 +72,7 @@ void MissionSystem::checkConditions() {
     }
 }
 
+
 void MissionSystem::onVictory() {
     if (mState != -1) {
         mState = -1;
@@ -76,6 +83,7 @@ void MissionSystem::onVictory() {
     }
 }
 
+
 void MissionSystem::onDefeat() {
     if (mState != -2) {
         mState = -2;
@@ -85,6 +93,7 @@ void MissionSystem::onDefeat() {
                 );
     }
 }
+
 
 Entity* MissionSystem::init(World* world) {
     if (true) {
@@ -139,5 +148,10 @@ Entity* MissionSystem::init(World* world) {
 
     mVictory.push_back(player);
     return player;
+}
+
+
+void MissionSystem::advanceTime(int deltamsec) {
+    checkConditions();
 }
 

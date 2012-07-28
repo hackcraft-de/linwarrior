@@ -8,6 +8,11 @@
 LandscapeSystem* LandscapeSystem::instance = NULL;
 
 
+LandscapeSystem* LandscapeSystem::getInstance() {
+    return instance;
+}
+
+
 LandscapeSystem::LandscapeSystem() {
     planetmap = NULL;
     
@@ -50,9 +55,4 @@ void LandscapeSystem::drawEffect() {
         planetmap->drawEffect();
     }
 };
-
-
-LandscapeSystem* LandscapeSystem::getInstance() {
-    return instance;
-}
 

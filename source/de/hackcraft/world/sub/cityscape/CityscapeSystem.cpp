@@ -8,12 +8,19 @@
 CityscapeSystem* CityscapeSystem::instance = NULL;
 
 
+CityscapeSystem* CityscapeSystem::getInstance() {
+    return instance;
+}
+
+
 CityscapeSystem::CityscapeSystem() {
     instance = this;
 }
 
+
 CityscapeSystem::~CityscapeSystem() {
 }
+
 
 void CityscapeSystem::add(rBuilding* building) {
     buildings[building->id] = building;
@@ -70,10 +77,5 @@ void CityscapeSystem::drawEffect() {
     for (std::pair<OID,rPadmap*> padmap : padmaps) {
         padmap.second->drawEffect();
     }
-}
-
-
-CityscapeSystem* CityscapeSystem::getInstance() {
-    return instance;
 }
 

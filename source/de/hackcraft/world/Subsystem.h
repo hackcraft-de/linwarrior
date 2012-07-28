@@ -16,7 +16,7 @@ class Subsystem;
 class Entity;
 
 /**
- * Base class for subsystems that form the whole world system.
+ * Abstract base class for subsystems that form the whole world system.
  */
 class Subsystem {
 
@@ -44,35 +44,37 @@ public: // Interaction
      * @param radius The size of the particle in terms of a radius.
      * @return Zero if there was no collision, else the maximum impact depth.
      */
-    virtual float constrainParticle(Entity* ex, float* worldpos, float radius) { return 0.0f; };
+    virtual float constrainParticle(Entity* ex, float* worldpos, float radius) = 0;
     
 public: // Frame cycle
     /** Advance simulation time for one frame. */
-    virtual void advanceTime(int deltamsec) {};
+    virtual void advanceTime(int deltamsec) = 0;
     
     /** Re-build spatial clustering of objects. */
-    virtual void clusterObjects() {};
+    virtual void clusterObjects() = 0;
     
     /** Deliver overdue messages to objects. */
-    virtual void dispatchMessages() {};
+    virtual void dispatchMessages() = 0;
     
     /** Let all objects process input, adjust pose and calculate physics. */
-    virtual void animateObjects() {};
+    virtual void animateObjects() = 0;
     
     /** Let all objects calculate transformation matrices etc. */
-    virtual void transformObjects() {};
+    virtual void transformObjects() = 0;
     
     /** Setup structures for rendering */
-    virtual void setupView(float* pos, float* ori) {};
+    virtual void setupView(float* pos, float* ori) = 0;
     
-    /** Draws background (skybox). */
-    virtual bool drawBack() { return false; };
+    /** Draws background (skybox). 
+     * @return False if the background was not painted or is not covered completely - true otherwise.
+     */
+    virtual bool drawBack() = 0;
     
     /** Draw all Object's solid surfaces (calls their drawSolid method). */
-    virtual void drawSolid() {};
+    virtual void drawSolid() = 0;
     
     /** Draw all Object's effects (calls their drawEffect method). */
-    virtual void drawEffect() {};
+    virtual void drawEffect() = 0;
 };
 
 #endif	/* SUBSYSTEM_H */

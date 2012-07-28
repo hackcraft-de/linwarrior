@@ -33,12 +33,12 @@ class rWepcom;
  * Manages weapons, targets and ranging-/targeting-devices.
  */
 class WeaponSystem : public Subsystem {
-private:
-    static Logger* logger;
+public:
+    static WeaponSystem* getInstance();
+    
 public:
     WeaponSystem();
     virtual ~WeaponSystem();
-    static WeaponSystem* getInstance();
     
     void add(rTarcom* tarcom);
     void add(rWepcom* wepcom);
@@ -48,6 +48,29 @@ public:
     rTarcom* findTarcomByEntity(OID entityID);
     rTarget* findTargetByEntity(OID entityID);
     
+    /**
+     * Filters the given objectlist by tags (ORed Bitmask) (excluding ex Object).
+     * There is the option to match all tags (true=AND) or to select any given tag (false=OR).
+     * The returned list is fresh allocated - caller delete responsibility.
+     */
+    std::list<rTarget*>* filterByTags(Entity* ex, std::set<OID>* rolemask, bool all, int maxamount, std::list<rTarget*>* objects);
+
+    /** Returns a List of objects which are within minimum and maximum range (excluding ex Object).
+     * The returned list is fresh allocated - caller delete responsibility.
+     */
+    std::list<rTarget*>* filterByRange(Entity* ex, float* origin, float minrange, float maxrange, int maxamount, std::list<rTarget*>* objects = NULL);
+    
+public:
+    /**
+     * Limit position to accessible areas and returns impact depth.
+     * 
+     * @param worldpos The particle position to be constrained given in world coordinates.
+     * @param radius The size of the particle in terms of a radius.
+     * @return Zero if there was no collision, else the maximum impact depth.
+     */
+    virtual float constrainParticle(Entity* ex, float* worldpos, float radius) { return 0.0f; };
+    
+public:
     /** Advance simulation time for one frame. */
     virtual void advanceTime(int deltamsec) {};
     
@@ -75,17 +98,11 @@ public:
     /** Draw all Object's effects (calls their drawEffect method). */
     virtual void drawEffect();
     
-    /**
-     * Filters the given objectlist by tags (ORed Bitmask) (excluding ex Object).
-     * There is the option to match all tags (true=AND) or to select any given tag (false=OR).
-     * The returned list is fresh allocated - caller delete responsibility.
-     */
-    std::list<rTarget*>* filterByTags(Entity* ex, std::set<OID>* rolemask, bool all, int maxamount, std::list<rTarget*>* objects);
-
-    /** Returns a List of objects which are within minimum and maximum range (excluding ex Object).
-     * The returned list is fresh allocated - caller delete responsibility.
-     */
-    std::list<rTarget*>* filterByRange(Entity* ex, float* origin, float minrange, float maxrange, int maxamount, std::list<rTarget*>* objects = NULL);
+private:
+    static Logger* logger;
+    
+    static WeaponSystem* instance;
+    
 private:
     std::map<OID,rTarcom*> tarcoms;
     std::map<OID,rWepcom*> wepcoms;
@@ -106,8 +123,6 @@ private:
     
     /** Visible objects for next rendering - (re-)set in setupView. */
     std::list<IModel*>* visobjects;
-    
-    static WeaponSystem* instance;
 };
 
 #endif	/* WEAPONSYSTEM_H */

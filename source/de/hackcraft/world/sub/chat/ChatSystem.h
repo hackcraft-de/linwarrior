@@ -27,14 +27,13 @@ class rChatGroup;
 class rChatMember;
 
 class ChatSystem : public Subsystem {
-private:
-    static Logger* logger;
+public:
+    /** Get current singleton instance.*/
+    static ChatSystem* getInstance();
+
 public:
     ChatSystem();
     virtual ~ChatSystem();
-
-    /** Get current singleton instance.*/
-    static ChatSystem* getInstance();
 
     /** Finds and returns a group or creates a new one. */
     OID getGroup(std::string name);
@@ -57,9 +56,52 @@ public:
      * @param blob binary data, you give away ownership may be deleted by world.
      */
     virtual void sendMessage(OID delay, OID sender /* = 0 */, OID recvid /* = 0 */, std::string type, std::string text, void* blob = NULL);
+
+public:
+    /**
+     * Limit position to accessible areas and returns impact depth.
+     * 
+     * @param worldpos The particle position to be constrained given in world coordinates.
+     * @param radius The size of the particle in terms of a radius.
+     * @return Zero if there was no collision, else the maximum impact depth.
+     */
+    virtual float constrainParticle(Entity* ex, float* worldpos, float radius) { return 0.0f; };
     
-    /** Dispatches messages to their receivers and updates queue states. */
-    void dispatchMessages();
+public:
+    /** Advance simulation time for one frame. */
+    virtual void advanceTime(int deltamsec) {};
+    
+    /** Re-build spatial clustering of objects. */
+    virtual void clusterObjects() {};
+    
+    /** Deliver overdue messages to objects. */
+    virtual void dispatchMessages();
+    
+    /** Let all objects process input, adjust pose and calculate physics. */
+    virtual void animateObjects() {};
+    
+    /** Let all objects calculate transformation matrices etc. */
+    virtual void transformObjects() {};
+    
+    /** Setup structures for rendering */
+    virtual void setupView(float* pos, float* ori) {};
+    
+    /** Draws background (skybox). 
+     * @return False if the background was not painted or is not covered completely - true otherwise.
+     */
+    virtual bool drawBack() { return false; };
+    
+    /** Draw all Object's solid surfaces (calls their drawSolid method). */
+    virtual void drawSolid() {};
+    
+    /** Draw all Object's effects (calls their drawEffect method). */
+    virtual void drawEffect() {};
+    
+private:
+    static Logger* logger;
+    
+    /** Current singleton instance */
+    static ChatSystem* instance;
     
 private:
     /** Chat or communication participants (Communication computers). */
@@ -76,9 +118,6 @@ private:
 
     /** Messages already delivered to group participants. */
     std::list<rChatMessage*> mDispatchedMessages;
-
-    /** Current singleton instance */
-    static ChatSystem* instance;
 };
 
 #endif	/* CHATSYSTEM_H */
