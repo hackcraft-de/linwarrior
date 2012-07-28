@@ -151,8 +151,8 @@ void cMech::init(float* pos, float* rot, string modelName) {
 
     collider = new rCollider(this);
     traceable = new rTraceable(this);
-    //PhysicsSystem::getInstance()->add(collider);
-    //PhysicsSystem::getInstance()->add(traceable);
+    PhysicsSystem::getInstance()->add(collider);
+    PhysicsSystem::getInstance()->add(traceable);
 
     rigged = new rRigged(this);
     nameable = new rBillboard(this);
@@ -406,7 +406,6 @@ void cMech::animate(float spf) {
             collider->height = rigged->height;
         }
         collider->prebind();
-        collider->animate(spf);
     }
 
     // TARGET
@@ -548,8 +547,6 @@ void cMech::animate(float spf) {
             traceable->jetthrottle = mobile->jetthrottle;
             traceable->throttle = mobile->drivethrottle;
         }
-
-        traceable->animate(spf);
 
         // FIXME: move to rSoundsource to be able to add loading/streaming
         // and to mount it somewhere.

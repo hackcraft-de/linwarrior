@@ -522,22 +522,6 @@ float World::constrainParticle(Entity* ex, float* worldpos, float radius) {
         depth += sub->constrainParticle(ex, worldpos, radius);
     }
     
-    // The following code is necessary only because the physics system isn't
-    // fully functional yet and lacking constrainParticle implementation.
-    // Therefore mech collision is still handled by the object.
-    // On the contrary landscape and cityscape collision is already
-    // handled by the corresponding system.
-    // --->
-    float maxrange = 25;
-    std::list<Entity*>* range = filterByRange(ex, worldpos, 0.0f, maxrange, -1, NULL);
-    if (!range->empty()) {
-
-        for(Entity* object: *range) {
-            depth += object->constrain(worldpos, radius, NULL, ex);
-        }
-    }
-    delete range;
     return depth;
-    // <---
 }
 

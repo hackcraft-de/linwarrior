@@ -18,7 +18,9 @@ class PhysicsSystem;
 #include "de/hackcraft/world/Subsystem.h"
 
 #include <map>
+#include <vector>
 
+class Logger;
 class rCollider;
 class rTraceable;
 
@@ -26,6 +28,9 @@ class PhysicsSystem : public Subsystem {
 public:
     PhysicsSystem();
     virtual ~PhysicsSystem();
+    
+    void add(rCollider* collider);
+    void add(rTraceable* traceable);
 
     float* getGravity();
     
@@ -33,10 +38,38 @@ public:
     
     float getAirdensity();
     
+    
+     /** Advance simulation time for one frame. */
+    virtual void advanceTime(int deltamsec) {};
+    /** Re-build spatial clustering of objects. */
+    virtual void clusterObjects() {};
+    /** Deliver overdue messages to objects. */
+    virtual void dispatchMessages() {};
+    /** Let all objects process input, adjust pose and calculate physics. */
+    virtual void animateObjects();
+    /** Let all objects calculate transformation matrices etc. */
+    virtual void transformObjects() {};
+    /** Setup structures for rendering */
+    virtual void setupView(float* pos, float* ori) {};
+   /** Draw all Object's solid surfaces (calls their drawSolid method). */
+    virtual void drawSolid() {};
+    /** Draw all Object's effects (calls their drawEffect method). */
+    virtual void drawEffect() {};
+    
+    virtual float constrainParticle(Entity* ex, float* worldpos, float radius);
+    
     static PhysicsSystem* getInstance();
 private:
-    std::map<OID,rCollider*> colliders;
-    std::map<OID,rTraceable*> traceables;
+    
+    /** List of allocated components of this type. */
+    std::vector<rCollider*> colliders;
+    /** Index on id of leased components of this type. */
+    std::map<OID,rCollider*> collidersIndex;
+    
+    /** List of allocated components of this type. */
+    std::vector<rTraceable*> traceables;
+    /** Index on id of leased components of this type. */
+    std::map<OID,rTraceable*> traceablesIndex;
     
     /** Allows searching the world in a structured manner. */
     //std::unordered_map<OID, std::list<rCollider*> > geoToColliders;
@@ -51,6 +84,8 @@ private:
     float gndfriction;
     
     static PhysicsSystem* instance;
+    
+    static Logger* logger;
 };
 
 #endif	/* PHYSICSSYSTEM_H */
