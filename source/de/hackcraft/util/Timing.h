@@ -63,20 +63,40 @@ public:
     //cTiming(const cTiming& orig);
     //virtual ~cTiming();
 
+    /** The seconds per frame or frame-rate-inverse. */
     float getSPF();
+    
+    /** The current deltacycle (i-th event within a frame). */
     unsigned int getDeltacycle();
+    
+    /** The current frame number. */
     unsigned int getFrame();
 
+    /** Set current frames per seconds and derived seconds per frame. */
     void setFPS(float fps);
+    
+    /** Set year and day in year. */
     void setDate(unsigned int year, unsigned int day);
+    
+    /** Set hour, minute and second of day. */
     void setTime(unsigned hour, unsigned minute = 0, unsigned second = 0);
 
+    /** Increment deltacycle by one (within-frame-notable-event-counter). */
     void advanceDelta();
+    
+    /** Increment time by the amount of milliseconds and propagate datetime changes. */
     void advanceTime(int deltamsec);
 
+    /** The time in 24-hours format as a float - ie. 0.00 to 23.99 (vs. 23.59) used for interpolation. */
     float getTime24();
+    
+    /** Derive a unique key from current time (using deltacycle which needs to be incremented afterwards). */
     OID getTimekey();
+    
+    /** Get date-string YYYY-MM-DD. */
     std::string getDate();
+    
+    /** Get time-string HH:MM:SS. */
     std::string getTime();
 
 };
