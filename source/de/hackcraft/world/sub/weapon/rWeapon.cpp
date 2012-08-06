@@ -144,6 +144,13 @@ int rWeapon::damageByParticle(float* worldpos, float radius, int roles, float da
         }
     }
     delete range;
+    
+    if (damaged == 0) {
+        float depth = World::getInstance()->constrainParticle(object, worldpos_, radius);
+        if (depth != 0) {
+            damaged++;
+        }
+    }
 
     return damaged;
 }
