@@ -41,7 +41,7 @@ unsigned int rTile::loadMaterial() {
     return prog;
 }
 
-Logger* rTile::logger = Logger::getLogger("de.hackcraft.world.sub.model.rTile");
+Logger* rTile::logger = Logger::getLogger("de.hackcraft.world.sub.cityscape.rTile");
 
 int rTile::sInstances = 0;
 std::map<int, long> rTile::sTextures;
