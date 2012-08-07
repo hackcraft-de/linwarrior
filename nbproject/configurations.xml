@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="80">
+<configurationDescriptor version="84">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df name="data" root="data">
       <df name="base">
@@ -119,8 +119,6 @@
             <in>LoggerEvent.cpp</in>
             <in>LoggerEvent.h</in>
           </df>
-          <df name="openal">
-          </df>
           <df name="opengl">
             <in>GL.cpp</in>
             <in>GL.h</in>
@@ -183,6 +181,8 @@
                 <in>BackgroundSystem.h</in>
               </df>
               <df name="camera">
+                <in>CameraSystem.cpp</in>
+                <in>CameraSystem.h</in>
                 <in>rCamera.cpp</in>
                 <in>rCamera.h</in>
               </df>
@@ -207,10 +207,14 @@
                 <in>rTile.h</in>
               </df>
               <df name="computer">
+                <in>ComputerSystem.cpp</in>
+                <in>ComputerSystem.h</in>
                 <in>rComcom.cpp</in>
                 <in>rComcom.h</in>
                 <in>rController.cpp</in>
                 <in>rController.h</in>
+                <in>rForcom.cpp</in>
+                <in>rForcom.h</in>
                 <in>rNavcom.cpp</in>
                 <in>rNavcom.h</in>
               </df>
@@ -227,8 +231,8 @@
                 <in>MissionSystem.h</in>
               </df>
               <df name="mobile">
-                <in>rForcom.cpp</in>
-                <in>rForcom.h</in>
+                <in>MobileSystem.cpp</in>
+                <in>MobileSystem.h</in>
                 <in>rMobile.cpp</in>
                 <in>rMobile.h</in>
               </df>
@@ -321,6 +325,8 @@
         <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>default</compilerSet>
       </toolsSet>
+      <codeAssistance>
+      </codeAssistance>
       <makefileType>
         <makeTool>
           <buildCommandWorkingDir>.</buildCommandWorkingDir>

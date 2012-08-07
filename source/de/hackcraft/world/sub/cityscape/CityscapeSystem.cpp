@@ -23,17 +23,17 @@ CityscapeSystem::~CityscapeSystem() {
 
 
 void CityscapeSystem::add(rBuilding* building) {
-    buildings[building->id] = building;
+    buildings[building->getId()] = building;
 }
 
 
 void CityscapeSystem::add(rTile* tile) {
-    tiles[tile->id] = tile;
+    tiles[tile->getId()] = tile;
 }
 
 
 void CityscapeSystem::add(rPadmap* padmap) {
-    padmaps[padmap->id] = padmap;
+    padmaps[padmap->getId()] = padmap;
 }
 
 

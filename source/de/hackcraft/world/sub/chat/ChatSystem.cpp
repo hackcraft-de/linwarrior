@@ -10,6 +10,7 @@
 
 #include <cassert>
 
+
 Logger* ChatSystem::logger = Logger::getLogger("de.hackcraft.world.sub.chat.ChatSystem");
 
 ChatSystem* ChatSystem::instance = NULL;
@@ -33,14 +34,14 @@ ChatSystem::~ChatSystem() {
 OID ChatSystem::getGroup(std::string name) {
     for (std::map<OID,rChatGroup*>::iterator i = groups.begin(); i != groups.end(); i++) {
         if ((*i).second->name.compare(name) == 0) {
-            return (*i).second->id;
+            return (*i).second->getId();
         }
     }
     rChatGroup* group = new rChatGroup();
     group->name = name;
-    groups[group->id] = group;
+    groups[group->getId()] = group;
     logger->debug() << "Chat group created: " << group->id << " as " << group->name << "\n";
-    return group->id;
+    return group->getId();
 }
 
 
@@ -65,7 +66,7 @@ void ChatSystem::addToGroup(OID gid, Entity* member) {
 
 
 void ChatSystem::add(rChatMember* member) {
-    members[member->id] = member;
+    members[member->getId()] = member;
 }
 
 

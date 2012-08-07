@@ -18,7 +18,7 @@ rChatMember::rChatMember(Entity* obj) {
     
     id = (OID) this;
 
-    int w = 20;
+    int w = 60;
     int h = 10;
     mConsole = Console::Console_new(w * h, w);
     assert(mConsole != NULL);
@@ -44,21 +44,21 @@ void rChatMember::drawHUD() {
     if (!active) return;
 
     //GL::glColor4f(0,0.1,0,0.2);
-    GL::glBegin(GL_QUADS);
-    GL::glVertex3f(1, 1, 0);
-    GL::glVertex3f(0, 1, 0);
-    GL::glVertex3f(0, 0, 0);
-    GL::glVertex3f(1, 0, 0);
-    GL::glEnd();
+//    GL::glBegin(GL_QUADS);
+//    GL::glVertex3f(3, 1, 0);
+//    GL::glVertex3f(0, 1, 0);
+//    GL::glVertex3f(0, 0, 0);
+//    GL::glVertex3f(3, 0, 0);
+//    GL::glEnd();
     GL::glPushMatrix();
     {
-        GL::glColor4f(0, 1, 0, 0.9);
+        GL::glColor4f(0.9, 0.9, 0.9, 0.5);
         //GL::glColor4f(0.99, 0.99, 0.19, 1);
         Console* console = (Console*) mConsole;
         float w = console->width;
         float h = console->size / console->width;
         GL::glTranslatef(0, 1.0f + (1.0f / h), 0);
-        GL::glScalef(1.0f / w, 1.0f / h, 1.0f);
+        GL::glScalef(3.0f / w, 1.0f / h, 1.0f);
         Console::Console_draw(console);
     }
     GL::glPopMatrix();

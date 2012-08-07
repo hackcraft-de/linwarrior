@@ -46,6 +46,10 @@ public: // Interaction
      */
     virtual float constrainParticle(Entity* ex, float* worldpos, float radius) = 0;
     
+    //virtual float constrainParticleInc(Entity* inc, float* worldpos, float radius) { return 0.0f; };
+    
+    //virtual float inflictUppon(Entity* enactor, Entity* reactor, float* localpos, int key, float value) { return 0.0f; };
+    
 public: // Frame cycle
     /** Advance simulation time for one frame. */
     virtual void advanceTime(int deltamsec) = 0;

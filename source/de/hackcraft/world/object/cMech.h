@@ -76,8 +76,9 @@ protected:
 
 public:
 
-    // COMPUTERs
     rChatMember* chatMember;
+
+    // COMPUTERs
     rComcom* comcom;
     rTarcom* tarcom;
     rWepcom* wepcom;

@@ -144,21 +144,25 @@ void WeaponSystem::animateObjects() {
     
     for (std::pair<OID,rWepcom*> p : wepcoms) {
         rWepcom* model = p.second;
+        model->prebind();
         model->animate(spf);
     }
     
     for (std::pair<OID,rWeapon*> p : weapons) {
         rWeapon* model = p.second;
+        model->prebind();
         model->animate(spf);
     }
     
     for (std::pair<OID,rTarget*> p : targets) {
         rTarget* model = p.second;
+        model->prebind();
         model->animate(spf);
     }
     
     for (std::pair<OID,rTarcom*> p : tarcoms) {
         rTarcom* model = p.second;
+        model->prebind();
         model->animate(spf);
     }
 }

@@ -14,9 +14,9 @@ LandscapeSystem* LandscapeSystem::getInstance() {
 
 
 LandscapeSystem::LandscapeSystem() {
-    planetmap = NULL;
-    
     instance = this;
+    
+    planetmap = NULL;
 }
 
 LandscapeSystem::~LandscapeSystem() {

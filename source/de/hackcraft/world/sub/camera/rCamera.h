@@ -22,6 +22,7 @@ class Entity;
 /**
  * Camera component.
  */
+/// @Entity(table="world_camera")
 struct rCamera : public Component {
 public: // SYSTEM
     /** Identifier for this component (all uppercase letters without leading "r"). */
@@ -30,6 +31,7 @@ public: // SYSTEM
     static unsigned int cid;
 public: // INPUT
     /** Base position (hook i). */
+    /// @Column(name="orientation_zero")
     quat ori0;
     /** Base orientation (hook i). */
     vec3 pos0;

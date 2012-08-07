@@ -13,21 +13,24 @@
 
 #include "de/hackcraft/world/World.h"
 
+#include "de/hackcraft/world/sub/camera/CameraSystem.h"
 #include "de/hackcraft/world/sub/camera/rCamera.h"
 
 #include "de/hackcraft/world/sub/chat/ChatSystem.h"
 #include "de/hackcraft/world/sub/chat/rChatMember.h"
 
+#include "de/hackcraft/world/sub/computer/ComputerSystem.h"
 #include "de/hackcraft/world/sub/computer/rComcom.h"
 #include "de/hackcraft/world/sub/computer/rController.h"
+#include "de/hackcraft/world/sub/computer/rForcom.h"
 #include "de/hackcraft/world/sub/computer/rNavcom.h"
+
+#include "de/hackcraft/world/sub/mobile/MobileSystem.h"
+#include "de/hackcraft/world/sub/mobile/rMobile.h"
 
 #include "de/hackcraft/world/sub/model/rBillboard.h"
 #include "de/hackcraft/world/sub/model/rRigged.h"
 #include "de/hackcraft/world/sub/model/ModelSystem.h"
-
-#include "de/hackcraft/world/sub/mobile/rMobile.h"
-#include "de/hackcraft/world/sub/mobile/rForcom.h"
 
 #include "de/hackcraft/world/sub/physics/PhysicsSystem.h"
 #include "de/hackcraft/world/sub/physics/rCollider.h"
@@ -39,29 +42,18 @@
 #include "de/hackcraft/world/sub/weapon/rWeapon.h"
 #include "de/hackcraft/world/sub/weapon/rWepcom.h"
 
+
 #include <cassert>
-
-#include <vector>
-using std::vector;
-
-#include <string>
-using std::string;
-
 #include <sstream>
-using std::stringstream;
-
-#include <map>
-using std::map;
-
 #include <typeinfo>
 
-
-#define EXPERIMENT true
 
 Logger* cMech::logger = Logger::getLogger("de.hackcraft.world.object.cMech");
 
 int cMech::sInstances = 0;
+
 std::map<int, long> cMech::sTextures;
+
 
 cMech::cMech(Propmap* props) {
     
@@ -95,13 +87,13 @@ cMech::cMech(Propmap* props) {
     
     for (int i = 0; i < 7; i++) {
         
-        stringstream sstr;
+        std::stringstream sstr;
         sstr << "mech." << mpts[i];
-        string s = sstr.str();
+        std::string s = sstr.str();
         
         if (!cnf.contains(s)) continue;
         
-        string wpn = cnf.getProperty(s, std::string(""));
+        std::string wpn = cnf.getProperty(s, std::string(""));
         
         if (wpn.compare("Plasma") == 0) {
             logger->debug() << wpn << " selected for " << mpts[i] << "\n";
@@ -134,11 +126,13 @@ cMech::cMech(Propmap* props) {
     mobile->immobile = (cnf.getProperty("mech.immobile", "false").compare("true") == 0);
 }
 
-cMech::cMech(float* pos, float* rot, string modelName) {
+
+cMech::cMech(float* pos, float* rot, std::string modelName) {
     init(pos, rot, modelName);
 }
 
-void cMech::init(float* pos, float* rot, string modelName) {
+
+void cMech::init(float* pos, float* rot, std::string modelName) {
     sInstances++;
     if (sInstances == 1) {
         // First one initializes.
@@ -167,16 +161,23 @@ void cMech::init(float* pos, float* rot, string modelName) {
     WeaponSystem::getInstance()->add(wepcom);
     
     controller = new rController(this);
-    camra = new rCamera(this);
-    mobile = new rMobile(this);
-
     comcom = new rComcom(this);
     forcom = new rForcom(this);
     navcom = new rNavcom(this);
+    ComputerSystem::getInstance()->add(controller);
+    ComputerSystem::getInstance()->add(comcom);
+    ComputerSystem::getInstance()->add(forcom);
+    ComputerSystem::getInstance()->add(navcom);
     
     chatMember = new rChatMember(this);
     ChatSystem::getInstance()->add(chatMember);
-
+    
+    camra = new rCamera(this);
+    CameraSystem::getInstance()->add(camra);
+    
+    mobile = new rMobile(this);
+    MobileSystem::getInstance()->add(mobile);
+    
     if (rot != NULL) vector_scale(mobile->bse, rot, PI_OVER_180);
 
     if (pos != NULL) vector_cpy(traceable->pos, pos);
@@ -243,6 +244,7 @@ void cMech::init(float* pos, float* rot, string modelName) {
         collider->ratio = 0.0f;
         collider->addBinding(&collider->height, &rigged->height, sizeof(float));
     }
+    
     // DAMAGEABLE
     {
         // from Self
@@ -253,10 +255,12 @@ void cMech::init(float* pos, float* rot, string modelName) {
         target->addBinding(&target->radius, &rigged->radius, sizeof(float));
         target->addBinding(&target->height, &rigged->height, sizeof(float));
     }
+    
     // COMCOM
     {
         comcom->addBinding(&comcom->active, &target->alife, sizeof(bool));
     }
+    
     // TARCOM
     {
         // from Pad
@@ -268,10 +272,12 @@ void cMech::init(float* pos, float* rot, string modelName) {
         tarcom->addBinding(&tarcom->pos0, &traceable->pos, sizeof(vec3));
         tarcom->addBinding(&tarcom->ori0, &traceable->ori, sizeof(quat));
     }
+    
     // WEPCOM
     {
         wepcom->addBinding(&wepcom->active, &target->alife, sizeof(bool));
     }
+    
     // FORCOM
     {
         // from TARGET
@@ -283,6 +289,7 @@ void cMech::init(float* pos, float* rot, string modelName) {
         // from CAMERA
         forcom->addBinding(&forcom->reticle, &camra->firstperson, sizeof(bool));
     }
+    
     // NAVCOM
     {
         // from TARGET
@@ -291,6 +298,7 @@ void cMech::init(float* pos, float* rot, string modelName) {
         navcom->addBinding(&navcom->pos0, &traceable->pos, sizeof(vec3));
         navcom->addBinding(&navcom->ori0, &traceable->ori, sizeof(quat));
     }
+    
     // CONTROLLER
     {
         // from TARGET
@@ -302,7 +310,16 @@ void cMech::init(float* pos, float* rot, string modelName) {
         controller->addBinding(&controller->aimrange, &mobile->aimrange, sizeof(float));
         controller->addBinding(&controller->walkrange, &mobile->walkrange, sizeof(float));
     }
+    
+    // TRACEABLE: Rigid Body, Collisions etc.
+    {
+        // from MOBILE:
+        traceable->addBinding(&traceable->ori, &mobile->ori0, sizeof(quat));
+        traceable->addBinding(&traceable->jetthrottle, &mobile->jetthrottle, sizeof(float));
+        traceable->addBinding(&traceable->throttle, &mobile->drivethrottle, sizeof(float));
+    }
 }
+
 
 cMech::~cMech() {
     // FIXME: delete all components.
@@ -312,12 +329,16 @@ cMech::~cMech() {
     }
     sInstances--;
 }
+
+
 /*
 void cMech::message(Message* message) {
     cout << "I (" << this->oid << ":" << this->name << ") just received: \"" << message->getText() << "\" from sender " << message->getSender() << "\n";
     forcom->message(message);
 }
 */
+
+
 void cMech::spawn() {
     //cout << "cMech::onSpawn()\n";
     ALuint soundsource = traceable->sound;
@@ -330,9 +351,11 @@ void cMech::spawn() {
     //cout << "Mech spawned " << oid << "\n";
 }
 
+
 void cMech::camera() {
     camra->camera();
 }
+
 
 void cMech::listener() {
     float s = -0.1;
@@ -358,6 +381,7 @@ void cMech::listener() {
     alListenerfv(AL_ORIENTATION, at_and_up);
 }
 
+
 void cMech::mountWeapon(const char* point, rWeapon *weapon, bool add) {
     if (weapon == NULL) throw "Null weapon for mounting given.";
     weapon->weaponMount = rigged->getMountpoint(point);
@@ -372,9 +396,9 @@ void cMech::mountWeapon(const char* point, rWeapon *weapon, bool add) {
 
 void cMech::animate(float spf) {
     // Read in.
-    vector_cpy(this->pos0, traceable->pos);
-    quat_cpy(this->ori0, traceable->ori);
-    this->radius = traceable->radius;
+    //vector_cpy(this->pos0, traceable->pos);
+    //quat_cpy(this->ori0, traceable->ori);
+    //this->radius = traceable->radius;
 
     /* Index of Component order
      * ------------------------
@@ -405,7 +429,6 @@ void cMech::animate(float spf) {
             collider->ratio = 0.0f;
             collider->height = rigged->height;
         }
-        collider->prebind();
     }
 
     // TARGET
@@ -419,7 +442,6 @@ void cMech::animate(float spf) {
             target->radius = rigged->radius;
             target->height = rigged->height;
         }
-        target->prebind();
     }
 
     // begin COMPUTERs -->
@@ -430,8 +452,6 @@ void cMech::animate(float spf) {
         if (0) {
             comcom->active = target->alife;
         }
-        comcom->prebind();
-        comcom->animate(spf);
     }
 
     // TARCOM
@@ -450,7 +470,6 @@ void cMech::animate(float spf) {
             vector_cpy(tarcom->pos0, traceable->pos);
             quat_cpy(tarcom->ori0, traceable->ori);
         }
-        tarcom->prebind();
     }
 
     // FORCOM
@@ -471,8 +490,6 @@ void cMech::animate(float spf) {
         if (0) {
             forcom->reticle = camra->firstperson;
         }
-        forcom->prebind();
-        forcom->animate(spf);
     }
 
     // NAVCOM
@@ -486,8 +503,6 @@ void cMech::animate(float spf) {
             vector_cpy(navcom->pos0, traceable->pos);
             quat_cpy(navcom->ori0, traceable->ori);
         }
-        navcom->prebind();
-        navcom->animate(spf);
     }
 
     // CONTROLLER
@@ -506,8 +521,6 @@ void cMech::animate(float spf) {
             controller->aimrange = mobile->aimrange;
             controller->walkrange = mobile->walkrange;
         }
-        controller->prebind();
-        controller->animate(spf);
     }
 
     // MOBILE
@@ -535,21 +548,21 @@ void cMech::animate(float spf) {
         {
             vector_cpy(mobile->pos0, traceable->pos);
         }
-        mobile->prebind();
-        mobile->animate(spf);
     }
 
     // TRACEABLE: Rigid Body, Collisions etc.
     {
         // from MOBILE:
-        {
+        if (0) {
             quat_cpy(traceable->ori, mobile->ori0);
             traceable->jetthrottle = mobile->jetthrottle;
             traceable->throttle = mobile->drivethrottle;
         }
-
-        // FIXME: move to rSoundsource to be able to add loading/streaming
-        // and to mount it somewhere.
+    }
+    
+    // SOUND - FIXME: Add Sound-Subsystem with sound-source component.
+    {
+        // from TRACEABLE
         if (traceable->sound != 0) {
             alSourcefv(traceable->sound, AL_POSITION, traceable->pos);
             //alSourcefv(traceable->sound, AL_VELOCITY, traceable->vel);
@@ -565,7 +578,6 @@ void cMech::animate(float spf) {
             rigged->rotators[rigged->HEADPITCH][0] = mobile->twr[0];
             rigged->jetting = mobile->jetthrottle;
         }
-
         // from TRACEABLE: Physical movement state.
         {
             vector_cpy(rigged->pos0, traceable->pos);
@@ -625,8 +637,6 @@ void cMech::animate(float spf) {
         {
             camra->cameraswitch = pad->getButton(Pad::MECH_CAMERA_BUTTON);
         }
-
-        camra->animate(spf);
     }
 
     // FIXME: Input binding.
@@ -642,7 +652,6 @@ void cMech::animate(float spf) {
         if (0) {
             wepcom->active = target->alife;
         }
-        wepcom->prebind();
     }
     
     // WEAPON
@@ -674,12 +683,6 @@ void cMech::animate(float spf) {
             quat_cpy(weapon->ori1, joint->q);
             vector_cpy(weapon->pos1, joint->v);
         }
-    }
-
-    for (auto i = components.begin(); i != components.end(); i++) {
-        (*i)->prebind();
-        (*i)->animate(spf);
-        (*i)->postbind();
     }
     
     // Pad
@@ -760,7 +763,7 @@ void cMech::drawHUD() {
                 float sy = 1.0f / h;
 
                 Component * displays[4][5] = {
-                    { navcom, NULL, NULL, NULL, /*comcom*/ chatMember },
+                    { navcom, chatMember, NULL, NULL, comcom },
                     { NULL, NULL, NULL, NULL, NULL},
                     { NULL, NULL, NULL, NULL, NULL},
                     { tarcom, NULL, wepcom, NULL, target}

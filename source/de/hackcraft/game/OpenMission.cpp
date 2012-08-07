@@ -11,17 +11,22 @@
 
 #include "de/hackcraft/world/sub/background/BackgroundSystem.h"
 
+#include "de/hackcraft/world/sub/camera/CameraSystem.h"
+
 #include "de/hackcraft/world/sub/chat/ChatSystem.h"
 
 #include "de/hackcraft/world/sub/cityscape/CityscapeSystem.h"
 #include "de/hackcraft/world/sub/cityscape/rBuilding.h"
 #include "de/hackcraft/world/sub/cityscape/rPadmap.h"
 #include "de/hackcraft/world/sub/cityscape/rTile.h"
+
+#include "de/hackcraft/world/sub/computer/ComputerSystem.h"
 #include "de/hackcraft/world/sub/computer/rController.h"
 
 #include "de/hackcraft/world/sub/landscape/LandscapeSystem.h"
 #include "de/hackcraft/world/sub/landscape/rPlanetmap.h"
 
+#include "de/hackcraft/world/sub/mobile/MobileSystem.h"
 #include "de/hackcraft/world/sub/mobile/rMobile.h"
 
 #include "de/hackcraft/world/sub/model/ModelSystem.h"
@@ -130,9 +135,12 @@ Entity* OpenMission::init(World* world) {
 
     logger->info() << "Initialising experimental or preliminary subsystems...\n";
     world->subsystems.push_back(new LandscapeSystem());
+    world->subsystems.push_back(new MobileSystem());
     world->subsystems.push_back(new PhysicsSystem());
     world->subsystems.push_back(new WeaponSystem());
     world->subsystems.push_back(new ModelSystem());
+    world->subsystems.push_back(new ComputerSystem());
+    world->subsystems.push_back(new CameraSystem());
 
     logger->info() << "Initialising planetary maps...\n";
     this->planetmap = new rPlanetmap(&globalProperties);

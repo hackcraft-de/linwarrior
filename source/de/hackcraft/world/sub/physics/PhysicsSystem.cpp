@@ -73,11 +73,15 @@ void PhysicsSystem::animateObjects() {
     float spf = World::getInstance()->getTiming()->getSPF();
     
     for (rCollider* collider : colliders) {
+        collider->prebind();
         collider->animate(spf);
+        collider->postbind();
     }
     
     for (rTraceable* traceable : traceables) {
+        traceable->prebind();
         traceable->animate(spf);
+        traceable->postbind();
     }
 }
 
