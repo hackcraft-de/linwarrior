@@ -100,6 +100,7 @@ inline float rPlanetmap::sMod::getModifiedHeight(float x, float z, float h) {
     }
 }
 
+
 rPlanetmap::rPlanetmap() {
     Propmap properties;
     properties.put("landscape.type", "grass");
@@ -108,9 +109,11 @@ rPlanetmap::rPlanetmap() {
     init(&properties);
 }
 
+
 rPlanetmap::rPlanetmap(Propmap* properties) {
     init(properties);
 }
+
 
 void rPlanetmap::init(Propmap* properties) {
     sInstances++;
@@ -290,6 +293,7 @@ void rPlanetmap::init(Propmap* properties) {
     }
 }
 
+
 void rPlanetmap::invalidateCache() {
     const long TILESIZE = PLANETMAP_TILESIZE;
     for (maptype<unsigned long, sPatch*>::iterator i = patches.begin(); i != patches.end(); ++i) {
@@ -303,6 +307,7 @@ void rPlanetmap::invalidateCache() {
         }
     }
 }
+
 
 void rPlanetmap::getHeight(float x, float z, float* const color) {
     float h = 0;
@@ -442,6 +447,7 @@ void rPlanetmap::getHeight(float x, float z, float* const color) {
     color[Landscape::BUMP] = h;
 } // getHeight
 
+
 void rPlanetmap::getCachedHeight(float x, float z, float* const color) {
     // nan?
     if (x != x || z != z) {
@@ -562,6 +568,7 @@ void rPlanetmap::getCachedHeight(float x, float z, float* const color) {
 #endif
 } // getCachedHeight
 
+
 float rPlanetmap::constrain(float* worldpos, float radius, float* localpos, Entity* enactor) {
     //if (enactor == NULL) return 0.0;
     float localpos_[3];
@@ -642,20 +649,18 @@ float rPlanetmap::constrain(float* worldpos, float radius, float* localpos, Enti
     return maxdelta;
 }
 
+
 void rPlanetmap::animate(float spf) {
     if (tree) tree->seconds += spf;
 }
-
-
-int T = 0;
-int detail = 0;
 
 
 #define xmax(v1,v2)          (((v1)>(v2))?(v1):(v2))
 
 #define xmin(v1,v2)          (((v1)<(v2))?(v1):(v2))
 
-#define TWODIMTEX
+#define TWODIMTEX true
+
 
 unsigned int rPlanetmap::loadMaterial() {
     static bool fail = false;
@@ -679,6 +684,7 @@ unsigned int rPlanetmap::loadMaterial() {
     if (fail) return 0;
     return prog;
 }
+
 
 void rPlanetmap::drawSolid() {
 
@@ -704,9 +710,7 @@ void rPlanetmap::drawSolid() {
     //float back = 16;
     //vec3 bk = {back * fwd[0], back * fwd[1], back * fwd[2]};
 
-    //cout << "here!"<< "\n";
-    if (T % 100 == 0) detail = (detail + 1) % 4;
-    detail = 5;
+    int detail = 5;
 
     float color[16];
     getCachedHeight(-p[0], -p[2], color);
@@ -716,8 +720,6 @@ void rPlanetmap::drawSolid() {
     hscale = (hscale < 2) ? hscale : 1;
     if (0) detail -= hscale;
 
-    //detail = 8;
-    T++;
     GL::glPushMatrix();
     {
         GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -728,66 +730,60 @@ void rPlanetmap::drawSolid() {
             GL::glEnable(GL_FOG);
             GL::glEnable(GL_COLOR_MATERIAL);
             //GL::glEnable(GL_NORMALIZE);
-#ifdef TWODIMTEX
-            GL::glDisable(GL_TEXTURE_3D);
-            GL::glEnable(GL_TEXTURE_2D);
-            GL::glBindTexture(GL_TEXTURE_2D, sGrounds[groundtype]);
-#else
-            GL::glDisable(GL_TEXTURE_2D);
-            GL::glEnable(GL_TEXTURE_3D);
-            GL::glBindTexture(GL_TEXTURE_3D, sGrounds[0]);
-#endif
             
-            float step = 64;
-            int s = step * 20; // (80)
-
-            loopi(detail) {
-                step *= 0.5;
-                s >>= 1;
+            float ts = 1;
+            
+            if(TWODIMTEX) {
+                ts = 0.13f;
+                GL::glDisable(GL_TEXTURE_3D);
+                GL::glEnable(GL_TEXTURE_2D);
+                GL::glBindTexture(GL_TEXTURE_2D, sGrounds[groundtype]);
+            } else {
+                ts = 0.3f;
+                GL::glDisable(GL_TEXTURE_2D);
+                GL::glEnable(GL_TEXTURE_3D);
+                GL::glBindTexture(GL_TEXTURE_3D, sGrounds[0]);
             }
-            detail = 2;
-            float x = -((int) (p[0] / step)) * step;
-            float z = -((int) (p[2] / step)) * step;
-            assert(!(x != x));
-            assert(!(z != z));
-            //float c[3];
-#ifdef TWODIMTEX
-            float ts = 0.13f;
-#else
-            float ts = 0.3f;
-#endif
-            //cout << x << " " << z << "\n";
 
-
-            int maxlevels = 3;
-            step = 0.5 * (1 << maxlevels);
-            s = 16 * (1 << maxlevels);
-            float areashrink = 0.5f;
-            float stepshrink = 0.5f;
+            // Levels of detail rings.
+            int maxLevels = 3;
+            
+            // Half edge size of the area to be filled with polygon tiles.
+            float ringRadius = 16 * (1 << maxLevels);
+            
+            // Size of a single polygon tile.
+            float tileSize = ringRadius / 32.0f;
+            
+            const float ringShrink = 0.5f;
+            const float tileShrink = 0.5f;
 
             // From outer to inner ring
-            for (int k = 1; k <= maxlevels; k++) {
+            for (int k = 1; k <= maxLevels; k++) {
 
-                //GL::glDepthMask(false);
                 GL::glColor4f(0, 0, 1, 1);
 
-                float s_ = (areashrink * s) - 4 * step;
-                if (k == maxlevels) s_ = 0;
+                float ringInnerRadius = (ringShrink * ringRadius) - 4 * tileSize;
+                if (k == maxLevels) ringInnerRadius = 0;
 
-                x = -((int) (p[0] / step)) * step;
-                z = -((int) (p[2] / step)) * step;
-
-                for (float i = x - s; i < x + s; i += step) {
+                float x = -((int) (p[0] / tileSize)) * tileSize;
+                float z = -((int) (p[2] / tileSize)) * tileSize;
+                
+                //cout << x << " " << z << "\n";
+                
+                for (float i = x - ringRadius; i < x + ringRadius; i += tileSize) {
+                    
                     GL::glBegin(GL_TRIANGLE_STRIP);
+                    
                     bool skip = false;
-                    for (float j = z - s; j <= z + s; j += step) {
+                    
+                    for (float j = z - ringRadius; j <= z + ringRadius; j += tileSize) {
 
-                        float alpha_i_z = fmin(1, 0.3f * xmax(0, abs(j + p[2]) - s_));
-                        float alpha_i_x = fmin(1, 0.3f * xmax(0, abs(i + step + p[0]) - s_));
+                        float alpha_i_z = fmin(1, 0.3f * xmax(0, abs(j + p[2]) - ringInnerRadius));
+                        float alpha_i_x = fmin(1, 0.3f * xmax(0, abs(i + tileSize + p[0]) - ringInnerRadius));
                         float alpha_i = fmax(alpha_i_z, alpha_i_x);
 
-                        float alpha_o_z = fmin(1, 0.16f * xmax(0, s - abs(j + p[2])));
-                        float alpha_o_x = fmin(1, 0.16f * xmax(0, s - abs(i + step + p[0])));
+                        float alpha_o_z = fmin(1, 0.16f * xmax(0, ringRadius - abs(j + p[2])));
+                        float alpha_o_x = fmin(1, 0.16f * xmax(0, ringRadius - abs(i + tileSize + p[0])));
                         float alpha_o = fmin(alpha_o_z, alpha_o_x);
                         float alpha = alpha_o;
 
@@ -815,39 +811,32 @@ void rPlanetmap::drawSolid() {
                             GL::glBegin(GL_TRIANGLE_STRIP);
                         }
 
-                        getCachedHeight(i + step, j, color);
+                        getCachedHeight(i + tileSize, j, color);
                         float h0 = color[Landscape::BUMP] + 0.005f * k;
 
-                        //const float dext = s*s*0.9;//318*318;
-                        //float d2 = ((j + p[2])*(j + p[2]) + (i + step + p[0])*(i + step + p[0]));
-                        //float alpha = (d2 < dext) ? 1 : 1.0f/(1.0f + 0.002f*(d2-dext));
                         color[3] = alpha;
 
-                        //GL::glNormal3f(0,1,0);
                         GL::glNormal3fv(&color[4]);
                         GL::glColor4f(fmin(1.0f, color[0]), fmin(1.0f, color[1]), fmin(1.0f, color[2]), fmin(1.0f, color[3]));
 #ifdef TWODIMTEX
-                        GL::glTexCoord2f((i + step) * ts, j * ts);
+                        GL::glTexCoord2f((i + tileSize) * ts, j * ts);
 #else
-                        GL::glTexCoord3f((i + step) * ts, h0*ts, j * ts);
+                        GL::glTexCoord3f((i + tileSize) * ts, h0*ts, j * ts);
 #endif
-                        GL::glVertex3f(i + step, h0, j);
+                        GL::glVertex3f(i + tileSize, h0, j);
 
                         //
 
                         getCachedHeight(i + 0, j, color);
                         float h1 = color[Landscape::BUMP] + 0.005f * k;
 
-                        alpha_o_z = fmin(1, 0.16f * xmax(0, s - abs(j + p[2])));
-                        alpha_o_x = fmin(1, 0.16f * xmax(0, s - abs(i + p[0])));
+                        alpha_o_z = fmin(1, 0.16f * xmax(0, ringRadius - abs(j + p[2])));
+                        alpha_o_x = fmin(1, 0.16f * xmax(0, ringRadius - abs(i + p[0])));
                         alpha_o = fmin(alpha_o_z, alpha_o_x);
                         alpha = alpha_o;
 
-                        //d2 = ((j + p[2])*(j + p[2]) + (i + p[0])*(i + p[0]));
-                        //alpha = (d2 < dext) ? 1 : 1.0f/(1.0f + 0.002f*(d2-dext));
                         color[3] = alpha;
 
-                        //GL::glNormal3f(0,1,0);
                         GL::glNormal3fv(&color[4]);
                         GL::glColor4f(fmin(1.0f, color[0]), fmin(1.0f, color[1]), fmin(1.0f, color[2]), fmin(1.0f, color[3]));
 #ifdef TWODIMTEX
@@ -860,8 +849,8 @@ void rPlanetmap::drawSolid() {
                     GL::glEnd();
                 }
 
-                s *= areashrink;
-                step *= stepshrink;
+                ringRadius *= ringShrink;
+                tileSize *= tileShrink;
 
             } // for k rings
 
@@ -880,6 +869,7 @@ void rPlanetmap::drawSolid() {
     }
 }
 
+
 void rPlanetmap::drawBillboardPlant(float x__, float h, float z__, float scale, float* unrotateMatrix) {
     GL::glTranslatef(x__, h - 0.2, z__);
     GL::glMultMatrixf(unrotateMatrix);
@@ -896,6 +886,7 @@ void rPlanetmap::drawBillboardPlant(float x__, float h, float z__, float scale, 
     }
 }
 
+
 void rPlanetmap::drawStarPlant(float x__, float h, float z__, float scale) {
     GL::glTranslatef(x__, h - 0.2-0.3, z__);
     GL::glScalef(scale, scale, scale);
@@ -909,6 +900,7 @@ void rPlanetmap::drawStarPlant(float x__, float h, float z__, float scale) {
         GL::glCallList(dlist);
     }
 }
+
 
 void rPlanetmap::drawTrianglePlant(float x__, float h, float z__, float scale) {
     GL::glTranslatef(x__, h - 0.2, z__);
@@ -924,6 +916,7 @@ void rPlanetmap::drawTrianglePlant(float x__, float h, float z__, float scale) {
     }
 }
 
+
 void rPlanetmap::drawCrossPlant(float x__, float h, float z__, float scale) {
     GL::glTranslatef(x__, h - 0.2, z__);
     GL::glScalef(scale, scale, scale);
@@ -937,6 +930,7 @@ void rPlanetmap::drawCrossPlant(float x__, float h, float z__, float scale) {
         GL::glCallList(dlist);
     }
 }
+
 
 void rPlanetmap::drawLeafPlant(float x__, float h, float z__, float scale) {
     GL::glTranslatef(x__, h - 0.2, z__);
@@ -955,7 +949,9 @@ void rPlanetmap::drawLeafPlant(float x__, float h, float z__, float scale) {
             float h = (1.0 + j * 0.01) / 4.0;
             float l = (1.0 - j * 0.05) / 4.0;
             GL::glBegin(GL_TRIANGLE_STRIP);
+            
             for (int i = 0; i <= 6; i++) {
+                
                 double f = double(i) / 6.0;
                 double x = 4.0 * f;
                 double y = 4.0 * (sin(x) / (1.0 + 1.7 * x) + (0.1 + 0.03 * j) * x);
@@ -973,6 +969,7 @@ void rPlanetmap::drawLeafPlant(float x__, float h, float z__, float scale) {
         GL::glCallList(dlist);
     }
 }
+
 
 void rPlanetmap::drawEffect() {
     const float totaldensity = vegetation;
