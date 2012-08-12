@@ -749,7 +749,7 @@ void rPlanetmap::drawSolid() {
             int maxLevels = 3;
             
             // Half edge size of the area to be filled with polygon tiles.
-            float ringRadius = 16 * (1 << maxLevels);
+            float ringRadius = 32 * (1 << 3);
             
             // Size of a single polygon tile.
             float tileSize = ringRadius / 32.0f;
