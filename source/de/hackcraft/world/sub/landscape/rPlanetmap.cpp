@@ -23,6 +23,7 @@
 using namespace std;
 
 #define GROUNDDETAIL 0
+#define TWODIMTEX true
 
 Logger* rPlanetmap::logger = Logger::getLogger("de.hackcraft.world.sub.landscape.rPlanetmap");
 
@@ -655,13 +656,6 @@ void rPlanetmap::animate(float spf) {
 }
 
 
-#define xmax(v1,v2)          (((v1)>(v2))?(v1):(v2))
-
-#define xmin(v1,v2)          (((v1)<(v2))?(v1):(v2))
-
-#define TWODIMTEX true
-
-
 unsigned int rPlanetmap::loadMaterial() {
     static bool fail = false;
     static GL::GLenum prog = 0;
@@ -765,6 +759,7 @@ void rPlanetmap::drawSolid() {
                 float ringInnerRadius = (ringShrink * ringRadius) - 4 * tileSize;
                 if (k == maxLevels) ringInnerRadius = 0;
 
+                // Ensure that the tiles start on the grid.
                 float x = -((int) (p[0] / tileSize)) * tileSize;
                 float z = -((int) (p[2] / tileSize)) * tileSize;
                 
@@ -778,12 +773,12 @@ void rPlanetmap::drawSolid() {
                     
                     for (float j = z - ringRadius; j <= z + ringRadius; j += tileSize) {
 
-                        float alpha_i_z = fmin(1, 0.3f * xmax(0, abs(j + p[2]) - ringInnerRadius));
-                        float alpha_i_x = fmin(1, 0.3f * xmax(0, abs(i + tileSize + p[0]) - ringInnerRadius));
+                        float alpha_i_z = fmin(1, 0.3f * fmax(0, abs(j + p[2]) - ringInnerRadius));
+                        float alpha_i_x = fmin(1, 0.3f * fmax(0, abs(i + tileSize + p[0]) - ringInnerRadius));
                         float alpha_i = fmax(alpha_i_z, alpha_i_x);
 
-                        float alpha_o_z = fmin(1, 0.16f * xmax(0, ringRadius - abs(j + p[2])));
-                        float alpha_o_x = fmin(1, 0.16f * xmax(0, ringRadius - abs(i + tileSize + p[0])));
+                        float alpha_o_z = fmin(1, 0.16f * fmax(0, ringRadius - abs(j + p[2])));
+                        float alpha_o_x = fmin(1, 0.16f * fmax(0, ringRadius - abs(i + tileSize + p[0])));
                         float alpha_o = fmin(alpha_o_z, alpha_o_x);
                         float alpha = alpha_o;
 
@@ -830,8 +825,8 @@ void rPlanetmap::drawSolid() {
                         getCachedHeight(i + 0, j, color);
                         float h1 = color[Landscape::BUMP] + 0.005f * k;
 
-                        alpha_o_z = fmin(1, 0.16f * xmax(0, ringRadius - abs(j + p[2])));
-                        alpha_o_x = fmin(1, 0.16f * xmax(0, ringRadius - abs(i + p[0])));
+                        alpha_o_z = fmin(1, 0.16f * fmax(0, ringRadius - abs(j + p[2])));
+                        alpha_o_x = fmin(1, 0.16f * fmax(0, ringRadius - abs(i + p[0])));
                         alpha_o = fmin(alpha_o_z, alpha_o_x);
                         alpha = alpha_o;
 
