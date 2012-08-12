@@ -132,6 +132,7 @@ protected:
     void drawTrianglePlant(float x, float h, float z, float scale);
     void drawCrossPlant(float x, float h, float z, float scale);
     void drawLeafPlant(float x, float h, float z, float scale);
+    void drawStone(float x, float h, float z, float scaleX, float scaleH, float scaleZ);
     unsigned int loadMaterial();
 };
 

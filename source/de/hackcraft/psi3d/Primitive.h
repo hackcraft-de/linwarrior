@@ -34,20 +34,14 @@ struct Primitive {
     }
 
     static void glBalloid() {
-        GL::glEnable(GL_DEPTH_TEST);
-        GL::glEnable(GL_CULL_FACE);
-        GL::glDisable(GL_LIGHTING);
-        GL::glDisable(GL_TEXTURE_2D);
 
         int steps = 2;
         double delta = 2.0f / (float) steps;
 
-        float c[3];
-
         // xy
         loopk (2) {
             float dir = (k & 1) ? -1 : +1;
-            GL::glColor4f(0.9f,0.5f,0.5f,1.0f);
+            //GL::glColor4f(0.9f,0.5f,0.5f,1.0f);
             //GL::glColor4f(t==0?1:0.5,t==1?1:0.5,t==2?1:0.5,1);
 
             double b = -1;
@@ -58,20 +52,17 @@ struct Primitive {
                 GL::glBegin(GL_TRIANGLE_STRIP);
                 loopi(steps+1) {
 
-                    float inv0 = 1.0f / (float) sqrtf(a*a+b0*b0+1.0f);
-                    float inv1 = 1.0f / (float) sqrtf(a*a+b1*b1+1.0f);
+                    float inv0 = -1.0f / (float) sqrtf(a*a+b0*b0+1.0f);
+                    float inv1 = -1.0f / (float) sqrtf(a*a+b1*b1+1.0f);
                     float v0[] = { (float) a*inv0, (float) b0*inv0, (float) dir*inv0 };
                     float v1[] = { (float) a*inv1, (float) b1*inv1, (float) dir*inv1 };
 
-
                     GL::glNormal3fv(v0);
                     //transformV3(v0,c);
-                    GL::glColor3fv(c);
                     GL::glVertex3fv(v0);
 
                     GL::glNormal3fv(v1);
                     //transformV3(v1,c);
-                    GL::glColor3fv(c);
                     GL::glVertex3fv(v1);
 
                     a += delta;
@@ -84,7 +75,7 @@ struct Primitive {
         // xz
         loopk (2) {
             float dir = (k & 1) ? -1 : +1;
-            GL::glColor4f(0.5f,0.9f,0.5f,1.0f);
+            //GL::glColor4f(0.5f,0.9f,0.5f,1.0f);
             //GL::glColor4f(t==0?1:0.5,t==1?1:0.5,t==2?1:0.5,1);
 
             double b = -1;
@@ -102,12 +93,10 @@ struct Primitive {
 
                     GL::glNormal3fv(v0);
                     //transformV3(v0,c);
-                    GL::glColor3fv(c);
                     GL::glVertex3fv(v0);
 
                     GL::glNormal3fv(v1);
                     //transformV3(v1,c);
-                    GL::glColor3fv(c);
                     GL::glVertex3fv(v1);
 
                     a += delta;
@@ -120,7 +109,7 @@ struct Primitive {
         // yz
         loopk (2) {
             float dir = (k & 1) ? -1 : +1;
-            GL::glColor4f(0.5f,0.5f,0.9f,1.0f);
+            //GL::glColor4f(0.5f,0.5f,0.9f,1.0f);
             //GL::glColor4f(t==0?1:0.5,t==1?1:0.5,t==2?1:0.5,1);
 
             double b = -1;
@@ -139,12 +128,10 @@ struct Primitive {
 
                     GL::glNormal3fv(v0);
                     //transformV3(v0,c);
-                    GL::glColor3fv(c);
                     GL::glVertex3fv(v0);
 
                     GL::glNormal3fv(v1);
                     //transformV3(v1,c);
-                    GL::glColor3fv(c);
                     GL::glVertex3fv(v1);
 
                     a += delta;

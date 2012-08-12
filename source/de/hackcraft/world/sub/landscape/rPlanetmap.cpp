@@ -966,6 +966,24 @@ void rPlanetmap::drawLeafPlant(float x__, float h, float z__, float scale) {
 }
 
 
+void rPlanetmap::drawStone(float x, float h, float z, float scaleX, float scaleH, float scaleZ) {
+    
+    GL::glTranslatef(x, h - 0.1*scaleH, z);
+    GL::glScalef(scaleX, scaleH, scaleZ);
+    
+    static unsigned int dlist = 0;
+    
+    if (dlist == 0) {
+        dlist = GL::glGenLists(1);
+        GL::glNewList(dlist, GL_COMPILE_AND_EXECUTE);
+        Primitive::glBalloid();
+        GL::glEndList();
+    } else {
+        GL::glCallList(dlist);
+    }
+}
+
+
 void rPlanetmap::drawEffect() {
     const float totaldensity = vegetation;
 
@@ -1029,6 +1047,8 @@ void rPlanetmap::drawEffect() {
 
         GL::glColor4f(0.8f, 0.8f, 0.8f, 1);
         GL::glNormal3f(0, 1, 0);
+        
+        const float oneOver256 = 0.003906f;
 
         const float step = 16;
         //const float near = (step*2)*(step*2);
@@ -1072,22 +1092,24 @@ void rPlanetmap::drawEffect() {
                 unsigned char a = (char) x_;
                 unsigned char b = (char) z_;
                 unsigned char key = Noise::permutation2d(perms, a, b);
-
-                const float b2f = 1.0f / 256.0f;
                 
                 key = Noise::simplex3(a, b, 0.1f, 123) * 255.0f;
 
                 float plantscale = 1.0f;
-                float plantdensity = (totaldensity * 10.00f * key) * b2f;
+                float plantdensity = (totaldensity * 10.00f * key) * oneOver256;
                 int visibleplants = plantdensity * opacity;
 
                 key = Noise::simplex3(a, b, 0.1f, 234) * 255.0f;
-                float treedensity = (totaldensity * 1.85f * key) * b2f;
+                float treedensity = (totaldensity * 1.85f * key) * oneOver256;
                 float visibletrees = treedensity;
 
                 key = Noise::simplex3(a, b, 0.1f, 243) * 255.0f;
                 float grassdensity = (totaldensity * 2.00f * key);
                 float visiblegrass = grassdensity;
+                
+                key = Noise::simplex3(a, b, 0.1f, 217) * 255.0f;
+                float stonedensity = (totaldensity * 4.00f * key) * oneOver256;
+                float visiblestones = stonedensity;
 
                 //cout << "opacity " << opacity << "  density " << density << "\n";
 
@@ -1097,15 +1119,42 @@ void rPlanetmap::drawEffect() {
                 unsigned short lfsr16tmp = lfsr16;
                 lfsr16 = (lfsr16 == 0) ? 1 : lfsr16;
                 lfsr16 ^= 0x7493;
+
+                // Stones
+                GL::glDisable(GL_TEXTURE_2D);
+                loopi(visiblestones) {
+                    GL::glPushMatrix();
+                    {
+                        lfsr16 = Noise::LFSR16(lfsr16);
+                        a = lfsr16;
+                        b = lfsr16 >> 8;
+
+                        float x__ = x_ + step * oneOver256 * a;
+                        float z__ = z_ + step * oneOver256 * b;
+                        getCachedHeight(x__, z__, color);
+                        float h = color[Landscape::BUMP];
+                        
+                        lfsr16 = Noise::LFSR16(lfsr16);
+                        a = lfsr16;
+                        b = lfsr16 >> 8;
+                        
+                        float s = 0.1 + 0.5 * (a^b^0x27) * oneOver256;
+                        GL::glColor4f(0.2f, 0.2f, 0.2f,opacity);
+                        drawStone(x__, h, z__, s*(1.0f+0.4*a*oneOver256), s, s*(1.0f+0.4*b*oneOver256));
+                    }
+                    GL::glPopMatrix();
+                }
+                GL::glEnable(GL_TEXTURE_2D);
                 
+                // Grass                
                 if (opacity >= 0.995 && !true) {
                         
                     lfsr16 = Noise::LFSR16(lfsr16);
                     a = lfsr16;
                     b = lfsr16 >> 8;
 
-                    float x__ = x_ + step * 0.003906f * a;
-                    float z__ = z_ + step * 0.003906f * b;
+                    float x__ = x_ + step * oneOver256 * a;
+                    float z__ = z_ + step * oneOver256 * b;
                     getCachedHeight(x__, z__, color);
                     float h = color[Landscape::BUMP];
                     
@@ -1122,8 +1171,8 @@ void rPlanetmap::drawEffect() {
                             
                             unsigned char a = Noise::LFSR16((int) x__ * 123.017454);
                             unsigned char b = Noise::LFSR16((int) z__ * 231.017454);
-                            float u = 0.003906f * a * 4 + 6 * sin(2*f * M_PI);
-                            float v = 0.003906f * b * 4 + 6 * cos(2*f * M_PI);
+                            float u = oneOver256 * a * 4 + 6 * sin(2*f * M_PI);
+                            float v = oneOver256 * b * 4 + 6 * cos(2*f * M_PI);
                             
                             getCachedHeight(x_ + f*step+u, z_ + f*step+v, color);
                             h = color[Landscape::BUMP];
@@ -1140,8 +1189,8 @@ void rPlanetmap::drawEffect() {
                             
                             unsigned char a = Noise::LFSR16((int) x__ * 71.017454);
                             unsigned char b = Noise::LFSR16((int) z__ * 31.017454);
-                            float u = 0.003906f * a * 4 + 6 * sin(4*f * M_PI);
-                            float v = 0.003906f * b * 4 + 6 * cos(4*f * M_PI);
+                            float u = oneOver256 * a * 4 + 6 * sin(4*f * M_PI);
+                            float v = oneOver256 * b * 4 + 6 * cos(4*f * M_PI);
                             
                             getCachedHeight(x_ + f*step+u, z_ + step-f*step+v, color);
                             h = color[Landscape::BUMP];
@@ -1155,7 +1204,8 @@ void rPlanetmap::drawEffect() {
                     GL::glEnd();
                     
                 }
-
+                
+                // Plants
                 loopi(visibleplants) {
                     GL::glPushMatrix();
                     {
@@ -1163,8 +1213,8 @@ void rPlanetmap::drawEffect() {
                         a = lfsr16;
                         b = lfsr16 >> 8;
 
-                        float x__ = x_ + step * 0.003906f * a;
-                        float z__ = z_ + step * 0.003906f * b;
+                        float x__ = x_ + step * oneOver256 * a;
+                        float z__ = z_ + step * oneOver256 * b;
                         getCachedHeight(x__, z__, color);
                         float h = color[Landscape::BUMP];
 
@@ -1178,10 +1228,10 @@ void rPlanetmap::drawEffect() {
                         unsigned char tex = (rot >> 2) % maxplants;
                         unsigned char size = rot;
 
-                        float sizef = size * 0.003906f;
+                        float sizef = size * oneOver256;
                         float scale = plantscale * sGrowth[tex]->size * (0.35f + 0.65f * sizef + 0.008f * plantdensity);
 
-                        float shift = -0.1 + 0.2f * b2f * (((lfsr16 >> 3) ^ (lfsr16>>7) ^ a ^ b) & 0xFF);
+                        float shift = -0.1 + 0.2f * oneOver256 * (((lfsr16 >> 3) ^ (lfsr16>>7) ^ a ^ b) & 0xFF);
                         GL::glColor4f(0.9 + shift, 1.0-fabs(shift), 0.9f-shift, opacity);
                         //GL::glColor4f(1, 1, 1, opacity);
                         GL::glBindTexture(GL_TEXTURE_2D, sGrowth[tex]->texture);
@@ -1212,6 +1262,7 @@ void rPlanetmap::drawEffect() {
 
                 lfsr16 = lfsr16tmp;
 
+                // trees
                 loopi(visibletrees) {
                     GL::glPushMatrix();
                     {
@@ -1219,8 +1270,8 @@ void rPlanetmap::drawEffect() {
                         a = lfsr16;
                         b = lfsr16 >> 8;
 
-                        float x__ = x_ + step * 0.003906f * a;
-                        float z__ = z_ + step * 0.003906f * b;
+                        float x__ = x_ + step * oneOver256 * a;
+                        float z__ = z_ + step * oneOver256 * b;
                         getCachedHeight(x__, z__, color);
                         float h = color[Landscape::BUMP];
 
