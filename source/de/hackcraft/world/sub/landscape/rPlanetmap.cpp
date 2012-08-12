@@ -1129,9 +1129,9 @@ void rPlanetmap::drawEffect() {
                             h = color[Landscape::BUMP];
 
                             GL::glTexCoord2f(6*f,0);
-                            GL::glVertex3f(x_ + f*step+u, h-1, z_ + f*step+v);
+                            GL::glVertex3f(x_ + f*step+u, h-2.5, z_ + f*step+v);
                             GL::glTexCoord2f(6*f,1);
-                            GL::glVertex3f(x_ + f*step+u, h+7, z_ + f*step+v);
+                            GL::glVertex3f(x_ + f*step+u, h+13, z_ + f*step+v);
                         }
                         loopj(17) {
                             float f = j * 0.0625f;
@@ -1147,9 +1147,9 @@ void rPlanetmap::drawEffect() {
                             h = color[Landscape::BUMP];
 
                             GL::glTexCoord2f(6*f,0);
-                            GL::glVertex3f(x_ + f*step+u, h-1, z_ + step-f*step+v);
+                            GL::glVertex3f(x_ + f*step+u, h-2.5, z_ + step-f*step+v);
                             GL::glTexCoord2f(6*f,1);
-                            GL::glVertex3f(x_ + f*step+u, h+7, z_ + step-f*step+v);
+                            GL::glVertex3f(x_ + f*step+u, h+13, z_ + step-f*step+v);
                         }
                     }
                     GL::glEnd();
