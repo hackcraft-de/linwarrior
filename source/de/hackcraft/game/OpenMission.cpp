@@ -137,8 +137,8 @@ Entity* OpenMission::init(World* world) {
     world->subsystems.push_back(new LandscapeSystem());
     world->subsystems.push_back(new MobileSystem());
     world->subsystems.push_back(new PhysicsSystem());
-    world->subsystems.push_back(new WeaponSystem());
     world->subsystems.push_back(new ModelSystem());
+    world->subsystems.push_back(new WeaponSystem());
     world->subsystems.push_back(new ComputerSystem());
     world->subsystems.push_back(new CameraSystem());
 
