@@ -21,6 +21,11 @@ class ModelSystem;
 
 class Logger;
 
+class rBillboard;
+class rRigged;
+class rScatter;
+class rTree;
+
 /**
  * Manages small to medium scale model rendering,
  * collision and so on.
@@ -33,7 +38,10 @@ public:
     ModelSystem();
     virtual ~ModelSystem();
     
-    void add(IModel* model);
+    void add(rBillboard* model);
+    void add(rRigged* model);
+    void add(rScatter* model);
+    void add(rTree* model);
     
 public:
     /**
@@ -81,19 +89,39 @@ private:
     static ModelSystem* instance;
     
 private:
+    /** Allocated components of this type. */
+    std::vector<rBillboard*> billboards;
     /** Allows searching the world in a structured manner. */
-    Geomap<IModel*> geomap;
+    Geomap<rBillboard*> billboardsGeodex;
+    /** Lists visible components of this type for the current frame. */
+    std::list<rBillboard*>* billboardsVisible;
     
-    std::vector<IModel*> models;
+    /** Allocated components of this type. */
+    std::vector<rRigged*> riggeds;
+    /** Allows searching the world in a structured manner. */
+    Geomap<rRigged*> riggedsGeodex;
+    /** Lists visible components of this type for the current frame. */
+    std::list<rRigged*>* riggedsVisible;
+    
+    /** Allocated components of this type. */
+    std::vector<rScatter*> scatters;
+    /** Allows searching the world in a structured manner. */
+    Geomap<rScatter*> scattersGeodex;
+    /** Lists visible components of this type for the current frame. */
+    std::list<rScatter*>* scattersVisible;
+    
+    /** Allocated components of this type. */
+    std::vector<rTree*> trees;
+    /** Allows searching the world in a structured manner. */
+    Geomap<rTree*> treesGeodex;
+    /** Lists visible components of this type for the current frame. */
+    std::list<rTree*>* treesVisible;
     
     /** Render only objects that far away. */
     float viewdistance;
     
     /** Rendering origin or camera position. */
     float visorigin[3];
-    
-    /** Visible objects for next rendering - (re-)set in setupView. */
-    std::list<IModel*>* visobjects;
 };
 
 #endif	/* MODELSYSTEM_H */
