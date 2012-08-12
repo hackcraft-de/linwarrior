@@ -27,7 +27,8 @@ CameraSystem::~CameraSystem() {
 
 
 void CameraSystem::add(rCamera* camera) {
-    cameras[camera->getId()] = camera;
+    cameras.push_back(camera);
+    camerasIndex[camera->getId()] = camera;
 }
 
 
@@ -35,8 +36,7 @@ void CameraSystem::animateObjects() {
     
     float spf = World::getInstance()->getTiming()->getSPF();
     
-    for(std::pair<OID,rCamera*> p : cameras) {
-        Component* component = p.second;
+    for(Component* component : cameras) {
         
         component->prebind();
         component->animate(spf);

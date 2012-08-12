@@ -15,6 +15,7 @@
 #include "de/hackcraft/world/Subsystem.h"
 
 #include <map>
+#include <vector>
 
 class Logger;
 class rCamera;
@@ -79,8 +80,10 @@ private:
     static CameraSystem* instance;
     
 private:
-    /** Camera components. */
-    std::map<OID,rCamera*> cameras;
+    /** List of allocated components of this type. */
+    std::vector<rCamera*> cameras;
+    /** Index on id of leased components of this type. */
+    std::map<OID,rCamera*> camerasIndex;
 };
 
 #endif	/* CAMERASYSTEM_H */
