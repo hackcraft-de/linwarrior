@@ -26,6 +26,16 @@ class Logger;
 struct rRigged : public Component, public IModel {
 private:
     static Logger* logger;
+
+public:    
+    /** Enumeration for indexing joints in animation. */
+    enum Jointpoints {
+        EYE, HEADPITCH, HEADYAW,
+        CTMOUNT, LAMOUNT, RAMOUNT, LSMOUNT, RSMOUNT, BKMOUNT,
+        JET0, JET1, JET2, JET3, JET4,
+        YAW, PITCH, LEFTLEG, RIGHTLEG, LEFTCALF, RIGHTCALF, LEFTFOOT, RIGHTFOOT, MAX_JOINTPOINTS
+    };
+    
 public: // SYSTEM
     /** Identifier for this component (all uppercase letters without leading "r"). */
     static std::string cname;
@@ -33,6 +43,7 @@ public: // SYSTEM
     static unsigned int cid;
     /** Shared material bindings. */
     static std::map<std::string,unsigned long> materials;
+    
 public: // INPUT
     /** Model scale. (1.0f, unused/removed now) */
     float scale;
@@ -50,17 +61,19 @@ public: // INPUT
     float jetting;
     /** Basic 3d texture bind when greater 0. (still a hook i) */
     int basetexture3d;
+    
 public: // OUTPUT
     /** Actual local-(model-)space joints for this instance. */
     MD5Format::joint* joints;
     /** Maps jointpoint identifier to actual joint index of the model (-1 ~ NULL). */
     std::map<int, int> jointpoints;
     /** Joint angles for animation. */
-    std::map<int, std::map<int, float> > rotators;
+    float rotators[MAX_JOINTPOINTS][3];
     /** Current model height - only messured above ground ie. > 0. (hook o) */
     float height;
     /** Current model radius as seen from above. (hook o) */
     float radius;
+    
 protected: // INTERNALS
     /** The "static" model just as it is loaded. */
     MD5Format::model* model;
@@ -68,66 +81,13 @@ protected: // INTERNALS
     std::map<int, float*> baseverts;
     /** Untransformed normals for mesh i. */
     std::map<int, float*> basenorms;
+    
 public:
-    
-    /** Enumeration for indexing joints in animation. */
-    enum Jointpoints {
-        EYE, HEADPITCH, HEADYAW,
-        CTMOUNT, LAMOUNT, RAMOUNT, LSMOUNT, RSMOUNT, BKMOUNT,
-        JET0, JET1, JET2, JET3, JET4,
-        YAW, PITCH, LEFTLEG, RIGHTLEG, LEFTCALF, RIGHTCALF, LEFTFOOT, RIGHTFOOT, MAX_JOINTPOINTS
-    };
+    rRigged(Entity* obj = NULL);
+    ~rRigged();
 
-    /** Constructor */
-    rRigged(Entity* obj = NULL) : scale(1.0f), seconds(0.0f), grounded(0.0f), jetting(0.0f), basetexture3d(0), joints(NULL), height(0.1f), radius(0.1f), model(NULL) {
-        object = obj;
-        vector_zero(pos0);
-        vector_zero(vel);
-        quat_zero(ori0);
-        initMaterials();
-    }
-
-    /** Destructor */
-    ~rRigged() {
-        delete model;
-        delete[] joints;
-    }
-
-    std::string getJointname(unsigned int num) {
-        const char* names[] = {
-            "EYE", "HEADPITCH", "HEADYAW",
-            "CTMOUNT", "LAMOUNT", "RAMOUNT", "LSMOUNT", "RSMOUNT", "BKMOUNT",
-            "JET0", "JET1", "JET2", "JET3", "JET4",
-            "YAW", "PITCH", "LEFTLEG", "RIGHTLEG", "LEFTCALF", "RIGHTCALF", "LEFTFOOT", "RIGHTFOOT"
-        };
-        if (num >= MAX_JOINTPOINTS) return std::string("");
-        return std::string(names[num]);
-    }
-
-    int getMountpoint(const char* point) {
-        int jp = 0;
-        if (strcmp(point, "LTorsor") == 0) jp = LSMOUNT;
-        else if (strcmp(point, "LUpArm") == 0) jp = LSMOUNT;
-        else if (strcmp(point, "LLoArm") == 0) jp = LAMOUNT;
-        else if (strcmp(point, "RTorsor") == 0) jp = RSMOUNT;
-        else if (strcmp(point, "RUpArm") == 0) jp = RSMOUNT;
-        else if (strcmp(point, "RLoArm") == 0) jp = RAMOUNT;
-        else if (point[0] == 'L') jp = LSMOUNT;
-        else if (point[0] == 'R') jp = RSMOUNT;
-        else if (point[0] == 'C') jp = CTMOUNT;
-        else jp = BKMOUNT;
-        return jointpoints[jp];
-    }
-    
-    void initMaterials();
-
-    void drawBones();
-    void drawMeshes();
-
-    void poseJumping(float spf);
-    void poseRunning(float spf);
-
-    void transformJoints();
+    std::string getJointname(unsigned int num);
+    int getMountpoint(const char* point);
 
     std::string resolveFilename(std::string modelname);
     void loadModel(std::string filename);
@@ -140,7 +100,18 @@ public:
     virtual void drawSolid();
     virtual void drawEffect();
     
+private:
     unsigned int loadMaterial();
+    
+    void initMaterials();
+
+    void drawBones();
+    void drawMeshes();
+
+    void poseJumping(float spf);
+    void poseRunning(float spf);
+
+    void transformJoints();
 };
 
 

@@ -4,18 +4,267 @@
 
 #include "de/hackcraft/log/Logger.h"
 
+#include "de/hackcraft/opengl/GL.h"
+
 #include "de/hackcraft/proc/Solid.h"
 
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Primitive.h"
 #include "de/hackcraft/psi3d/GLF.h"
 
+
 #include <sstream>
-
 #include <string>
-using std::string;
 
-#include "de/hackcraft/opengl/GL.h"
+
+#define DRAWJOINTS !true
+
+#define MECHDETAIL 0
+
+
+Logger* rRigged::logger = Logger::getLogger("de.hackcraft.world.sub.model.rRigged");
+
+std::string rRigged::cname = "RIGGED";
+unsigned int rRigged::cid = 4900;
+
+std::map<std::string,unsigned long> rRigged::materials;
+
+
+rRigged::rRigged(Entity* obj) : scale(1.0f), seconds(0.0f), grounded(0.0f), jetting(0.0f), basetexture3d(0), joints(NULL), height(0.1f), radius(0.1f), model(NULL) {
+    object = obj;
+    vector_zero(pos0);
+    vector_zero(vel);
+    quat_zero(ori0);
+    initMaterials();
+    for (int i = 0; i < MAX_JOINTPOINTS; i++) {
+        rotators[i][0] = rotators[i][1] = rotators[i][2] = 0;
+    }
+}
+
+
+rRigged::~rRigged() {
+    delete model;
+    delete[] joints;
+}
+
+
+std::string rRigged::getJointname(unsigned int num) {
+    const char* names[] = {
+        "EYE", "HEADPITCH", "HEADYAW",
+        "CTMOUNT", "LAMOUNT", "RAMOUNT", "LSMOUNT", "RSMOUNT", "BKMOUNT",
+        "JET0", "JET1", "JET2", "JET3", "JET4",
+        "YAW", "PITCH", "LEFTLEG", "RIGHTLEG", "LEFTCALF", "RIGHTCALF", "LEFTFOOT", "RIGHTFOOT"
+    };
+    if (num >= MAX_JOINTPOINTS) return std::string("");
+    return std::string(names[num]);
+}
+
+
+int rRigged::getMountpoint(const char* point) {
+    int jp = 0;
+    if (strcmp(point, "LTorsor") == 0) jp = LSMOUNT;
+    else if (strcmp(point, "LUpArm") == 0) jp = LSMOUNT;
+    else if (strcmp(point, "LLoArm") == 0) jp = LAMOUNT;
+    else if (strcmp(point, "RTorsor") == 0) jp = RSMOUNT;
+    else if (strcmp(point, "RUpArm") == 0) jp = RSMOUNT;
+    else if (strcmp(point, "RLoArm") == 0) jp = RAMOUNT;
+    else if (point[0] == 'L') jp = LSMOUNT;
+    else if (point[0] == 'R') jp = RSMOUNT;
+    else if (point[0] == 'C') jp = CTMOUNT;
+    else jp = BKMOUNT;
+    return jointpoints[jp];
+}
+
+
+std::string rRigged::resolveFilename(std::string modelname) {
+    std::map<std::string,std::string> m2f;
+    
+    m2f["frogger"] = "data/base/device/wanzer/frogger/frogger.md5mesh";
+    m2f["gorilla_ii"] = "data/base/device/wanzer/gorilla/gorilla_ii.md5mesh";
+    m2f["lemur"] = "data/base/device/wanzer/lemur/lemur.md5mesh";
+    m2f["kibitz"] = "data/base/device/wanzer/kibitz/kibitz.md5mesh";
+
+    m2f["pod"] = "data/base/device/turret/pod/pod.md5mesh";
+
+    m2f["bug"] = "data/base/device/tank/bug/bug.md5mesh";
+    m2f["ant"] = "data/base/device/tank/ant/ant.md5mesh";
+    m2f["warbuggy"] = "data/base/device/tank/warbuggy/warbuggy.md5mesh";
+
+    m2f["flopsy"] = "data/com/blendswap/flopsy/flopsy.md5mesh";
+
+    m2f["scorpion"] = "data/org/opengameart/scorpion/scorpion.md5mesh";
+    m2f["thunderbird"] = "data/org/opengameart/thunderbird/thunderbird.md5mesh";
+
+    m2f["gausscan"] = "data/org/opengameart/gausscan/gausscan.md5mesh";
+    m2f["twinblaster"] = "data/org/opengameart/twinblaster/twinblaster.md5mesh";
+    m2f["reactor"] = "data/org/opengameart/reactor/reactor.md5mesh";
+
+    m2f["soldier"] = "/media/44EA-7693/workspaces/mm3d/soldier/soldier.md5mesh";
+
+    return m2f[modelname];
+}
+
+
+void rRigged::loadModel(std::string filename) {
+    model = MD5Format::mapMD5Mesh(filename.c_str());
+
+    if (!true) logger->debug() << MD5Format::getModelStats(model) << "\n";
+
+    // Make joints local for later animation and transformation to global.
+    MD5Format::joint* joints_ = MD5Format::getJoints(model);
+    MD5Format::toLocalJoints(model->numJoints, joints_, joints_);
+
+    // Rotate around X to swap Y/Z.
+    quat convaxes;
+    vec3 xaxis = {1, 0, 0};
+    quat_rotaxis(convaxes, (-0.5f * M_PI), xaxis);
+    quat_mul(joints_[0].q, joints_[0].q, convaxes);
+
+    // FIXME: Rotate yaw 180 to make frontfacing.
+    if (true) {
+        quat convfacing;
+        vec3 yaxis = {0, 1, 0};
+        quat_rotaxis(convfacing, M_PI, yaxis);
+        quat_mul(joints_[0].q, joints_[0].q, convfacing);
+    }
+
+    // Allocate space for animated global joints.
+    joints = new MD5Format::joint[model->numJoints];
+    memcpy(joints, joints_, sizeof (MD5Format::joint) * model->numJoints);
+
+    loopi(MAX_JOINTPOINTS) {
+        jointpoints[i] = MD5Format::findJoint(model, getJointname(i).c_str());
+        //if (jointpoints[i] < 0) jointpoints[i] = MD5Format::findJoint(model, getJointname2(i).c_str());
+    }
+
+    // Generate base vertices and normals for 3d-tex-coords:
+
+    if (baseverts.empty()) {
+        MD5Format::mesh* msh = MD5Format::getFirstMesh(model);
+        MD5Format::joint* staticjoints = MD5Format::getJoints(model);
+
+        loopi(model->numMeshes) {
+            float* cur_baseverts = new float[msh->numverts * 3];
+            float* cur_basenorms = new float[msh->numverts * 3];
+            MD5Format::animatedMeshVertices(msh, staticjoints, cur_baseverts, cur_basenorms);
+            baseverts[i] = cur_baseverts;
+            basenorms[i] = cur_basenorms;
+            // Recalculate normals, invert and set as normal-weights.
+            {
+                MD5Format::tri* tris = MD5Format::getTris(msh);
+                // TODO: Normals need to be averaged/smoothed.
+                for (int j = 0; j < msh->numtris; j++) {
+                    float* a = &cur_baseverts[3 * tris[j].a];
+                    float* b = &cur_baseverts[3 * tris[j].b];
+                    float* c = &cur_baseverts[3 * tris[j].c];
+                    float ab[3];
+                    float bc[3];
+                    float n[3];
+                    vector_sub(ab, b, a);
+                    vector_sub(bc, c, b);
+                    vector_cross(n, bc, ab);
+                    vector_norm(n, n);
+                    vector_cpy(&cur_basenorms[3 * tris[j].a], n);
+                    vector_cpy(&cur_basenorms[3 * tris[j].b], n);
+                    vector_cpy(&cur_basenorms[3 * tris[j].c], n);
+                }
+                MD5Format::unanimatedMeshNormals(msh, staticjoints, cur_basenorms);
+            }
+            msh = MD5Format::getNextMesh(msh);
+        }
+    }
+}
+
+
+void rRigged::animate(float spf) {
+    if (!active) return;
+    if (model == NULL) return;
+    if (grounded > 0.15f) {
+        poseRunning(spf);
+    } else {
+        poseJumping(spf);
+    }
+}
+
+
+void rRigged::transform() {
+    if (!active) return;
+    if (model == NULL) return;
+    transformJoints();
+    //transformMounts();
+}
+
+
+void rRigged::drawSolid() {
+    if (!active) return;
+    if (model == NULL) return;
+    GL::glPushMatrix();
+    {
+        GL::glTranslatef(pos0[0], pos0[1], pos0[2]);
+        GLS::glRotateq(ori0);
+        //cPrimitives::glAxis(3.0f);
+        drawMeshes();
+    }
+    GL::glPopMatrix();
+}
+
+
+void rRigged::drawEffect() {
+    if (!active) return;
+    if (model == NULL) return;
+    if (DRAWJOINTS) {
+        GL::glPushMatrix();
+        {
+            GL::glTranslatef(pos0[0], pos0[1], pos0[2]);
+            GLS::glRotateq(ori0);
+            drawBones();
+        }
+        GL::glPopMatrix();
+    }
+    // Draw jumpjet exaust if jet is somewhat on.
+    if (jetting > 0.3f) {
+        GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
+        {
+            GLS::glUseProgram_fgaddcolor();
+
+            //std::map<int, int>& jointpoints = rigged->jointpoints;
+            int jet[5];
+            jet[0] = jointpoints[JET0];
+            jet[1] = jointpoints[JET1];
+            jet[2] = jointpoints[JET2];
+            jet[3] = jointpoints[JET3];
+            jet[4] = jointpoints[JET4];
+
+            loopi(5) {
+                if (jet[i] >= 0) {
+                    float* v = joints[jet[i]].v;
+                    GL::glPushMatrix();
+                    {
+                        float f = jetting * 0.5f;
+
+                        GL::glTranslatef(pos0[0], pos0[1], pos0[2]);
+                        GLS::glRotateq(ori0);
+                        GL::glTranslatef(v[0], v[1], v[2]);
+
+                        float n[16];
+                        GLS::glGetTransposeInverseRotationMatrix(n);
+                        GL::glMultMatrixf(n);
+
+                        GL::glColor4f(1, 1, 0.3, 0.6);
+                        Primitive::glDisk(7, f + 0.0003 * (rand() % 100));
+                        GL::glColor4f(1, 0.5, 0.3, 0.7);
+                        Primitive::glDisk(7, f * 0.6 + 0.001 * (rand() % 100));
+                        GL::glColor4f(1, 1, 1, 0.8);
+                        Primitive::glDisk(7, f * 0.3 + 0.001 * (rand() % 100));
+                    }
+                    GL::glPopMatrix();
+                } // if
+            } // loopi
+        }
+        GL::glPopAttrib();
+    }
+}
+
 
 unsigned int rRigged::loadMaterial() {
     static bool fail = false;
@@ -39,18 +288,6 @@ unsigned int rRigged::loadMaterial() {
     if (fail) return 0;
     return prog;
 }
-
-
-#define DRAWJOINTS !true
-
-#define MECHDETAIL 0
-
-Logger* rRigged::logger = Logger::getLogger("de.hackcraft.world.sub.model.rRigged");
-
-std::string rRigged::cname = "RIGGED";
-unsigned int rRigged::cid = 4900;
-
-std::map<std::string,unsigned long> rRigged::materials;
 
 
 void rRigged::initMaterials() {
@@ -127,14 +364,14 @@ void rRigged::initMaterials() {
                     texels[t++] = 255.0f * color[2];
                 }
                 unsigned int texname = GLS::glBindTexture3D(0, true, true, true, true, true, SIZE, SIZE, SIZE, texels);
-                materials[string(names[l])] = texname;
+                materials[std::string(names[l])] = texname;
             }
             delete[] texels;
         }
     }
 }
 
-    
+
 void rRigged::drawBones() {
     GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
@@ -162,6 +399,7 @@ void rRigged::drawBones() {
     }
     GL::glPopAttrib();
 }
+
 
 void rRigged::drawMeshes() {
     GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -198,7 +436,7 @@ void rRigged::drawMeshes() {
             //float co = colors[msh->shader[0]];
             //GL::glColor3f(co,co,co);
             
-            string shader = string(msh->shader);
+            std::string shader = std::string(msh->shader);
             if (shader.compare("camo") == 0) {
                 switch(basetexture3d) {
                     case 0: shader = "wood"; break;
@@ -273,6 +511,7 @@ void rRigged::drawMeshes() {
     GL::glPopAttrib();
 }
 
+
 void rRigged::poseJumping(float spf) {
     // Hanging Legs
     float one = PI_OVER_180;
@@ -293,6 +532,7 @@ void rRigged::poseJumping(float spf) {
     if (rotators[RIGHTCALF][0] > +b) rotators[RIGHTCALF][0] -= f * s * spf;
     if (rotators[RIGHTCALF][0] < +b + one) rotators[RIGHTCALF][0] += f * s * spf;
 }
+
 
 void rRigged::poseRunning(float spf) {
     // Animate legs according to real forward velocity.
@@ -354,6 +594,7 @@ void rRigged::poseRunning(float spf) {
     rotators[RIGHTCALF][0] = -r2 * s;
     rotators[RIGHTFOOT][0] = -r3 * s;
 }
+
 
 void rRigged::transformJoints() {
     MD5Format::joint* manipulators = new MD5Format::joint[model->numJoints];
@@ -451,189 +692,5 @@ void rRigged::transformJoints() {
     MD5Format::joint* joints_orig = MD5Format::getJoints(model);
     MD5Format::toGlobalJoints(model->numJoints, joints_orig, joints, manipulators);
     delete[] manipulators;
-}
-
-std::string rRigged::resolveFilename(std::string modelname) {
-    std::map<string,string> m2f;
-    
-    m2f["frogger"] = "data/base/device/wanzer/frogger/frogger.md5mesh";
-    m2f["gorilla_ii"] = "data/base/device/wanzer/gorilla/gorilla_ii.md5mesh";
-    m2f["lemur"] = "data/base/device/wanzer/lemur/lemur.md5mesh";
-    m2f["kibitz"] = "data/base/device/wanzer/kibitz/kibitz.md5mesh";
-
-    m2f["pod"] = "data/base/device/turret/pod/pod.md5mesh";
-
-    m2f["bug"] = "data/base/device/tank/bug/bug.md5mesh";
-    m2f["ant"] = "data/base/device/tank/ant/ant.md5mesh";
-    m2f["warbuggy"] = "data/base/device/tank/warbuggy/warbuggy.md5mesh";
-
-    m2f["flopsy"] = "data/com/blendswap/flopsy/flopsy.md5mesh";
-
-    m2f["scorpion"] = "data/org/opengameart/scorpion/scorpion.md5mesh";
-    m2f["thunderbird"] = "data/org/opengameart/thunderbird/thunderbird.md5mesh";
-
-    m2f["gausscan"] = "data/org/opengameart/gausscan/gausscan.md5mesh";
-    m2f["twinblaster"] = "data/org/opengameart/twinblaster/twinblaster.md5mesh";
-    m2f["reactor"] = "data/org/opengameart/reactor/reactor.md5mesh";
-
-    m2f["soldier"] = "/media/44EA-7693/workspaces/mm3d/soldier/soldier.md5mesh";
-
-    return m2f[modelname];
-}
-
-void rRigged::loadModel(std::string filename) {
-    model = MD5Format::mapMD5Mesh(filename.c_str());
-
-    if (!true) logger->debug() << MD5Format::getModelStats(model) << "\n";
-
-    // Make joints local for later animation and transformation to global.
-    MD5Format::joint* joints_ = MD5Format::getJoints(model);
-    MD5Format::toLocalJoints(model->numJoints, joints_, joints_);
-
-    // Rotate around X to swap Y/Z.
-    quat convaxes;
-    vec3 xaxis = {1, 0, 0};
-    quat_rotaxis(convaxes, (-0.5f * M_PI), xaxis);
-    quat_mul(joints_[0].q, joints_[0].q, convaxes);
-
-    // FIXME: Rotate yaw 180 to make frontfacing.
-    if (true) {
-        quat convfacing;
-        vec3 yaxis = {0, 1, 0};
-        quat_rotaxis(convfacing, M_PI, yaxis);
-        quat_mul(joints_[0].q, joints_[0].q, convfacing);
-    }
-
-    // Allocate space for animated global joints.
-    joints = new MD5Format::joint[model->numJoints];
-    memcpy(joints, joints_, sizeof (MD5Format::joint) * model->numJoints);
-
-    loopi(MAX_JOINTPOINTS) {
-        jointpoints[i] = MD5Format::findJoint(model, getJointname(i).c_str());
-        //if (jointpoints[i] < 0) jointpoints[i] = MD5Format::findJoint(model, getJointname2(i).c_str());
-    }
-
-    // Generate base vertices and normals for 3d-tex-coords:
-
-    if (baseverts.empty()) {
-        MD5Format::mesh* msh = MD5Format::getFirstMesh(model);
-        MD5Format::joint* staticjoints = MD5Format::getJoints(model);
-
-        loopi(model->numMeshes) {
-            float* cur_baseverts = new float[msh->numverts * 3];
-            float* cur_basenorms = new float[msh->numverts * 3];
-            MD5Format::animatedMeshVertices(msh, staticjoints, cur_baseverts, cur_basenorms);
-            baseverts[i] = cur_baseverts;
-            basenorms[i] = cur_basenorms;
-            // Recalculate normals, invert and set as normal-weights.
-            {
-                MD5Format::tri* tris = MD5Format::getTris(msh);
-                // TODO: Normals need to be averaged/smoothed.
-                for (int j = 0; j < msh->numtris; j++) {
-                    float* a = &cur_baseverts[3 * tris[j].a];
-                    float* b = &cur_baseverts[3 * tris[j].b];
-                    float* c = &cur_baseverts[3 * tris[j].c];
-                    float ab[3];
-                    float bc[3];
-                    float n[3];
-                    vector_sub(ab, b, a);
-                    vector_sub(bc, c, b);
-                    vector_cross(n, bc, ab);
-                    vector_norm(n, n);
-                    vector_cpy(&cur_basenorms[3 * tris[j].a], n);
-                    vector_cpy(&cur_basenorms[3 * tris[j].b], n);
-                    vector_cpy(&cur_basenorms[3 * tris[j].c], n);
-                }
-                MD5Format::unanimatedMeshNormals(msh, staticjoints, cur_basenorms);
-            }
-            msh = MD5Format::getNextMesh(msh);
-        }
-    }
-}
-
-void rRigged::animate(float spf) {
-    if (!active) return;
-    if (model == NULL) return;
-    if (grounded > 0.15f) {
-        poseRunning(spf);
-    } else {
-        poseJumping(spf);
-    }
-}
-
-void rRigged::transform() {
-    if (!active) return;
-    if (model == NULL) return;
-    transformJoints();
-    //transformMounts();
-}
-
-void rRigged::drawSolid() {
-    if (!active) return;
-    if (model == NULL) return;
-    GL::glPushMatrix();
-    {
-        GL::glTranslatef(pos0[0], pos0[1], pos0[2]);
-        GLS::glRotateq(ori0);
-        //cPrimitives::glAxis(3.0f);
-        drawMeshes();
-    }
-    GL::glPopMatrix();
-}
-
-void rRigged::drawEffect() {
-    if (!active) return;
-    if (model == NULL) return;
-    if (DRAWJOINTS) {
-        GL::glPushMatrix();
-        {
-            GL::glTranslatef(pos0[0], pos0[1], pos0[2]);
-            GLS::glRotateq(ori0);
-            drawBones();
-        }
-        GL::glPopMatrix();
-    }
-    // Draw jumpjet exaust if jet is somewhat on.
-    if (jetting > 0.3f) {
-        GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
-        {
-            GLS::glUseProgram_fgaddcolor();
-
-            //std::map<int, int>& jointpoints = rigged->jointpoints;
-            int jet[5];
-            jet[0] = jointpoints[JET0];
-            jet[1] = jointpoints[JET1];
-            jet[2] = jointpoints[JET2];
-            jet[3] = jointpoints[JET3];
-            jet[4] = jointpoints[JET4];
-
-            loopi(5) {
-                if (jet[i] >= 0) {
-                    float* v = joints[jet[i]].v;
-                    GL::glPushMatrix();
-                    {
-                        float f = jetting * 0.5f;
-
-                        GL::glTranslatef(pos0[0], pos0[1], pos0[2]);
-                        GLS::glRotateq(ori0);
-                        GL::glTranslatef(v[0], v[1], v[2]);
-
-                        float n[16];
-                        GLS::glGetTransposeInverseRotationMatrix(n);
-                        GL::glMultMatrixf(n);
-
-                        GL::glColor4f(1, 1, 0.3, 0.6);
-                        Primitive::glDisk(7, f + 0.0003 * (rand() % 100));
-                        GL::glColor4f(1, 0.5, 0.3, 0.7);
-                        Primitive::glDisk(7, f * 0.6 + 0.001 * (rand() % 100));
-                        GL::glColor4f(1, 1, 1, 0.8);
-                        Primitive::glDisk(7, f * 0.3 + 0.001 * (rand() % 100));
-                    }
-                    GL::glPopMatrix();
-                } // if
-            } // loopi
-        }
-        GL::glPopAttrib();
-    }
 }
 
