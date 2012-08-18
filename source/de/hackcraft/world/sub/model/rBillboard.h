@@ -34,6 +34,8 @@ public: // INPUT
     vec3 pos1;
     /** Extended orientation for rendering. (hook i) */
     quat ori1;
+    /** Offset position for rendering. */
+    vec3 pos2;
     /** Color for rendering. (hook i) */
     vec4 color;
     /** Enable effect rendering. (hook i) */

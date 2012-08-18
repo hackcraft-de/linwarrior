@@ -69,6 +69,7 @@ public: // OUTPUT
     std::map<int, int> jointpoints;
     /** Joint angles for animation. */
     float rotators[MAX_JOINTPOINTS][3];
+    float rotatorsFactors[MAX_JOINTPOINTS][3];
     /** Current model height - only messured above ground ie. > 0. (hook o) */
     float height;
     /** Current model radius as seen from above. (hook o) */

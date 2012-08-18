@@ -38,6 +38,7 @@ rRigged::rRigged(Entity* obj) : scale(1.0f), seconds(0.0f), grounded(0.0f), jett
     initMaterials();
     for (int i = 0; i < MAX_JOINTPOINTS; i++) {
         rotators[i][0] = rotators[i][1] = rotators[i][2] = 0;
+        rotatorsFactors[i][0] = rotatorsFactors[i][1] = rotatorsFactors[i][2] = 1;
     }
 }
 
@@ -622,28 +623,28 @@ void rRigged::transformJoints() {
 
         if (yaw_idx == pitch_idx && pitch_idx >= 0) {
             quat qy;
-            quat_rotaxis(qy, rotators[YAW][1], yaxis);
+            quat_rotaxis(qy, rotators[YAW][1]*rotatorsFactors[YAW][1], yaxis);
             quat qx;
-            quat_rotaxis(qx, rotators[PITCH][0], xaxis);
+            quat_rotaxis(qx, rotators[PITCH][0]*rotatorsFactors[PITCH][0], xaxis);
             quat q;
             quat_mul(q, qy, qx);
             quat_cpy(manipulators[pitch_idx].q, q);
         } else {
             if (yaw_idx >= 0) {
                 quat qy;
-                quat_rotaxis(qy, rotators[YAW][1], yaxis);
+                quat_rotaxis(qy, rotators[YAW][1]*rotatorsFactors[YAW][1], yaxis);
                 quat_cpy(manipulators[yaw_idx].q, qy);
             }
             if (pitch_idx >= 0) {
                 quat qx;
-                quat_rotaxis(qx, rotators[PITCH][0], xaxis);
+                quat_rotaxis(qx, rotators[PITCH][0]*rotatorsFactors[PITCH][0], xaxis);
                 quat_cpy(manipulators[pitch_idx].q, qx);
             }
         }
 
         if (true) {
             quat qx;
-            quat_rotaxis(qx, rotators[HEADPITCH][0], xaxis);
+            quat_rotaxis(qx, rotators[HEADPITCH][0]*rotatorsFactors[HEADPITCH][0], xaxis);
             int jidx = jointpoints[HEADPITCH];
             if (jidx >= 0) quat_cpy(manipulators[jidx].q, qx);
         }

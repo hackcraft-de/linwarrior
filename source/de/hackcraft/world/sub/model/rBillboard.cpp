@@ -12,6 +12,7 @@ rBillboard::rBillboard(Entity* obj) : name("Unnamed"), description("Undescribed"
     object = obj;
     vector_zero(pos0);
     vector_zero(pos1);
+    vector_zero(pos2);
     quat_zero(ori0);
     quat_zero(ori1);
     color[0] = color[1] = color[2] = color[3] = 1.0f;
@@ -48,6 +49,7 @@ void rBillboard::drawEffect() {
             GL::glTranslatef(pos1[0], pos1[1], pos1[2]);
             bool billboard = true;
             if (!billboard) GLS::glRotateq(ori1);
+            GL::glTranslatef(pos2[0], pos2[1], pos2[2]);
             GL::glScalef(s, s, s);
             if (billboard) {
                 float n[16];
