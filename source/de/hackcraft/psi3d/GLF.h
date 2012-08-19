@@ -400,7 +400,7 @@ struct GLF {
         unsigned int* binds = (unsigned int*) malloc(sizeof (unsigned int) * 256);
         GL::glPushAttrib(GL_TEXTURE_BIT);
         GL::glEnable(GL_TEXTURE_2D);
-        GL::glGenTextures(end_ascii - start_ascii, binds);
+        GL::glGenTextures(end_ascii - start_ascii + 1, binds);
         unsigned char* rgba = (unsigned char*) malloc(sizeof (char) *8 * 16 * 4); /* glTexImage2D *needs* dynamic memory.*/
         unsigned int i;
         for (i = 0; i <= end_ascii; i++) {
