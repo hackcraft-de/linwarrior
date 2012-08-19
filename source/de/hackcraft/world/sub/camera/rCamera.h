@@ -30,14 +30,14 @@ public: // SYSTEM
     /** A unique random number (0-9999) to identify this component. */
     static unsigned int cid;
 public: // INPUT
-    /** Base position (hook i). */
+    /** Base orientation (hook i). */
     /// @Column(name="orientation_zero")
     quat ori0;
-    /** Base orientation (hook i). */
+    /** Base position (hook i). */
     vec3 pos0;
-    /** Position relative to base position and orientation (hook i). */
-    quat ori1;
     /** Orientation relative to base position and orientation (hook i). */
+    quat ori1;
+    /** Position relative to base position and orientation (hook i). */
     vec3 pos1;
     /** Switch camera state one step when greater zero. (hook i) */
     float cameraswitch;
