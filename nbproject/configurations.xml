@@ -226,6 +226,14 @@
                 <in>rPlanetmap.cpp</in>
                 <in>rPlanetmap.h</in>
               </df>
+              <df name="misc">
+                <in>MiscSystem.cpp</in>
+                <in>MiscSystem.h</in>
+                <in>rLightsource.cpp</in>
+                <in>rLightsource.h</in>
+                <in>rSoundsource.cpp</in>
+                <in>rSoundsource.h</in>
+              </df>
               <df name="mission">
                 <in>MissionSystem.cpp</in>
                 <in>MissionSystem.h</in>
