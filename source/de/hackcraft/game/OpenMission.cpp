@@ -26,6 +26,8 @@
 #include "de/hackcraft/world/sub/landscape/LandscapeSystem.h"
 #include "de/hackcraft/world/sub/landscape/rPlanetmap.h"
 
+#include "de/hackcraft/world/sub/misc/MiscSystem.h"
+
 #include "de/hackcraft/world/sub/mobile/MobileSystem.h"
 #include "de/hackcraft/world/sub/mobile/rMobile.h"
 
@@ -141,6 +143,7 @@ Entity* OpenMission::init(World* world) {
     world->subsystems.push_back(new WeaponSystem());
     world->subsystems.push_back(new ComputerSystem());
     world->subsystems.push_back(new CameraSystem());
+    world->subsystems.push_back(new MiscSystem());
 
     logger->info() << "Initialising planetary maps...\n";
     this->planetmap = new rPlanetmap(&globalProperties);

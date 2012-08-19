@@ -24,8 +24,8 @@ class Entity;
  * Base-Class of all components.
  * A components can be understood as a set of attributes reflecting
  * a certain part, component or aspect of the whole object.
- * Input to and output from components should rely soley on attributes
- * or signal variables for i/o impules.
+ * Input to and output from components should rely only on attributes
+ * or signal variables for i/o impulses.
  */
 struct Component {
     /** Identifier for this component (all uppercase letters without leading "r"). */
