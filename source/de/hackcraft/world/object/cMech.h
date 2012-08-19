@@ -36,6 +36,9 @@ struct rCollider;
 struct rWeapon;
 struct rWeaponExplosion;
 
+class rSoundsource;
+class rLightsource;
+
 class Logger;
 class Propmap;
 
@@ -99,6 +102,9 @@ public:
 
     /** List of WEAPONs. */
     std::vector<rWeapon*> weapons;
+    
+    rSoundsource* soundsource;
+    rLightsource* lightsource;
 
 public:
     cMech(Propmap* props);

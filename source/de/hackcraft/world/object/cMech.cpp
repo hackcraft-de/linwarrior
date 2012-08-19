@@ -25,12 +25,16 @@
 #include "de/hackcraft/world/sub/computer/rForcom.h"
 #include "de/hackcraft/world/sub/computer/rNavcom.h"
 
+#include "de/hackcraft/world/sub/misc/MiscSystem.h"
+#include "de/hackcraft/world/sub/misc/rLightsource.h"
+#include "de/hackcraft/world/sub/misc/rSoundsource.h"
+
 #include "de/hackcraft/world/sub/mobile/MobileSystem.h"
 #include "de/hackcraft/world/sub/mobile/rMobile.h"
 
+#include "de/hackcraft/world/sub/model/ModelSystem.h"
 #include "de/hackcraft/world/sub/model/rBillboard.h"
 #include "de/hackcraft/world/sub/model/rRigged.h"
-#include "de/hackcraft/world/sub/model/ModelSystem.h"
 
 #include "de/hackcraft/world/sub/physics/PhysicsSystem.h"
 #include "de/hackcraft/world/sub/physics/rCollider.h"
@@ -178,6 +182,11 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     mobile = new rMobile(this);
     MobileSystem::getInstance()->add(mobile);
     
+    soundsource = new rSoundsource(this);
+    lightsource = new rLightsource(this);
+    MiscSystem::getInstance()->add(soundsource);
+    MiscSystem::getInstance()->add(lightsource);
+    
     if (rot != NULL) vector_scale(mobile->bse, rot, PI_OVER_180);
 
     if (pos != NULL) vector_cpy(traceable->pos, pos);
@@ -186,21 +195,25 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     quat_rotaxis(traceable->ori, mobile->bse[1], axis);
 
     // Mech Speaker
-    if (0) {
+    if (1) {
         try {
-            ALuint buffer;
-            //buffer = alutCreateBufferHelloWorld();
-            buffer = alutCreateBufferFromFile("data/base/device/pow.wav");
-            //if (buffer == AL_NONE) throw "could not load pow.wav";
-            ALuint* soundsource = &traceable->sound;
-            alGenSources(1, soundsource);
-            if (alGetError() == AL_NO_ERROR && alIsSource(*soundsource)) {
-                alSourcei(*soundsource, AL_BUFFER, buffer);
-                alSourcef(*soundsource, AL_PITCH, 1.0f);
-                alSourcef(*soundsource, AL_GAIN, 1.0f);
-                alSourcefv(*soundsource, AL_POSITION, traceable->pos);
-                alSourcefv(*soundsource, AL_VELOCITY, traceable->vel);
-                alSourcei(*soundsource, AL_LOOPING, AL_FALSE);
+            if (1) {
+                soundsource->loadWithWav("data/base/device/pow.wav");
+            } else {
+                ALuint buffer;
+                //buffer = alutCreateBufferHelloWorld();
+                buffer = alutCreateBufferFromFile("data/base/device/pow.wav");
+                //if (buffer == AL_NONE) throw "could not load pow.wav";
+                ALuint* soundsource = &traceable->sound;
+                alGenSources(1, soundsource);
+                if (alGetError() == AL_NO_ERROR && alIsSource(*soundsource)) {
+                    alSourcei(*soundsource, AL_BUFFER, buffer);
+                    alSourcef(*soundsource, AL_PITCH, 1.0f);
+                    alSourcef(*soundsource, AL_GAIN, 1.0f);
+                    alSourcefv(*soundsource, AL_POSITION, traceable->pos);
+                    alSourcefv(*soundsource, AL_VELOCITY, traceable->vel);
+                    alSourcei(*soundsource, AL_LOOPING, AL_FALSE);
+                }
             }
         } catch (...) {
             logger->warn() << "Sorry, no mech sound possible.\n";
@@ -318,6 +331,68 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
         traceable->addBinding(&traceable->jetthrottle, &mobile->jetthrottle, sizeof(float));
         traceable->addBinding(&traceable->throttle, &mobile->drivethrottle, sizeof(float));
     }
+    
+    // MOBILE
+    {
+        // from CONTROLLER
+        mobile->addBinding(&mobile->aimtarget, &controller->aimtarget, sizeof(OID));
+        mobile->addBinding(&mobile->walktarget, &controller->walktarget, sizeof(vec3));
+        mobile->addBinding(&mobile->walktargetdist, &controller->walktargetdist, sizeof(float));
+        mobile->addBinding(&mobile->firetarget, &controller->firetarget, sizeof(bool));
+        // from TARGET
+        mobile->addBinding(&mobile->active, &target->alife, sizeof(bool));
+        // from traceable
+        mobile->addBinding(&mobile->pos0, &traceable->pos, sizeof(vec3));
+    }
+    
+    // RIGGED
+    {
+        // from MOBILE: Steering state.
+        rigged->rotatorsFactors[rigged->YAW][1] = -1;
+        rigged->addBinding(&rigged->rotators[rigged->YAW][1], &mobile->twr[1], sizeof(float));
+        rigged->addBinding(&rigged->rotators[rigged->PITCH][0], &mobile->twr[0], sizeof(float));
+        rigged->addBinding(&rigged->rotators[rigged->HEADPITCH][0], &mobile->twr[0], sizeof(float));
+        rigged->addBinding(&rigged->jetting, &mobile->jetthrottle, sizeof(float));
+        // from TRACEABLE: Physical movement state.
+        rigged->addBinding(&rigged->pos0, &traceable->pos, sizeof(vec3));
+        rigged->addBinding(&rigged->ori0, &traceable->ori, sizeof(quat));
+        rigged->addBinding(&rigged->vel, &traceable->vel, sizeof(vec3));
+        rigged->addBinding(&rigged->grounded, &traceable->grounded, sizeof(float));
+    }
+    
+    // NAMEABLE
+    {
+        // from RIGGED
+        int eye = rigged->jointpoints[rRigged::EYE];
+        nameable->addBinding(&nameable->pos0, &rigged->pos0, sizeof(vec3));
+        nameable->addBinding(&nameable->ori0, &rigged->ori0, sizeof(quat));
+        nameable->addBinding(&nameable->pos1, &rigged->joints[eye].v, sizeof(vec3));
+        nameable->addBinding(&nameable->ori1, &rigged->joints[eye].q, sizeof(quat));
+        nameable->pos2[1] = 2.0f;
+    }
+    
+    // CAMERA
+    {
+        // from RIGGED
+        int eye = rigged->jointpoints[rRigged::EYE];
+        camra->addBinding(&camra->pos0, &rigged->pos0, sizeof(vec3));
+        camra->addBinding(&camra->ori0, &rigged->ori0, sizeof(quat));
+        camra->addBinding(&camra->pos1, &rigged->joints[eye].v, sizeof(vec3));
+        camra->addBinding(&camra->ori1, &rigged->joints[eye].q, sizeof(quat));
+        // from MOBILE
+        camra->addBinding(&camra->camerashake, &mobile->jetthrottle, sizeof(float));
+    }
+    
+    // SOUNDSOURCE
+    {
+        // from TRACEABLE
+        soundsource->addBinding(&soundsource->pos0, &traceable->pos, sizeof(vec3));
+    }
+    
+    // LIGHTSOURCE
+    {
+        
+    }
 }
 
 
@@ -341,12 +416,20 @@ void cMech::message(Message* message) {
 
 void cMech::spawn() {
     //cout << "cMech::onSpawn()\n";
-    ALuint soundsource = traceable->sound;
-    bool isHumanPlayer = target->hasTag(World::getInstance()->getGroup(PLR_HUMAN));
-    bool isSoundEnabled = alIsSource(soundsource);
-    
-    if ( isHumanPlayer && isSoundEnabled ) {
-        alSourcePlay(soundsource);
+    if (1) {
+        bool isHumanPlayer = target->hasTag(World::getInstance()->getGroup(PLR_HUMAN));
+        if (isHumanPlayer) {
+            soundsource->play();
+        }
+        
+    } else {
+        ALuint soundsource = traceable->sound;
+        bool isHumanPlayer = target->hasTag(World::getInstance()->getGroup(PLR_HUMAN));
+        bool isSoundEnabled = alIsSource(soundsource);
+
+        if ( isHumanPlayer && isSoundEnabled ) {
+            alSourcePlay(soundsource);
+        }
     }
     //cout << "Mech spawned " << oid << "\n";
 }
@@ -382,14 +465,26 @@ void cMech::listener() {
 }
 
 
-void cMech::mountWeapon(const char* point, rWeapon *weapon, bool add) {
+void cMech::mountWeapon(const char* point, rWeapon *weapon, bool add) {    
     if (weapon == NULL) throw "Null weapon for mounting given.";
+
     weapon->weaponMount = rigged->getMountpoint(point);
     weapon->object = this;
     WeaponSystem::getInstance()->add(weapon);
+    
     if (add) {
         weapons.push_back(weapon);
         wepcom->addControlledWeapon(weapon);
+    }
+    
+    {
+        // from CONTROLLED:
+        weapon->addBinding(&weapon->target, &mobile->aimtarget, sizeof(OID));
+        // from RIGGED:
+        weapon->addBinding(&weapon->ori0, &traceable->ori, sizeof(quat));
+        weapon->addBinding(&weapon->pos0, &traceable->pos, sizeof(vec3));
+        weapon->addBinding(&weapon->ori1, &rigged->joints[weapon->weaponMount].q, sizeof(quat));
+        weapon->addBinding(&weapon->pos1, &rigged->joints[weapon->weaponMount].v, sizeof(vec3));
     }
 }
 
@@ -457,7 +552,7 @@ void cMech::animate(float spf) {
     // TARCOM
     {
         // from Pad
-        if (1) {
+        {
             tarcom->switchnext = pad->getButton(Pad::MECH_NEXT_BUTTON);
             tarcom->switchprev = pad->getButton(Pad::MECH_PREV_BUTTON);
         }
@@ -534,18 +629,18 @@ void cMech::animate(float spf) {
             mobile->jeten = (pad->getButton(Pad::MECH_JET_BUTTON1) + pad->getButton(Pad::MECH_JET_BUTTON2));
         }
         // from CONTROLLER
-        {
+        if (0) {
             mobile->aimtarget = controller->aimtarget;
             vector_cpy(mobile->walktarget, controller->walktarget);
             mobile->walktargetdist = controller->walktargetdist;
             mobile->firetarget = controller->firetarget;
         }
         // from TARGET
-        {
+        if (0) {
             mobile->active = target->alife;
         }
         // from traceable
-        {
+        if (0) {
             vector_cpy(mobile->pos0, traceable->pos);
         }
     }
@@ -561,7 +656,7 @@ void cMech::animate(float spf) {
     }
     
     // SOUND - FIXME: Add Sound-Subsystem with sound-source component.
-    {
+    if (0) {
         // from TRACEABLE
         if (traceable->sound != 0) {
             alSourcefv(traceable->sound, AL_POSITION, traceable->pos);
@@ -572,14 +667,14 @@ void cMech::animate(float spf) {
     // RIGGED
     {
         // from MOBILE: Steering state.
-        {
+        if (0) {
             rigged->rotators[rigged->YAW][1] = -mobile->twr[1];
             rigged->rotators[rigged->PITCH][0] = mobile->twr[0];
             rigged->rotators[rigged->HEADPITCH][0] = mobile->twr[0];
             rigged->jetting = mobile->jetthrottle;
         }
         // from TRACEABLE: Physical movement state.
-        {
+        if (0) {
             vector_cpy(rigged->pos0, traceable->pos);
             quat_cpy(rigged->ori0, traceable->ori);
             vector_cpy(rigged->vel, traceable->vel);
@@ -607,7 +702,7 @@ void cMech::animate(float spf) {
             nameable->effect = !target->hasTag(World::getInstance()->getGroup(PLR_HUMAN)) && !target->hasTag(World::getInstance()->getGroup(HLT_DEAD));
         }
         // from RIGGED
-        {
+        if (0) {
             vector_cpy(nameable->pos0, rigged->pos0);
             quat_cpy(nameable->ori0, rigged->ori0);
             int eye = rigged->jointpoints[rRigged::EYE];
@@ -620,7 +715,7 @@ void cMech::animate(float spf) {
     // CAMERA
     {
         // from RIGGED
-        {
+        if (0) {
             int eye = rigged->jointpoints[rRigged::EYE];
             vector_cpy(camra->pos0, rigged->pos0);
             quat_cpy(camra->ori0, rigged->ori0);
@@ -629,7 +724,7 @@ void cMech::animate(float spf) {
         }
 
         // from MOBILE
-        {
+        if (0) {
             camra->camerashake = mobile->jetthrottle;
         }
 
@@ -656,6 +751,7 @@ void cMech::animate(float spf) {
     
     // WEAPON
 
+    if (0)
     loopi(weapons.size()) {
         // from CONTROLLED:
         {
@@ -673,7 +769,7 @@ void cMech::animate(float spf) {
     }
 
     // EXPLOSION (WEAPON)
-    {
+    if (0) {
         // from RIGGED:
         {
             rWeapon* weapon = explosion;
