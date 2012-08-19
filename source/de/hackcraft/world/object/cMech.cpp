@@ -78,6 +78,9 @@ cMech::cMech(Propmap* props) {
     vec3 rot;
     vector_set(rot, x, y, z);
     
+    // Silence warning about n not being used.
+    n = n;
+    
     init(pos, rot, cnf.getProperty("mech.model", "frogger"));
     
     // Mount weapons
@@ -140,9 +143,6 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     sInstances++;
     if (sInstances == 1) {
         // First one initializes.
-        //registerRole(new rMobile((cObject*)NULL), FIELDOFS(mobile), ROLEPTR(cMech::mobile));
-        //registerRole(new rRigged((cObject*)NULL), FIELDOFS(rigged), ROLEPTR(cMech::rigged));
-        //registerRole(new rComputerised((cObject*)NULL), FIELDOFS(computerised), ROLEPTR(cMech::computerised));
     }
 
     pad = new Pad;
@@ -197,24 +197,7 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     // Mech Speaker
     if (1) {
         try {
-            if (1) {
-                soundsource->loadWithWav("data/base/device/pow.wav");
-            } else {
-                ALuint buffer;
-                //buffer = alutCreateBufferHelloWorld();
-                buffer = alutCreateBufferFromFile("data/base/device/pow.wav");
-                //if (buffer == AL_NONE) throw "could not load pow.wav";
-                ALuint* soundsource = &traceable->sound;
-                alGenSources(1, soundsource);
-                if (alGetError() == AL_NO_ERROR && alIsSource(*soundsource)) {
-                    alSourcei(*soundsource, AL_BUFFER, buffer);
-                    alSourcef(*soundsource, AL_PITCH, 1.0f);
-                    alSourcef(*soundsource, AL_GAIN, 1.0f);
-                    alSourcefv(*soundsource, AL_POSITION, traceable->pos);
-                    alSourcefv(*soundsource, AL_VELOCITY, traceable->vel);
-                    alSourcei(*soundsource, AL_LOOPING, AL_FALSE);
-                }
-            }
+            soundsource->loadWithWav("data/base/device/pow.wav");
         } catch (...) {
             logger->warn() << "Sorry, no mech sound possible.\n";
         }
@@ -276,9 +259,6 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     
     // TARCOM
     {
-        // from Pad
-        //tarcom->switchnext = pad->getButton(Pad::MECH_NEXT_BUTTON);
-        //tarcom->switchprev = pad->getButton(Pad::MECH_PREV_BUTTON);
         // from TARGET
         tarcom->addBinding(&tarcom->active, &target->alife, sizeof(bool));
         // from TRACEABLE
@@ -416,20 +396,9 @@ void cMech::message(Message* message) {
 
 void cMech::spawn() {
     //cout << "cMech::onSpawn()\n";
-    if (1) {
-        bool isHumanPlayer = target->hasTag(World::getInstance()->getGroup(PLR_HUMAN));
-        if (isHumanPlayer) {
-            soundsource->play();
-        }
-        
-    } else {
-        ALuint soundsource = traceable->sound;
-        bool isHumanPlayer = target->hasTag(World::getInstance()->getGroup(PLR_HUMAN));
-        bool isSoundEnabled = alIsSource(soundsource);
-
-        if ( isHumanPlayer && isSoundEnabled ) {
-            alSourcePlay(soundsource);
-        }
+    bool isHumanPlayer = target->hasTag(World::getInstance()->getGroup(PLR_HUMAN));
+    if (isHumanPlayer) {
+        soundsource->play();
     }
     //cout << "Mech spawned " << oid << "\n";
 }
@@ -465,7 +434,8 @@ void cMech::listener() {
 }
 
 
-void cMech::mountWeapon(const char* point, rWeapon *weapon, bool add) {    
+void cMech::mountWeapon(const char* point, rWeapon *weapon, bool add) {
+    
     if (weapon == NULL) throw "Null weapon for mounting given.";
 
     weapon->weaponMount = rigged->getMountpoint(point);
@@ -477,6 +447,7 @@ void cMech::mountWeapon(const char* point, rWeapon *weapon, bool add) {
         wepcom->addControlledWeapon(weapon);
     }
     
+    // WEAPON bindings
     {
         // from CONTROLLED:
         weapon->addBinding(&weapon->target, &mobile->aimtarget, sizeof(OID));
@@ -511,44 +482,6 @@ void cMech::animate(float spf) {
      * Pad
      */
 
-    // COLLIDER
-    {
-        // from SELF:
-        if (0) {
-            vector_cpy(collider->pos0, this->pos0);
-            quat_cpy(collider->ori0, this->ori0);
-        }
-        // from RIGGED:
-        if (0) {
-            collider->radius = rigged->radius;
-            collider->ratio = 0.0f;
-            collider->height = rigged->height;
-        }
-    }
-
-    // TARGET
-    {
-        // from TARGET itself
-        if (0) {
-            target->active = target->alife;
-        }
-        // from RIGGED
-        if (0) {
-            target->radius = rigged->radius;
-            target->height = rigged->height;
-        }
-    }
-
-    // begin COMPUTERs -->
-
-    // COMCOM
-    {
-        // from TARGET
-        if (0) {
-            comcom->active = target->alife;
-        }
-    }
-
     // TARCOM
     {
         // from Pad
@@ -556,65 +489,15 @@ void cMech::animate(float spf) {
             tarcom->switchnext = pad->getButton(Pad::MECH_NEXT_BUTTON);
             tarcom->switchprev = pad->getButton(Pad::MECH_PREV_BUTTON);
         }
-        // from TARGET
-        if (0) {
-            tarcom->active = target->alife;
-        }
-        // from TRACEABLE
-        if (0) {
-            vector_cpy(tarcom->pos0, traceable->pos);
-            quat_cpy(tarcom->ori0, traceable->ori);
-        }
     }
 
-    // FORCOM
+    // WEPCOM.
     {
-        // from TARGET
-        if (0) {
-            forcom->active = target->alife;
-        }
-        // from traceable
-        if (0) {
-            quat_cpy(forcom->ori, traceable->ori);
-        }
-        // from MOBILE
-        if (0) {
-            vector_cpy(forcom->twr, mobile->twr);
-        }
-        // from CAMERA
-        if (0) {
-            forcom->reticle = camra->firstperson;
-        }
-    }
-
-    // NAVCOM
-    {
-        // from TARGET
-        if (0) {
-            navcom->active = target->alife;
-        }
-        // from TRACEABLE
-        if (0) {
-            vector_cpy(navcom->pos0, traceable->pos);
-            quat_cpy(navcom->ori0, traceable->ori);
-        }
-    }
-
-    // CONTROLLER
-    {
-        // from TARGET
-        if (0) {
-            controller->active = target->alife;
-            controller->disturbedBy = target->disturber;
-        }
-        // from TARCOM
-        if (0) {
-            controller->enemyNearby = tarcom->nearbyEnemy;
-        }
-        // from Mobile
-        if (0) {
-            controller->aimrange = mobile->aimrange;
-            controller->walkrange = mobile->walkrange;
+        // from Pad & TARGET
+        if (target->alife) {
+            if (pad->getButton(Pad::MECH_FIRE_BUTTON1) || pad->getButton(Pad::MECH_FIRE_BUTTON2)) {
+                wepcom->fire();
+            }
         }
     }
 
@@ -628,58 +511,10 @@ void cMech::animate(float spf) {
             mobile->driveen = pad->getAxis(Pad::MECH_THROTTLE_AXIS);
             mobile->jeten = (pad->getButton(Pad::MECH_JET_BUTTON1) + pad->getButton(Pad::MECH_JET_BUTTON2));
         }
-        // from CONTROLLER
-        if (0) {
-            mobile->aimtarget = controller->aimtarget;
-            vector_cpy(mobile->walktarget, controller->walktarget);
-            mobile->walktargetdist = controller->walktargetdist;
-            mobile->firetarget = controller->firetarget;
-        }
-        // from TARGET
-        if (0) {
-            mobile->active = target->alife;
-        }
-        // from traceable
-        if (0) {
-            vector_cpy(mobile->pos0, traceable->pos);
-        }
-    }
-
-    // TRACEABLE: Rigid Body, Collisions etc.
-    {
-        // from MOBILE:
-        if (0) {
-            quat_cpy(traceable->ori, mobile->ori0);
-            traceable->jetthrottle = mobile->jetthrottle;
-            traceable->throttle = mobile->drivethrottle;
-        }
-    }
-    
-    // SOUND - FIXME: Add Sound-Subsystem with sound-source component.
-    if (0) {
-        // from TRACEABLE
-        if (traceable->sound != 0) {
-            alSourcefv(traceable->sound, AL_POSITION, traceable->pos);
-            //alSourcefv(traceable->sound, AL_VELOCITY, traceable->vel);
-        }
     }
 
     // RIGGED
     {
-        // from MOBILE: Steering state.
-        if (0) {
-            rigged->rotators[rigged->YAW][1] = -mobile->twr[1];
-            rigged->rotators[rigged->PITCH][0] = mobile->twr[0];
-            rigged->rotators[rigged->HEADPITCH][0] = mobile->twr[0];
-            rigged->jetting = mobile->jetthrottle;
-        }
-        // from TRACEABLE: Physical movement state.
-        if (0) {
-            vector_cpy(rigged->pos0, traceable->pos);
-            quat_cpy(rigged->ori0, traceable->ori);
-            vector_cpy(rigged->vel, traceable->vel);
-            rigged->grounded = traceable->grounded;
-        }
         // from TARGET: Fixme tags
         {
             // Group-to-texture.
@@ -701,83 +536,13 @@ void cMech::animate(float spf) {
             nameable->color[2] = target->hasTag(World::getInstance()->getGroup(FAC_BLUE)) ? 1.0f : 0.0f;
             nameable->effect = !target->hasTag(World::getInstance()->getGroup(PLR_HUMAN)) && !target->hasTag(World::getInstance()->getGroup(HLT_DEAD));
         }
-        // from RIGGED
-        if (0) {
-            vector_cpy(nameable->pos0, rigged->pos0);
-            quat_cpy(nameable->ori0, rigged->ori0);
-            int eye = rigged->jointpoints[rRigged::EYE];
-            vector_cpy(nameable->pos1, rigged->joints[eye].v);
-            nameable->pos1[1] += 2.0f;
-            quat_cpy(nameable->ori1, rigged->joints[eye].q);
-        }
     }
 
     // CAMERA
     {
-        // from RIGGED
-        if (0) {
-            int eye = rigged->jointpoints[rRigged::EYE];
-            vector_cpy(camra->pos0, rigged->pos0);
-            quat_cpy(camra->ori0, rigged->ori0);
-            vector_cpy(camra->pos1, rigged->joints[eye].v);
-            quat_cpy(camra->ori1, rigged->joints[eye].q);
-        }
-
-        // from MOBILE
-        if (0) {
-            camra->camerashake = mobile->jetthrottle;
-        }
-
         // from CONTROLLED
         {
             camra->cameraswitch = pad->getButton(Pad::MECH_CAMERA_BUTTON);
-        }
-    }
-
-    // FIXME: Input binding.
-    if (target->alife) {
-        if (pad->getButton(Pad::MECH_FIRE_BUTTON1) || pad->getButton(Pad::MECH_FIRE_BUTTON2)) {
-            wepcom->fire();
-        }
-    }
-
-    // WEPCOM
-    {
-        // from TARGET
-        if (0) {
-            wepcom->active = target->alife;
-        }
-    }
-    
-    // WEAPON
-
-    if (0)
-    loopi(weapons.size()) {
-        // from CONTROLLED:
-        {
-            weapons[i]->target = mobile->aimtarget;
-        }
-        // from RIGGED:
-        {
-            rWeapon* weapon = weapons[i];
-            MD5Format::joint* joint = &rigged->joints[weapon->weaponMount];
-            quat_cpy(weapon->ori0, traceable->ori);
-            vector_cpy(weapon->pos0, traceable->pos);
-            quat_cpy(weapon->ori1, joint->q);
-            vector_cpy(weapon->pos1, joint->v);
-        }
-    }
-
-    // EXPLOSION (WEAPON)
-    if (0) {
-        // from RIGGED:
-        {
-            rWeapon* weapon = explosion;
-            MD5Format::joint* joint = &rigged->joints[weapon->weaponMount];
-            quat_cpy(weapon->ori0, traceable->ori);
-            vector_cpy(weapon->pos0, traceable->pos);
-            quat_cpy(weapon->ori1, joint->q);
-            vector_cpy(weapon->pos1, joint->v);
         }
     }
     
