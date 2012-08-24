@@ -102,27 +102,11 @@ cMech::cMech(Propmap* props) {
         
         std::string wpn = cnf.getProperty(s, std::string(""));
         
-        if (wpn.compare("Plasma") == 0) {
+        try {
+            rWeapon* weapon = WeaponSystem::buildWeapon(wpn.c_str());
+            mountWeapon(mpts[i], weapon);
             logger->debug() << wpn << " selected for " << mpts[i] << "\n";
-            mountWeapon(mpts[i], new rWeaponPlasmagun());
-            
-        } else if (wpn.compare("Homing") == 0) {
-            logger->debug() << wpn << " selected for " << mpts[i] << "\n";
-            mountWeapon(mpts[i], new rWeaponHoming());
-            
-        } else if (wpn.compare("Raybeam") == 0) {
-            logger->debug() << wpn << " selected for " << mpts[i] << "\n";
-            mountWeapon(mpts[i], new rWeaponRaybeam());
-            
-        } else if (wpn.compare("Machinegun") == 0) {
-            logger->debug() << wpn << " selected for " << mpts[i] << "\n";
-            mountWeapon(mpts[i], new rWeaponMachinegun());
-            
-        } else if (wpn.compare("Explosion") == 0) {
-            logger->debug() << wpn << " selected for " << mpts[i] << "\n";
-            mountWeapon(mpts[i], new rWeaponExplosion());
-            
-        } else {
+        } catch(...) {
             logger->warn() << "No weapon selected for " << mpts[i] << "\n";
         }
     }

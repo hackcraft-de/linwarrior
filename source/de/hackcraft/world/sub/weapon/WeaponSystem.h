@@ -36,6 +36,13 @@ class WeaponSystem : public Subsystem {
 public:
     static WeaponSystem* getInstance();
     
+    /**
+     * Creates new instances of weapons.
+     * Valid names are: Plasma, Homing, Raybeam, Machinegun, Explosion.
+     * Throws an exception in case of an error.
+     */
+    static rWeapon* buildWeapon(const char* name, Entity* obj = NULL);
+    
 public:
     WeaponSystem();
     virtual ~WeaponSystem();

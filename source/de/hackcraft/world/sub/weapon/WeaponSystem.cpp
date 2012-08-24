@@ -24,6 +24,38 @@ WeaponSystem* WeaponSystem::getInstance() {
 }
 
 
+rWeapon* WeaponSystem::buildWeapon(const char* name, Entity* obj) {
+    
+    std::string wpn = name;
+    
+    rWeapon* weapon = NULL;
+
+    if (wpn.compare("Plasma") == 0) {
+        weapon = new rWeaponPlasmagun(obj);
+        
+    } else if (wpn.compare("Homing") == 0) {
+        weapon = new rWeaponHoming(obj);
+        
+    } else if (wpn.compare("Raybeam") == 0) {
+        weapon = new rWeaponRaybeam(obj);
+        
+    } else if (wpn.compare("Machinegun") == 0) {
+        weapon = new rWeaponMachinegun(obj);
+        
+    } else if (wpn.compare("Explosion") == 0) {
+        weapon = new rWeaponExplosion(obj);
+        
+    } else {
+        logger->warn() << "No such weapon " << wpn << ".\n";
+        throw "No such weapon.";
+    }
+    
+    logger->debug() << "Another shiny " << wpn << " built.\n";
+    
+    return weapon;
+}
+
+
 WeaponSystem::WeaponSystem() {
     instance = this;
     
