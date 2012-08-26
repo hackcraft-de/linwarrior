@@ -4,10 +4,6 @@
  * Home:     hackcraft.de
  * 
  * Created on March 28, 2008, 10:23 PM (1999)
- *
- * Generic Game-Object with as much common
- * attributes as sensible and as needed
- * for various World-Filtering functions (Worldsense for Objects).
  */
 
 #ifndef _CENTITYOBJECT_H
@@ -18,8 +14,6 @@ class Entity;
 #include "de/hackcraft/lang/OID.h"
 
 #include "de/hackcraft/world/Component.h"
-
-#include "de/hackcraft/io/Pad.h"
 
 #include "de/hackcraft/psi3d/math3d.h"
 #include "de/hackcraft/psi3d/macros.h"
@@ -68,17 +62,10 @@ class Entity;
 class World;
 
 /**
- * Obsolete description:
+ * Generic Game-Object (Object composed from components) which
+ * collects as few common attributes as needed by World-Management.
  * 
- * Generic Game-Object (Object with Roles) which
- * collects as much common attributes as needed
- * by the different roles and as needed by World-Filtering
- * (Worldsense for subclasses implementing the roles).
- * This object does again hold as much methods as needed
- * but without (real) implementation (which is subclass-responsibility).
- * Nevertheless every method has an empty body or a body returning
- * some default value, so that callers need not care about
- * the kind of the object (roles) too much.
+ * Most methods and attributes should be removed eventually.
  */
 class Entity {
     friend class World;
@@ -103,15 +90,6 @@ public: // Components
     /** Components of subsystems this entity is built from. */
     std::vector<Component*> components;
 
-public: // Experimental Component "Managing"
-
-    //static std::map<std::string, rComponent*> roleprotos;
-    //static std::map<std::string, OID> roleoffsets;
-    //static std::map<std::string, OID> roleids;
-    //static std::map<OID, rRole*> roletypes;
-    //std::map<OID, rRole*> roles;
-    //std::set<OID> roleset;
-
 public: // Object Tags
 
     /** Tags (IDs, Social-Roles, Parties, States...) this object has (=groups?). */
@@ -131,38 +109,6 @@ public:
 
     virtual ~Entity() {
     }
-
-    /*
-    bool anyRoles(std::set<OID>* test) {
-        std::set<OID> result;
-        std::set_intersection(roleset.begin(), roleset.end(), test->begin(), test->end(), std::inserter(result, result.begin()));
-        return (!result.empty());
-    }
-
-    bool allRoles(std::set<OID>* test) {
-        std::set<OID> result;
-        std::set_intersection(roleset.begin(), roleset.end(), test->begin(), test->end(), std::inserter(result, result.begin()));
-        return (result.size() == test->size());
-    }
-
-    // Check wether this Object is playing the given role.
-    bool hasRole(OID role) {
-        return (roleset.find(role) != roleset.end());
-    }
-
-    // Add a role this objects has to play.
-    void addRole(OID role, rRole* roleobj = NULL) {
-        roles[role] = roleobj;
-        roleset.insert(role);
-    }
-
-    // Remove a role this object wont play anymore.
-    void remRole(OID role, bool deleteobj = false) {
-        if (deleteobj) delete roles[role];
-        roles.erase(role);
-        roleset.erase(role);
-    }
-     */
 
     /** Check whether this Object has at least one of the given tags. */
     bool anyTags(std::set<OID>* tagset) {
