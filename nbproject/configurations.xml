@@ -54,10 +54,6 @@
         <df name="messages">
         </df>
         <df name="prg">
-          <in>post (copy).frag</in>
-          <in>post.frag</in>
-          <in>post.vert</in>
-          <in>post_old.frag</in>
         </df>
       </df>
       <df name="com">
