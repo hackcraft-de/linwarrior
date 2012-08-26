@@ -35,17 +35,13 @@ AI and behavior:
 
 Refactoring and cleanup:
 
-- Bind all mech's components properly
-
 - Remove reliance on NaN for no destination (portability and fast-math problems).
 
 - Player's jumpjet light shall be moved to a component.
 
-- Make Camera a Camera-System component.
-
 - Resolve HUD dependency on cMech-Class's weapons.
 
-- Use vec4 to utilize vector ops?
+- Use vec4 to utilize cpu vector ops?
 
 
 Backscape-System:
@@ -112,11 +108,14 @@ Weapon-System:
 - Selected target should be identified (button/automatically-timed).
 
 
-Immersion and FX:
+Camera-System:
 
 - Implement camera lag and shake rig
 
 - Camera shall not pass through ground (implement camera particle physics)
+
+
+Immersion and FX:
 
 - Footstep sound
 
