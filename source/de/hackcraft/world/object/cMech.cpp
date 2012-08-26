@@ -130,8 +130,6 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
         // First one initializes.
     }
 
-    pad = new Pad;
-
     collider = new rCollider(this);
     traceable = new rTraceable(this);
     PhysicsSystem::getInstance()->add(collider);
@@ -493,35 +491,6 @@ void cMech::animate(float spf) {
      * Pad
      */
 
-    // TARCOM
-    {
-        // from Pad
-        if (0) {
-            tarcom->switchnext = pad->getButton(Pad::MECH_NEXT_BUTTON);
-            tarcom->switchprev = pad->getButton(Pad::MECH_PREV_BUTTON);
-        }
-    }
-
-    // WEPCOM.
-    {
-        // from Pad
-        if (0) {
-                wepcom->trigger = (pad->getButton(Pad::MECH_FIRE_BUTTON1) || pad->getButton(Pad::MECH_FIRE_BUTTON2));
-        }
-    }
-
-    // MOBILE
-    {
-        // from Pad
-        if (0) {
-            mobile->tower_lr = pad->getAxis(Pad::MECH_TURRET_LR_AXIS);
-            mobile->tower_ud = pad->getAxis(Pad::MECH_TURRET_UD_AXIS);
-            mobile->chassis_lr = pad->getAxis(Pad::MECH_CHASSIS_LR_AXIS);
-            mobile->driveen = pad->getAxis(Pad::MECH_THROTTLE_AXIS);
-            mobile->jeten = fmax(pad->getButton(Pad::MECH_JET_BUTTON1), pad->getButton(Pad::MECH_JET_BUTTON2));
-        }
-    }
-
     // RIGGED
     {
         // from TARGET: Fixme tags
@@ -544,27 +513,6 @@ void cMech::animate(float spf) {
             nameable->color[1] = target->hasTag(World::getInstance()->getGroup(FAC_GREEN)) ? 1.0f : 0.0f;
             nameable->color[2] = target->hasTag(World::getInstance()->getGroup(FAC_BLUE)) ? 1.0f : 0.0f;
             nameable->effect = !target->hasTag(World::getInstance()->getGroup(PLR_HUMAN)) && !target->hasTag(World::getInstance()->getGroup(HLT_DEAD));
-        }
-    }
-
-    // CAMERA
-    {
-        // from CONTROLLED
-        if (0) {
-            camra->cameraswitch = pad->getButton(Pad::MECH_CAMERA_BUTTON);
-        }
-    }
-    
-    // Pad
-    if (pad) {
-        // from MOBILE
-        if (0) {
-            pad->setAxis(Pad::MECH_CHASSIS_LR_AXIS, mobile->chassis_lr_tgt);
-            pad->setAxis(Pad::MECH_THROTTLE_AXIS, mobile->drive_tgt);
-            pad->setAxis(Pad::MECH_TURRET_LR_AXIS, mobile->tower_lr_tgt);
-            pad->setAxis(Pad::MECH_TURRET_UD_AXIS, mobile->tower_ud_tgt);
-            pad->setButton(Pad::MECH_FIRE_BUTTON1, mobile->firetarget_tgt);
-            if (!controller->enabled) pad->reset();
         }
     }
 

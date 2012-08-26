@@ -97,8 +97,6 @@ public: // Basic Object attributes for managing.
     double seconds;
     /** Internal qualified name of the object. */
     std::string name;
-    /** Input to the object through common input device if not null. */
-    Pad* pad;
 
 public: // Components
 
@@ -127,7 +125,6 @@ public:
         pos0[0] = pos0[1] = pos0[2] = float_NAN;
         ori0[0] = ori0[1] = ori0[2] = 0.0f;
         ori0[3] = 1.0f;
-        pad = NULL;
         radius = 0.1f;
         seconds = 0;
     }
