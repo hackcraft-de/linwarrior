@@ -4,21 +4,36 @@
 
 #include "de/hackcraft/world/sub/weapon/rWeapon.h"
 
+
 std::string rWepcom::cname = "WEPCOM";
 unsigned int rWepcom::cid = 4280;
 
+
 rWepcom::rWepcom(Entity* obj) {
+    
     object = obj;
     
     currentWeapon = 0;
     cycleWeapon = true;
     singleWeapon = true;
+    
+    trigger = false;
 }
+
 
 void rWepcom::animate(float spf) {
+
+    if (!active) return;
+    
+    if (trigger) {
+        trigger = false;
+        fire();
+    }
 }
 
+
 void rWepcom::drawHUD() {
+    
     if (!active) return;
 
     float h = 1.0f / 7.0f * (1 + (weapons.size() + 1) / 2);

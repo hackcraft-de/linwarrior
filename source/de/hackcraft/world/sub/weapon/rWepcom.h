@@ -32,8 +32,9 @@ public:
     virtual void animate(float spf);
     virtual void drawHUD();
     void addControlledWeapon(rWeapon* weapon);
-    void fire();
 private:
+    void fire();
+public:
     /** Controlled/displayed weapons. */
     std::vector<rWeapon*> weapons;
     /** Currently selected weapon for firing. */
@@ -42,6 +43,8 @@ private:
     bool cycleWeapon;
     /** Fire a single weapon only at a time when true (default) */
     bool singleWeapon;
+    /** Triggering firing of weapon(s) (once). (hook i) */
+    bool trigger;
 };
 
 #endif	/* RWEPCOM_H */

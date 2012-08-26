@@ -477,11 +477,9 @@ void cMech::animate(float spf) {
 
     // WEPCOM.
     {
-        // from Pad & TARGET
-        if (target->alife) {
-            if (pad->getButton(Pad::MECH_FIRE_BUTTON1) || pad->getButton(Pad::MECH_FIRE_BUTTON2)) {
-                wepcom->fire();
-            }
+        // from Pad
+        {
+                wepcom->trigger = (pad->getButton(Pad::MECH_FIRE_BUTTON1) || pad->getButton(Pad::MECH_FIRE_BUTTON2));
         }
     }
 
@@ -493,7 +491,7 @@ void cMech::animate(float spf) {
             mobile->tower_ud = pad->getAxis(Pad::MECH_TURRET_UD_AXIS);
             mobile->chassis_lr = pad->getAxis(Pad::MECH_CHASSIS_LR_AXIS);
             mobile->driveen = pad->getAxis(Pad::MECH_THROTTLE_AXIS);
-            mobile->jeten = (pad->getButton(Pad::MECH_JET_BUTTON1) + pad->getButton(Pad::MECH_JET_BUTTON2));
+            mobile->jeten = fmax(pad->getButton(Pad::MECH_JET_BUTTON1), pad->getButton(Pad::MECH_JET_BUTTON2));
         }
     }
 
