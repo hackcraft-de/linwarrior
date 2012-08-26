@@ -185,13 +185,14 @@ void rRigged::animate(float spf) {
     } else {
         poseJumping(spf);
     }
+    transformJoints();
 }
 
 
 void rRigged::transform() {
     if (!active) return;
     if (model == NULL) return;
-    transformJoints();
+    //transformJoints();
     //transformMounts();
 }
 
