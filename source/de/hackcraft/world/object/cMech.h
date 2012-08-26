@@ -38,6 +38,7 @@ struct rWeaponExplosion;
 
 class rSoundsource;
 class rLightsource;
+class rInputsource;
 
 class Logger;
 class Propmap;
@@ -105,6 +106,7 @@ public:
     
     rSoundsource* soundsource;
     rLightsource* lightsource;
+    rInputsource* inputsource;
 
 public:
     cMech(Propmap* props);

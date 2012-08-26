@@ -54,6 +54,10 @@
         <df name="messages">
         </df>
         <df name="prg">
+          <in>post (copy).frag</in>
+          <in>post.frag</in>
+          <in>post.vert</in>
+          <in>post_old.frag</in>
         </df>
       </df>
       <df name="com">
@@ -229,6 +233,8 @@
               <df name="misc">
                 <in>MiscSystem.cpp</in>
                 <in>MiscSystem.h</in>
+                <in>rInputsource.cpp</in>
+                <in>rInputsource.h</in>
                 <in>rLightsource.cpp</in>
                 <in>rLightsource.h</in>
                 <in>rSoundsource.cpp</in>

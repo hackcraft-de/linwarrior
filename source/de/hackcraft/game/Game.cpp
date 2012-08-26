@@ -4,6 +4,9 @@
 
 #include "de/hackcraft/psi3d/macros.h"
 
+#include "de/hackcraft/world/sub/misc/MiscSystem.h"
+#include "de/hackcraft/world/sub/misc/rInputsource.h"
+
 #include <cassert>
 #include <cstdlib>
 
@@ -141,6 +144,8 @@ void Game::initMission() {
     
     world->subsystems.push_back(mission);
     camera = mission->init(world);
-    pad1 = camera->pad;
+    //pad1 = camera->pad;
+    pad1 = new Pad();
+    MiscSystem::getInstance()->findInputsourceByEntity(camera->oid)->setPad(pad1);
 }
 

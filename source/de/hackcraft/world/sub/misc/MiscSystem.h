@@ -20,6 +20,7 @@
 class Logger;
 class rSoundsource;
 class rLightsource;
+class rInputsource;
 
 /**
  * Incubator subsystem for components
@@ -39,6 +40,11 @@ public:
     
     /** Add a component of that type to the managed components. */
     void add(rLightsource* component);
+    
+    /** Add a component of that type to the managed components. */
+    void add(rInputsource* component);
+    
+    rInputsource* findInputsourceByEntity(OID entityID);
 
 public:
     /**
@@ -96,6 +102,11 @@ private:
     std::vector<rLightsource*> lightsources;
     /** Index on id of leased components of this type. */
     std::map<OID,rLightsource*> lightsourcesIndex;
+    
+    /** List of allocated components of this type. */
+    std::vector<rInputsource*> inputsources;
+    /** Index on id of leased components of this type. */
+    std::map<OID,rInputsource*> inputsourcesIndex;
 };
 
 #endif	/* MISCSYSTEM_H */

@@ -28,6 +28,7 @@
 #include "de/hackcraft/world/sub/misc/MiscSystem.h"
 #include "de/hackcraft/world/sub/misc/rLightsource.h"
 #include "de/hackcraft/world/sub/misc/rSoundsource.h"
+#include "de/hackcraft/world/sub/misc/rInputsource.h"
 
 #include "de/hackcraft/world/sub/mobile/MobileSystem.h"
 #include "de/hackcraft/world/sub/mobile/rMobile.h"
@@ -168,8 +169,10 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     
     soundsource = new rSoundsource(this);
     lightsource = new rLightsource(this);
+    inputsource = new rInputsource(this);
     MiscSystem::getInstance()->add(soundsource);
     MiscSystem::getInstance()->add(lightsource);
+    MiscSystem::getInstance()->add(inputsource);
     
     if (rot != NULL) vector_scale(mobile->bse, rot, PI_OVER_180);
 
@@ -243,6 +246,9 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     
     // TARCOM
     {
+        // from INPUTSOURCE
+        tarcom->addBinding(&tarcom->switchnext, &inputsource->nextTarget, sizeof(bool));
+        tarcom->addBinding(&tarcom->switchprev, &inputsource->prevTarget, sizeof(bool));
         // from TARGET
         tarcom->addBinding(&tarcom->active, &target->alife, sizeof(bool));
         // from TRACEABLE
@@ -252,6 +258,9 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     
     // WEPCOM
     {
+        // from INPUTSOURCE
+        wepcom->addBinding(&wepcom->trigger, &inputsource->fire, sizeof(bool));
+        // from TARGET
         wepcom->addBinding(&wepcom->active, &target->alife, sizeof(bool));
     }
     
@@ -298,6 +307,12 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     
     // MOBILE
     {
+        // from INPUTSOURCE
+        mobile->addBinding(&mobile->tower_lr, &inputsource->turretLR, sizeof(float));
+        mobile->addBinding(&mobile->tower_ud, &inputsource->turretUD, sizeof(float));
+        mobile->addBinding(&mobile->chassis_lr, &inputsource->chassisLR, sizeof(float));
+        mobile->addBinding(&mobile->driveen, &inputsource->driveEnable, sizeof(float));
+        mobile->addBinding(&mobile->jeten, &inputsource->jetEnable, sizeof(float));
         // from CONTROLLER
         mobile->addBinding(&mobile->aimtarget, &controller->aimtarget, sizeof(OID));
         mobile->addBinding(&mobile->walktarget, &controller->walktarget, sizeof(vec3));
@@ -337,6 +352,8 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     
     // CAMERA
     {
+        // from CONTROLLED
+        camra->addBinding(&camra->cameraswitch, &inputsource->nextCamera, sizeof(float));
         // from RIGGED
         int eye = rigged->jointpoints[rRigged::EYE];
         camra->addBinding(&camra->pos0, &rigged->pos0, sizeof(vec3));
@@ -356,6 +373,16 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     // LIGHTSOURCE
     {
         
+    }
+    
+    // INPUTSOURCE
+    {
+        // from MOBILE
+        inputsource->addBinding(&inputsource->chassisLR, &mobile->chassis_lr_tgt, sizeof(float));
+        inputsource->addBinding(&inputsource->driveEnable, &mobile->drive_tgt, sizeof(float));
+        inputsource->addBinding(&inputsource->turretLR, &mobile->tower_lr_tgt, sizeof(float));
+        inputsource->addBinding(&inputsource->turretUD, &mobile->tower_ud_tgt, sizeof(float));
+        inputsource->addBinding(&inputsource->fire, &mobile->firetarget_tgt, sizeof(bool));
     }
 }
 
@@ -469,7 +496,7 @@ void cMech::animate(float spf) {
     // TARCOM
     {
         // from Pad
-        {
+        if (0) {
             tarcom->switchnext = pad->getButton(Pad::MECH_NEXT_BUTTON);
             tarcom->switchprev = pad->getButton(Pad::MECH_PREV_BUTTON);
         }
@@ -478,7 +505,7 @@ void cMech::animate(float spf) {
     // WEPCOM.
     {
         // from Pad
-        {
+        if (0) {
                 wepcom->trigger = (pad->getButton(Pad::MECH_FIRE_BUTTON1) || pad->getButton(Pad::MECH_FIRE_BUTTON2));
         }
     }
@@ -486,7 +513,7 @@ void cMech::animate(float spf) {
     // MOBILE
     {
         // from Pad
-        {
+        if (0) {
             mobile->tower_lr = pad->getAxis(Pad::MECH_TURRET_LR_AXIS);
             mobile->tower_ud = pad->getAxis(Pad::MECH_TURRET_UD_AXIS);
             mobile->chassis_lr = pad->getAxis(Pad::MECH_CHASSIS_LR_AXIS);
@@ -523,7 +550,7 @@ void cMech::animate(float spf) {
     // CAMERA
     {
         // from CONTROLLED
-        {
+        if (0) {
             camra->cameraswitch = pad->getButton(Pad::MECH_CAMERA_BUTTON);
         }
     }
@@ -531,14 +558,14 @@ void cMech::animate(float spf) {
     // Pad
     if (pad) {
         // from MOBILE
-        {
+        if (0) {
             pad->setAxis(Pad::MECH_CHASSIS_LR_AXIS, mobile->chassis_lr_tgt);
             pad->setAxis(Pad::MECH_THROTTLE_AXIS, mobile->drive_tgt);
             pad->setAxis(Pad::MECH_TURRET_LR_AXIS, mobile->tower_lr_tgt);
             pad->setAxis(Pad::MECH_TURRET_UD_AXIS, mobile->tower_ud_tgt);
             pad->setButton(Pad::MECH_FIRE_BUTTON1, mobile->firetarget_tgt);
+            if (!controller->enabled) pad->reset();
         }
-        if (!controller->enabled) pad->reset();
     }
 
     // Write back.
