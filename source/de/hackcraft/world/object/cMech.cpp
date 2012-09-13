@@ -6,6 +6,8 @@
 
 #include "de/hackcraft/log/Logger.h"
 
+#include "de/hackcraft/openal/AL.h"
+
 #include "de/hackcraft/psi3d/macros.h"
 #include "de/hackcraft/psi3d/GLS.h"
 

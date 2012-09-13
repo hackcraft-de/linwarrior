@@ -5,6 +5,7 @@
 
 #include <cassert>
 
+
 std::string rWeaponPlasmagun::cname = "PLASMAGUN";
 unsigned int rWeaponPlasmagun::cid = 3768;
 
@@ -17,13 +18,7 @@ rWeaponPlasmagun::rWeaponPlasmagun(Entity* obj) {
     remainingClips = depotSize;
 
     if (WEAPONSOUND) {
-        //ALuint buffer = alutCreateBufferHelloWorld();
-        ALuint buffer = alutCreateBufferFromFile("data/org/freesound/plasmagun.wav");
-        alGenSources(1, &soundSource);
-        alSourcei(soundSource, AL_BUFFER, buffer);
-        alSourcef(soundSource, AL_PITCH, 1.0f);
-        alSourcef(soundSource, AL_GAIN, 1.0f);
-        alSourcei(soundSource, AL_LOOPING, AL_FALSE);
+        loadSource("data/org/freesound/plasmagun.wav");
     }
 }
 

@@ -7,6 +7,7 @@
 
 #include <cassert>
 
+
 std::string rWeaponExplosion::cname = "EXPLOSION";
 unsigned int rWeaponExplosion::cid = 4370;
 
@@ -14,15 +15,7 @@ rWeaponExplosion::rWeaponExplosion(Entity* obj) {
     object = obj;
 
     if (EXPLOSIONSOUND) {
-        unsigned buffer;
-        //buffer = alutCreateBufferHelloWorld();
-        buffer = alutCreateBufferFromFile("data/org/freesound/explosion.wav");
-        alGenSources(1, &soundSource);
-        //if (alGetError() != AL_FALSE || !alIsSource(soundSource)) throw "sorry, could not create audio source for explosion";
-        alSourcei(soundSource, AL_BUFFER, buffer);
-        alSourcef(soundSource, AL_PITCH, 1.0f);
-        alSourcef(soundSource, AL_GAIN, 10.0f);
-        alSourcei(soundSource, AL_LOOPING, AL_FALSE);
+        loadSource("data/org/freesound/explosion.wav", 1.0f, 10.0f);
     }
 }
 

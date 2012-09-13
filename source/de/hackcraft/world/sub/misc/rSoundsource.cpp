@@ -1,7 +1,7 @@
 #include "rSoundsource.h"
 
-// This one is for OpenAL only - single point of inclusion for now.
-#include "de/hackcraft/world/Entity.h"
+#include "de/hackcraft/openal/AL.h"
+
 
 rSoundsource::rSoundsource(Entity * obj) {
     

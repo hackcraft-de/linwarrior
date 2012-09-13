@@ -18,14 +18,6 @@ class Entity;
 #include "de/hackcraft/psi3d/math3d.h"
 #include "de/hackcraft/psi3d/macros.h"
 
-#ifdef __APPLE__
-#include <OpenAL/al.h>
-#include <ALUT/alut.h>
-#else
-#include <AL/al.h>
-#include <AL/alut.h>
-#endif
-
 #include <algorithm>
 #include <iostream>
 #include <map>

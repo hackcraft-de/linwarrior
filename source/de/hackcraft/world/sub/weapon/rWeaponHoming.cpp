@@ -7,6 +7,7 @@
 
 #include <cassert>
 
+
 std::string rWeaponHoming::cname = "HOMING";
 unsigned int rWeaponHoming::cid = 9956;
 
@@ -19,12 +20,7 @@ rWeaponHoming::rWeaponHoming(Entity* obj) {
     remainingClips = depotSize;
 
     if (WEAPONSOUND) {
-        ALuint buffer = alutCreateBufferFromFile("data/org/freesound/homingmissile.wav");
-        alGenSources(1, &soundSource);
-        alSourcei(soundSource, AL_BUFFER, buffer);
-        alSourcef(soundSource, AL_PITCH, 1.0f);
-        alSourcef(soundSource, AL_GAIN, 1.0f);
-        alSourcei(soundSource, AL_LOOPING, AL_FALSE);
+        loadSource("data/org/freesound/homingmissile.wav");
     }
 }
 

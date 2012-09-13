@@ -108,6 +108,12 @@ public:
     virtual int getPosZ() { return (int) weaponPosef[14]; }
     
     /**
+     * Load sound source from WAV-file.
+     * pitch = 1, gain = 1
+     */
+    void loadSource(const char* wavFilename, float pitch = 1.0f, float gain = 1.0f);
+    
+    /**
      * Start playback of audio source.
      */
     void playSource();

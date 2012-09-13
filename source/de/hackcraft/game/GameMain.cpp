@@ -6,6 +6,8 @@
 
 #include "de/hackcraft/log/Logger.h"
 
+#include "de/hackcraft/openal/AL.h"
+
 #include "de/hackcraft/psi3d/GLF.h"
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Console.h"
@@ -17,18 +19,7 @@
 #include <iostream>
 #include <cassert>
 
-#ifdef __APPLE__
-#include <OpenAL/alc.h>
-#include <ALUT/alut.h>
-#else
 #include <SDL/SDL_timer.h>
-#include <AL/alc.h>
-#ifndef __WIN32
-#include <AL/alext.h>
-#endif
-#include <AL/alut.h>
-#endif
-
 #include <SDL/SDL_thread.h>
 
 #include <iosfwd>

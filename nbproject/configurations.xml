@@ -119,6 +119,10 @@
             <in>LoggerEvent.cpp</in>
             <in>LoggerEvent.h</in>
           </df>
+          <df name="openal">
+            <in>AL.cpp</in>
+            <in>AL.h</in>
+          </df>
           <df name="opengl">
             <in>GL.cpp</in>
             <in>GL.h</in>

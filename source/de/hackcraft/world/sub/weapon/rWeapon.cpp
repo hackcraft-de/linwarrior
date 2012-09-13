@@ -2,6 +2,8 @@
 
 #include "de/hackcraft/log/Logger.h"
 
+#include "de/hackcraft/openal/AL.h"
+
 #include "de/hackcraft/proc/Noise.h"
 #include "de/hackcraft/proc/Distortion.h"
 
@@ -81,6 +83,16 @@ rWeapon::rWeapon(Entity* obj) {
 
     soundSource = -1;
     drawWeapon = false;
+}
+
+void rWeapon::loadSource(const char* wavFilename, float pitch, float gain) {
+    //ALuint buffer = alutCreateBufferHelloWorld();
+    ALuint buffer = alutCreateBufferFromFile(wavFilename);
+    alGenSources(1, &soundSource);
+    alSourcei(soundSource, AL_BUFFER, buffer);
+    alSourcef(soundSource, AL_PITCH, pitch);
+    alSourcef(soundSource, AL_GAIN, gain);
+    alSourcei(soundSource, AL_LOOPING, AL_FALSE);
 }
 
 void rWeapon::playSource() {

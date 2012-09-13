@@ -15,12 +15,7 @@ rWeaponRaybeam::rWeaponRaybeam(Entity* obj) {
     remainingClips = depotSize;
 
     if (WEAPONSOUND) {
-        ALuint buffer = alutCreateBufferFromFile("data/org/freesound/raybeam.wav");
-        alGenSources(1, &soundSource);
-        alSourcei(soundSource, AL_BUFFER, buffer);
-        alSourcef(soundSource, AL_PITCH, 1.0f);
-        alSourcef(soundSource, AL_GAIN, 1.0f);
-        alSourcei(soundSource, AL_LOOPING, AL_FALSE);
+        loadSource("data/org/freesound/raybeam.wav");
     }
 };
 

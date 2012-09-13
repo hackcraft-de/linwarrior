@@ -6,6 +6,7 @@
 
 #include <cassert>
 
+
 std::string rWeaponMachinegun::cname = "MACHINEGUN";
 unsigned int rWeaponMachinegun::cid = 7743;
 
@@ -18,14 +19,7 @@ rWeaponMachinegun::rWeaponMachinegun(Entity* obj) {
     remainingAmmo = clipSize;
     remainingClips = depotSize;
     if (WEAPONSOUND) {
-        //ALuint buffer = alutCreateBufferHelloWorld();
-        ALuint buffer = alutCreateBufferFromFile("data/org/freesound/machinegun.wav");
-        alGenSources(1, &soundSource);
-        //if (alGetError() != AL_FALSE || !alIsSource(soundSource)) throw "sorry, could not create audio source for machine gun";
-        alSourcei(soundSource, AL_BUFFER, buffer);
-        alSourcef(soundSource, AL_PITCH, 1.0f);
-        alSourcef(soundSource, AL_GAIN, 1.5f);
-        alSourcei(soundSource, AL_LOOPING, AL_FALSE);
+        loadSource("data/org/freesound/machinegun.wav", 1.0f, 1.5f);
     }
 }
 

@@ -1,5 +1,7 @@
 #include "rWeaponSparkgun.h"
 
+#include "de/hackcraft/openal/AL.h"
+
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Primitive.h"
 
@@ -17,12 +19,7 @@ rWeaponSparkgun::rWeaponSparkgun(Entity* obj) {
     remainingClips = depotSize;
 
     if (WEAPONSOUND) {
-        ALuint buffer = alutCreateBufferFromFile("data/org/freesound/sparkgun.wav");
-        alGenSources(1, &soundSource);
-        alSourcei(soundSource, AL_BUFFER, buffer);
-        alSourcef(soundSource, AL_PITCH, 1.0f);
-        alSourcef(soundSource, AL_GAIN, 1.0f);
-        alSourcei(soundSource, AL_LOOPING, AL_FALSE);
+        loadSource("data/org/freesound/sparkgun.wav");
     }
 }
 
