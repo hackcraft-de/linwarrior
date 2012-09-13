@@ -10,7 +10,9 @@
 std::string rWeaponMachinegun::cname = "MACHINEGUN";
 unsigned int rWeaponMachinegun::cid = 7743;
 
+
 rWeaponMachinegun::rWeaponMachinegun(Entity* obj) {
+    
     object = obj;
 
     //cout << "cMachineGun()\n";
@@ -23,8 +25,11 @@ rWeaponMachinegun::rWeaponMachinegun(Entity* obj) {
     }
 }
 
+
 void rWeaponMachinegun::fire() {
+    
     if (!ready()) return;
+    
     triggered = true;
 
     if (remainingAmmo > 0) {
@@ -79,7 +84,9 @@ void rWeaponMachinegun::fire() {
     playSourceIfNotPlaying();
 }
 
+
 void rWeaponMachinegun::animate(float spf) {
+    
     triggereded = triggered;
     if (trigger) fire();
     trigger = false;
@@ -135,7 +142,9 @@ void rWeaponMachinegun::animate(float spf) {
     }
 }
 
+
 void rWeaponMachinegun::drawSolid() {
+    
     if (drawWeapon) {
         GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
@@ -192,7 +201,9 @@ void rWeaponMachinegun::drawSolid() {
     }
 }
 
+
 void rWeaponMachinegun::drawEffect() {
+    
     if (shrapnelParticles.empty() && castoffParticles.empty() && damageParticles.empty()) return;
 
     GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -248,7 +259,9 @@ void rWeaponMachinegun::drawEffect() {
     GL::glPopAttrib();
 }
 
+
 void rWeaponMachinegun::drawHUD() {
+    
     float a = 0.9;
     float b = 0.6;
 

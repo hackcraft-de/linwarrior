@@ -11,7 +11,9 @@
 std::string rWeaponExplosion::cname = "EXPLOSION";
 unsigned int rWeaponExplosion::cid = 4370;
 
+
 rWeaponExplosion::rWeaponExplosion(Entity* obj) {
+    
     object = obj;
 
     if (EXPLOSIONSOUND) {
@@ -19,7 +21,9 @@ rWeaponExplosion::rWeaponExplosion(Entity* obj) {
     }
 }
 
+
 void rWeaponExplosion::fire() {
+    
     if (!ready()) return;
     triggered = true;
 
@@ -60,7 +64,9 @@ void rWeaponExplosion::fire() {
     playSourceIfNotPlaying();
 }
 
+
 void rWeaponExplosion::animate(float spf) {
+    
     triggereded = triggered;
     if (trigger) fire();
     trigger = false;
@@ -211,9 +217,11 @@ void rWeaponExplosion::animate(float spf) {
 
     timeReloading -= spf;
     if (timeReloading < 0) timeReloading = 0.0f;
-};
+}
+
 
 void rWeaponExplosion::drawSolid() {
+    
     return; // !!
 
     GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -274,7 +282,9 @@ void rWeaponExplosion::drawSolid() {
     GL::glPopAttrib();
 }
 
+
 void rWeaponExplosion::drawEffect() {
+    
     if (missileParticles.empty() && castoffParticles.empty()) return;
 
 #if 0
@@ -388,3 +398,4 @@ void rWeaponExplosion::drawEffect() {
     }
     GL::glPopAttrib();
 }
+

@@ -12,10 +12,13 @@
 
 #include <cassert>
 
+
 std::string rTarget::cname = "DAMAGEABLE";
 unsigned int rTarget::cid = 5704;
 
+
 rTarget::rTarget(Entity* obj) {
+    
     object = obj;
     assert(object != NULL);
 
@@ -29,7 +32,9 @@ rTarget::rTarget(Entity* obj) {
     vector_zero(pos0);
 }
 
+
 rTarget::rTarget(rTarget * original) {
+    
     if (original == NULL) {
         throw "Target: Null instance for copy when calling copy constructor.";
     } else {
@@ -44,11 +49,14 @@ rTarget::rTarget(rTarget * original) {
     }
 }
 
+
 Component* rTarget::clone() {
     return new rTarget(this);
 }
 
+
 bool rTarget::damage(float* localpos, float damage, Entity* enactor) {
+    
     int hitzone = rTarget::BODY;
     if (localpos[1] < 0.66 * height && hp[rTarget::LEGS] > 0) hitzone = rTarget::LEGS;
     else if (localpos[0] < -0.33 * radius && hp[rTarget::LEFT] > 0) hitzone = rTarget::LEFT;
@@ -75,6 +83,7 @@ bool rTarget::damage(float* localpos, float damage, Entity* enactor) {
 
     return alife;
 }
+
 
 void rTarget::animate(float spf) {
 
@@ -117,7 +126,9 @@ void rTarget::animate(float spf) {
     //}
 }
 
+
 void rTarget::drawHUD() {
+    
     if (!active) return;
 
     //GL::glColor4f(0,0.1,0,0.2);
@@ -180,29 +191,37 @@ void rTarget::drawHUD() {
     GL::glPopMatrix();
 }
 
+
 bool rTarget::isEnemy(rTarcom* tarcom) {
     return tarcom->isEnemy(&tags);
 }
 
+
 bool rTarget::anyTags(std::set<OID>* tagset) {
+    
     std::set<OID> result;
     std::set_intersection(tags.begin(), tags.end(), tagset->begin(), tagset->end(), std::inserter(result, result.begin()));
     return (!result.empty());
 }
 
+
 bool rTarget::allTags(std::set<OID>* tagset) {
+    
     std::set<OID> result;
     std::set_intersection(tags.begin(), tags.end(), tagset->begin(), tagset->end(), std::inserter(result, result.begin()));
     return (result.size() == tagset->size());
 }
 
+
 bool rTarget::hasTag(OID tag) {
     return (tags.find(tag) != tags.end());
 }
 
+
 void rTarget::addTag(OID tag) {
     tags.insert(tag);
 }
+
 
 void rTarget::remTag(OID tag) {
     tags.erase(tag);

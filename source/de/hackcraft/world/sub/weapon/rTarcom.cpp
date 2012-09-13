@@ -10,10 +10,13 @@
 
 #include <cassert>
 
+
 std::string rTarcom::cname = "TARCOM";
 unsigned int rTarcom::cid = 5293;
 
+
 rTarcom::rTarcom(Entity* obj) {
+    
     object = obj;
     assert(object != NULL);
 
@@ -32,7 +35,9 @@ rTarcom::rTarcom(Entity* obj) {
     switchprev = false;
 }
 
+
 void rTarcom::nextTarget() {
+    
     bool found = false;
     OID last = 0;
 
@@ -53,7 +58,9 @@ void rTarcom::nextTarget() {
     }
 }
 
+
 void rTarcom::prevTarget() {
+    
     bool found = false;
     OID last = 0;
 
@@ -74,7 +81,9 @@ void rTarcom::prevTarget() {
     }
 }
 
+
 void rTarcom::animate(float spf) {
+    
     if (!active) return;
 
     if (!switching) {
@@ -124,7 +133,9 @@ void rTarcom::animate(float spf) {
     }
 }
 
+
 void rTarcom::drawHUD() {
+    
     if (!active) return;
 
     //GL::glColor4f(0,0.1,0,0.2);
@@ -196,7 +207,9 @@ void rTarcom::drawHUD() {
     GL::glPopMatrix();
 }
 
+
 bool rTarcom::isAllied(std::set<OID>* tags) {
+    
     std::set<OID> inclusion;
     std::set_intersection(tags->begin(), tags->end(), inc_allies.begin(), inc_allies.end(), std::inserter(inclusion, inclusion.begin()));
     std::set<OID> exclusion;
@@ -204,7 +217,9 @@ bool rTarcom::isAllied(std::set<OID>* tags) {
     return (!inclusion.empty() && exclusion.empty());
 }
 
+
 void rTarcom::addAllied(OID tag, bool include) {
+    
     if (include) {
         inc_allies.insert(tag);
     } else {
@@ -212,7 +227,9 @@ void rTarcom::addAllied(OID tag, bool include) {
     }
 }
 
+
 void rTarcom::remAllied(OID tag, bool include) {
+    
     if (include) {
         inc_allies.erase(tag);
     } else {
@@ -220,7 +237,9 @@ void rTarcom::remAllied(OID tag, bool include) {
     }
 }
 
+
 bool rTarcom::isEnemy(std::set<OID>* tags) {
+    
     std::set<OID> inclusion;
     std::set_intersection(tags->begin(), tags->end(), inc_enemies.begin(), inc_enemies.end(), std::inserter(inclusion, inclusion.begin()));
     std::set<OID> exclusion;
@@ -228,7 +247,9 @@ bool rTarcom::isEnemy(std::set<OID>* tags) {
     return (!inclusion.empty() && exclusion.empty());
 }
 
+
 void rTarcom::addEnemy(OID tag, bool include) {
+    
     if (include) {
         inc_enemies.insert(tag);
     } else {
@@ -236,10 +257,13 @@ void rTarcom::addEnemy(OID tag, bool include) {
     }
 }
 
+
 void rTarcom::remEnemy(OID tag, bool include) {
+    
     if (include) {
         inc_enemies.erase(tag);
     } else {
         exc_enemies.erase(tag);
     }
 }
+

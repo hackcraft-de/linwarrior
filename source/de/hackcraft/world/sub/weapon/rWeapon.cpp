@@ -18,7 +18,9 @@ Logger* rWeapon::logger = Logger::getLogger("de.hackcraft.world.sub.weapon.rWeap
 int rWeapon::sInstances = 0;
 std::map<int, long> rWeapon::sTextures;
 
+
 rWeapon::rWeapon(Entity* obj) {
+    
     object = obj;
 
     sInstances++;
@@ -85,7 +87,9 @@ rWeapon::rWeapon(Entity* obj) {
     drawWeapon = false;
 }
 
+
 void rWeapon::loadSource(const char* wavFilename, float pitch, float gain) {
+    
     //ALuint buffer = alutCreateBufferHelloWorld();
     ALuint buffer = alutCreateBufferFromFile(wavFilename);
     alGenSources(1, &soundSource);
@@ -95,13 +99,17 @@ void rWeapon::loadSource(const char* wavFilename, float pitch, float gain) {
     alSourcei(soundSource, AL_LOOPING, AL_FALSE);
 }
 
+
 void rWeapon::playSource() {
+    
     if (alIsSource(soundSource)) {
         alSourcePlay(soundSource);
     }
 }
 
+
 void rWeapon::playSourceIfNotPlaying() {
+    
     if (alIsSource(soundSource)) {
         ALint playing;
         alGetSourcei(soundSource, AL_SOURCE_STATE, &playing);
@@ -110,39 +118,47 @@ void rWeapon::playSourceIfNotPlaying() {
     }
 }
 
+
 void rWeapon::transform() {
-    { // Current Pose-Matrix and Sound-Source-Position update.
-        GL::glPushMatrix();
-        {
-            GL::glLoadIdentity();
-            GL::glTranslatef(pos0[0], pos0[1], pos0[2]);
-            GLS::glRotateq(ori0);
-            GL::glTranslatef(pos1[0], pos1[1], pos1[2]);
-            GLS::glRotateq(ori1);
-            // FIXME: All weapon's forward are inverted, therefore rotate.
-            GL::glRotatef(180, 0, 1, 0);
-            GL::glGetFloatv(GL_MODELVIEW_MATRIX, weaponPosef);
-        }
-        GL::glPopMatrix();
-        if (alIsSource(soundSource)) {
-            alSourcefv(soundSource, AL_POSITION, &weaponPosef[12]);
-        }
+    
+    // Current Pose-Matrix and Sound-Source-Position update.
+    GL::glPushMatrix();
+    {
+        GL::glLoadIdentity();
+        GL::glTranslatef(pos0[0], pos0[1], pos0[2]);
+        GLS::glRotateq(ori0);
+        GL::glTranslatef(pos1[0], pos1[1], pos1[2]);
+        GLS::glRotateq(ori1);
+        // FIXME: All weapon's forward are inverted, therefore rotate.
+        GL::glRotatef(180, 0, 1, 0);
+        GL::glGetFloatv(GL_MODELVIEW_MATRIX, weaponPosef);
+    }
+    GL::glPopMatrix();
+    
+    if (alIsSource(soundSource)) {
+        alSourcefv(soundSource, AL_POSITION, &weaponPosef[12]);
     }
 }
+
 
 void rWeapon::transformTo() {
     GL::glMultMatrixf(weaponPosef);
 }
 
+
 int rWeapon::damageByParticle(float* worldpos, float radius, int roles, float damage) {
+    
     roles = 0; //(1UL << cObject::DAMAGEABLE) | (1UL << cObject::COLLIDEABLE);
     float scaled_damage = damage * weaponScale;
     int damaged = 0;
     float maxrange = 25;
     float worldpos_[3];
+    
     vector_cpy(worldpos_, worldpos);
+    
     std::list<Entity*>* range = World::getInstance()->filterByRange(object, worldpos, 0.0f, maxrange, -1, NULL);
     //cout << "damageByParticle: "  << World::getInstance()->getNames(range) << "\n";
+    
     if (!range->empty()) {
 
         for(Entity* targetObject: *range) {
@@ -155,6 +171,7 @@ int rWeapon::damageByParticle(float* worldpos, float radius, int roles, float da
             break;
         }
     }
+    
     delete range;
     
     if (damaged == 0) {

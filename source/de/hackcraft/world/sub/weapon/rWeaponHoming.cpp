@@ -11,7 +11,9 @@
 std::string rWeaponHoming::cname = "HOMING";
 unsigned int rWeaponHoming::cid = 9956;
 
+
 rWeaponHoming::rWeaponHoming(Entity* obj) {
+    
     object = obj;
 
     clipSize = 4;
@@ -24,7 +26,9 @@ rWeaponHoming::rWeaponHoming(Entity* obj) {
     }
 }
 
+
 void rWeaponHoming::fire() {
+    
     if (!ready()) return;
     triggered = true;
 
@@ -66,7 +70,9 @@ void rWeaponHoming::fire() {
     playSource();
 }
 
+
 void rWeaponHoming::animate(float spf) {
+    
     triggereded = triggered;
     if (trigger) fire();
     trigger = false;
@@ -150,9 +156,11 @@ void rWeaponHoming::animate(float spf) {
             if (remainingClips > 0) remainingClips--;
         }
     }
-};
+}
+
 
 void rWeaponHoming::drawSolid() {
+    
     // Missile barrels
     if (drawWeapon) {
         GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -266,7 +274,9 @@ void rWeaponHoming::drawSolid() {
     GL::glPopAttrib();
 }
 
+
 void rWeaponHoming::drawEffect() {
+    
     if (missileParticles.empty()) return;
 
     GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -322,7 +332,9 @@ void rWeaponHoming::drawEffect() {
     GL::glPopAttrib();
 }
 
+
 void rWeaponHoming::drawHUD() {
+    
     float a = 0.9;
     float b = 0.6;
 

@@ -14,6 +14,7 @@
 
 #include <cassert>
 
+
 Logger* WeaponSystem::logger = Logger::getLogger("de.hackcraft.world.sub.weapon.WeaponSystem");
 
 WeaponSystem* WeaponSystem::instance = NULL;
@@ -57,6 +58,7 @@ rWeapon* WeaponSystem::buildWeapon(const char* name, Entity* obj) {
 
 
 WeaponSystem::WeaponSystem() {
+    
     instance = this;
     
     visobjects = new std::list<IModel*>();
@@ -90,6 +92,7 @@ void WeaponSystem::add(rTarget* target){
 
 
 rTarcom* WeaponSystem::findTarcomByEntity(OID entityID) {
+    
     if (tarcomByEntity.find(entityID) != tarcomByEntity.end()) {
         return tarcomByEntity.at(entityID);
     }
@@ -108,6 +111,7 @@ rTarcom* WeaponSystem::findTarcomByEntity(OID entityID) {
 
 
 rTarget* WeaponSystem::findTargetByEntity(OID entityID) {
+    
     if (targetByEntity.find(entityID) != targetByEntity.end()) {
         return targetByEntity.at(entityID);
     }
@@ -126,6 +130,7 @@ rTarget* WeaponSystem::findTargetByEntity(OID entityID) {
 
 
 void WeaponSystem::clusterObjects() {
+    
     try {
         int j = 0;
         
@@ -201,6 +206,7 @@ void WeaponSystem::animateObjects() {
 
 
 void WeaponSystem::transformObjects() {
+    
     //cout << "transformObjects()\n";
 
     for (std::pair<OID,rWeapon*> p : weapons) {
@@ -213,6 +219,7 @@ void WeaponSystem::transformObjects() {
 
 
 void WeaponSystem::setupView(float* pos, float* ori) {
+    
     // Find objects in visible range.
     viewdistance = World::getInstance()->getViewdistance();
     
@@ -235,6 +242,7 @@ void WeaponSystem::setupView(float* pos, float* ori) {
 
 
 void WeaponSystem::drawSolid() {
+    
     //cout << "drawSolid()\n";
     
     float* origin = visorigin;
@@ -259,6 +267,7 @@ void WeaponSystem::drawSolid() {
 
 
 void WeaponSystem::drawEffect() {
+    
     //cout << "drawEffect()\n";
     
     float* origin = visorigin;
@@ -283,6 +292,7 @@ void WeaponSystem::drawEffect() {
 
 
 std::list<rTarget*>* WeaponSystem::filterByTags(Entity* ex, std::set<OID>* rolemask, bool all, int maxamount, std::list<rTarget*>* objects) {
+    
     std::list<rTarget*>* result = new std::list<rTarget*>;
     int amount = maxamount;
     if (objects == NULL) {
@@ -311,6 +321,7 @@ std::list<rTarget*>* WeaponSystem::filterByTags(Entity* ex, std::set<OID>* rolem
 
 
 std::list<rTarget*>* WeaponSystem::filterByRange(Entity* ex, float* origin, float minrange, float maxrange, int maxamount, std::list<rTarget*>* objects) {
+    
     std::list<rTarget*>* result = new std::list<rTarget*>;
     int amount = maxamount;
     bool all = false;
@@ -349,5 +360,4 @@ std::list<rTarget*>* WeaponSystem::filterByRange(Entity* ex, float* origin, floa
     }
     return result;
 }
-
 

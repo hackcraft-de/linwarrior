@@ -7,10 +7,13 @@
 
 #include <cassert>
 
+
 std::string rWeaponSparkgun::cname = "SPARKGUN";
 unsigned int rWeaponSparkgun::cid = 5712;
 
+
 rWeaponSparkgun::rWeaponSparkgun(Entity* obj) {
+    
     object = obj;
 
     clipSize = 24;
@@ -23,7 +26,9 @@ rWeaponSparkgun::rWeaponSparkgun(Entity* obj) {
     }
 }
 
+
 void rWeaponSparkgun::fire() {
+    
     if (!ready()) return;
     triggered = true;
 
@@ -56,7 +61,9 @@ void rWeaponSparkgun::fire() {
     playSourceIfNotPlaying();
 }
 
+
 void rWeaponSparkgun::animate(float spf) {
+    
     triggereded = triggered;
     if (trigger) fire();
     trigger = false;
@@ -90,7 +97,9 @@ void rWeaponSparkgun::animate(float spf) {
     }
 }
 
+
 void rWeaponSparkgun::drawSolid() {
+    
     if (drawWeapon) {
         GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
@@ -131,7 +140,9 @@ void rWeaponSparkgun::drawSolid() {
     }
 }
 
+
 void rWeaponSparkgun::drawEffect() {
+    
     if (shrapnelParticles.empty()) return;
 
     GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -159,7 +170,9 @@ void rWeaponSparkgun::drawEffect() {
     GL::glPopAttrib();
 }
 
+
 void rWeaponSparkgun::drawHUD() {
+    
     float a = 0.9;
     float b = 0.6;
 

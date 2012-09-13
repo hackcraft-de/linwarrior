@@ -3,10 +3,13 @@
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Primitive.h"
 
+
 std::string rWeaponRaybeam::cname = "RAYBEAM";
 unsigned int rWeaponRaybeam::cid = 5357;
 
+
 rWeaponRaybeam::rWeaponRaybeam(Entity* obj) {
+    
     object = obj;
 
     clipSize = 12;
@@ -17,9 +20,11 @@ rWeaponRaybeam::rWeaponRaybeam(Entity* obj) {
     if (WEAPONSOUND) {
         loadSource("data/org/freesound/raybeam.wav");
     }
-};
+}
+
 
 void rWeaponRaybeam::fire() {
+    
     if (!ready()) return;
     triggered = true;
 
@@ -36,7 +41,9 @@ void rWeaponRaybeam::fire() {
     playSourceIfNotPlaying();
 }
 
+
 void rWeaponRaybeam::animate(float spf) {
+    
     triggereded = triggered;
     if (trigger) fire();
     trigger = false;
@@ -87,7 +94,9 @@ void rWeaponRaybeam::animate(float spf) {
     }
 }
 
+
 void rWeaponRaybeam::drawSolid() {
+    
     if (drawWeapon) {
         GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
@@ -132,7 +141,9 @@ void rWeaponRaybeam::drawSolid() {
     }
 }
 
+
 void rWeaponRaybeam::drawEffect() {
+    
     if (timeFiring == 0) return;
 
     const float len = 10;
@@ -228,7 +239,9 @@ void rWeaponRaybeam::drawEffect() {
     GL::glPopAttrib();
 }
 
+
 void rWeaponRaybeam::drawHUD() {
+    
     float a = 0.9;
     float b = 0.6;
 
@@ -265,3 +278,4 @@ void rWeaponRaybeam::drawHUD() {
     GL::glVertex3f(0.75, 0.5, 0.0);
     GL::glEnd();
 }
+

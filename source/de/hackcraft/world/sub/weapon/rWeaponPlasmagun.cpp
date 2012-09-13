@@ -9,7 +9,9 @@
 std::string rWeaponPlasmagun::cname = "PLASMAGUN";
 unsigned int rWeaponPlasmagun::cid = 3768;
 
+
 rWeaponPlasmagun::rWeaponPlasmagun(Entity* obj) {
+    
     object = obj;
 
     clipSize = 19;
@@ -22,8 +24,11 @@ rWeaponPlasmagun::rWeaponPlasmagun(Entity* obj) {
     }
 }
 
+
 void rWeaponPlasmagun::fire() {
+    
     if (!ready()) return;
+    
     triggered = true;
 
     if (remainingAmmo > 0) {
@@ -55,10 +60,15 @@ void rWeaponPlasmagun::fire() {
     playSourceIfNotPlaying();
 }
 
+
 void rWeaponPlasmagun::animate(float spf) {
+    
     triggereded = triggered;
-    if (trigger) fire();
-    trigger = false;
+    
+    if (trigger) {
+        fire();
+        trigger = false;
+    }
 
     foreachNoInc(i, shrapnelParticles) {
         Particle* s = *i++;
@@ -89,7 +99,9 @@ void rWeaponPlasmagun::animate(float spf) {
     }
 }
 
+
 void rWeaponPlasmagun::drawSolid() {
+    
     if (drawWeapon) {
         GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
         {
@@ -162,7 +174,9 @@ void rWeaponPlasmagun::drawSolid() {
     }
 }
 
+
 void rWeaponPlasmagun::drawEffect() {
+    
     if (shrapnelParticles.empty()) return;
 
     GL::glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_ALL_ATTRIB_BITS);
@@ -190,7 +204,9 @@ void rWeaponPlasmagun::drawEffect() {
     GL::glPopAttrib();
 }
 
+
 void rWeaponPlasmagun::drawHUD() {
+    
     float a = 0.9;
     float b = 0.6;
 
