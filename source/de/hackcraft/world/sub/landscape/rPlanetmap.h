@@ -41,6 +41,7 @@ struct rTree;
 class rPlanetmap : public Component {
 private:
     static Logger* logger;
+    static const float oneOver256;
 public:
     /** Instance counter. */
     static int sInstances;
@@ -127,13 +128,21 @@ public:
     virtual void drawEffect();
 protected:
     void init(Propmap* properties);
+    
+    unsigned int loadMaterial();
+    
     void drawBillboardPlant(float x, float h, float z, float scale, float* unrotateMatrix);
     void drawStarPlant(float x, float h, float z, float scale);
     void drawTrianglePlant(float x, float h, float z, float scale);
     void drawCrossPlant(float x, float h, float z, float scale);
     void drawLeafPlant(float x, float h, float z, float scale);
     void drawStone(float x, float h, float z, float scaleX, float scaleH, float scaleZ);
-    unsigned int loadMaterial();
+
+    void drawStones(float x_, float z_, float step, int visiblestones, float opacity, unsigned int lfsr16);
+    void drawGrass(float x_, float z_, float step, float opacity, unsigned int lfsr16);
+    void drawPlants(float x_, float z_, float step, int visibleplants, float opacity, int maxplants, float plantscale, float plantdensity, float* billboardMatrix, unsigned int lfsr16);
+    void drawTrees(float x_, float z_, float step, int visibletrees, float opacity, unsigned int lfsr16);
+
 };
 
 #endif	/* PLANETMAP_H */

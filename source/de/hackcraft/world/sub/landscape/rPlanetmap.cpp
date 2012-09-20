@@ -28,9 +28,12 @@ using namespace std;
 Logger* rPlanetmap::logger = Logger::getLogger("de.hackcraft.world.sub.landscape.rPlanetmap");
 
 int rPlanetmap::sInstances = 0;
+
 std::vector<long> rPlanetmap::sGrounds;
 std::vector<long> rPlanetmap::sGrasses;
 std::vector<rPlanetmap::Growth*> rPlanetmap::sGrowth;
+
+const float rPlanetmap::oneOver256 = 0.003906f;
 
 
 inline float rPlanetmap::sMod::getModifiedHeight(float x, float z, float h) {
@@ -1048,15 +1051,12 @@ void rPlanetmap::drawEffect() {
         GL::glColor4f(0.8f, 0.8f, 0.8f, 1);
         GL::glNormal3f(0, 1, 0);
         
-        const float oneOver256 = 0.003906f;
-
         const float step = 16;
         //const float near = (step*2)*(step*2);
         const float s = 6 * step;
         const float x = -((int) (p[0] / step)) * step;
         const float z = -((int) (p[2] / step)) * step;
         //cout << x << " " << z << "\n";
-        float color[16];
         
         const int maxplants = sGrowth.size();
 
@@ -1104,8 +1104,8 @@ void rPlanetmap::drawEffect() {
                 float visibletrees = treedensity;
 
                 key = Noise::simplex3(a, b, 0.1f, 243) * 255.0f;
-                float grassdensity = (totaldensity * 2.00f * key);
-                float visiblegrass = grassdensity;
+                //float grassdensity = (totaldensity * 2.00f * key);
+                //float visiblegrass = grassdensity;
                 
                 key = Noise::simplex3(a, b, 0.1f, 217) * 255.0f;
                 float stonedensity = (totaldensity * 4.00f * key) * oneOver256;
@@ -1115,189 +1115,25 @@ void rPlanetmap::drawEffect() {
 
                 // Load LFSR using position, key and some scrambling.
                 unsigned short lfsr16 = (13 * key) ^ (17 * a) ^ (23 * b);
-                //unsigned short lfsr16 = (((unsigned short)(a^key)) << 8) | (b^key);
                 unsigned short lfsr16tmp = lfsr16;
                 lfsr16 = (lfsr16 == 0) ? 1 : lfsr16;
                 lfsr16 ^= 0x7493;
 
                 // Stones
-                GL::glDisable(GL_TEXTURE_2D);
-                loopi(visiblestones) {
-                    GL::glPushMatrix();
-                    {
-                        lfsr16 = Noise::LFSR16(lfsr16);
-                        a = lfsr16;
-                        b = lfsr16 >> 8;
-
-                        float x__ = x_ + step * oneOver256 * a;
-                        float z__ = z_ + step * oneOver256 * b;
-                        getCachedHeight(x__, z__, color);
-                        float h = color[Landscape::BUMP];
-                        
-                        lfsr16 = Noise::LFSR16(lfsr16);
-                        a = lfsr16;
-                        b = lfsr16 >> 8;
-                        
-                        float s = 0.1 + 0.5 * (a^b^0x27) * oneOver256;
-                        GL::glColor4f(0.2f, 0.2f, 0.2f,opacity);
-                        drawStone(x__, h, z__, s*(1.0f+0.4*a*oneOver256), s, s*(1.0f+0.4*b*oneOver256));
-                    }
-                    GL::glPopMatrix();
-                }
-                GL::glEnable(GL_TEXTURE_2D);
+                drawStones(x_, z_, step, visiblestones, opacity, lfsr16);
                 
                 // Grass                
                 if (opacity >= 0.995 && !true) {
-                        
-                    lfsr16 = Noise::LFSR16(lfsr16);
-                    a = lfsr16;
-                    b = lfsr16 >> 8;
-
-                    float x__ = x_ + step * oneOver256 * a;
-                    float z__ = z_ + step * oneOver256 * b;
-                    getCachedHeight(x__, z__, color);
-                    float h = color[Landscape::BUMP];
-                    
-                    GL::glColor4f(0.2,0.4,0.2,opacity);
-                    GL::glBindTexture(GL_TEXTURE_2D, sGrasses[0]);
-                    
-                    GL::glBegin(GL_TRIANGLE_STRIP);
-                    {
-
-                        loopj(17) {
-                            float f = j * 0.0625f;
-                            x__ = x_ + step * f;
-                            z__ = z_ + step * f;
-                            
-                            unsigned char a = Noise::LFSR16((int) x__ * 123.017454);
-                            unsigned char b = Noise::LFSR16((int) z__ * 231.017454);
-                            float u = oneOver256 * a * 4 + 6 * sin(2*f * M_PI);
-                            float v = oneOver256 * b * 4 + 6 * cos(2*f * M_PI);
-                            
-                            getCachedHeight(x_ + f*step+u, z_ + f*step+v, color);
-                            h = color[Landscape::BUMP];
-
-                            GL::glTexCoord2f(6*f,0);
-                            GL::glVertex3f(x_ + f*step+u, h-2.5, z_ + f*step+v);
-                            GL::glTexCoord2f(6*f,1);
-                            GL::glVertex3f(x_ + f*step+u, h+13, z_ + f*step+v);
-                        }
-                        loopj(17) {
-                            float f = j * 0.0625f;
-                            x__ = x_ + step * f;
-                            z__ = z_ + step * f;
-                            
-                            unsigned char a = Noise::LFSR16((int) x__ * 71.017454);
-                            unsigned char b = Noise::LFSR16((int) z__ * 31.017454);
-                            float u = oneOver256 * a * 4 + 6 * sin(4*f * M_PI);
-                            float v = oneOver256 * b * 4 + 6 * cos(4*f * M_PI);
-                            
-                            getCachedHeight(x_ + f*step+u, z_ + step-f*step+v, color);
-                            h = color[Landscape::BUMP];
-
-                            GL::glTexCoord2f(6*f,0);
-                            GL::glVertex3f(x_ + f*step+u, h-2.5, z_ + step-f*step+v);
-                            GL::glTexCoord2f(6*f,1);
-                            GL::glVertex3f(x_ + f*step+u, h+13, z_ + step-f*step+v);
-                        }
-                    }
-                    GL::glEnd();
-                    
+                    drawGrass(x_, z_, step, opacity, lfsr16);
                 }
                 
                 // Plants
-                loopi(visibleplants) {
-                    GL::glPushMatrix();
-                    {
-                        lfsr16 = Noise::LFSR16(lfsr16);
-                        a = lfsr16;
-                        b = lfsr16 >> 8;
-
-                        float x__ = x_ + step * oneOver256 * a;
-                        float z__ = z_ + step * oneOver256 * b;
-                        getCachedHeight(x__, z__, color);
-                        float h = color[Landscape::BUMP];
-
-                        lfsr16 = Noise::LFSR16(lfsr16);
-                        //unsigned char kind = lfsr16;
-                        unsigned char rot = lfsr16 >> 8;
-
-                        //lfsr16 = LFSR16(lfsr16);
-                        //unsigned char size = lfsr16;
-
-                        unsigned char tex = (rot >> 2) % maxplants;
-                        unsigned char size = rot;
-
-                        float sizef = size * oneOver256;
-                        float scale = plantscale * sGrowth[tex]->size * (0.35f + 0.65f * sizef + 0.008f * plantdensity);
-
-                        float shift = -0.1 + 0.2f * oneOver256 * (((lfsr16 >> 3) ^ (lfsr16>>7) ^ a ^ b) & 0xFF);
-                        GL::glColor4f(0.9 + shift, 1.0-fabs(shift), 0.9f-shift, opacity);
-                        //GL::glColor4f(1, 1, 1, opacity);
-                        GL::glBindTexture(GL_TEXTURE_2D, sGrowth[tex]->texture);
-
-                        switch (sGrowth[tex]->rendertype) {
-                            case Growth::BILLBOARD:
-                                drawBillboardPlant(x__, h, z__, scale, n);
-                                break;
-                            case Growth::STAR:
-                                drawStarPlant(x__, h, z__, scale);
-                                break;
-                            case Growth::TRIANGLE:
-                                drawTrianglePlant(x__, h, z__, scale);
-                                break;
-                            case Growth::CROSS:
-                                drawCrossPlant(x__, h, z__, scale);
-                                break;
-                            case Growth::LEAFS:
-                                drawLeafPlant(x__, h, z__, scale);
-                                break;
-                            default:
-                                drawBillboardPlant(x__, h, z__, scale, n);
-                                break;
-                        }
-                    }
-                    GL::glPopMatrix();
-                } // loopi visibleplants
+                drawPlants(x_, z_, step, visibleplants, opacity, maxplants, plantscale, plantdensity, n, lfsr16);
 
                 lfsr16 = lfsr16tmp;
 
                 // trees
-                loopi(visibletrees) {
-                    GL::glPushMatrix();
-                    {
-                        lfsr16 = Noise::LFSR16(lfsr16);
-                        a = lfsr16;
-                        b = lfsr16 >> 8;
-
-                        float x__ = x_ + step * oneOver256 * a;
-                        float z__ = z_ + step * oneOver256 * b;
-                        getCachedHeight(x__, z__, color);
-                        float h = color[Landscape::BUMP];
-
-                        //lfsr16 = cNoise::LFSR16(lfsr16);
-                        //unsigned char kind = lfsr16;
-                        //unsigned char rot = lfsr16 >> 8;
-
-                        //lfsr16 = LFSR16(lfsr16);
-                        //unsigned char size = lfsr16;
-                        //unsigned char size = rot;
-
-                        int age = fmax(0, fmin(6, i * 0.5f + ((a + b)&1)));
-                        int type = (b * b + (a >> 1))&7;
-
-                        tree->tree = rTree::getCompiledTree(1230 + (b & 6), type, 2 + age);
-                        vector_set(tree->pos0, x__, h - 0.2, z__);
-                        //tree->ori0[1] = a + b;
-                        float axis[] = {0, 1, 0};
-                        quat_rotaxis(tree->ori0, (a+b) * PI_OVER_180, axis);
-                        GL::glColor4f(0.15f, 0.09f, 0.03f, opacity);
-                        tree->drawSolid();
-                        GL::glColor4f(1, 1, 1, opacity);
-                        tree->drawEffect();
-                    }
-                    GL::glPopMatrix();
-                } // loopi visibletrees
+                drawTrees(x_, z_, step, visibletrees, opacity, lfsr16);
 
                 j += step*zlook;
             } // while j z
@@ -1306,5 +1142,195 @@ void rPlanetmap::drawEffect() {
         } // while i x
     }
     GL::glPopAttrib();
+}
+
+
+void rPlanetmap::drawStones(float x_, float z_, float step, int visiblestones, float opacity, unsigned int lfsr16) {
+    
+    GL::glDisable(GL_TEXTURE_2D);
+    loopi(visiblestones) {
+        GL::glPushMatrix();
+        {
+            lfsr16 = Noise::LFSR16(lfsr16);
+            unsigned char a = lfsr16;
+            unsigned char b = lfsr16 >> 8;
+
+            float x__ = x_ + step * oneOver256 * a;
+            float z__ = z_ + step * oneOver256 * b;
+            
+            float color[16];
+            getCachedHeight(x__, z__, color);
+            float h = color[Landscape::BUMP];
+
+            lfsr16 = Noise::LFSR16(lfsr16);
+            a = lfsr16;
+            b = lfsr16 >> 8;
+
+            float s = 0.1 + 0.5 * (a^b^0x27) * oneOver256;
+            GL::glColor4f(0.2f, 0.2f, 0.2f,opacity);
+            drawStone(x__, h, z__, s*(1.0f+0.4*a*oneOver256), s, s*(1.0f+0.4*b*oneOver256));
+        }
+        GL::glPopMatrix();
+    }
+    GL::glEnable(GL_TEXTURE_2D);
+}
+
+
+void rPlanetmap::drawGrass(float x_, float z_, float step, float opacity, unsigned int lfsr16) {
+    
+    lfsr16 = Noise::LFSR16(lfsr16);
+    unsigned char a = lfsr16;
+    unsigned char b = lfsr16 >> 8;
+
+    float x__ = x_ + step * oneOver256 * a;
+    float z__ = z_ + step * oneOver256 * b;
+    
+    float color[16];
+    getCachedHeight(x__, z__, color);
+    float h = color[Landscape::BUMP];
+
+    GL::glColor4f(0.2,0.4,0.2,opacity);
+    GL::glBindTexture(GL_TEXTURE_2D, sGrasses[0]);
+
+    GL::glBegin(GL_TRIANGLE_STRIP);
+    {
+
+        loopj(17) {
+            float f = j * 0.0625f;
+            x__ = x_ + step * f;
+            z__ = z_ + step * f;
+
+            unsigned char a = Noise::LFSR16((int) x__ * 123.017454);
+            unsigned char b = Noise::LFSR16((int) z__ * 231.017454);
+            float u = oneOver256 * a * 4 + 6 * sin(2*f * M_PI);
+            float v = oneOver256 * b * 4 + 6 * cos(2*f * M_PI);
+
+            getCachedHeight(x_ + f*step+u, z_ + f*step+v, color);
+            h = color[Landscape::BUMP];
+
+            GL::glTexCoord2f(6*f,0);
+            GL::glVertex3f(x_ + f*step+u, h-2.5, z_ + f*step+v);
+            GL::glTexCoord2f(6*f,1);
+            GL::glVertex3f(x_ + f*step+u, h+13, z_ + f*step+v);
+        }
+        
+        loopj(17) {
+            float f = j * 0.0625f;
+            x__ = x_ + step * f;
+            z__ = z_ + step * f;
+
+            unsigned char a = Noise::LFSR16((int) x__ * 71.017454);
+            unsigned char b = Noise::LFSR16((int) z__ * 31.017454);
+            float u = oneOver256 * a * 4 + 6 * sin(4*f * M_PI);
+            float v = oneOver256 * b * 4 + 6 * cos(4*f * M_PI);
+
+            getCachedHeight(x_ + f*step+u, z_ + step-f*step+v, color);
+            h = color[Landscape::BUMP];
+
+            GL::glTexCoord2f(6*f,0);
+            GL::glVertex3f(x_ + f*step+u, h-2.5, z_ + step-f*step+v);
+            GL::glTexCoord2f(6*f,1);
+            GL::glVertex3f(x_ + f*step+u, h+13, z_ + step-f*step+v);
+        }
+    }
+    GL::glEnd();
+}
+
+
+void rPlanetmap::drawPlants(float x_, float z_, float step, int visibleplants, float opacity, int maxplants, float plantscale, float plantdensity, float* billboardMatrix, unsigned int lfsr16) {
+    
+    loopi(visibleplants) {
+        GL::glPushMatrix();
+        {
+            lfsr16 = Noise::LFSR16(lfsr16);
+            unsigned char a = lfsr16;
+            unsigned char b = lfsr16 >> 8;
+
+            float x__ = x_ + step * oneOver256 * a;
+            float z__ = z_ + step * oneOver256 * b;
+            
+            float color[16];
+            getCachedHeight(x__, z__, color);
+            float h = color[Landscape::BUMP];
+
+            lfsr16 = Noise::LFSR16(lfsr16);
+            //unsigned char kind = lfsr16;
+            unsigned char rot = lfsr16 >> 8;
+
+            //lfsr16 = LFSR16(lfsr16);
+            //unsigned char size = lfsr16;
+
+            unsigned char tex = (rot >> 2) % maxplants;
+            unsigned char size = rot;
+
+            float sizef = size * oneOver256;
+            float scale = plantscale * sGrowth[tex]->size * (0.35f + 0.65f * sizef + 0.008f * plantdensity);
+
+            float shift = -0.1 + 0.2f * oneOver256 * (((lfsr16 >> 3) ^ (lfsr16>>7) ^ a ^ b) & 0xFF);
+            GL::glColor4f(0.9 + shift, 1.0-fabs(shift), 0.9f-shift, opacity);
+            //GL::glColor4f(1, 1, 1, opacity);
+            GL::glBindTexture(GL_TEXTURE_2D, sGrowth[tex]->texture);
+
+            switch (sGrowth[tex]->rendertype) {
+                case Growth::BILLBOARD:
+                    drawBillboardPlant(x__, h, z__, scale, billboardMatrix);
+                    break;
+                case Growth::STAR:
+                    drawStarPlant(x__, h, z__, scale);
+                    break;
+                case Growth::TRIANGLE:
+                    drawTrianglePlant(x__, h, z__, scale);
+                    break;
+                case Growth::CROSS:
+                    drawCrossPlant(x__, h, z__, scale);
+                    break;
+                case Growth::LEAFS:
+                    drawLeafPlant(x__, h, z__, scale);
+                    break;
+                default:
+                    drawBillboardPlant(x__, h, z__, scale, billboardMatrix);
+                    break;
+            }
+        }
+        GL::glPopMatrix();
+    } // loopi visibleplants
+}
+
+
+void rPlanetmap::drawTrees(float x_, float z_, float step, int visibletrees, float opacity, unsigned int lfsr16) {
+    
+    loopi(visibletrees) {
+        
+        GL::glPushMatrix();
+        {
+            lfsr16 = Noise::LFSR16(lfsr16);
+            unsigned char a = lfsr16;
+            unsigned char b = lfsr16 >> 8;
+
+            float x__ = x_ + step * oneOver256 * a;
+            float z__ = z_ + step * oneOver256 * b;
+            
+            float color[16];
+            getCachedHeight(x__, z__, color);
+            float h = color[Landscape::BUMP];
+
+            int age = fmax(0, fmin(6, i * 0.5f + ((a + b)&1)));
+            int type = (b * b + (a >> 1))&7;
+
+            tree->tree = rTree::getCompiledTree(1230 + (b & 6), type, 2 + age);
+            
+            vector_set(tree->pos0, x__, h - 0.2, z__);
+            //tree->ori0[1] = a + b;
+            float axis[] = {0, 1, 0};
+            quat_rotaxis(tree->ori0, (a+b) * PI_OVER_180, axis);
+            
+            GL::glColor4f(0.15f, 0.09f, 0.03f, opacity);
+            tree->drawSolid();
+            GL::glColor4f(1, 1, 1, opacity);
+            tree->drawEffect();
+        }
+        GL::glPopMatrix();
+        
+    } // loopi visibletrees
 }
 
