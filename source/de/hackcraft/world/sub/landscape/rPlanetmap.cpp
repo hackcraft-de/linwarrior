@@ -20,10 +20,14 @@
 
 #include <cassert>
 #include <ostream>
-using namespace std;
+
+using std::string;
+using std::stringstream;
+
 
 #define GROUNDDETAIL 0
 #define TWODIMTEX true
+
 
 Logger* rPlanetmap::logger = Logger::getLogger("de.hackcraft.world.sub.landscape.rPlanetmap");
 
@@ -107,6 +111,7 @@ inline float rPlanetmap::sMod::getModifiedHeight(float x, float z, float h) {
 
 
 rPlanetmap::rPlanetmap() {
+    
     Propmap properties;
     properties.put("landscape.type", "grass");
     properties.put("landscape.vegetation", "0.7");
@@ -121,6 +126,7 @@ rPlanetmap::rPlanetmap(Propmap* properties) {
 
 
 void rPlanetmap::init(Propmap* properties) {
+    
     sInstances++;
     if (sInstances == 1) {
         {
@@ -300,11 +306,15 @@ void rPlanetmap::init(Propmap* properties) {
 
 
 void rPlanetmap::invalidateCache() {
+    
     const long TILESIZE = PLANETMAP_TILESIZE;
+    
     for (maptype<unsigned long, sPatch*>::iterator i = patches.begin(); i != patches.end(); ++i) {
+        
         sPatch* patch = (*i).second;
         OID* ptr = patch->heightcolor;
         const unsigned long totaltilesize = (1UL << (TILESIZE + TILESIZE));
+        
         for (unsigned long i = 0; i < totaltilesize; i++) {
             float* height = (float*) ptr;
             *height = float_NAN;
@@ -315,6 +325,7 @@ void rPlanetmap::invalidateCache() {
 
 
 void rPlanetmap::getHeight(float x, float z, float* const color) {
+    
     float h = 0;
     float y = 0;
 
@@ -454,6 +465,7 @@ void rPlanetmap::getHeight(float x, float z, float* const color) {
 
 
 void rPlanetmap::getCachedHeight(float x, float z, float* const color) {
+    
     // nan?
     if (x != x || z != z) {
         color[0] = 1;
@@ -461,6 +473,7 @@ void rPlanetmap::getCachedHeight(float x, float z, float* const color) {
         color[2] = 0;
         color[3] = 0;
     }
+    
 #if 0
     getHeight(x, z, color);
     return color[Landscape::BUMP];
@@ -575,6 +588,7 @@ void rPlanetmap::getCachedHeight(float x, float z, float* const color) {
 
 
 float rPlanetmap::constrain(float* worldpos, float radius, float* localpos, Entity* enactor) {
+    
     //if (enactor == NULL) return 0.0;
     float localpos_[3];
     vector_cpy(localpos_, worldpos);
@@ -661,6 +675,7 @@ void rPlanetmap::animate(float spf) {
 
 
 unsigned int rPlanetmap::loadMaterial() {
+    
     static bool fail = false;
     static GL::GLenum prog = 0;
 
@@ -870,10 +885,13 @@ void rPlanetmap::drawSolid() {
 
 
 void rPlanetmap::drawBillboardPlant(float x__, float h, float z__, float scale, float* unrotateMatrix) {
+    
     GL::glTranslatef(x__, h - 0.2, z__);
     GL::glMultMatrixf(unrotateMatrix);
     GL::glScalef(scale, scale, scale);
+    
     static unsigned int dlist = 0;
+    
     if (dlist == 0) {
         dlist = GL::glGenLists(1);
         GL::glNewList(dlist, GL_COMPILE_AND_EXECUTE);
@@ -887,9 +905,12 @@ void rPlanetmap::drawBillboardPlant(float x__, float h, float z__, float scale, 
 
 
 void rPlanetmap::drawStarPlant(float x__, float h, float z__, float scale) {
+    
     GL::glTranslatef(x__, h - 0.2-0.3, z__);
     GL::glScalef(scale, scale, scale);
+    
     static unsigned int dlist = 0;
+    
     if (dlist == 0) {
         dlist = GL::glGenLists(1);
         GL::glNewList(dlist, GL_COMPILE_AND_EXECUTE);
@@ -902,9 +923,12 @@ void rPlanetmap::drawStarPlant(float x__, float h, float z__, float scale) {
 
 
 void rPlanetmap::drawTrianglePlant(float x__, float h, float z__, float scale) {
+    
     GL::glTranslatef(x__, h - 0.2, z__);
     GL::glScalef(scale, scale, scale);
+    
     static unsigned int dlist = 0;
+    
     if (dlist == 0) {
         dlist = GL::glGenLists(1);
         GL::glNewList(dlist, GL_COMPILE_AND_EXECUTE);
@@ -917,9 +941,12 @@ void rPlanetmap::drawTrianglePlant(float x__, float h, float z__, float scale) {
 
 
 void rPlanetmap::drawCrossPlant(float x__, float h, float z__, float scale) {
+    
     GL::glTranslatef(x__, h - 0.2, z__);
     GL::glScalef(scale, scale, scale);
+    
     static unsigned int dlist = 0;
+    
     if (dlist == 0) {
         dlist = GL::glGenLists(1);
         GL::glNewList(dlist, GL_COMPILE_AND_EXECUTE);
@@ -932,9 +959,12 @@ void rPlanetmap::drawCrossPlant(float x__, float h, float z__, float scale) {
 
 
 void rPlanetmap::drawLeafPlant(float x__, float h, float z__, float scale) {
+    
     GL::glTranslatef(x__, h - 0.2, z__);
     GL::glScalef(scale, scale, scale);
+    
     static unsigned int dlist = 0;
+    
     if (dlist == 0) {
         dlist = GL::glGenLists(1);
         GL::glNewList(dlist, GL_COMPILE_AND_EXECUTE);
@@ -962,7 +992,6 @@ void rPlanetmap::drawLeafPlant(float x__, float h, float z__, float scale) {
             GL::glEnd();
         }
         
-        
         GL::glEndList();
     } else {
         GL::glCallList(dlist);
@@ -989,6 +1018,7 @@ void rPlanetmap::drawStone(float x, float h, float z, float scaleX, float scaleH
 
 
 void rPlanetmap::drawEffect() {
+    
     const float totaldensity = vegetation;
 
     // Pseudorandom Permutation.
@@ -1145,21 +1175,23 @@ void rPlanetmap::drawEffect() {
 }
 
 
-void rPlanetmap::drawStones(float x_, float z_, int visiblestones, float opacity, unsigned int lfsr16) {
+void rPlanetmap::drawStones(float gridX, float gridZ, int visiblestones, float opacity, unsigned int lfsr16) {
     
     GL::glDisable(GL_TEXTURE_2D);
+    
     loopi(visiblestones) {
+        
         GL::glPushMatrix();
         {
             lfsr16 = Noise::LFSR16(lfsr16);
             unsigned char a = lfsr16;
             unsigned char b = lfsr16 >> 8;
 
-            float x__ = x_ + decalGridSize * oneOver256 * a;
-            float z__ = z_ + decalGridSize * oneOver256 * b;
+            float posX = gridX + decalGridSize * oneOver256 * a;
+            float posZ = gridZ + decalGridSize * oneOver256 * b;
             
             float color[16];
-            getCachedHeight(x__, z__, color);
+            getCachedHeight(posX, posZ, color);
             float h = color[Landscape::BUMP];
 
             lfsr16 = Noise::LFSR16(lfsr16);
@@ -1168,7 +1200,7 @@ void rPlanetmap::drawStones(float x_, float z_, int visiblestones, float opacity
 
             float s = 0.1 + 0.5 * (a^b^0x27) * oneOver256;
             GL::glColor4f(0.2f, 0.2f, 0.2f,opacity);
-            drawStone(x__, h, z__, s*(1.0f+0.4*a*oneOver256), s, s*(1.0f+0.4*b*oneOver256));
+            drawStone(posX, h, posZ, s*(1.0f+0.4*a*oneOver256), s, s*(1.0f+0.4*b*oneOver256));
         }
         GL::glPopMatrix();
     }
@@ -1176,17 +1208,17 @@ void rPlanetmap::drawStones(float x_, float z_, int visiblestones, float opacity
 }
 
 
-void rPlanetmap::drawGrass(float x_, float z_, float opacity, unsigned int lfsr16) {
+void rPlanetmap::drawGrass(float gridX, float gridZ, float opacity, unsigned int lfsr16) {
     
     lfsr16 = Noise::LFSR16(lfsr16);
     unsigned char a = lfsr16;
     unsigned char b = lfsr16 >> 8;
 
-    float x__ = x_ + decalGridSize * oneOver256 * a;
-    float z__ = z_ + decalGridSize * oneOver256 * b;
+    float posX = gridX + decalGridSize * oneOver256 * a;
+    float posZ = gridZ + decalGridSize * oneOver256 * b;
     
     float color[16];
-    getCachedHeight(x__, z__, color);
+    getCachedHeight(posX, posZ, color);
     float h = color[Landscape::BUMP];
 
     GL::glColor4f(0.2,0.4,0.2,opacity);
@@ -1197,60 +1229,61 @@ void rPlanetmap::drawGrass(float x_, float z_, float opacity, unsigned int lfsr1
 
         loopj(17) {
             float f = j * 0.0625f;
-            x__ = x_ + decalGridSize * f;
-            z__ = z_ + decalGridSize * f;
+            posX = gridX + decalGridSize * f;
+            posZ = gridZ + decalGridSize * f;
 
-            unsigned char a = Noise::LFSR16((int) x__ * 123.017454);
-            unsigned char b = Noise::LFSR16((int) z__ * 231.017454);
+            unsigned char a = Noise::LFSR16((int) posX * 123.017454);
+            unsigned char b = Noise::LFSR16((int) posZ * 231.017454);
             float u = oneOver256 * a * 4 + 6 * sin(2*f * M_PI);
             float v = oneOver256 * b * 4 + 6 * cos(2*f * M_PI);
 
-            getCachedHeight(x_ + f*decalGridSize+u, z_ + f*decalGridSize+v, color);
+            getCachedHeight(gridX + f*decalGridSize+u, gridZ + f*decalGridSize+v, color);
             h = color[Landscape::BUMP];
 
             GL::glTexCoord2f(6*f,0);
-            GL::glVertex3f(x_ + f*decalGridSize+u, h-2.5, z_ + f*decalGridSize+v);
+            GL::glVertex3f(gridX + f*decalGridSize+u, h-2.5, gridZ + f*decalGridSize+v);
             GL::glTexCoord2f(6*f,1);
-            GL::glVertex3f(x_ + f*decalGridSize+u, h+13, z_ + f*decalGridSize+v);
+            GL::glVertex3f(gridX + f*decalGridSize+u, h+13, gridZ + f*decalGridSize+v);
         }
         
         loopj(17) {
             float f = j * 0.0625f;
-            x__ = x_ + decalGridSize * f;
-            z__ = z_ + decalGridSize * f;
+            posX = gridX + decalGridSize * f;
+            posZ = gridZ + decalGridSize * f;
 
-            unsigned char a = Noise::LFSR16((int) x__ * 71.017454);
-            unsigned char b = Noise::LFSR16((int) z__ * 31.017454);
+            unsigned char a = Noise::LFSR16((int) posX * 71.017454);
+            unsigned char b = Noise::LFSR16((int) posZ * 31.017454);
             float u = oneOver256 * a * 4 + 6 * sin(4*f * M_PI);
             float v = oneOver256 * b * 4 + 6 * cos(4*f * M_PI);
 
-            getCachedHeight(x_ + f*decalGridSize+u, z_ + decalGridSize-f*decalGridSize+v, color);
+            getCachedHeight(gridX + f*decalGridSize+u, gridZ + decalGridSize-f*decalGridSize+v, color);
             h = color[Landscape::BUMP];
 
             GL::glTexCoord2f(6*f,0);
-            GL::glVertex3f(x_ + f*decalGridSize+u, h-2.5, z_ + decalGridSize-f*decalGridSize+v);
+            GL::glVertex3f(gridX + f*decalGridSize+u, h-2.5, gridZ + decalGridSize-f*decalGridSize+v);
             GL::glTexCoord2f(6*f,1);
-            GL::glVertex3f(x_ + f*decalGridSize+u, h+13, z_ + decalGridSize-f*decalGridSize+v);
+            GL::glVertex3f(gridX + f*decalGridSize+u, h+13, gridZ + decalGridSize-f*decalGridSize+v);
         }
     }
     GL::glEnd();
 }
 
 
-void rPlanetmap::drawPlants(float x_, float z_, int visibleplants, float opacity, int maxplants, float plantscale, float plantdensity, float* billboardMatrix, unsigned int lfsr16) {
+void rPlanetmap::drawPlants(float gridX, float gridZ, int visibleplants, float opacity, int maxplants, float plantscale, float plantdensity, float* billboardMatrix, unsigned int lfsr16) {
     
     loopi(visibleplants) {
+        
         GL::glPushMatrix();
         {
             lfsr16 = Noise::LFSR16(lfsr16);
             unsigned char a = lfsr16;
             unsigned char b = lfsr16 >> 8;
 
-            float x__ = x_ + decalGridSize * oneOver256 * a;
-            float z__ = z_ + decalGridSize * oneOver256 * b;
+            float posX = gridX + decalGridSize * oneOver256 * a;
+            float posZ = gridZ + decalGridSize * oneOver256 * b;
             
             float color[16];
-            getCachedHeight(x__, z__, color);
+            getCachedHeight(posX, posZ, color);
             float h = color[Landscape::BUMP];
 
             lfsr16 = Noise::LFSR16(lfsr16);
@@ -1273,22 +1306,22 @@ void rPlanetmap::drawPlants(float x_, float z_, int visibleplants, float opacity
 
             switch (sGrowth[tex]->rendertype) {
                 case Growth::BILLBOARD:
-                    drawBillboardPlant(x__, h, z__, scale, billboardMatrix);
+                    drawBillboardPlant(posX, h, posZ, scale, billboardMatrix);
                     break;
                 case Growth::STAR:
-                    drawStarPlant(x__, h, z__, scale);
+                    drawStarPlant(posX, h, posZ, scale);
                     break;
                 case Growth::TRIANGLE:
-                    drawTrianglePlant(x__, h, z__, scale);
+                    drawTrianglePlant(posX, h, posZ, scale);
                     break;
                 case Growth::CROSS:
-                    drawCrossPlant(x__, h, z__, scale);
+                    drawCrossPlant(posX, h, posZ, scale);
                     break;
                 case Growth::LEAFS:
-                    drawLeafPlant(x__, h, z__, scale);
+                    drawLeafPlant(posX, h, posZ, scale);
                     break;
                 default:
-                    drawBillboardPlant(x__, h, z__, scale, billboardMatrix);
+                    drawBillboardPlant(posX, h, posZ, scale, billboardMatrix);
                     break;
             }
         }
@@ -1297,7 +1330,7 @@ void rPlanetmap::drawPlants(float x_, float z_, int visibleplants, float opacity
 }
 
 
-void rPlanetmap::drawTrees(float x_, float z_, int visibletrees, float opacity, unsigned int lfsr16) {
+void rPlanetmap::drawTrees(float gridX, float gridZ, int visibletrees, float opacity, unsigned int lfsr16) {
     
     loopi(visibletrees) {
         
@@ -1307,11 +1340,11 @@ void rPlanetmap::drawTrees(float x_, float z_, int visibletrees, float opacity, 
             unsigned char a = lfsr16;
             unsigned char b = lfsr16 >> 8;
 
-            float x__ = x_ + decalGridSize * oneOver256 * a;
-            float z__ = z_ + decalGridSize * oneOver256 * b;
+            float posX = gridX + decalGridSize * oneOver256 * a;
+            float posZ = gridZ + decalGridSize * oneOver256 * b;
             
             float color[16];
-            getCachedHeight(x__, z__, color);
+            getCachedHeight(posX, posZ, color);
             float h = color[Landscape::BUMP];
 
             int age = fmax(0, fmin(6, i * 0.5f + ((a + b)&1)));
@@ -1319,7 +1352,7 @@ void rPlanetmap::drawTrees(float x_, float z_, int visibletrees, float opacity, 
 
             tree->tree = rTree::getCompiledTree(1230 + (b & 6), type, 2 + age);
             
-            vector_set(tree->pos0, x__, h - 0.2, z__);
+            vector_set(tree->pos0, posX, h - 0.2, posZ);
             //tree->ori0[1] = a + b;
             float axis[] = {0, 1, 0};
             quat_rotaxis(tree->ori0, (a+b) * PI_OVER_180, axis);
