@@ -42,6 +42,7 @@ class rPlanetmap : public Component {
 private:
     static Logger* logger;
     static const float oneOver256;
+    static const float decalGridSize;
 public:
     /** Instance counter. */
     static int sInstances;
@@ -138,10 +139,10 @@ protected:
     void drawLeafPlant(float x, float h, float z, float scale);
     void drawStone(float x, float h, float z, float scaleX, float scaleH, float scaleZ);
 
-    void drawStones(float x_, float z_, float step, int visiblestones, float opacity, unsigned int lfsr16);
-    void drawGrass(float x_, float z_, float step, float opacity, unsigned int lfsr16);
-    void drawPlants(float x_, float z_, float step, int visibleplants, float opacity, int maxplants, float plantscale, float plantdensity, float* billboardMatrix, unsigned int lfsr16);
-    void drawTrees(float x_, float z_, float step, int visibletrees, float opacity, unsigned int lfsr16);
+    void drawStones(float x_, float z_, int visiblestones, float opacity, unsigned int lfsr16);
+    void drawGrass(float x_, float z_, float opacity, unsigned int lfsr16);
+    void drawPlants(float x_, float z_, int visibleplants, float opacity, int maxplants, float plantscale, float plantdensity, float* billboardMatrix, unsigned int lfsr16);
+    void drawTrees(float x_, float z_, int visibletrees, float opacity, unsigned int lfsr16);
 
 };
 
