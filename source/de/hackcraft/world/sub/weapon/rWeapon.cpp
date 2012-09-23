@@ -12,6 +12,8 @@
 
 #include "de/hackcraft/world/World.h"
 
+#include "de/hackcraft/world/sub/weapon/rTarget.h"
+
 
 Logger* rWeapon::logger = Logger::getLogger("de.hackcraft.world.sub.weapon.rWeapon");
 
@@ -145,35 +147,35 @@ void rWeapon::transformTo() {
     GL::glMultMatrixf(weaponPosef);
 }
 
-
 int rWeapon::damageByParticle(float* worldpos, float radius, int roles, float damage) {
     
     roles = 0; //(1UL << cObject::DAMAGEABLE) | (1UL << cObject::COLLIDEABLE);
     float scaled_damage = damage * weaponScale;
     int damaged = 0;
-    float maxrange = 25;
+    float maxrange = radius + 25;
     float worldpos_[3];
     
     vector_cpy(worldpos_, worldpos);
-    
-    std::list<Entity*>* range = World::getInstance()->filterByRange(object, worldpos, 0.0f, maxrange, -1, NULL);
-    //cout << "damageByParticle: "  << World::getInstance()->getNames(range) << "\n";
+
+    // Find targets that may be affected by the particle.
+    std::list<rTarget*>* range = WeaponSystem::getInstance()->filterByRange(object, worldpos, 0.0f, maxrange, -1, NULL);
     
     if (!range->empty()) {
 
-        for(Entity* targetObject: *range) {
+        for(rTarget* target: *range) {
             float localpos_[3];
-            float depth = targetObject->constrain(worldpos_, radius, localpos_, NULL);
+            float depth = target->object->constrain(worldpos_, radius, localpos_, NULL);
             //cout << object->nameable->name << " depth: " << depth << "\n";
             if (depth == 0) continue;
             damaged++;
-            targetObject->damage(localpos_, scaled_damage, object);
+            target->object->damage(localpos_, scaled_damage, object);
             break;
         }
     }
     
     delete range;
     
+    // If no object was hit then collide with the rest of the world.
     if (damaged == 0) {
         float depth = World::getInstance()->constrainParticle(object, worldpos_, radius);
         if (depth != 0) {
@@ -183,5 +185,4 @@ int rWeapon::damageByParticle(float* worldpos, float radius, int roles, float da
 
     return damaged;
 }
-
 
