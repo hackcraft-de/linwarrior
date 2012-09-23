@@ -13,6 +13,8 @@ void LevelStreamLogger::appendStream() {
     
     bool messageMode = true;
     
+    // This one just gets the thread id for display in the message
+    // ie. no other functional purposes.
     unsigned int tid = SDL_ThreadID();
     
     if (!messageMode) {
