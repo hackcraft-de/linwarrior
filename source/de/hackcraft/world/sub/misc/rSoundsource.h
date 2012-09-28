@@ -32,6 +32,10 @@ public: // INPUT
     vec3 pos0;
     /** Velocity of source (unused). */
     vec3 vel0;
+    /** Pitch of the sound source. */
+    float pitch;
+    /** Volume of the sound source. */
+    float gain;
     
 protected: // INTERNAL
     unsigned int sourceHandle;
@@ -41,7 +45,7 @@ public:
     rSoundsource(Entity * obj);
     virtual ~rSoundsource();
     
-    void loadWithWav(const char* filename);
+    void loadWithWav(const char* filename, bool looping);
     void play();
     
     /** Repositions audio source according to set position. */

@@ -10,6 +10,9 @@ rSoundsource::rSoundsource(Entity * obj) {
     
     vector_zero(pos0);
     vector_zero(vel0);
+    
+    pitch = 1;
+    gain = 1;
 }
 
 
@@ -17,23 +20,31 @@ rSoundsource::~rSoundsource() {
 }
 
 
-void rSoundsource::loadWithWav(const char* filename) {
+void rSoundsource::loadWithWav(const char* filename, bool looping) {
     
     try {
         ALuint buffer;
-        //buffer = alutCreateBufferHelloWorld();
-        buffer = alutCreateBufferFromFile("data/base/device/pow.wav");
-        //if (buffer == AL_NONE) throw "could not load pow.wav";
+        
+        if (filename == NULL) {
+                buffer = alutCreateBufferHelloWorld();
+        } else {
+                buffer = alutCreateBufferFromFile(filename);
+        }
+        
+        if (buffer == AL_NONE) throw "could not load buffer";
+        
         ALuint* soundsource = &sourceHandle;
         alGenSources(1, soundsource);
+        
         if (alGetError() == AL_NO_ERROR && alIsSource(*soundsource)) {
             alSourcei(*soundsource, AL_BUFFER, buffer);
-            alSourcef(*soundsource, AL_PITCH, 1.0f);
-            alSourcef(*soundsource, AL_GAIN, 1.0f);
+            alSourcef(*soundsource, AL_PITCH, pitch);
+            alSourcef(*soundsource, AL_GAIN, gain);
             alSourcefv(*soundsource, AL_POSITION, pos0);
             alSourcefv(*soundsource, AL_VELOCITY, vel0);
-            alSourcei(*soundsource, AL_LOOPING, AL_FALSE);
+            alSourcei(*soundsource, AL_LOOPING, looping ? AL_TRUE : AL_FALSE);
         }
+        
     } catch (...) {
         throw "loadWithWav: Could not create sound source.\n";
     }
@@ -54,9 +65,12 @@ void rSoundsource::animate(float spf) {
     
     bool validSource = alIsSource(sourceHandle);
     
-    if (validSource) {        
+    if (validSource) {
         alSourcefv(sourceHandle, AL_POSITION, pos0);
         //alSourcefv(sourceHandle, AL_VELOCITY, vel0);
+        
+        alSourcef(sourceHandle, AL_PITCH, pitch);
+        alSourcef(sourceHandle, AL_GAIN, gain);
     }
 }
 
