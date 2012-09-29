@@ -182,9 +182,26 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     quat_rotaxis(traceable->ori, mobile->bse[1], axis);
 
     // Mech Speaker
-    if (1) {
+    if (0) {
         try {
             soundsource->loadWithWav("data/base/device/pow.wav", false);
+        } catch (...) {
+            logger->warn() << "Sorry, no mech sound possible.\n";
+        }
+    }
+    
+    if (1) {
+        try {
+            soundsource->pitch = 0;
+            soundsource->pitchScaler = 0.1;
+            soundsource->pitchOffset = 0.9;
+            
+            soundsource->gain = 0;
+            soundsource->gainScaler0 = 0.6;
+            soundsource->gainOffset = 0.0;
+            
+            soundsource->loadWithWav("data/base/device/wanzer/stomp.wav", true);
+            
         } catch (...) {
             logger->warn() << "Sorry, no mech sound possible.\n";
         }
@@ -368,6 +385,10 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     {
         // from TRACEABLE
         soundsource->addBinding(&soundsource->pos0, &traceable->pos, sizeof(vec3));
+        soundsource->addBinding(&soundsource->gainScaler1, &traceable->grounded, sizeof(float));
+        // from MOBILE
+        soundsource->addBinding(&soundsource->pitch, &mobile->drivethrottle, sizeof(float));
+        soundsource->addBinding(&soundsource->gain, &mobile->drivethrottle, sizeof(float));
     }
     
     // LIGHTSOURCE

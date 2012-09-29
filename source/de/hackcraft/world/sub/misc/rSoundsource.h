@@ -32,10 +32,20 @@ public: // INPUT
     vec3 pos0;
     /** Velocity of source (unused). */
     vec3 vel0;
-    /** Pitch of the sound source. */
+    /** Pitch (default 1) of the sound source. */
     float pitch;
-    /** Volume of the sound source. */
+    /** Multiplier (default 1) applied before using pitch. */
+    float pitchScaler;
+    /** Offset (default 0) added to pitch*pitchScaler. */
+    float pitchOffset;
+    /** Volume (default 0) of the sound source. */
     float gain;
+    /** Multiplier (default 1) applied before using gain. */
+    float gainScaler0;
+    /** Multiplier (default 1) applied before using gain */
+    float gainScaler1;
+    /** Offset (default 0) added to gain*gainScaler*gainScaler2. */
+    float gainOffset;
     
 protected: // INTERNAL
     unsigned int sourceHandle;

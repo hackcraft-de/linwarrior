@@ -12,7 +12,13 @@ rSoundsource::rSoundsource(Entity * obj) {
     vector_zero(vel0);
     
     pitch = 1;
+    pitchScaler = 1;
+    pitchOffset = 0;
+    
     gain = 1;
+    gainScaler0 = 1;
+    gainScaler1 = 1;
+    gainOffset = 0;
 }
 
 
@@ -38,8 +44,8 @@ void rSoundsource::loadWithWav(const char* filename, bool looping) {
         
         if (alGetError() == AL_NO_ERROR && alIsSource(*soundsource)) {
             alSourcei(*soundsource, AL_BUFFER, buffer);
-            alSourcef(*soundsource, AL_PITCH, pitch);
-            alSourcef(*soundsource, AL_GAIN, gain);
+            alSourcef(*soundsource, AL_PITCH, pitch*pitchScaler + pitchOffset);
+            alSourcef(*soundsource, AL_GAIN, gain*gainScaler0*gainScaler1 + gainOffset);
             alSourcefv(*soundsource, AL_POSITION, pos0);
             alSourcefv(*soundsource, AL_VELOCITY, vel0);
             alSourcei(*soundsource, AL_LOOPING, looping ? AL_TRUE : AL_FALSE);
@@ -69,8 +75,8 @@ void rSoundsource::animate(float spf) {
         alSourcefv(sourceHandle, AL_POSITION, pos0);
         //alSourcefv(sourceHandle, AL_VELOCITY, vel0);
         
-        alSourcef(sourceHandle, AL_PITCH, pitch);
-        alSourcef(sourceHandle, AL_GAIN, gain);
+        alSourcef(sourceHandle, AL_PITCH, fabs(pitch)*pitchScaler + pitchOffset);
+        alSourcef(sourceHandle, AL_GAIN, fabs(gain)*gainScaler0*gainScaler1 + gainOffset);
     }
 }
 
