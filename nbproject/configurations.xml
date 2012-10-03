@@ -213,6 +213,7 @@
               <df name="computer">
                 <in>ComputerSystem.cpp</in>
                 <in>ComputerSystem.h</in>
+                <in>IComputer.h</in>
                 <in>rComcom.cpp</in>
                 <in>rComcom.h</in>
                 <in>rController.cpp</in>
@@ -251,6 +252,7 @@
                 <in>rMobile.h</in>
               </df>
               <df name="model">
+                <in>IModel.h</in>
                 <in>ModelSystem.cpp</in>
                 <in>ModelSystem.h</in>
                 <in>rBillboard.cpp</in>
@@ -309,8 +311,6 @@
             <in>Component.h</in>
             <in>Entity.cpp</in>
             <in>Entity.h</in>
-            <in>IComputer.h</in>
-            <in>IModel.h</in>
             <in>Subsystem.cpp</in>
             <in>Subsystem.h</in>
             <in>World.cpp</in>
