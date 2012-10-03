@@ -20,6 +20,7 @@ class WeaponSystem;
 #include <list>
 #include <map>
 #include <set>
+#include <vector>
 
 class Entity;
 class Logger;
@@ -110,6 +111,11 @@ private:
     static WeaponSystem* instance;
     
 private:
+    std::vector<rTarcom*> tarcoms;
+    std::vector<rWepcom*> wepcoms;
+    std::vector<rWeapon*> weapons;
+    std::vector<rTarget*> targets;
+    
     std::map<OID,rTarcom*> tarcomsIndex;
     std::map<OID,rWepcom*> wepcomsIndex;
     std::map<OID,rWeapon*> weaponsIndex;

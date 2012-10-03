@@ -71,21 +71,25 @@ WeaponSystem::~WeaponSystem() {
 
 
 void WeaponSystem::add(rTarcom* tarcom){
+    tarcoms.push_back(tarcom);
     tarcomsIndex[tarcom->getId()] = tarcom;
 }
 
 
 void WeaponSystem::add(rWepcom* wepcom){
+    wepcoms.push_back(wepcom);
     wepcomsIndex[wepcom->getId()] = wepcom;
 }
 
 
 void WeaponSystem::add(rWeapon* weapon){
+    weapons.push_back(weapon);
     weaponsIndex[weapon->getId()] = weapon;
 }
 
 
 void WeaponSystem::add(rTarget* target){
+    targets.push_back(target);
     targetsIndex[target->getId()] = target;
 }
 
@@ -96,8 +100,7 @@ rTarcom* WeaponSystem::findTarcomByEntity(OID entityID) {
         return tarcomsByEntity.at(entityID);
     }
     
-    for(std::pair<OID,rTarcom*> p : tarcomsIndex) {
-        rTarcom* tarcom = p.second;
+    for(rTarcom* tarcom : tarcoms) {
         
         if (tarcom->object->oid == entityID) {
             tarcomsByEntity[entityID] = tarcom;
@@ -115,8 +118,7 @@ rTarget* WeaponSystem::findTargetByEntity(OID entityID) {
         return targetsByEntity.at(entityID);
     }
     
-    for(std::pair<OID,rTarget*> p : targetsIndex) {
-        rTarget* target = p.second;
+    for(rTarget* target : targets) {
         
         if (target->object->oid == entityID) {
             targetsByEntity[entityID] = target;
@@ -135,8 +137,8 @@ void WeaponSystem::clusterObjects() {
         
         weaponsGeodex.clear();
 
-        for(std::pair<OID,rWeapon*> p : weaponsIndex) {
-            rWeapon* model = p.second;
+        for(rWeapon* model : weapons) {
+            
             float px = model->getPosX();
             float pz = model->getPosZ();
             if (!finitef(px) || !finitef(pz)) {
@@ -156,8 +158,8 @@ void WeaponSystem::clusterObjects() {
         
         targetsGeodex.clear();
 
-        for(std::pair<OID,rTarget*> p : targetsIndex) {
-            rTarget* model = p.second;
+        for(rTarget* model : targets) {
+            
             float px = model->getPosX();
             float pz = model->getPosZ();
             if (!finitef(px) || !finitef(pz)) {
@@ -178,26 +180,22 @@ void WeaponSystem::animateObjects() {
     
     float spf = World::getInstance()->getTiming()->getSPF();
     
-    for (std::pair<OID,rWepcom*> p : wepcomsIndex) {
-        rWepcom* model = p.second;
+    for (rWepcom* model : wepcoms) {
         model->prebind();
         model->animate(spf);
     }
     
-    for (std::pair<OID,rWeapon*> p : weaponsIndex) {
-        rWeapon* model = p.second;
+    for (rWeapon* model : weapons) {
         model->prebind();
         model->animate(spf);
     }
     
-    for (std::pair<OID,rTarget*> p : targetsIndex) {
-        rTarget* model = p.second;
+    for (rTarget* model : targets) {
         model->prebind();
         model->animate(spf);
     }
     
-    for (std::pair<OID,rTarcom*> p : tarcomsIndex) {
-        rTarcom* model = p.second;
+    for (rTarcom* model : tarcoms) {
         model->prebind();
         model->animate(spf);
     }
@@ -208,8 +206,7 @@ void WeaponSystem::transformObjects() {
     
     //cout << "transformObjects()\n";
 
-    for (std::pair<OID,rWeapon*> p : weaponsIndex) {
-        rWeapon* model = p.second;
+    for (rWeapon* model : weapons) {
         GL::glPushMatrix();
         model->transform();
         GL::glPopMatrix();
