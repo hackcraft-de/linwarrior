@@ -23,7 +23,6 @@ class WeaponSystem;
 
 class Entity;
 class Logger;
-class IModel;
 class rTarcom;
 class rTarget;
 class rWeapon;
@@ -111,16 +110,16 @@ private:
     static WeaponSystem* instance;
     
 private:
-    std::map<OID,rTarcom*> tarcoms;
-    std::map<OID,rWepcom*> wepcoms;
-    std::map<OID,rWeapon*> weapons;
-    std::map<OID,rTarget*> targets;
+    std::map<OID,rTarcom*> tarcomsIndex;
+    std::map<OID,rWepcom*> wepcomsIndex;
+    std::map<OID,rWeapon*> weaponsIndex;
+    std::map<OID,rTarget*> targetsIndex;
 
-    std::map<OID,rTarcom*> tarcomByEntity;
-    std::map<OID,rTarget*> targetByEntity;
+    std::map<OID,rTarcom*> tarcomsByEntity;
+    std::map<OID,rTarget*> targetsByEntity;
     
-    Geomap<IModel*> geoWeapons;
-    Geomap<rTarget*> geoTargets;
+    Geomap<rWeapon*> weaponsGeodex;
+    Geomap<rTarget*> targetsGeodex;
     
     /** Render only objects that far away. */
     float viewdistance;
@@ -129,7 +128,7 @@ private:
     float visorigin[3];
     
     /** Visible objects for next rendering - (re-)set in setupView. */
-    std::list<IModel*>* visobjects;
+    std::list<rWeapon*>* weaponsVisible;
 };
 
 #endif	/* WEAPONSYSTEM_H */

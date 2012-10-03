@@ -4,7 +4,6 @@
 
 #include "de/hackcraft/opengl/GL.h"
 
-#include "de/hackcraft/world/IModel.h"
 #include "de/hackcraft/world/World.h"
 
 #include "de/hackcraft/world/sub/weapon/rTarcom.h"
@@ -61,7 +60,7 @@ WeaponSystem::WeaponSystem() {
     
     instance = this;
     
-    visobjects = new std::list<IModel*>();
+    weaponsVisible = new std::list<rWeapon*>();
     viewdistance = 500;
     vector_zero(visorigin);
 }
@@ -72,36 +71,36 @@ WeaponSystem::~WeaponSystem() {
 
 
 void WeaponSystem::add(rTarcom* tarcom){
-    tarcoms[tarcom->getId()] = tarcom;
+    tarcomsIndex[tarcom->getId()] = tarcom;
 }
 
 
 void WeaponSystem::add(rWepcom* wepcom){
-    wepcoms[wepcom->getId()] = wepcom;
+    wepcomsIndex[wepcom->getId()] = wepcom;
 }
 
 
 void WeaponSystem::add(rWeapon* weapon){
-    weapons[weapon->getId()] = weapon;
+    weaponsIndex[weapon->getId()] = weapon;
 }
 
 
 void WeaponSystem::add(rTarget* target){
-    targets[target->getId()] = target;
+    targetsIndex[target->getId()] = target;
 }
 
 
 rTarcom* WeaponSystem::findTarcomByEntity(OID entityID) {
     
-    if (tarcomByEntity.find(entityID) != tarcomByEntity.end()) {
-        return tarcomByEntity.at(entityID);
+    if (tarcomsByEntity.find(entityID) != tarcomsByEntity.end()) {
+        return tarcomsByEntity.at(entityID);
     }
     
-    for(std::pair<OID,rTarcom*> p : tarcoms) {
+    for(std::pair<OID,rTarcom*> p : tarcomsIndex) {
         rTarcom* tarcom = p.second;
         
         if (tarcom->object->oid == entityID) {
-            tarcomByEntity[entityID] = tarcom;
+            tarcomsByEntity[entityID] = tarcom;
             return tarcom;
         }
     }
@@ -112,15 +111,15 @@ rTarcom* WeaponSystem::findTarcomByEntity(OID entityID) {
 
 rTarget* WeaponSystem::findTargetByEntity(OID entityID) {
     
-    if (targetByEntity.find(entityID) != targetByEntity.end()) {
-        return targetByEntity.at(entityID);
+    if (targetsByEntity.find(entityID) != targetsByEntity.end()) {
+        return targetsByEntity.at(entityID);
     }
     
-    for(std::pair<OID,rTarget*> p : targets) {
+    for(std::pair<OID,rTarget*> p : targetsIndex) {
         rTarget* target = p.second;
         
         if (target->object->oid == entityID) {
-            targetByEntity[entityID] = target;
+            targetsByEntity[entityID] = target;
             return target;
         }
     }
@@ -134,16 +133,16 @@ void WeaponSystem::clusterObjects() {
     try {
         int j = 0;
         
-        geoWeapons.clear();
+        weaponsGeodex.clear();
 
-        for(std::pair<OID,rWeapon*> p : weapons) {
+        for(std::pair<OID,rWeapon*> p : weaponsIndex) {
             rWeapon* model = p.second;
             float px = model->getPosX();
             float pz = model->getPosZ();
             if (!finitef(px) || !finitef(pz)) {
                 //mUncluster.push_back(model);
             } else {
-                geoWeapons.put(px, pz, model);
+                weaponsGeodex.put(px, pz, model);
             }
             j++;
         }
@@ -155,16 +154,16 @@ void WeaponSystem::clusterObjects() {
     try {
         int j = 0;
         
-        geoTargets.clear();
+        targetsGeodex.clear();
 
-        for(std::pair<OID,rTarget*> p : targets) {
+        for(std::pair<OID,rTarget*> p : targetsIndex) {
             rTarget* model = p.second;
             float px = model->getPosX();
             float pz = model->getPosZ();
             if (!finitef(px) || !finitef(pz)) {
                 //mUncluster.push_back(model);
             } else {
-                geoTargets.put(px, pz, model);
+                targetsGeodex.put(px, pz, model);
             }
             j++;
         }
@@ -179,25 +178,25 @@ void WeaponSystem::animateObjects() {
     
     float spf = World::getInstance()->getTiming()->getSPF();
     
-    for (std::pair<OID,rWepcom*> p : wepcoms) {
+    for (std::pair<OID,rWepcom*> p : wepcomsIndex) {
         rWepcom* model = p.second;
         model->prebind();
         model->animate(spf);
     }
     
-    for (std::pair<OID,rWeapon*> p : weapons) {
+    for (std::pair<OID,rWeapon*> p : weaponsIndex) {
         rWeapon* model = p.second;
         model->prebind();
         model->animate(spf);
     }
     
-    for (std::pair<OID,rTarget*> p : targets) {
+    for (std::pair<OID,rTarget*> p : targetsIndex) {
         rTarget* model = p.second;
         model->prebind();
         model->animate(spf);
     }
     
-    for (std::pair<OID,rTarcom*> p : tarcoms) {
+    for (std::pair<OID,rTarcom*> p : tarcomsIndex) {
         rTarcom* model = p.second;
         model->prebind();
         model->animate(spf);
@@ -209,8 +208,8 @@ void WeaponSystem::transformObjects() {
     
     //cout << "transformObjects()\n";
 
-    for (std::pair<OID,rWeapon*> p : weapons) {
-        IModel* model = p.second;
+    for (std::pair<OID,rWeapon*> p : weaponsIndex) {
+        rWeapon* model = p.second;
         GL::glPushMatrix();
         model->transform();
         GL::glPopMatrix();
@@ -228,11 +227,11 @@ void WeaponSystem::setupView(float* pos, float* ori) {
     float min[] = {origin[0] - viewdistance, origin[2] - viewdistance};
     float max[] = {origin[0] + viewdistance, origin[2] + viewdistance};
     
-    if (visobjects != NULL) {
-        delete visobjects;
+    if (weaponsVisible != NULL) {
+        delete weaponsVisible;
     }
     
-    visobjects = geoWeapons.getGeoInterval(min, max);
+    weaponsVisible = weaponsGeodex.getGeoInterval(min, max);
     //cout << "vis:" << objects->size() << " vs " << mObjects.size() << "\n";
     
     visorigin[0] = pos[0];
@@ -250,7 +249,7 @@ void WeaponSystem::drawSolid() {
     float maxrange = viewdistance;
     float maxrange2 = maxrange*maxrange;
 
-    for(IModel* model: *visobjects) {
+    for(rWeapon* model: *weaponsVisible) {
         float x = model->getPosX() - origin[0];
         float z = model->getPosZ() - origin[2];
         float d2 = x * x + z * z;
@@ -275,7 +274,7 @@ void WeaponSystem::drawEffect() {
     float maxrange = viewdistance;
     float maxrange2 = maxrange*maxrange;
 
-    for(IModel* model: *visobjects) {
+    for(rWeapon* model: *weaponsVisible) {
         float x = model->getPosX() - origin[0];
         float z = model->getPosZ() - origin[2];
         float d2 = x * x + z * z;
@@ -332,7 +331,7 @@ std::list<rTarget*>* WeaponSystem::filterByRange(Entity* ex, float* origin, floa
         float maxrange_ = maxrange + 1;
         float min[] = {origin[0] - maxrange_, origin[2] - maxrange_};
         float max[] = {origin[0] + maxrange_, origin[2] + maxrange_};
-        objects = geoTargets.getGeoInterval(min, max);
+        objects = targetsGeodex.getGeoInterval(min, max);
         //cout << "clustered:" << objects->size() << " vs " << mObjects.size() << "\n";
     }
 
