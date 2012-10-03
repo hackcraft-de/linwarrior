@@ -14,7 +14,6 @@ class rWeapon;
 #include "de/hackcraft/psi3d/Particle.h"
 
 #include "de/hackcraft/world/Entity.h"
-#include "de/hackcraft/world/IModel.h"
 
 #include <list>
 #include <vector>
