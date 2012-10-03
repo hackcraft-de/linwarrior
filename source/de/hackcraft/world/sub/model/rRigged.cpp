@@ -558,7 +558,7 @@ void rRigged::poseRunning(float spf) {
     const float e = 0.017453;
     float o = e * -60;
     seconds += e * spf * 180.0f * (1.0f + 0.2 * fabs(fwdvel));
-    float t = seconds;
+    float t = 1.4f * seconds;
 
     float l1 = 25 * +sin(t) * fwdvel;
     float l2 = 15 * (+sin(copysign(t, fwdvel) + o) + 1) * fabs(fwdvel);
