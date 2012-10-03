@@ -14,7 +14,6 @@ struct rChatMember;
 #include "de/hackcraft/lang/OID.h"
 
 #include "de/hackcraft/world/Component.h"
-#include "de/hackcraft/world/IComputer.h"
 
 #include <list>
 
@@ -26,7 +25,7 @@ class rChatMessage;
  * and stores these messages.
  * Orders to comrades may enhance strategic advantage.
  */
-struct rChatMember : public Component, public IComputer {
+struct rChatMember : public Component {
 public:
     /** Identifier for this component (all uppercase letters without leading "r"). */
     static std::string cname;

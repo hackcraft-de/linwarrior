@@ -10,8 +10,10 @@
 
 #include <cassert>
 
+
 std::string rChatMember::cname = "COMCOM";
 unsigned int rChatMember::cid = 5007;
+
 
 rChatMember::rChatMember(Entity* obj) {
     object = obj;
@@ -33,12 +35,14 @@ rChatMember::rChatMember(Entity* obj) {
     mLastMessage = 0;
 }
 
+
 void rChatMember::animate(float spf) {
     rChatMessage* message = NULL; //World::getInstance()->recvMessage(0, mLastMessage);
     if (message != NULL) {
         mLastMessage = message->getTimestamp();
     }
 }
+
 
 void rChatMember::drawHUD() {
     if (!active) return;
@@ -63,6 +67,7 @@ void rChatMember::drawHUD() {
     }
     GL::glPopMatrix();
 }
+
 
 void rChatMember::recvMessage(rChatMessage* msg) {
     
