@@ -14,7 +14,8 @@ struct rRigged;
 #include "de/hackcraft/io/MD5Format.h"
 
 #include "de/hackcraft/world/Component.h"
-#include "de/hackcraft/world/IModel.h"
+
+#include "de/hackcraft/world/sub/model/IModel.h"
 
 #include <map>
 

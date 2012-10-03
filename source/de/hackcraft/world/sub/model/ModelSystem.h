@@ -13,8 +13,9 @@ class ModelSystem;
 
 #include "de/hackcraft/util/Geomap.h"
 
-#include "de/hackcraft/world/IModel.h"
 #include "de/hackcraft/world/Subsystem.h"
+
+#include "de/hackcraft/world/sub/model/IModel.h"
 
 #include <unordered_map>
 #include <vector>

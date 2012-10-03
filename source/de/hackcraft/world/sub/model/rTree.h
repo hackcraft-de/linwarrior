@@ -17,7 +17,8 @@ struct rTree;
 #include "de/hackcraft/psi3d/math3d.h"
 
 #include "de/hackcraft/world/Component.h"
-#include "de/hackcraft/world/IModel.h"
+
+#include "de/hackcraft/world/sub/model/IModel.h"
 
 #include <list>
 #include <map>
