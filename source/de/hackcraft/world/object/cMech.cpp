@@ -235,7 +235,7 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     // Bindings for components
 
     // COLLIDER
-    {
+    if (collider != NULL) {
         // from Self
         collider->addBinding(&collider->pos0, &pos0, sizeof(vec3));
         collider->addBinding(&collider->ori0, &ori0, sizeof(quat));
@@ -245,8 +245,8 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
         collider->addBinding(&collider->height, &rigged->height, sizeof(float));
     }
     
-    // DAMAGEABLE
-    {
+    // TARGET
+    if (target != NULL) {
         // from Self
         target->addBinding(&target->pos0, &pos0, sizeof(vec3));
         // from TARGET
@@ -257,12 +257,12 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     }
     
     // COMCOM
-    {
+    if (comcom != NULL) {
         comcom->addBinding(&comcom->active, &target->alife, sizeof(bool));
     }
     
     // TARCOM
-    {
+    if (tarcom != NULL) {
         // from INPUTSOURCE
         tarcom->addBinding(&tarcom->switchnext, &inputsource->nextTarget, sizeof(bool));
         tarcom->addBinding(&tarcom->switchprev, &inputsource->prevTarget, sizeof(bool));
@@ -274,7 +274,7 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     }
     
     // WEPCOM
-    {
+    if (wepcom != NULL) {
         // from INPUTSOURCE
         wepcom->addBinding(&wepcom->trigger, &inputsource->fire, sizeof(bool));
         // from TARGET
@@ -282,7 +282,7 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     }
     
     // FORCOM
-    {
+    if (forcom != NULL) {
         // from TARGET
         forcom->addBinding(&forcom->active, &target->alife, sizeof(bool));
         // from TRACEABLE
@@ -294,7 +294,7 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     }
     
     // NAVCOM
-    {
+    if (navcom != NULL) {
         // from TARGET
         navcom->addBinding(&navcom->active, &target->alife, sizeof(bool));
         // from TRACEABLE
@@ -303,7 +303,7 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     }
     
     // CONTROLLER
-    {
+    if (controller != NULL) {
         // from TARGET
         controller->addBinding(&controller->active, &target->alife, sizeof(bool));
         controller->addBinding(&controller->disturbedBy, &target->disturber, sizeof(OID));
@@ -315,7 +315,7 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     }
     
     // TRACEABLE: Rigid Body, Collisions etc.
-    {
+    if (traceable != NULL) {
         // from MOBILE:
         traceable->addBinding(&traceable->ori, &mobile->ori0, sizeof(quat));
         traceable->addBinding(&traceable->jetthrottle, &mobile->jetthrottle, sizeof(float));
@@ -323,7 +323,7 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     }
     
     // MOBILE
-    {
+    if (mobile != NULL) {
         // from INPUTSOURCE
         mobile->addBinding(&mobile->tower_lr, &inputsource->turretLR, sizeof(float));
         mobile->addBinding(&mobile->tower_ud, &inputsource->turretUD, sizeof(float));
@@ -342,7 +342,7 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     }
     
     // RIGGED
-    {
+    if (rigged != NULL) {
         // from MOBILE: Steering state.
         rigged->rotatorsFactors[rigged->YAW][1] = -1;
         rigged->addBinding(&rigged->rotators[rigged->YAW][1], &mobile->twr[1], sizeof(float));
@@ -357,7 +357,7 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     }
     
     // NAMEABLE
-    {
+    if (nameable != NULL) {
         // from RIGGED
         int eye = rigged->jointpoints[rRigged::EYE];
         nameable->addBinding(&nameable->pos0, &rigged->pos0, sizeof(vec3));
@@ -368,7 +368,7 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     }
     
     // CAMERA
-    {
+    if (camra != NULL) {
         // from CONTROLLED
         camra->addBinding(&camra->cameraswitch, &inputsource->nextCamera, sizeof(float));
         // from RIGGED
@@ -382,7 +382,7 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     }
     
     // SOUNDSOURCE
-    {
+    if (soundsource != NULL) {
         // from TRACEABLE
         soundsource->addBinding(&soundsource->pos0, &traceable->pos, sizeof(vec3));
         soundsource->addBinding(&soundsource->gainScaler1, &traceable->grounded, sizeof(float));
@@ -392,12 +392,12 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     }
     
     // LIGHTSOURCE
-    {
+    if (lightsource != NULL) {
         
     }
     
     // INPUTSOURCE
-    {
+    if (inputsource != NULL) {
         // from MOBILE
         inputsource->addBinding(&inputsource->chassisLR, &mobile->chassis_lr_tgt, sizeof(float));
         inputsource->addBinding(&inputsource->driveEnable, &mobile->drive_tgt, sizeof(float));
@@ -480,7 +480,7 @@ void cMech::mountWeapon(const char* point, rWeapon *weapon, bool add) {
     }
     
     // WEAPON bindings
-    {
+    if (weapon != NULL) {
         // from CONTROLLED:
         weapon->addBinding(&weapon->target, &mobile->aimtarget, sizeof(OID));
         // from RIGGED:
@@ -515,7 +515,7 @@ void cMech::animate(float spf) {
      */
 
     // RIGGED
-    {
+    if (rigged != NULL) {
         // from TARGET: Fixme tags
         {
             // Group-to-texture.
@@ -529,7 +529,7 @@ void cMech::animate(float spf) {
     }
 
     // NAMEABLE
-    {
+    if (nameable != NULL) {
         // from TARGET
         {
             nameable->color[0] = target->hasTag(World::getInstance()->getGroup(FAC_RED)) ? 1.0f : 0.0f;
@@ -545,9 +545,11 @@ void cMech::animate(float spf) {
     this->radius = traceable->radius;
 }
 
+
 void cMech::transform() {
     // Everything in animation ?!
 }
+
 
 void cMech::drawSolid() {
     // Setup jumpjet light source - for player only so far. move to rLightsource?
@@ -579,9 +581,11 @@ void cMech::drawSolid() {
     }
 }
 
+
 void cMech::drawEffect() {
     
 }
+
 
 void cMech::drawHUD() {
     GL::glPushAttrib(GL_ALL_ATTRIB_BITS /* more secure */);
@@ -645,6 +649,7 @@ void cMech::drawHUD() {
     GL::glPopAttrib();
 }
 
+
 void cMech::damage(float* localpos, float damage, Entity* enactor) {
     if (!target->alife || damage == 0.0f) return;
 
@@ -661,6 +666,7 @@ void cMech::damage(float* localpos, float damage, Entity* enactor) {
     if (target->hp[body] <= 25) target->addTag(World::getInstance()->getGroup(HLT_CRITICAL));
     if (target->hp[body] <= 0) target->addTag(World::getInstance()->getGroup(HLT_DEAD));
 }
+
 
 float cMech::constrain(float* worldpos, float radius, float* localpos, Entity* enactor) {
     float maxdepth = 0.0f;
