@@ -12,14 +12,13 @@
 struct rWepcom;
 
 #include "de/hackcraft/world/Component.h"
-#include "de/hackcraft/world/IComputer.h"
 
 #include "de/hackcraft/world/sub/weapon/rWeapon.h"
 
 /** Weapon Computer
  * currently just draws weapon status.
  */
-struct rWepcom : public Component, public IComputer {
+struct rWepcom : public Component {
 public: // SYSTEM
     /** Identifier for this component (all uppercase letters without leading "r"). */
     static std::string cname;
