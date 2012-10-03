@@ -31,7 +31,7 @@ class Logger;
  * their visual effects. Note that weapons are themselves responsible for
  * drawing themselves, their bullets, missiles, dust, smoke and other particles.
  */
-class rWeapon : public Component, public IModel {
+class rWeapon : public Component {
 protected:
     /** Each class should have its own logger - here temporary for all weapons. */
     static Logger* logger;
