@@ -64,9 +64,20 @@ public:
 
     /** Initializes a tile of a certain kind at the given tile-grid position. */
     rTile(int x, int y, int z, int kind);
+    
     virtual void drawSolid();
     
+    /** Load vertex and fragment programs and/or return loaded program. */
     unsigned int loadMaterial();
+    
+    /** Generate, upload (and optionally save) all textures of all road kinds. */
+    void uploadTextures(int resolution, bool save, std::string basepath, unsigned char seed);
+
+    /** Generate, upload (and optionally save) a texture of a certain kind. */
+    void uploadTexture(int kind, int resolution, bool save, std::string basepath, std::string name, unsigned char seed);
+    
+    /** Get texel for a texture of a certain kind. */
+    void getTexelOfKind(int kind, float x, float y, float* color, unsigned char seed);
 };
 
 #endif	/* RTILE_H */
