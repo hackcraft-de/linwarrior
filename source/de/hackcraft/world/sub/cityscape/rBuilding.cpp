@@ -22,40 +22,25 @@
 
 #include <sstream>
 
+
 #define BUILDINGDETAIL 0
 
-unsigned int rBuilding::loadMaterial() {
-    static bool fail = false;
-    static GL::GLenum prog = 0;
-
-    if (prog == 0 && !fail) {
-        char* vtx = Filesystem::loadTextFile("data/base/material/base.vert");
-        if (vtx) logger->debug() << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
-        char* fgm = Filesystem::loadTextFile("data/base/material/base2d.frag");
-        if (fgm) logger->debug() << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
-        fail = (vtx == NULL || fgm == NULL) || (vtx[0] == 0 && fgm[0] == 0);
-        if (!fail) {
-            std::stringstream str;
-            prog = GLS::glCompileProgram(vtx, fgm, str);
-            logger->error() << str.str() << "\n";
-        }
-        delete[] vtx;
-        delete[] fgm;
-    }
-
-    if (fail) return 0;
-    return prog;
-}
 
 Logger* rBuilding::logger = Logger::getLogger("de.hackcraft.world.sub.cityscape.rBuilding");
 
 int rBuilding::sInstances = 0;
+
 std::map<int, long> rBuilding::sTextures;
 
+
 rBuilding::rBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z) {
+    
     sInstances++;
+    
     if (sInstances == 1) {
+        
         unsigned int texname;
+        bool save = false;
 
         {
             logger->info() << "Generating Rooftops..." << "\n";
@@ -112,7 +97,7 @@ rBuilding::rBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
                 //texname = SGL::glBindTexture2D(0, true, true, true, true, w, h, bpp, texels);
                 sTextures[k + 1] = texname;
 
-                if (0) {
+                if (save) {
                     try {
                         char numb[3] = { char('0' + (k / 10)), char('0' + (k % 10)), '\0' };
                         std::string fname = std::string("data/base/cityscape/facade/facade_") + std::string(numb) + std::string(".tga");
@@ -139,9 +124,12 @@ rBuilding::rBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
     this->id = (OID) this;
 }
 
+
 float rBuilding::constrain(float* worldpos, float radius, float* localpos, Entity* enactor) {
+    
     float localpos_[3];
 
+    // Transform world to local:
     {
         float ori_inv[4];
         quat_cpy(ori_inv, this->ori0);
@@ -157,20 +145,16 @@ float rBuilding::constrain(float* worldpos, float radius, float* localpos, Entit
     float maxs[3] = {+w[0]*0.5f + radius, +w[1] + radius, +w[2]*0.5f + radius};
     float localprj[3];
 
-    //cout << "\n";
-    //cout << mins[0] << " " << mins[1] << " " << mins[2] << "\n";
-    //cout << localpos[0] << " " << localpos[1] << " " << localpos[2] << "\n";
-    //cout << maxs[0] << " " << maxs[1] << " " << maxs[2] << "\n";
-
     float depth = 0;
     depth = Particle::constraintParticleByBox(localpos_, mins, maxs, localprj);
 
-    //cout << depth << "\n";
+    //logger->trace() << depth << "\n";
 
     if (depth <= 0) return 0;
 
     if (localpos != NULL) vector_cpy(localpos, localprj);
 
+    // Transform local to world:
     {
         quat_apply(worldpos, this->ori0, localprj);
         vector_add(worldpos, worldpos, this->pos0);
@@ -178,6 +162,7 @@ float rBuilding::constrain(float* worldpos, float radius, float* localpos, Entit
 
     return depth;
 }
+
 
 void rBuilding::drawSolid() {
     float* p = this->pos0;
@@ -201,6 +186,7 @@ void rBuilding::drawSolid() {
             //cPrimitives::glBlockFlat(w[0], w[1], w[2], wall, wall, wall, wall, roof, roof);
             const float n2 = 0.707107f; // 1.0f / sqrtf(2);
             const float n3 = 0.577350f; // 1.0f / sqrtf(3);
+            
             GL::glBindTexture(GL_TEXTURE_2D, roof);
             GL::glBegin(GL_QUADS);
             {
@@ -219,6 +205,7 @@ void rBuilding::drawSolid() {
                 GL::glVertex3f(w[0], w[1], 0);
             }
             GL::glEnd();
+            
             GL::glBindTexture(GL_TEXTURE_2D, wall);
             GL::glBegin(GL_TRIANGLE_STRIP);
             {
@@ -283,5 +270,39 @@ void rBuilding::drawSolid() {
         GL::glUseProgramObjectARB(0);
     }
     GL::glPopAttrib();
+}
+
+
+unsigned int rBuilding::loadMaterial() {
+    
+    static bool fail = false;
+    static GL::GLenum prog = 0;
+
+    if (prog == 0 && !fail) {
+        
+        char* vtx = Filesystem::loadTextFile("data/base/material/base.vert");
+        if (vtx) {
+            logger->debug() << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
+        }
+        
+        char* fgm = Filesystem::loadTextFile("data/base/material/base2d.frag");
+        if (fgm) {
+            logger->debug() << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
+        }
+        
+        fail = (vtx == NULL || fgm == NULL) || (vtx[0] == 0 && fgm[0] == 0);
+        
+        if (!fail) {
+            std::stringstream str;
+            prog = GLS::glCompileProgram(vtx, fgm, str);
+            logger->error() << str << "\n";
+        }
+        
+        delete[] vtx;
+        delete[] fgm;
+    }
+
+    if (fail) return 0;
+    return prog;
 }
 

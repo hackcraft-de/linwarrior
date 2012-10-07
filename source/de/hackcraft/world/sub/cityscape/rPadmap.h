@@ -59,11 +59,22 @@ public: // INPUT
     quat ori0;
 public:
     rPadmap(Entity* obj);
+    
     /** Calculate Height of the xz position. */
     inline float getHeight(float x, float z);
+    
     virtual void animate(float spf);
+    
     virtual float constrain(float* worldpos, float radius = 0.0f, float* localpos = NULL, Entity* enactor = NULL);
+    
     virtual void drawSolid();
+private:
+    void drawSolidTops();
+    void drawSolidEastWestCliffs();
+    void drawSolidNorthSouthCliffs();
+    
+    /** For generating the experimental (unused) spiral rendering order. */
+    void stepSpiral(int& x, int& y, int& i, int& length, bool& horizontal, int& increment);
 };
 
 
