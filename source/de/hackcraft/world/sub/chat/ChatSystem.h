@@ -21,6 +21,7 @@ class ChatSystem;
 #include <list>
 #include <map>
 #include <string>
+#include <vector>
 
 class Logger;
 class rChatGroup;
@@ -105,19 +106,21 @@ private:
     
 private:
     /** Chat or communication participants (Communication computers). */
-    std::map<OID,rChatMember*> members;
+    std::vector<rChatMember*> members;
+    /** Members by id. */
+    std::map<OID,rChatMember*> membersIndex;
+    /** For resolving an entity's currently registered chat member. */
+    std::map<OID,rChatMember*> membersByEntity;
     
     /** Groups of objects */
-    std::map<OID,rChatGroup*> groups;
+    std::vector<rChatGroup*> groups;
+    /** Groups by id. */
+    std::map<OID,rChatGroup*> groupsIndex;
 
-    /** For resolving an entity's currently registered chat member. */
-    std::map<OID,rChatMember*> memberByEntity;
-    
     /** Not yet dispatched messages (because they are not yet overdue). */
-    std::priority_queue<rChatMessage*, std::vector<rChatMessage*>, rChatMessage> mMessages;
-
-    /** Messages already delivered to group participants. */
-    std::list<rChatMessage*> mDispatchedMessages;
+    std::priority_queue<rChatMessage*, std::vector<rChatMessage*>, rChatMessage> messagesByTimestamp;
+    /** Messages already delivered to group participants as they were dispatched. */
+    std::list<rChatMessage*> messagesAsDispatched;
 };
 
 #endif	/* CHATSYSTEM_H */
