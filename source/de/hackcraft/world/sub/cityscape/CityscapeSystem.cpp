@@ -23,31 +23,37 @@ CityscapeSystem::~CityscapeSystem() {
 
 
 void CityscapeSystem::add(rBuilding* building) {
-    buildings[building->getId()] = building;
+    buildings.push_back(building);
+    buildingsIndex[building->getId()] = building;
 }
 
 
 void CityscapeSystem::add(rTile* tile) {
-    tiles[tile->getId()] = tile;
+    tiles.push_back(tile);
+    tilesIndex[tile->getId()] = tile;
 }
 
 
 void CityscapeSystem::add(rPadmap* padmap) {
-    padmaps[padmap->getId()] = padmap;
+    padmaps.push_back(padmap);
+    padmapsIndex[padmap->getId()] = padmap;
 }
 
 
 float CityscapeSystem::constrainParticle(Entity* ex, float* worldpos, float radius) {
+    
     float depth = 0.0f;
     
-    for (std::pair<OID,rBuilding*> building : buildings) {
-        depth += building.second->constrain(worldpos, radius, NULL, ex);
+    for (rBuilding* building : buildings) {
+        depth += building->constrain(worldpos, radius, NULL, ex);
     }
-    for (std::pair<OID,rTile*> tile : tiles) {
-        depth += tile.second->constrain(worldpos, radius, NULL, ex);
+    
+    for (rTile* tile : tiles) {
+        depth += tile->constrain(worldpos, radius, NULL, ex);
     }
-    for (std::pair<OID,rPadmap*> padmap : padmaps) {
-        depth += padmap.second->constrain(worldpos, radius, NULL, ex);
+    
+    for (rPadmap* padmap : padmaps) {
+        depth += padmap->constrain(worldpos, radius, NULL, ex);
     }
     
     return depth;
@@ -55,27 +61,33 @@ float CityscapeSystem::constrainParticle(Entity* ex, float* worldpos, float radi
 
 
 void CityscapeSystem::drawSolid() {
-    for (std::pair<OID,rBuilding*> building : buildings) {
-        building.second->drawSolid();
+    
+    for (rBuilding* building : buildings) {
+        building->drawSolid();
     }
-    for (std::pair<OID,rTile*> tile : tiles) {
-        tile.second->drawSolid();
+    
+    for (rTile* tile : tiles) {
+        tile->drawSolid();
     }
-    for (std::pair<OID,rPadmap*> padmap : padmaps) {
-        padmap.second->drawSolid();
+    
+    for (rPadmap* padmap : padmaps) {
+        padmap->drawSolid();
     }
 }
 
 
 void CityscapeSystem::drawEffect() {
-    for (std::pair<OID,rBuilding*> building : buildings) {
-        building.second->drawEffect();
+    
+    for (rBuilding* building : buildings) {
+        building->drawEffect();
     }
-    for (std::pair<OID,rTile*> tile : tiles) {
-        tile.second->drawEffect();
+    
+    for (rTile* tile : tiles) {
+        tile->drawEffect();
     }
-    for (std::pair<OID,rPadmap*> padmap : padmaps) {
-        padmap.second->drawEffect();
+    
+    for (rPadmap* padmap : padmaps) {
+        padmap->drawEffect();
     }
 }
 

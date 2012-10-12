@@ -17,6 +17,7 @@ class CityscapeSystem;
 #include "de/hackcraft/world/Subsystem.h"
 
 #include <map>
+#include <vector>
 
 class rBuilding;
 class rTile;
@@ -75,9 +76,14 @@ private:
     static CityscapeSystem* instance;
     
 private:
-    std::map<OID,rBuilding*> buildings;
-    std::map<OID,rTile*> tiles;
-    std::map<OID,rPadmap*> padmaps;
+    std::vector<rBuilding*> buildings;
+    std::map<OID,rBuilding*> buildingsIndex;
+    
+    std::vector<rTile*> tiles;
+    std::map<OID,rTile*> tilesIndex;
+    
+    std::vector<rPadmap*> padmaps;
+    std::map<OID,rPadmap*> padmapsIndex;
 };
 
 #endif	/* CITYSCAPESYSTEM_H */
