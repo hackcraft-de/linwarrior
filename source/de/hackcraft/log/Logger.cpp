@@ -106,6 +106,6 @@ Appender* Logger::getGlobalAppender() {
 
 
 void Logger::setGlobalAppender(Appender* globalAppender) {
-    this->globalAppender = globalAppender;
+    Logger::globalAppender = globalAppender;
 }
 
