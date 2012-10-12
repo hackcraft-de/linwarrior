@@ -16,6 +16,7 @@ class TriggerSystem;
 #include "de/hackcraft/world/Subsystem.h"
 
 #include <map>
+#include <vector>
 
 class rAlert;
 class rTrigger;
@@ -78,8 +79,11 @@ private:
     static TriggerSystem* instance;
     
 private:
-    std::map<OID,rAlert*> alerts;
-    std::map<OID,rTrigger*> triggers;
+    std::vector<rAlert*> alerts;
+    std::map<OID,rAlert*> alertsIndex;
+    
+    std::vector<rTrigger*> triggers;
+    std::map<OID,rTrigger*> triggersIndex;
 };
 
 #endif	/* TRIGGERSYSTEM_H */

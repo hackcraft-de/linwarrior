@@ -22,51 +22,51 @@ TriggerSystem::~TriggerSystem() {
 }
 
 
+void TriggerSystem::add(rAlert* alert) {
+    alerts.push_back(alert);
+    alertsIndex[alert->getId()] = alert;
+}
+
+
+void TriggerSystem::add(rTrigger* trigger) {
+    triggers.push_back(trigger);
+    triggersIndex[trigger->getId()] = trigger;
+}
+
+
 void TriggerSystem::animateObjects() {
     
     float spf = World::getInstance()->getTiming()->getSPF();
 
-    for (std::pair<OID,rTrigger*> p : triggers) {
-        Component* component = p.second;
-        
+    for (rTrigger* component : triggers) {
         component->prebind();
         component->animate(spf);
         component->postbind();
     }
 
-    for (std::pair<OID,rAlert*> p : alerts) {
-        Component* component = p.second;
-        
+    for (rAlert* component : alerts) {
         component->prebind();
         component->animate(spf);
         component->postbind();
     }
     
     // OPTIMIZE: Should use spatial index.
-    for (std::pair<OID,rAlert*> alert : alerts) {
-        for (std::pair<OID,rTrigger*> trigger : triggers) {
-            alert.second->detect(trigger.second);
+    for (rAlert* alert : alerts) {
+        for (rTrigger* trigger : triggers) {
+            alert->detect(trigger);
         }
     }
 }
 
 
 void TriggerSystem::drawEffect() {
-    for (std::pair<OID,rAlert*> alert : alerts) {
-        alert.second->drawSystemEffect();
+    
+    for (rAlert* alert : alerts) {
+        alert->drawSystemEffect();
     }
-    for (std::pair<OID,rTrigger*> trigger : triggers) {
-        trigger.second->drawSystemEffect();
+    
+    for (rTrigger* trigger : triggers) {
+        trigger->drawSystemEffect();
     }
-}
-
-
-void TriggerSystem::add(rAlert* alert) {
-    alerts[alert->getId()] = alert;
-}
-
-
-void TriggerSystem::add(rTrigger* trigger) {
-    triggers[trigger->getId()] = trigger;
 }
 
