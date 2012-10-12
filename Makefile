@@ -8,7 +8,7 @@ INCLUDES = -I source
 # Objects to compile are all sources (cpp) and put the .o below build-dir.
 OBJECTS=$(addprefix build/, $(subst .cpp,.o, $(wildcard source/*.cpp source/*/*.cpp source/*/*/*.cpp source/*/*/*/*.cpp source/*/*/*/*/*.cpp source/*/*/*/*/*/*.cpp) ) )
 
-# Different Parameters and Programms for different OSes.
+# Different Parameters and Programs for different OSes.
 ifneq (,$(findstring Win,$(OS)))
 	DESCRIPTION=Make using native mingw
 	LIBRARIES= -Wl,-subsystem,console -lmingw32 -lSDLmain -lSDL -lOpenGL32  -lglew32 -lGLU32 -lopenal32 -lalut
