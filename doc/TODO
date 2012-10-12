@@ -39,8 +39,6 @@ Refactoring and cleanup:
 
 - Player's jumpjet light shall be moved to a component.
 
-- Resolve HUD dependency on cMech-Class's weapons.
-
 - Use vec4 to utilize cpu vector ops?
 
 
@@ -116,8 +114,6 @@ Camera-System:
 
 
 Immersion and FX:
-
-- Footstep sound
 
 - Dust when walking/landing/jetting
 
