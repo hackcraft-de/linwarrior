@@ -15,6 +15,7 @@
 #include "de/hackcraft/world/Subsystem.h"
 
 #include <map>
+#include <vector>
 
 class Logger;
 class rMobile;
@@ -80,7 +81,8 @@ private:
     
 private:
     /** Mobile units. */
-    std::map<OID,rMobile*> mobiles;
+    std::vector<rMobile*> mobiles;
+    std::map<OID,rMobile*> mobilesIndex;
 };
 
 #endif	/* MOBILESYSTEM_H */

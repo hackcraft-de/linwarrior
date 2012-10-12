@@ -27,7 +27,8 @@ MobileSystem::~MobileSystem() {
 
 
 void MobileSystem::add(rMobile* mobile) {
-    mobiles[mobile->getId()] = mobile;
+    mobiles.push_back(mobile);
+    mobilesIndex[mobile->getId()] = mobile;
 }
 
 
@@ -35,13 +36,10 @@ void MobileSystem::animateObjects() {
     
     float spf = World::getInstance()->getTiming()->getSPF();
     
-    for(std::pair<OID,rMobile*> p : mobiles) {
-        Component* component = p.second;
-        
+    for(rMobile* component : mobiles) {
         component->prebind();
         component->animate(spf);
         component->postbind();
     }
 }
-
 
