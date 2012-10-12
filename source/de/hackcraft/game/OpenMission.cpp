@@ -81,7 +81,7 @@ void OpenMission::onVictory() {
         ChatSystem::getInstance()->sendMessage(0, 0, group_alliance_player,
                 "DISPLAY",
                 //std::string("   (+) Primary target fullfilled.\n   (+) You Won!\n   (+) Hit ESC to finish Mission\n")
-                std::string("Stortebeker:\n  Good work!\n  We now have control over the town.\n  You may have a look around:\n  Pyra Nano Corp: SW of Skytide.\n  Starcircle: E of Skytide\n  Spaceport: NW\n  And don't get yourself killed.")
+                std::string("Stortebeker:\n  Good work!\n  We now have control over the town.\n  You may have a look around:\n  Pyra Nano Corp: SW of Skytide.\n  Starcircle: E of Skytide\n  Spaceport: NW\n  And don't get yourself killed.\n")
                 );
     }
 }
@@ -225,7 +225,7 @@ Entity* OpenMission::init(World* world) {
             float range[] = {400, 100, 400};
             OID group = group_alliance_player;
             std::string type = "RADIO";
-            std::string message = std::string("YOU ARE LEAVING THE MISSION AREA!");
+            std::string message = std::string("YOU ARE LEAVING THE MISSION AREA!\n");
             bool positive = false;
             bool posedge = true;
             OID delay = 0;
@@ -242,7 +242,7 @@ Entity* OpenMission::init(World* world) {
             float range[] = {490, 190, 490};
             OID group = group_alliance_player;
             std::string type = "RADIO";
-            std::string message = std::string("YOU HAVE LEFT THE MISSION AREA, CONTRACT VOIDED!");
+            std::string message = std::string("YOU HAVE LEFT THE MISSION AREA, CONTRACT VOIDED!\n");
             bool positive = false;
             bool posedge = true;
             OID delay = 0;
@@ -376,9 +376,9 @@ Entity* OpenMission::initPlayerParty(float* position) {
     }
 
     if (player != NULL) {
-        ChatSystem::getInstance()->sendMessage(0, player->oid, group_alliance_all, "RADIO", string("Stay alert there have been intruders!"));
-        ChatSystem::getInstance()->sendMessage(0, player->oid, group_alliance_wingmen, "RADIO", string("Wingmen into formation!"));
-        ChatSystem::getInstance()->sendMessage(0, player->oid, group_alliance_player, "RADIO", string("Stortebeker:\n  You guys search the town for offenders.\n  Then I'll give you more work!\n  I'll search the sourrounding."));
+        ChatSystem::getInstance()->sendMessage(0, player->oid, group_alliance_all, "RADIO", string("Stay alert there have been intruders!\n"));
+        ChatSystem::getInstance()->sendMessage(0, player->oid, group_alliance_wingmen, "RADIO", string("Wingmen into formation!\n"));
+        ChatSystem::getInstance()->sendMessage(0, player->oid, group_alliance_player, "RADIO", string("Stortebeker:\n  You guys search the town for offenders.\n  Then I'll give you more work!\n  I'll search the sourrounding.\n"));
     }
 
     return player;
@@ -411,7 +411,7 @@ void OpenMission::initSkytideCity() {
         OID group = group_alliance_player;
         float pos[] = {loc[0] + 48, loc[1] + 9, loc[2] + 58};
         float range[] = {60.5, 40.5, 60.5};
-        string message = string("Skytide City");
+        string message = string("Skytide City\n");
         Entity* oob = new Entity();
         rAlert* alert = new rAlert(oob, pos, range, rAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
         triggerSystem->add(alert);
@@ -546,7 +546,7 @@ void OpenMission::initStarcircleTown() {
         OID group = group_alliance_player;
         float pos[] = {loc[0], loc[1] + 9, loc[2]};
         float range[] = {50.5, 40.5, 50.5};
-        string message = string("Starcircle Town\n(currently under bandit control)");
+        string message = string("Starcircle Town (under bandit control)\n");
         Entity* oob = new Entity();
         rAlert* alert = new rAlert(oob, pos, range, rAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
         triggerSystem->add(alert);
@@ -570,7 +570,7 @@ void OpenMission::initStarcircleTown() {
         float range[] = {10, 3, 10};
         OID group = group_alliance_player;
         std::string type = "RADIO";
-        std::string message = std::string("EVACUATION ZONE REACHED, FINISHING MISSION!");
+        std::string message = std::string("EVACUATION ZONE REACHED, FINISHING MISSION!\n");
         bool positive = true;
         bool posedge = true;
         OID delay = 0;
@@ -602,7 +602,7 @@ void OpenMission::initAcroloidMines() {
         OID group = group_alliance_player;
         float pos[] = {loc[0], loc[1] + 9, loc[2]};
         float range[] = {0.5, 0.5, 0.5};
-        string message = string("Acroloid Surface Mining Ltd. Co.\n(under construction)");
+        string message = string("Acroloid Surface Mining Ltd. Co. (under construction)\n");
         Entity* oob = new Entity();
         rAlert* alert = new rAlert(oob, pos, range, rAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
         triggerSystem->add(alert);
@@ -632,7 +632,7 @@ void OpenMission::initCollapsiumFactory() {
         OID group = group_alliance_player;
         float pos[] = {loc[0], loc[1] + 9, loc[2]};
         float range[] = {0.5, 0.5, 0.5};
-        string message = string("Collapsium Factory Ltd.\n(under construction)");
+        string message = string("Collapsium Factory Ltd. (under construction)\n");
         Entity* oob = new Entity();
         rAlert* alert = new rAlert(oob, pos, range, rAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
         triggerSystem->add(alert);
@@ -662,7 +662,7 @@ void OpenMission::initJurataJail() {
         OID group = group_alliance_player;
         float pos[] = {loc[0], loc[1] + 9, loc[2]};
         float range[] = {0.5, 0.5, 0.5};
-        string message = string("Jurata Jail Ltd.\n- Service Company -\n(under construction)");
+        string message = string("Jurata Jailing Ltd. (under construction)\n");
         Entity* oob = new Entity();
         rAlert* alert = new rAlert(oob, pos, range, rAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
         triggerSystem->add(alert);
@@ -692,7 +692,7 @@ void OpenMission::initSpadenixFactory() {
         OID group = group_alliance_player;
         float pos[] = {loc[0], loc[1] + 9, loc[2]};
         float range[] = {0.5, 0.5, 0.5};
-        string message = string("Spadenix Mechanical Factory Ltd.\n(under construction)");
+        string message = string("Spadenix Mechanical Factory Ltd. (under construction)\n");
         Entity* oob = new Entity();
         rAlert* alert = new rAlert(oob, pos, range, rAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
         triggerSystem->add(alert);
@@ -722,7 +722,7 @@ void OpenMission::initFortifyDefense() {
         OID group = group_alliance_player;
         float pos[] = {loc[0], loc[1] + 9, loc[2]};
         float range[] = {20.5, 20.5, 20.5};
-        string message = string("Fortify and Defend!\n(under construction)");
+        string message = string("Fortify and Defend! (under construction)\n");
         Entity* oob = new Entity();
         rAlert* alert = new rAlert(oob, pos, range, rAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
         triggerSystem->add(alert);
@@ -791,7 +791,7 @@ void OpenMission::initPyraNanoCorp() {
         OID group = group_alliance_player;
         float pos[] = {loc[0], loc[1] + 9, loc[2]};
         float range[] = {50.5, 40.5, 50.5};
-        string message = string("Pyra Nano Corporation\n(currently under bandit control)");
+        string message = string("Pyra Nano Corporation (under bandit control)\n");
         Entity* oob = new Entity();
         rAlert* alert = new rAlert(oob, pos, range, rAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
         triggerSystem->add(alert);
@@ -825,7 +825,7 @@ void OpenMission::initPentaSpaceport() {
         OID group = group_alliance_player;
         float pos[] = {loc[0] + 5, loc[1] + 9, loc[2] + 3};
         float range[] = {90.5, 40.5, 90.5};
-        string message = string("Penta Interstellar Spaceport\n(currently under bandit control)");
+        string message = string("Penta Interstellar Spaceport (under bandit control)\n");
         Entity* oob = new Entity();
         rAlert* alert = new rAlert(oob, pos, range, rAlert::rShape::BOX, "RADIO", message, group, &inc_sense, &exc_sense);
         triggerSystem->add(alert);
