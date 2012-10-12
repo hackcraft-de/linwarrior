@@ -15,6 +15,7 @@
 #include "de/hackcraft/world/Subsystem.h"
 
 #include <map>
+#include <vector>
 
 class Logger;
 class rComcom;
@@ -92,16 +93,20 @@ private:
     
 private:
     /** Communication computers. */
-    std::map<OID,rComcom*> comcoms;
+    std::vector<rComcom*> comcoms;
+    std::map<OID,rComcom*> comcomsIndex;
 
     /** Autopilot controllers. */
-    std::map<OID,rController*> controllers;
+    std::vector<rController*> controllers;
+    std::map<OID,rController*> controllersIndex;
     
     /** Computers for forward looking HUD. */
-    std::map<OID,rForcom*> forcoms;
+    std::vector<rForcom*> forcoms;
+    std::map<OID,rForcom*> forcomsIndex;
     
     /** Navigation computers. */
-    std::map<OID,rNavcom*> navcoms;
+    std::vector<rNavcom*> navcoms;
+    std::map<OID,rNavcom*> navcomsIndex;
 };
 
 #endif	/* COMPUTERSYSTEM_H */

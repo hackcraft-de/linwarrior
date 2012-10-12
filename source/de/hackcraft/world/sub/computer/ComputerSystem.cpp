@@ -30,22 +30,26 @@ ComputerSystem::~ComputerSystem() {
 
 
 void ComputerSystem::add(rComcom* comcom) {
-    comcoms[comcom->getId()] = comcom;
+    comcoms.push_back(comcom);
+    comcomsIndex[comcom->getId()] = comcom;
 }
 
 
 void ComputerSystem::add(rController* controller) {
-    controllers[controller->getId()] = controller;
+    controllers.push_back(controller);
+    controllersIndex[controller->getId()] = controller;
 }
 
 
 void ComputerSystem::add(rForcom* forcom) {
-    forcoms[forcom->getId()] = forcom;
+    forcoms.push_back(forcom);
+    forcomsIndex[forcom->getId()] = forcom;
 }
 
 
 void ComputerSystem::add(rNavcom* navcom) {
-    navcoms[navcom->getId()] = navcom;
+    navcoms.push_back(navcom);
+    navcomsIndex[navcom->getId()] = navcom;
 }
 
 
@@ -53,37 +57,28 @@ void ComputerSystem::animateObjects() {
     
     float spf = World::getInstance()->getTiming()->getSPF();
     
-    for(std::pair<OID,rComcom*> p : comcoms) {
-        Component* component = p.second;
-        
+    for(rComcom* component : comcoms) {
         component->prebind();
         component->animate(spf);
         component->postbind();
     }
     
-    for(std::pair<OID,rController*> p : controllers) {
-        Component* component = p.second;
-        
+    for(rController* component : controllers) {
         component->prebind();
         component->animate(spf);
         component->postbind();
     }
     
-    for(std::pair<OID,rForcom*> p : forcoms) {
-        Component* component = p.second;
-        
+    for(rForcom* component : forcoms) {
         component->prebind();
         component->animate(spf);
         component->postbind();
     }
     
-    for(std::pair<OID,rNavcom*> p : navcoms) {
-        Component* component = p.second;
-        
+    for(rNavcom* component : navcoms) {
         component->prebind();
         component->animate(spf);
         component->postbind();
     }
 }
-
 
