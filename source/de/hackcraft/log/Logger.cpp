@@ -86,6 +86,7 @@ const char* Logger::getName() {
     return qualifiedLoggerName.c_str();
 }
 
+
 const char* Logger::getLevelName(int level) {
     
     switch (level) {
@@ -97,3 +98,14 @@ const char* Logger::getLevelName(int level) {
         default: return "UNKNOWN"; break;
     }
 }
+
+
+Appender* Logger::getGlobalAppender() {
+    return globalAppender;
+}
+
+
+void Logger::setGlobalAppender(Appender* globalAppender) {
+    this->globalAppender = globalAppender;
+}
+

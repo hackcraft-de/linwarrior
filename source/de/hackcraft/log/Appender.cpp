@@ -5,6 +5,7 @@
 #include <iostream>
 
 Appender::Appender() {
+    maxLevel = 2;
 }
 
 
@@ -18,7 +19,7 @@ void Appender::append(LoggerEvent* loggerEvent) {
     //int tid = loggerEvent->getTid();
     
     // Don't print any debug or trace messages for the time being.
-    if (level > 2) {
+    if (level > maxLevel) {
         return;
     }
     
@@ -32,5 +33,15 @@ void Appender::append(LoggerEvent* loggerEvent) {
             << loggerEvent->getLogger()->getName()
             << " - "
             << loggerEvent->getMessage();
+}
+
+
+void Appender::setMaxLevel(int maxLevel) {
+    this->maxLevel = maxLevel;
+}
+
+
+int Appender::getMaxLevel() {
+    return maxLevel;
 }
 

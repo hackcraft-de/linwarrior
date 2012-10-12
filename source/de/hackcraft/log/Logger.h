@@ -67,6 +67,12 @@ public:
     /** Returns a static readable uppercase label for the level number. */
     static const char* getLevelName(int level);
     
+    /** Get the globally used appender object. */
+    static Appender* getGlobalAppender();
+    
+    /** Set the globally used appender object. */
+    static void setGlobalAppender(Appender* globalAppender);
+    
 private:
     /** Use getLogger instead to get the benefit of shared loggers (future). */
     Logger(const char* qualifiedLoggerName);

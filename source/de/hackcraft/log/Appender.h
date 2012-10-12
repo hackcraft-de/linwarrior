@@ -24,9 +24,15 @@ class Appender {
 public:
     Appender();
     virtual ~Appender();
+    
     virtual void append(LoggerEvent* loggerEvent);
+    
+    void setMaxLevel(int maxLevel);
+    int getMaxLevel();
+    
 private:
-
+    /** Maximum level that's still appended to output (printed). */
+    int maxLevel;
 };
 
 #endif	/* APPENDER_H */
