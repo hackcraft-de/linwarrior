@@ -224,6 +224,14 @@
                 <in>rNavcom.h</in>
               </df>
               <df name="inventory">
+                <in>InventorySystem.cpp</in>
+                <in>InventorySystem.h</in>
+                <in>rInventory.cpp</in>
+                <in>rInventory.h</in>
+                <in>rInventoryItem.cpp</in>
+                <in>rInventoryItem.h</in>
+                <in>rItem.cpp</in>
+                <in>rItem.h</in>
               </df>
               <df name="landscape">
                 <in>LandscapeSystem.cpp</in>
