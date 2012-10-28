@@ -180,6 +180,26 @@
               <in>cMech.h</in>
             </df>
             <df name="sub">
+              <df name="adventure">
+                <in>AdventureSystem.cpp</in>
+                <in>AdventureSystem.h</in>
+                <in>rAvatar.cpp</in>
+                <in>rAvatar.h</in>
+                <in>rInventory.cpp</in>
+                <in>rInventory.h</in>
+                <in>rInventoryItem.cpp</in>
+                <in>rInventoryItem.h</in>
+                <in>rItem.cpp</in>
+                <in>rItem.h</in>
+                <in>rParty.cpp</in>
+                <in>rParty.h</in>
+                <in>rPartyAvatar.cpp</in>
+                <in>rPartyAvatar.h</in>
+                <in>rPartyQuest.cpp</in>
+                <in>rPartyQuest.h</in>
+                <in>rQuest.cpp</in>
+                <in>rQuest.h</in>
+              </df>
               <df name="background">
                 <in>BackgroundSystem.cpp</in>
                 <in>BackgroundSystem.h</in>
@@ -222,16 +242,6 @@
                 <in>rForcom.h</in>
                 <in>rNavcom.cpp</in>
                 <in>rNavcom.h</in>
-              </df>
-              <df name="inventory">
-                <in>InventorySystem.cpp</in>
-                <in>InventorySystem.h</in>
-                <in>rInventory.cpp</in>
-                <in>rInventory.h</in>
-                <in>rInventoryItem.cpp</in>
-                <in>rInventoryItem.h</in>
-                <in>rItem.cpp</in>
-                <in>rItem.h</in>
               </df>
               <df name="landscape">
                 <in>LandscapeSystem.cpp</in>
@@ -279,8 +289,6 @@
                 <in>rCollider.h</in>
                 <in>rTraceable.cpp</in>
                 <in>rTraceable.h</in>
-              </df>
-              <df name="quest">
               </df>
               <df name="trigger">
                 <in>TriggerSystem.cpp</in>

@@ -1,5 +1,5 @@
 /* 
- * File:    InventorySystem.h
+ * File:    AdventureSystem.h
  * Project: LinWarrior 3D
  * Home:    hackcraft.de
  * 
@@ -7,8 +7,8 @@
  */
 
 
-#ifndef INVENTORYSYSTEM_H
-#define	INVENTORYSYSTEM_H
+#ifndef ADVENTURESYSTEM_H
+#define	ADVENTURESYSTEM_H
 
 #include "de/hackcraft/lang/OID.h"
 
@@ -18,19 +18,25 @@
 #include <vector>
 
 class Logger;
+
+class rAvatar;
 class rInventory;
 class rInventoryItem;
 class rItem;
+class rParty;
+class rPartyAvatar;
+class rPartyQuest;
+class rQuest;
 
 
-class InventorySystem : public Subsystem {
+class AdventureSystem : public Subsystem {
 public:
     /** Get current singleton instance.*/
-    static InventorySystem* getInstance();
+    static AdventureSystem* getInstance();
 
 public:
-    InventorySystem();
-    virtual ~InventorySystem();
+    AdventureSystem();
+    virtual ~AdventureSystem();
     
     /** Add a component to the managed components. */
     void add(rInventory* inventory);
@@ -85,7 +91,7 @@ private:
     static Logger* logger;
     
     /** Current singleton instance */
-    static InventorySystem* instance;
+    static AdventureSystem* instance;
     
 private:
     /** List of allocated components of this type. */
@@ -102,6 +108,16 @@ private:
     std::vector<rItem*> items;
     /** Index on id of leased components of this type. */
     std::map<OID,rItem*> itemsIndex;
+
+    std::vector<rAvatar*> avatars;
+    
+    std::vector<rParty*> parties;
+    
+    std::vector<rPartyAvatar*> partyAvatars;
+    
+    std::vector<rPartyQuest*> partyQuests;
+    
+    std::vector<rQuest*> quests;
 };
 
 #endif	/* INVENTORYSYSTEM_H */
