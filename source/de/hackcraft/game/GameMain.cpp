@@ -224,7 +224,9 @@ void GameMain::applyFilter(int width, int height) {
         if (!fail) {
             std::stringstream str;
             postprocess = GLS::glCompileProgram(vtx, fgm, str);
-            logger->error() << str.str() << "\n";
+            if (!str.str().empty()) {
+                logger->error() << str.str() << "\n";
+            }
         }
         delete[] vtx;
         delete[] fgm;
