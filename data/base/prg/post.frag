@@ -12,6 +12,7 @@ uniform sampler2D dep;
 
 float ofs = 0.0011;
 
+
 float linear(float z)
 {
 	float n = 0.07;// 0.0*gl_DepthRange.near;
@@ -19,10 +20,12 @@ float linear(float z)
 	return (2.0 * n) / (f + n - z * (f - n));
 }
 
+
 float sig(float x)
 {
 	return 1.0 / (1.0 + exp(-x));
 }
+
 
 float getAO(float d0, float dn)
 {
@@ -30,6 +33,7 @@ float getAO(float d0, float dn)
 	float diff = (dn - d0) + eps;
 	return exp(-abs(diff) * 700.0);
 }
+
 
 float contrib(float d0, float dn)
 {
@@ -39,6 +43,7 @@ float contrib(float d0, float dn)
 	return exp(-(abs(diff)-eps)*500.0);
 }
 
+
 float noiz3(float x, float y, float z)
 {
 	float u = 121.12421 * (1.0+x);
@@ -47,19 +52,45 @@ float noiz3(float x, float y, float z)
 	return 0.5 + 0.5 * 0.3333 * ( sin(w + u*sin(u + v*sin(v))) + sin(v + w*sin(w + u*sin(u))) +  sin(u + v*sin(v + w*sin(w))) );
 }
 
+
 float mixd(float a, float b, float alpha)
 {
 	return b;//((1.0-alpha)*a + alpha*b);
 }
 
+
 float ds[17] = float[](0.000, 0.707, -1.000, 0.707, 0.000, -0.707, 1.000, -0.707, 0.000, 0.707, -1.000, 0.707, 0.000, -0.707, 1.000, -0.707, 0.000);
 float dc[17] = float[](1.000, -0.707, 0.000, 0.707, -1.000, 0.707, 0.000, -0.707, 1.000, -0.707, 0.000, 0.707, -1.000, 0.707, 0.000, -0.707, 1.000);
+
 
 vec2 ofse(int i, float r, vec2 p)
 {
 	return vec2(1.0*ds[i]*r, (1.7*r) + 1.0*dc[i]*r);
 	//return vec2(0.5*r-noiz3(p.x,p.y, i*0.23)*r, 0.5*r-noiz3(p.x,p.y, i*0.17)*r);
 }
+
+
+vec2 warpMono(vec2 pix)
+{
+    float f = -8.1;
+
+    vec2 v = pix * 2.0 - 1.0;
+
+    vec2 warped = vec2(
+        f * v.x / (v.y * v.y + f),
+        f * v.y / (v.x * v.x + f)
+    ) * 0.5 + 0.5;
+
+    return warped;
+}
+
+
+vec2 warpDual(vec2 pix)
+{
+    pix.x = mod(pix.x * 2.0, 1.0);
+    return warpMono(pix);
+}
+
 
 void main()
 {
@@ -224,6 +255,35 @@ void main()
 		result = vec4(color0.rgb, 1.0);
 	}
 #elif 0
+	float mixalpha = 0.5;
+
+	float CR = color0.r;
+	float CG = color0.g;
+	float CB = color0.b;
+
+	float CY = 0.299*CR + 0.587*CG + 0.114*CB;
+	float CU = (CB-CY)*0.565;
+	float CV = (CR-CY)*0.713;
+	
+	//nois = noiz3(abs(gl_TexCoord[0].y-0.5), 0.21, 0.91);
+	//CY = (0.98 + 0.04 * nois) * max(CY*(pow(1.3*ao_, 3.5)), CY) + 0.05*bloom;
+	//CY = max(CY*(pow(1.3*ao_, 3.5)), CY) + 0.05*bloom;
+	//CY = min(CY, CY * pow(1.3*ao_, 3.5)) + 0.05*bloom;
+	CY = (CY * pow(1.3*ao_, 1.0)) + 0.1*bloom;
+
+	CR = CY + 1.403*CV;
+	CG = CY - 0.344*CU - 0.714*CV;
+	CB = CY + 1.770*CU;
+
+	color0.r = CR;
+	color0.g = CG;
+	color0.b = CB;
+
+	vec4 result = vec4(color0.rgb, 1.0);
+	if (!true && gl_TexCoord[0].x < 0.5) {
+		result = vec4(vec3(pow(1.3*ao_, 1.0)), 1.0);
+	}
+#elif 1
 	float mixalpha = 0.5;
 	vec4 result = vec4(1.0 * color0.rgb - pow(ao, 3.5)*0.7, 1.0);
 	result = mix(result, vec4(vec3(pow(ao_, 3.5)), 3.0), mixalpha);
