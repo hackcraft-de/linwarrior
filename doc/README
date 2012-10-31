@@ -1,14 +1,15 @@
 LinWarrior provided by hackcraft.de
 -----------------------------------
 
-Open Source written by Benjamin Pickhardt
+Open Source written by Benjamin Pickhardt,
+please see LICENSE and NOTICE files for further information.
 
 This incomplete-under-development-version is not considered enduser-playable.
 
 Used Libraries are GL, GLU, GLEW, SDL, OpenAL, ALUT
 
-Make always using "clean all".
-Run using the provided shell-script.
+Make always using "make clean all".
+Run using the provided shell-scripts.
 
 
 Running the Game and Commandline Arguments
@@ -94,4 +95,37 @@ Thank You For Downloading!
 Please visit hackcraft.de for the latest version.
 
 
+My thanks go to all contributors. Thank you very much!
 
+
+Further thanks to all developers, maintainers, packagers, distributors and supporters of:
+
+    OpenGL
+    OpenAL
+    libSDL
+    GCC
+    MinGW
+    Linux
+    FreeBSD
+    Ubuntu
+
+
+Thanks for Inspiration and Motivation:
+
+    MW on SNES
+    Cybernator
+    Probotector
+    MW2 & MW2Mercenaries
+    Virtual On
+    Cybersled
+    FrontMission
+    AppleSeed
+    Ghost in the Shell
+    HeavyGear Rulebook
+    Gundam Series
+
+
+Thanks to all those who have shown their interest in this project!
+
+
+Thank you for playing!
