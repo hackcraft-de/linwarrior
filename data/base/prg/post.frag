@@ -94,7 +94,7 @@ vec2 warpDual(vec2 pix)
 
 void main()
 {
-	vec2 pix = gl_TexCoord[0].xy;
+	vec2 pix = warpDual(gl_TexCoord[0].xy);
 	//float nx = 3.0 * ofs * (noiz3(gl_TexCoord[0].x, gl_TexCoord[0].y, 0.0) - 0.5);
 	//float ny = 3.0 * ofs * (noiz3(gl_TexCoord[0].y, gl_TexCoord[0].x, 0.0) - 0.5);
 	//pix = vec2(ofs*0.0 + 0.5 - 0.5 * cos(pix.x*3.14), 0.5 - 0.5 * cos(pix.y*3.14));
