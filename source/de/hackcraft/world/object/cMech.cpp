@@ -223,10 +223,10 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     quat_cpy(this->ori0, traceable->ori);
     this->radius = traceable->radius;
 
-    vector_cpy(target->pos0, this->pos0);
+    vector_cpy(target->pos0, traceable->pos);
     
-    vector_cpy(collider->pos0, this->pos0);
-    quat_cpy(collider->ori0, this->ori0);
+    vector_cpy(collider->pos0, traceable->pos);
+    quat_cpy(collider->ori0, traceable->ori);
     collider->radius = this->radius;
 
     explosion = new rWeaponExplosion(this);
@@ -237,8 +237,8 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     // COLLIDER
     if (collider != NULL) {
         // from Self
-        collider->addBinding(&collider->pos0, &pos0, sizeof(vec3));
-        collider->addBinding(&collider->ori0, &ori0, sizeof(quat));
+        collider->addBinding(&collider->pos0, &traceable->pos, sizeof(vec3));
+        collider->addBinding(&collider->ori0, &traceable->ori, sizeof(quat));
         // from RIGGED
         collider->addBinding(&collider->radius, &rigged->radius, sizeof(float));
         collider->ratio = 0.0f;
@@ -248,7 +248,7 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     // TARGET
     if (target != NULL) {
         // from Self
-        target->addBinding(&target->pos0, &pos0, sizeof(vec3));
+        target->addBinding(&target->pos0, &traceable->pos, sizeof(vec3));
         // from TARGET
         target->addBinding(&target->active, &target->alife, sizeof(bool));
         // from RIGGED
