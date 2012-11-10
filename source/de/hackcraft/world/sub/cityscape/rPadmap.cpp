@@ -142,9 +142,6 @@ float rPadmap::getHeight(float x, float z) {
 
 void rPadmap::animate(float spf) {
     
-    if (object == NULL) return;
-    
-    vector_cpy(pos0, object->pos0);
 }
 
 

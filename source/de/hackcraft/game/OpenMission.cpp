@@ -192,17 +192,18 @@ Entity* OpenMission::init(World* world) {
 
         // Provide flat terrain at that height.
         rPlanetmap::sMod* mod = new rPlanetmap::sMod();
-        mod->pos[0] = loc[0] + 7;
+        mod->pos[0] = loc[0] + 10;
         mod->pos[1] = loc[1];
-        mod->pos[2] = loc[2] + 7;
-        mod->height = loc[1] + 0.019f;
-        mod->range = 15;
+        mod->pos[2] = loc[2] + 10;
+        mod->height = loc[1] - 0.039f;
+        mod->range = 20;
         planetmap->mods.push_back(mod);
 
         Entity* obj = new Entity();
-        vector_cpy(obj->pos0, loc);
         rPadmap* pm = new rPadmap(obj);
+        vector_cpy(pm->pos0, loc);
         obj->components.push_back(pm);
+        CityscapeSystem::getInstance()->add(pm);
         // Experimental
         world->spawnObject(obj);
     }
