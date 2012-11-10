@@ -19,7 +19,6 @@ class Entity;
 #include "de/hackcraft/psi3d/macros.h"
 
 #include <algorithm>
-#include <iostream>
 #include <map>
 #include <set>
 #include <string>
