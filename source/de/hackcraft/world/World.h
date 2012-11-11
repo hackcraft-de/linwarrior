@@ -204,38 +204,6 @@ public: // World-Filtering, World-Scanning, World-Sense for objects.
     std::list<Entity*>* getGeoInterval(float* min2f, float* max2f, bool addunclustered = false);
 
     /**
-     * Debug function to print out an object-list.
-     * With a parameter of NULL/no parameter at all prints all objects within the world.
-     * Warning: Printing all objects could lead to massive load on the console.
-     */
-    std::string getNames(std::list<Entity*>* objects = NULL);
-
-    /**
-     * Filters the given objectlist (or all mObjects if NULL) by tags (ORed Bitmask) (excluding ex Object).
-     * There is the option to match all tags (true=AND) or to select any given tag (false=OR).
-     * The returned list is fresh allocated - caller delete responsibility.
-     */
-    std::list<Entity*>* filterByTags(Entity* ex, std::set<OID>* rolemask, bool all, int maxamount, std::list<Entity*>* objects = NULL);
-
-    /** Returns a List of objects which are within minimum and maximum range (excluding ex Object).
-     * The returned list is fresh allocated - caller delete responsibility.
-     */
-    std::list<Entity*>* filterByRange(Entity* ex, float* origin, float minrange, float maxrange, int maxamount, std::list<Entity*>* objects = NULL);
-
-    /**
-     * Returns a List of objects which have the specified name.
-     * The returned list is fresh allocated - caller delete responsibility.
-     */
-    std::list<Entity*>* filterByName(Entity* ex, char* name, int maxamount, std::list<Entity*>* objectlist = NULL);
-
-    /**
-     * Returns a List of objects whose bounding volume (approximately) intersects with the cylinder
-     * described by the volume of a certain diameter around a line.
-     * The returned list is fresh allocated - caller delete responsibility.
-     */
-    std::list<Entity*>* filterByBeam(Entity* ex, float* pointa, float* pointb, float radius, int maxamount, std::list<Entity*>* objects = NULL);
-
-    /**
      *
      * @param worldpos The particle position to be constrained given in world coordinates.
      * @param radius The size of the particle in terms of a radius.

@@ -7,14 +7,13 @@
 #include <cassert>
 
 #include <sstream>
-using std::stringstream;
-
 #include <string>
-using std::string;
+
 
 Logger* World::logger = Logger::getLogger("de.hackcraft.world.World");
 
 World* World::instance = NULL;
+
 
 World::World() {
     World::instance = this;
@@ -37,21 +36,26 @@ World* World::getInstance() {
     return instance;
 }
 
+
 OID World::getOID() {
     return mTiming.getTimekey();
 }
+
 
 Timing* World::getTiming() {
     return &mTiming;
 }
 
+
 Entity* World::getObject(OID oid) {
     return mIndex[oid];
 }
 
+
 void World::setViewdistance(float viewdistance) {
     mViewdistance = viewdistance;
 }
+
 
 float World::getViewdistance() {
     return mViewdistance;
@@ -74,6 +78,7 @@ OID World::getGroup(std::string name) {
     return group->gid;
 }
 
+
 void World::addToGroup(OID gid, Entity* member) {
     if (member == NULL) {
         logger->error() << "No object given while trying to add object to group.\n";
@@ -89,7 +94,7 @@ void World::addToGroup(OID gid, Entity* member) {
     
 // Messaging
 
-void World::sendMessage(OID delay, OID sender /* = 0 */, OID recvid /* = 0 */, string type, string text, void* blob) {
+void World::sendMessage(OID delay, OID sender /* = 0 */, OID recvid /* = 0 */, std::string type, std::string text, void* blob) {
     /*
     //logger->trace() << "sendMessageT(dly=" << delay << ", sdr=" << sender << ", gid=" << groupid << ", txt=" << text << ")" << "\n";
     mTiming.advanceDelta();
@@ -118,6 +123,7 @@ void World::spawnObject(Entity *object) {
     // logger->debug() << serid << " spawn complete.\n";
 }
 
+
 void World::fragObject(Entity *object) {
     if (object->oid == 0) return;
     mObjects.remove(object);
@@ -126,6 +132,7 @@ void World::fragObject(Entity *object) {
     object->frag();
     object->oid = 0;
 }
+
 
 void World::bagFragged() {
     // Finally delete objects which where fragged before.
@@ -148,6 +155,7 @@ void World::advanceTime(int deltamsec) {
     }
     //logger->trace() << getSerial() << ": " << mHour << " " << mMinute << " " << mSecond << " " << mDeltacycle << "\n";
 }
+
 
 void World::clusterObjects() {
     try {
@@ -173,6 +181,7 @@ void World::clusterObjects() {
         logger->error() << "Could not cluster world: " << s << "\n";
     }
 }
+
 
 void World::dispatchMessages() {
     /*
@@ -208,6 +217,7 @@ void World::dispatchMessages() {
     }
 }
 
+
 void World::animateObjects() {
     //logger->trace() << "animateObjects()\n";
     float spf = mTiming.getSPF();
@@ -223,6 +233,7 @@ void World::animateObjects() {
     }
 }
 
+
 void World::transformObjects() {
     //logger->trace() << "transformObjects()\n";
 
@@ -237,6 +248,7 @@ void World::transformObjects() {
         sub->transformObjects();
     }
 }
+
 
 void World::setupView(float* pos, float* ori) {
     // Find objects in visible range.
@@ -262,6 +274,7 @@ void World::setupView(float* pos, float* ori) {
     }
 }
 
+
 bool World::drawBack() {
     //logger->trace() << "drawBack()\n";
     bool any = false;
@@ -275,6 +288,7 @@ bool World::drawBack() {
     
     return true;
 }
+
 
 void World::drawSolid() {
     //logger->trace() << "drawSolid()\n";
@@ -301,6 +315,7 @@ void World::drawSolid() {
         sub->drawSolid();
     }
 }
+
 
 void World::drawEffect() {
     //logger->trace() << "drawEffect()\n";
@@ -360,154 +375,6 @@ std::list<Entity*>* World::getGeoInterval(float* min2f, float* max2f, bool addun
     return found;
 }
 
-string World::getNames(std::list<Entity*>* objects) {
-    if (objects == NULL) objects = &mObjects;
-    stringstream s;
-    s << "[";
-
-    for(Entity* o: *objects) {
-        s << " ";
-        s << (o->name);
-        s << "#";
-        s << (o->oid);
-        s << "(";
-
-        for(OID tag: o->tags) {
-            s << " " << tag << " ";
-        }
-        s << ")";
-    }
-    s << " ]";
-    return s.str();
-}
-
-std::list<Entity*>* World::filterByTags(Entity* ex, std::set<OID>* rolemask, bool all, int maxamount, std::list<Entity*>* objects) {
-    std::list<Entity*>* result = new std::list<Entity*>;
-    assert(result != NULL);
-    int amount = maxamount;
-    if (objects == NULL) objects = &mObjects;
-
-    for(Entity* object: *objects) {
-        if (amount == 0) break;
-        if (object->oid == 0) continue;
-        // Filter Condition
-        if (all) {
-            if (!object->allTags(rolemask)) continue;
-        } else {
-            if (!object->anyTags(rolemask)) continue;
-        }
-        if (object == ex) continue;
-        amount--;
-        result->push_back(object);
-    }
-    return result;
-}
-
-std::list<Entity*>* World::filterByRange(Entity* ex, float* origin, float minrange, float maxrange, int maxamount, std::list<Entity*>* objects) {
-    std::list<Entity*>* result = new std::list<Entity*>;
-    assert(result != NULL);
-    int amount = maxamount;
-    bool all = false;
-    if (objects == NULL) {
-        //objects = &mObjects;
-        all = true;
-        float maxrange_ = maxrange + 1;
-        float min[] = {origin[0] - maxrange_, origin[2] - maxrange_};
-        float max[] = {origin[0] + maxrange_, origin[2] + maxrange_};
-        objects = getGeoInterval(min, max);
-        //logger->trace() << "clustered:" << objects->size() << " vs " << mObjects.size() << "\n";
-    }
-
-    for(Entity* object: *objects) {
-        if (amount == 0) break;
-        if (object == ex) continue;
-        if (object->oid == 0) continue;
-        // Filter Condition
-        float diff[3];
-        vector_sub(diff, origin, object->pos0);
-        float d2 = vector_dot(diff, diff);
-        //float d = vector_distance(origin, object->mPos);
-        float r1 = fmax(0.0f, minrange - object->radius);
-        float r2 = maxrange + object->radius;
-        if (d2 < r1 * r1 || d2 > r2 * r2) continue;
-        amount--;
-        result->push_back(object);
-    }
-    if (all) {
-        // Add global objects to result.
-        result->insert(result->end(), mUncluster.begin(), mUncluster.end());
-        // Cluster-Result is always freshly allocated for us => delete.
-        delete objects;
-    }
-    return result;
-}
-
-std::list<Entity*>* World::filterByName(Entity* ex, char* name, int maxamount, std::list<Entity*>* objects) {
-    std::list<Entity*>* result = new std::list<Entity*>;
-    assert(result != NULL);
-    int amount = maxamount;
-    if (objects == NULL) objects = &mObjects;
-
-    for(Entity* object: *objects) {
-        if (amount == 0) break;
-        if (object == ex) continue;
-        if (object->oid == 0) continue;
-        // Filter Condition
-        if (strcmp(object->name.c_str(), name) != 0) continue;
-        amount--;
-        result->push_back(object);
-    }
-    return result;
-}
-
-std::list<Entity*>* World::filterByBeam(Entity* ex, float* pointa, float* pointb, float radius, int maxamount, std::list<Entity*>* objects) {
-    float* x1 = pointa;
-    float* x2 = pointb;
-    std::list<Entity*>* result = new std::list<Entity*>;
-    assert(result != NULL);
-    int amount = maxamount;
-    if (objects == NULL) objects = &mObjects;
-
-    for(Entity* object: *objects) {
-        if (amount == 0) break;
-        if (object == ex) continue;
-        if (object->oid == 0) continue;
-        // Filter Condition
-
-        float* x0 = object->pos0;
-        float u[] = {x0[0] - x1[0], x0[1] - x1[1], x0[2] - x1[2]};
-        float v[] = {x2[0] - x1[0], x2[1] - x1[1], x2[2] - x1[2]};
-        float a = u[0] * v[0] + u[1] * v[1] + u[2] * v[2];
-        float b = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
-        float delta = a / b;
-
-        //logger->trace() << "delta: " << delta << "\n";
-
-        if (delta < -0.01) continue;
-        if (delta > +1.01) continue;
-
-        float p[] = {
-            x1[0] + delta * (x2[0] - x1[0]),
-            x1[1] + delta * (x2[1] - x1[1]),
-            x1[2] + delta * (x2[2] - x1[2])
-        };
-
-        float dv[] = {
-            p[0] - x0[0],
-            p[1] - x0[1],
-            p[2] - x0[2]
-        };
-
-        float d2 = dv[0] * dv[0] + dv[1] * dv[1] + dv[2] * dv[2];
-        float is = radius + object->radius;
-
-        if (d2 > is * is) continue;
-
-        amount--;
-        result->push_back(object);
-    }
-    return result;
-}
 
 float World::constrainParticle(Entity* ex, float* worldpos, float radius) {
     float depth = 0;
