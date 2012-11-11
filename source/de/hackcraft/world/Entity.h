@@ -66,8 +66,6 @@ public: // Basic Object attributes for managing.
     OID oid;
     /** Position for clustering, targeting and placing. */
     vec3 pos0;
-    /** Radius for clustering and visibility. */
-    float radius;
     /** Basic object orientation. */
     quat ori0;
     /** Age in seconds since spawn, updated by world before animate() call. */
@@ -88,7 +86,6 @@ public:
         pos0[0] = pos0[1] = pos0[2] = float_NAN;
         ori0[0] = ori0[1] = ori0[2] = 0.0f;
         ori0[3] = 1.0f;
-        radius = 0.1f;
         seconds = 0;
     }
 

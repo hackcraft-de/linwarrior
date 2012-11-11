@@ -221,8 +221,6 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
 
     vector_cpy(this->pos0, traceable->pos);
     quat_cpy(this->ori0, traceable->ori);
-    
-    this->radius = rigged->radius;
 
     vector_cpy(target->pos0, traceable->pos);
     
@@ -542,7 +540,6 @@ void cMech::animate(float spf) {
     // Write back.
     vector_cpy(this->pos0, traceable->pos);
     quat_cpy(this->ori0, traceable->ori);
-    this->radius = rigged->radius;
 }
 
 
