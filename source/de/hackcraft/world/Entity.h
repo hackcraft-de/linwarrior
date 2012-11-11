@@ -20,7 +20,6 @@ class Entity;
 
 #include <algorithm>
 #include <map>
-#include <set>
 #include <string>
 #include <vector>
 
@@ -81,11 +80,6 @@ public: // Components
     /** Components of subsystems this entity is built from. */
     std::vector<Component*> components;
 
-public: // Object Tags
-
-    /** Tags (IDs, Social-Roles, Parties, States...) this object has (=groups?). */
-    std::set<OID> tags;
-
 public:
 
     Entity() {
@@ -99,35 +93,6 @@ public:
     }
 
     virtual ~Entity() {
-    }
-
-    /** Check whether this Object has at least one of the given tags. */
-    bool anyTags(std::set<OID>* tagset) {
-        std::set<OID> result;
-        std::set_intersection(tags.begin(), tags.end(), tagset->begin(), tagset->end(), std::inserter(result, result.begin()));
-        return (!result.empty());
-    }
-
-    /** Check whether this Object has all the given tags. */
-    bool allTags(std::set<OID>* tagset) {
-        std::set<OID> result;
-        std::set_intersection(tags.begin(), tags.end(), tagset->begin(), tagset->end(), std::inserter(result, result.begin()));
-        return (result.size() == tagset->size());
-    }
-
-    /** Check whether this Object has the given tag. */
-    bool hasTag(OID tag) {
-        return (tags.find(tag) != tags.end());
-    }
-
-    /** Add a tag to this object. */
-    void addTag(OID tag) {
-        tags.insert(tag);
-    }
-
-    /** Remove a tag from this object. */
-    void remTag(OID tag) {
-        tags.erase(tag);
     }
 
     /** Called right after object was spawned into the world. */
