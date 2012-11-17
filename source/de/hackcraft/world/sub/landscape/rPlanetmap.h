@@ -40,16 +40,7 @@ struct rTree;
  */
 class rPlanetmap : public Component {
 private:
-    static Logger* logger;
-    static const float oneOver256;
-    static const float decalGridSize;
-public:
-    /** Instance counter. */
-    static int sInstances;
-    /** Instance shared Textures. */
-    static std::vector<long> sGrounds;
-    static std::vector<long> sGrasses;
-
+    /** Growth and foliage template class. */
     struct Growth {
         enum Rendertype {
             BILLBOARD,
@@ -67,11 +58,20 @@ public:
             this->rendertype = rendertype;
         }
     };
-    static std::vector<rPlanetmap::Growth*> sGrowth;
-
+    
+    /** LRU Surface Cache-Tile. */
+    struct sPatch {
+        // Number of accesses last frame.
+        unsigned long touches;
+        // Cache key - spatial index.
+        unsigned long key;
+        // Cached Surface Data.
+        OID heightcolor[(1UL << PLANETMAP_TILESIZE)*(1UL << PLANETMAP_TILESIZE)];
+        long normal[(1UL << PLANETMAP_TILESIZE)*(1UL << PLANETMAP_TILESIZE)];
+    };
+    
 public:
-    /** Surface Modifiction */
-
+    /** Surface Modification */
     struct sMod {
         float pos[3];
         float range;
@@ -86,20 +86,28 @@ public:
         sMod() { type = MODTYPE_SMOOTHROUND; pos[0] = pos[1] = pos[2] = 0.0f; range = 10.0f; height = 0.0f; }
         float getModifiedHeight(float x, float y, float h);
     };
-    /** All effective surface modifictions. */
+    
+private:
+    static Logger* logger;
+    /** Instance counter. */
+    static int sInstances;
+    /** Constant for 1.0 divided by 256.0 for random number range conversion. */
+    static const float oneOver256;
+    /** Foliage is generated and rendered in blocks of this size. */
+    static const float decalGridSize;
+    /** Three times repeating permutation of the numbers 0 to 255 (inclusive). */
+    static unsigned char perms[3 * 256];
+    /** Instance shared ground textures. */
+    static std::vector<long> sGrounds;
+    /** Instance shared foliage textures. */
+    static std::vector<long> sGrasses;
+    /** Growth and foliage template objects. */
+    static std::vector<rPlanetmap::Growth*> sGrowth;
+
+public:
+    /** Lists all effective surface modifications. */
     std::vector<sMod*> mods;
-
-    /** LRU Surface Cache-Tile. */
-
-    struct sPatch {
-        // Number of accesses last frame.
-        unsigned long touches;
-        // Cache key - spatial index.
-        unsigned long key;
-        // Cached Surface Data.
-        OID heightcolor[(1UL << PLANETMAP_TILESIZE)*(1UL << PLANETMAP_TILESIZE)];
-        long normal[(1UL << PLANETMAP_TILESIZE)*(1UL << PLANETMAP_TILESIZE)];
-    };
+private:
     /** LRU Surface Cache. */
     maptype<unsigned long, sPatch*> patches;
     /** Tree template for drawing of all trees. */
@@ -110,6 +118,7 @@ public:
     double vegetation;
     /** Ground texture number used in rendering */
     int groundtype;
+    
 public:
     rPlanetmap();
     rPlanetmap(Propmap* properties);
@@ -127,6 +136,7 @@ public:
     virtual void drawSolid();
     /** Draw Decals surrounding the current camera position. */
     virtual void drawEffect();
+    
 protected:
     void init(Propmap* properties);
     

@@ -35,10 +35,13 @@ int rPlanetmap::sInstances = 0;
 
 std::vector<long> rPlanetmap::sGrounds;
 std::vector<long> rPlanetmap::sGrasses;
+
 std::vector<rPlanetmap::Growth*> rPlanetmap::sGrowth;
 
 const float rPlanetmap::oneOver256 = 0.003906f;
 const float rPlanetmap::decalGridSize = 16;
+
+unsigned char rPlanetmap::perms[3 * 256];
 
 
 inline float rPlanetmap::sMod::getModifiedHeight(float x, float z, float h) {
@@ -129,6 +132,20 @@ void rPlanetmap::init(Propmap* properties) {
     
     sInstances++;
     if (sInstances == 1) {
+        
+        // Pseudorandom Permutation.
+        if (true) {
+            unsigned char b = 131;
+
+            loopi(3 * 256) {
+                if ((i & 255) == 255) {
+                    perms[i] = 255;
+                } else {
+                    perms[i] = b = Noise::LFSR8(b);
+                }
+            }
+        }
+        
         {
             logger->info() << "Generating solid ground...\n";
             unsigned char seed = 131;
@@ -1038,22 +1055,6 @@ void rPlanetmap::drawStone(float x, float h, float z, float scaleX, float scaleH
 void rPlanetmap::drawEffect() {
     
     const float totaldensity = vegetation;
-
-    // Pseudorandom Permutation.
-    static unsigned char perms[3 * 256];
-    static bool init = true;
-    if (init) {
-        init = false;
-        unsigned char b = 131;
-
-        loopi(3 * 256) {
-            if ((i & 255) == 255) {
-                perms[i] = 255;
-            } else {
-                perms[i] = b = Noise::LFSR8(b);
-            }
-        }
-    }
 
     // Get current Camera-Matrix.
     float m[16];
