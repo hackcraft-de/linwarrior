@@ -132,6 +132,9 @@ protected:
     
     unsigned int loadMaterial();
     
+    float constrainGround(float* worldpos, float radius, float* localpos, Entity* enactor);
+    float constrainFoliage(float* worldpos, float radius, float* localpos, Entity* enactor);
+    
     void drawBillboardPlant(float x, float h, float z, float scale, float* unrotateMatrix);
     void drawStarPlant(float x, float h, float z, float scale);
     void drawTrianglePlant(float x, float h, float z, float scale);

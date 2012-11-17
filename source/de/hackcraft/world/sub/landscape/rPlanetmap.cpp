@@ -589,6 +589,18 @@ void rPlanetmap::getCachedHeight(float x, float z, float* const color) {
 
 float rPlanetmap::constrain(float* worldpos, float radius, float* localpos, Entity* enactor) {
     
+    float maxdelta = constrainGround(worldpos, radius, localpos, enactor);
+    
+    float delta = constrainFoliage(worldpos, radius,  localpos,  enactor);
+    
+    maxdelta = (maxdelta > delta) ? maxdelta : delta;
+    
+    return maxdelta;
+}
+
+
+float rPlanetmap::constrainGround(float* worldpos, float radius, float* localpos, Entity* enactor) {
+    
     //if (enactor == NULL) return 0.0;
     float localpos_[3];
     vector_cpy(localpos_, worldpos);
@@ -666,6 +678,12 @@ float rPlanetmap::constrain(float* worldpos, float radius, float* localpos, Enti
         if (localpos != NULL) vector_cpy(localpos, localpos_);
     }
     return maxdelta;
+}
+
+
+float rPlanetmap::constrainFoliage(float* worldpos, float radius, float* localpos, Entity* enactor) {
+    
+    return 0.0f;
 }
 
 
