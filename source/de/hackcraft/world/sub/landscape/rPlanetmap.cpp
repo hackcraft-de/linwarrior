@@ -699,8 +699,118 @@ float rPlanetmap::constrainGround(float* worldpos, float radius, float* localpos
 
 
 float rPlanetmap::constrainFoliage(float* worldpos, float radius, float* localpos, Entity* enactor) {
+
+    const float totaldensity = vegetation;
     
-    return 0.0f;
+    float maxdelta = 0.0f;
+
+    float p[3];
+    vector_cpy(p, worldpos);
+
+    int xlook = +1;
+    int zlook = +1;
+
+    // nan?
+    if (p[0] != p[0] || p[2] != p[2]) return maxdelta;
+
+    const float s = 1 * decalGridSize;
+    const float x = ((int) (p[0] / decalGridSize)) * decalGridSize;
+    const float z = ((int) (p[2] / decalGridSize)) * decalGridSize;
+    //cout << x << " " << z << "\n";
+
+    // Loop in positive or negative x direction (painters algorithm).
+    float i = x - s*xlook;
+    while (true) {
+        if (fabs(x + s * xlook - i) < 0.0001f) break;
+        float x_ = i;
+
+        // Loop in positive or negative z direction (painters algorithm).
+        float j = z - s*zlook;
+        while (true) {
+            if (fabs(z + s * zlook - j) < 0.0001f) break;
+            float z_ = j;
+
+            //float dx = (-p[0] - x_ - 0.5f * decalGridSize);
+            //float dz = (-p[2] - z_ - 0.5f * decalGridSize);
+            //float dist2 = dx * dx + dz*dz;
+
+            // Field index key
+            unsigned char a = (char) x_;
+            unsigned char b = (char) z_;
+            
+            unsigned char key = Noise::permutation2d(perms, a, b);
+
+            key = Noise::simplex3(a, b, 0.1f, 123) * 255.0f;
+
+            //float plantscale = 1.0f;
+            //float plantdensity = (totaldensity * 10.00f * key) * oneOver256;
+            //int visibleplants = plantdensity * opacity;
+
+            key = Noise::simplex3(a, b, 0.1f, 234) * 255.0f;
+            float treedensity = (totaldensity * 1.85f * key) * oneOver256;
+            float visibletrees = treedensity;
+                
+            key = Noise::simplex3(a, b, 0.1f, 217) * 255.0f;
+            //float stonedensity = (totaldensity * 4.00f * key) * oneOver256;
+            //float visiblestones = stonedensity;
+
+            //cout << "opacity " << opacity << "  density " << density << "\n";
+
+            // Load LFSR using position, key and some scrambling.
+            unsigned short lfsr16 = (13 * key) ^ (17 * a) ^ (23 * b);
+
+            // trees
+            float delta = constrainTrees(x_, z_, visibletrees, lfsr16, worldpos, radius, localpos, enactor);
+            
+            maxdelta = (maxdelta > delta) ? maxdelta : delta;
+
+            j += decalGridSize*zlook;
+        } // while j z
+
+        i += decalGridSize*xlook;
+    } // while i x
+    
+    return maxdelta;
+}
+
+
+float rPlanetmap::constrainTrees(float gridX, float gridZ, int visibletrees, unsigned int lfsr16, float* worldpos, float radius, float* localpos, Entity* enactor) {
+    
+    float maxdelta = 0.0f;
+    
+    //logger->info() << "gridX/Y: " << gridX << " " << gridZ << "  visibletrees: " << visibletrees << "\n";
+    
+    loopi(visibletrees) {
+        
+        lfsr16 = Noise::LFSR16(lfsr16);
+        unsigned char a = lfsr16;
+        unsigned char b = lfsr16 >> 8;
+
+        float posX = gridX + decalGridSize * oneOver256 * a;
+        float posZ = gridZ + decalGridSize * oneOver256 * b;
+
+        float color[16];
+        getCachedHeight(posX, posZ, color);
+        float h = color[Landscape::BUMP];
+
+        int age = fmax(0, fmin(6, i * 0.5f + ((a + b)&1)));
+        int type = (b * b + (a >> 1))&7;
+
+        tree->tree = rTree::getCompiledTree(1230 + (b & 6), type, 2 + age);
+
+        vector_set(tree->pos0, posX, h - 0.2, posZ);
+        //vector_set(tree->pos0, (posX), (h)+0.5, (posZ));
+
+        float delta = tree->constrain(worldpos, radius, localpos, enactor);
+//        if (delta > 0) {
+//                logger->info() << tree->pos0[0] << "  " << tree->pos0[1] << "  " << tree->pos0[2] << "\n";
+//        }
+
+        maxdelta = (maxdelta > delta) ? maxdelta : delta;
+        
+    } // loopi visibletrees
+    
+    return maxdelta;
 }
 
 
