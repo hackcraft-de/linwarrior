@@ -1192,7 +1192,10 @@ void BackgroundSystem::drawRain() {
                 GL::glVertex3fv(p->pos);
                 p->stepEuler(0.1, 0);
                 //std::logger->trace() << p->pos[0] << " " << p->pos[1] << " " << p->pos[2] << "\n";
-                if (p->pos[1] < -pnt[1]-10) rain.remove(p);
+                if (p->pos[1] < -pnt[1]-10) {
+                    rain.remove(p);
+                    delete p;
+                }
             }
             GL::glEnd();
         }
