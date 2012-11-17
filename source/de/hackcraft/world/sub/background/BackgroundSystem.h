@@ -91,6 +91,7 @@ private:
     void drawSun();
     void drawOrbit();
     void drawRain();
+    void drawPollution();
     
 private:
     static BackgroundSystem* instance;
@@ -102,10 +103,14 @@ private:
     float hour;
     /** Currently simulated rain particles. */
     std::list<Particle*> rain;
+    /** Currently simulated pollution particles. */
+    std::list<Particle*> dust;
     /** Current randomizer seed backup (make local var?). */
     int seed;
     /** Total amount of rain drops at a time. */
     int raininess;
+    /** Factor for the max amount of dust particles generated per seconds. */
+    float dustiness;
     /** Zero to negative shift (upward) makes horizontal curvature visible. */
     float heightshift;
     /** Relative amount of clouds [0,1]. */

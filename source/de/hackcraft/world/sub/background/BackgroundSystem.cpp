@@ -43,6 +43,7 @@ enum Texids {
     T_CLOUDS_NEGZ, T_CLOUDS_POSZ,
 };
 
+
 unsigned int gPermutationTexture256 = 0;
 
 BackgroundSystem* BackgroundSystem::instance = NULL;
@@ -87,6 +88,7 @@ void BackgroundSystem::init(Propmap* properties) {
     windspeed = fmax(0, fmin(properties->getProperty("backscape.windspeed", 0.0f), 10000));
     raininess = fmax(0, fmin(properties->getProperty("backscape.raininess", 0.0f), 1));
     cloudiness = fmax(0, fmin(properties->getProperty("backscape.cloudiness", 0.0f), 1));
+    dustiness = fmax(0, fmin(properties->getProperty("backscape.dustiness", 0.0f), 1));
 
     hour = (World::getInstance() == NULL) ? 0 : World::getInstance()->getTiming()->getTime24();
     
@@ -97,28 +99,6 @@ void BackgroundSystem::init(Propmap* properties) {
 
 
 void BackgroundSystem::initTextures() {
-    /*
-    struct Texture {
-        const char* filename;
-        bool soft, repeat;
-        int id;
-    } texturedefs[] = {
-        { "data/base/decals/mountain.tga", true, false, T_MOUNTAIN},
-    };
-
-    loopi(1) {
-        //if (i == 1) continue;
-        int w, h, bpp;
-        unsigned char* texels = Texfile::loadTGA(texturedefs[i].filename, &w, &h, &bpp);
-        bool soft = texturedefs[i].soft;
-        bool repeat = texturedefs[i].repeat;
-        unsigned int texname;
-        texname = SGL::glBindTexture2D(0, true, soft, repeat, repeat, w, h, bpp, texels);
-        int id = texturedefs[i].id;
-        textures[id] = texname;
-        delete[] texels;
-    }
-     */
 
     if (1) {
         logger->info() << "Generating Permutation 256..." << "\n";
@@ -449,7 +429,9 @@ void BackgroundSystem::initTextures() {
     }
 }
 
+
 void BackgroundSystem::advanceTime(int deltamsec) {
+    
     float speed = 1;
     // every hour
     speed *= 24;
@@ -467,7 +449,9 @@ void BackgroundSystem::advanceTime(int deltamsec) {
     //hour = 12;
 }
 
+
 bool BackgroundSystem::drawBack() {
+    
     // Reference: dawn sunrise daylight sunset dusk darkness
 
     // Push random seed because the current seed is going to be
@@ -548,6 +532,7 @@ bool BackgroundSystem::drawBack() {
         drawLowerDome();
         //drawGround();
         drawRain();
+        drawPollution();
     } else {
         //drawOrbit();
         //drawUpperDome();
@@ -561,7 +546,9 @@ bool BackgroundSystem::drawBack() {
     return true;
 }
 
+
 void BackgroundSystem::drawGalaxy() {
+    
     GL::glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_TEXTURE_BIT);
     {
         GLS::glUseProgram_bkplaintexture();
@@ -675,7 +662,9 @@ void BackgroundSystem::drawGalaxy() {
     GL::glPopAttrib();
 }
 
+
 void BackgroundSystem::drawUpperDome() {
+    
     GL::glPushAttrib(GL_ALL_ATTRIB_BITS | GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
         GLS::glUseProgram_bkplaincolor();
@@ -734,7 +723,9 @@ void BackgroundSystem::drawUpperDome() {
     GL::glPopAttrib();
 }
 
+
 void BackgroundSystem::drawLowerDome() {
+    
     GL::glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
         GLS::glUseProgram_bkplaincolor();
@@ -792,7 +783,9 @@ void BackgroundSystem::drawLowerDome() {
     GL::glPopAttrib();
 }
 
+
 void BackgroundSystem::drawGround() {
+    
     GL::glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_TEXTURE_BIT);
     {
         GLS::glUseProgram_bkplaintexture();
@@ -855,7 +848,9 @@ void BackgroundSystem::drawGround() {
     GL::glPopAttrib();
 }
 
+
 void BackgroundSystem::drawClouds() {
+    
     GL::glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
         GLS::glUseProgram_bkplaintexture();
@@ -944,6 +939,7 @@ void BackgroundSystem::drawClouds() {
 
 /*
 void cDomeBackground::drawMountains() {
+
     srand(762381);
     GL::glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
     {
@@ -998,6 +994,7 @@ void cDomeBackground::drawMountains() {
 
 
 void BackgroundSystem::drawSun() {
+    
     if (hour < 5.00 || hour > 22.00) return;
 
     // Setup rotation only matrix.
@@ -1075,7 +1072,9 @@ void BackgroundSystem::drawSun() {
     GL::glPopAttrib();
 }
 
+
 void BackgroundSystem::drawOrbit() {
+    
     if (hour > 10.00 && hour < 16.00) return;
 
     // Setup rotation only matrix.
@@ -1128,7 +1127,9 @@ void BackgroundSystem::drawOrbit() {
     GL::glPopAttrib();
 }
 
+
 void BackgroundSystem::drawRain() {
+    
     srand(seed);
     seed = rand();
 
@@ -1200,3 +1201,106 @@ void BackgroundSystem::drawRain() {
     }
     GL::glPopAttrib();
 }
+
+
+void BackgroundSystem::drawPollution() {
+    
+    srand(seed);
+    seed = rand();
+
+    // Get current Camera-Matrix.
+    float m[16];
+    GL::glGetFloatv(GL_MODELVIEW_MATRIX, m);
+    // Position from 4th Col.
+    float pnt[3];
+    loop3i(pnt[i] = m[12 + i]);
+    // Reset Position on 4th Col.
+    loop3i(m[12 + i] = 0);
+    // Apply transpose-inverse to position.
+    float n[16];
+    memcpy(n, m, sizeof (float) *16);
+    matrix_transpose(m);
+    matrix_apply2(m, pnt);
+    vector_scale(pnt, pnt, -1.0f);
+    //logger->trace() << "height over ground: " << pnt[1] << "\n";
+    //logger->trace() << "Position: " << pnt[0] << " " << pnt[2] << "\n";
+    
+    float spf = World::getInstance()->getTiming()->getSPF();
+    
+    float cutoff = 40;
+    float cutoff2 = cutoff * cutoff;
+    float dist = cutoff;
+    float visdist2 = cutoff2;//0.25f * cutoff2;
+    
+    if (dustiness > 0) {
+
+        int n = 1000 * dustiness * spf;
+        
+        loopi(n) {
+            if (dust.size() >= 10000) break;
+            
+            Particle* p = new Particle();
+            
+            float sample[3] = {
+                (rand()%100) * 0.02f - 1.0f,
+                (rand()%100) * 0.02f - 1.0f,
+                (rand()%100) * 0.02f - 1.0f
+            };
+            
+            float r2 = vector_dot(sample, sample);
+            
+            if (r2 < 1.0f) {
+                vector_set(p->pos, pnt[0] + sample[0]*dist, pnt[1] + sample[1]*dist, pnt[2] + sample[2]*dist);
+                vector_cpy(p->old, p->pos);
+                vector_set(p->vel, 0, 0, 0);
+                vector_set(p->fce, 0, 0, 0);
+                p->fuel = 1.0f + 3.0f * 0.01f * (rand()%100);
+                p->timer = 0;
+                dust.push_back(p);
+            }
+        }
+    }
+        
+    GL::glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT);
+    {
+        GLS::glUseProgram_fgplaincolor();
+        //GL::glLineWidth(1.25);
+        GL::glPointSize(3.25);
+
+        GL::glPushMatrix();
+        {
+            //GL::glLoadIdentity();
+            //GL::glMultMatrixf(n);
+
+            GL::glBegin(GL_POINTS);
+
+            foreachNoInc(i, dust) {
+                Particle* p = *i++;
+                
+                float d[3];
+                vector_sub(d, pnt, p->pos);
+                float d2 = vector_dot(d, d);
+                
+                // Delta with time range from 0 to 1.
+                double delta = p->timer / p->fuel;
+                
+                if (d2 < visdist2) {
+                    float opacity = fmax(0.0, 0.3 * sin(0.0 + delta * M_PI) - 0.0 * (d2/cutoff2));
+                    GL::glColor4f(0.5, 0.5, 0.5, opacity);
+                    GL::glVertex3fv(p->pos);
+                }
+                
+                p->timer += spf;
+                if (delta >= 1.0f) {
+                    dust.remove(p);
+                    delete p;
+                }
+            }
+            GL::glEnd();
+        }
+        GL::glPopMatrix();
+
+    }
+    GL::glPopAttrib();
+}
+
