@@ -25,6 +25,7 @@ private:
         JOINED,
         ACTIVE
     };
+    State state;
 };
 
 #endif	/* RPARTYAVATAR_H */
