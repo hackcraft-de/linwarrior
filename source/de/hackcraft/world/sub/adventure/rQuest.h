@@ -12,9 +12,7 @@
 
 #include "de/hackcraft/world/Component.h"
 
-#include <vector>
-
-class rItem;
+class rInventory;
 
 
 class rQuest : public Component {
@@ -22,8 +20,8 @@ public:
     rQuest();
     virtual ~rQuest();
 private:
-    std::vector<rItem*> requirements;
-    std::vector<rItem*> rewards;
+    rInventory* requirements;
+    rInventory* rewards;
 };
 
 #endif	/* RQUEST_H */
