@@ -961,7 +961,7 @@ void rPlanetmap::drawSolid() {
                         }
                          */
 
-                        if (outside || alpha_o <= 0.0f || alpha_i <= 0.0f) {
+                        if (outside || ((alpha_o <= 0.0f || alpha_i <= 0.0f) && (ringInnerRadius > 0))) {
                             skip = true;
                             continue;
                         } else if (skip) {
