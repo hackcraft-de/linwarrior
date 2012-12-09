@@ -53,21 +53,29 @@ Bound-Components
 An World-Object may be built out of several self enclosed Component-Objects.
 Simulation-step calls are redirected to components to update their own state,
 to determine outcomes of collision and interaction and finally to render themselves.
+
 The simulator/simulation-world doesn't know these inner components of an object.
 Components provide an interface through input and output attributes/variables.
 These signals can be bound between Components. Ie. an output variable of one Component
 can be bound to an input variable of another Component of that object.
+
 Binding is done via copying of signal variable contents when stepping the simulation.
 Also this leads to variable-redundancy and a lot of copying and more lines of code
 the advantages of this simple concept are great:
-- Components are self-contained with no immediate inter-dependency.
+
+- Components are self-contained with no immediate inter-dependency (beyond sub-systems-scope).
 - Components are reusable in unthought ways and solve individual problems.
 - Exchangeable behavior (eg. single particle to multi particle-mesh physics).
 - Interaction of components is restricted to a single place where bound variables are copied.
 - Objects are just defined by their components and their bindings.
 - Soft-Bindings may be defined in configuration files to customize behavior (someday - hardcoded now).
-- Soft-Bindings be visualised and changed at runtime to construct and 'reprogram' objects (someday).
-- May be extended to component-hierarchies (Objects are already systems of subsystems).
+- Soft-Bindings may be visualized and changed at runtime to construct and 'reprogram' objects (someday).
+
+The Components are parts of individual (sub-)systems.
+Such systems take care about animation of their components.
+Through bindings values can ripple through different systems.
+Therefore it is important to know the relative animation order of these (sub-)systems, first to last:
+Chat, Background, Trigger, Cityscape, Landscape, Mobile, Physics, Model, Weapon, Computer, Camera, Misc.
 
 
 
