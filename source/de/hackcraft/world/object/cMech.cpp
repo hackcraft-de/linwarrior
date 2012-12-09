@@ -496,22 +496,6 @@ void cMech::animate(float spf) {
     //quat_cpy(this->ori0, traceable->ori);
     //this->radius = traceable->radius;
 
-    /* Index of Component order
-     * ------------------------
-     * COLLIDER
-     * TARGET
-     * COMPUTERs
-     * CONTROLLER
-     * MOBILE
-     * TRACEABLE
-     * RIGGED
-     * NAMEABLE
-     * CAMERA
-     * WEAPON
-     * EXPLOSION
-     * Pad
-     */
-
     // RIGGED
     if (rigged != NULL) {
         // from TARGET: Fixme tags
