@@ -2,7 +2,6 @@
 // Project:  LinWarrior 3d
 // Home:     hackcraft.de
 
-#version 120
 
 varying vec3 normal, position, lightdir;
 varying float direction;
@@ -70,6 +69,12 @@ vec2 ofse(int i, float r, vec2 p)
 }
 
 
+vec2 warpNone(vec2 pix)
+{
+    return pix;
+}
+
+
 vec2 warpMono(vec2 pix)
 {
     float f = -8.1;
@@ -94,12 +99,12 @@ vec2 warpDual(vec2 pix)
 
 void main()
 {
-	vec2 pix = warpDual(gl_TexCoord[0].xy);
+	vec2 pix = warpNone(gl_TexCoord[0].xy);
 	//float nx = 3.0 * ofs * (noiz3(gl_TexCoord[0].x, gl_TexCoord[0].y, 0.0) - 0.5);
 	//float ny = 3.0 * ofs * (noiz3(gl_TexCoord[0].y, gl_TexCoord[0].x, 0.0) - 0.5);
 	//pix = vec2(ofs*0.0 + 0.5 - 0.5 * cos(pix.x*3.14), 0.5 - 0.5 * cos(pix.y*3.14));
 
-	//float str = 60.0 * linear(texture2DLod(dep,gl_TexCoord[0].xy, 0.0).x);
+	//float str = 60.0 * linear(textureLod(dep,gl_TexCoord[0].xy, 0.0).x);
 	float str = 20.0;
 	//pix = vec2(pix.x + str * ofs*(0.5 - 0.5 * cos(pix.x*31.4)), pix.y + str * ofs*(0.5 - 0.5 * cos(pix.y*31.4)));
 
@@ -108,12 +113,12 @@ void main()
 	// Color blur
 	float r = rd;
 	float calpha = 0.3;
-	vec4 c0 = texture2DLod(tex,pix, 0.0);
-	vec4 c1 = mix(c0, texture2DLod(tex,pix+vec2(ds[1]*r,dc[1]*r), 0.0), calpha); r += rd;
-	vec4 c2 = mix(c1, texture2DLod(tex,pix+vec2(ds[2]*r,dc[2]*r), 0.0), calpha); r += rd;
-	vec4 c3 = mix(c2, texture2DLod(tex,pix+vec2(ds[3]*r,dc[3]*r), 0.0), calpha); r += rd;
-	vec4 c4 = mix(c3, texture2DLod(tex,pix+vec2(ds[4]*r,dc[4]*r), 0.0), calpha); r += rd;
-	vec4 c5 = mix(c4, texture2DLod(tex,pix+vec2(ds[5]*r,dc[5]*r), 0.0), calpha); r += rd;
+	vec4 c0 = textureLod(tex,pix, 0.0);
+	vec4 c1 = mix(c0, textureLod(tex,pix+vec2(ds[1]*r,dc[1]*r), 0.0), calpha); r += rd;
+	vec4 c2 = mix(c1, textureLod(tex,pix+vec2(ds[2]*r,dc[2]*r), 0.0), calpha); r += rd;
+	vec4 c3 = mix(c2, textureLod(tex,pix+vec2(ds[3]*r,dc[3]*r), 0.0), calpha); r += rd;
+	vec4 c4 = mix(c3, textureLod(tex,pix+vec2(ds[4]*r,dc[4]*r), 0.0), calpha); r += rd;
+	vec4 c5 = mix(c4, textureLod(tex,pix+vec2(ds[5]*r,dc[5]*r), 0.0), calpha); r += rd;
 	vec4 color0 = c0;
 	vec4 colorn = c5;
 	vec4 blur = colorn - color0;
@@ -124,27 +129,27 @@ void main()
 
 	// Depth blur
 	float dalpha = 0.7;
-	float d0nonlin = texture2DLod(dep,pix, 0.0).x;
+	float d0nonlin = textureLod(dep,pix, 0.0).x;
 	float d0 = linear(d0nonlin);
 	rd = ofs * 0.33 * 1.5;
 	r = ofs * 1.0;
-	float d1_ = linear(texture2DLod(dep,pix+ofse(1,r, pix), 0.0).x);
+	float d1_ = linear(textureLod(dep,pix+ofse(1,r, pix), 0.0).x);
 	float d1 = mix(d0, d1_, dalpha); r += rd;
-	float d2_ = linear(texture2DLod(dep,pix+ofse(2,r, pix), 0.0).x);
+	float d2_ = linear(textureLod(dep,pix+ofse(2,r, pix), 0.0).x);
 	float d2 = mix(d1, d2_, dalpha); r += rd;
-	float d3_ = linear(texture2DLod(dep,pix+ofse(3,r, pix), 0.0).x);
+	float d3_ = linear(textureLod(dep,pix+ofse(3,r, pix), 0.0).x);
 	float d3 = mix(d2, d3_, dalpha); r += rd;
-	float d4_ = linear(texture2DLod(dep,pix+ofse(4,r, pix), 0.0).x);
+	float d4_ = linear(textureLod(dep,pix+ofse(4,r, pix), 0.0).x);
 	float d4 = mix(d3, d4_, dalpha); r += rd;
-	float d5_ = linear(texture2DLod(dep,pix+ofse(5,r, pix), 0.0).x);
+	float d5_ = linear(textureLod(dep,pix+ofse(5,r, pix), 0.0).x);
 	float d5 = mix(d4, d5_, dalpha); r += rd;
 	float depth0 = d0;
 	float depthn = d5;
 
 	// Derive Normal
 	float e = ofs * 0.9;
-	float d0x = linear(texture2DLod(dep,pix+vec2(e, 0.0), 0.0).x);
-	float d0y = linear(texture2DLod(dep,pix+vec2(0.0, e), 0.0).x);
+	float d0x = linear(textureLod(dep,pix+vec2(e, 0.0), 0.0).x);
+	float d0y = linear(textureLod(dep,pix+vec2(0.0, e), 0.0).x);
         float xd = (d0x - d0);
         float yd = (d0y - d0);
 	vec3 nrm_ = normalize(vec3( -e * xd, -yd * e, e * e));
@@ -153,7 +158,7 @@ void main()
 //	nrm1 = transpose(gl_NormalMatrix) * nrm1;
 	vec4 nrm = vec4(nrm1, 1.0);
 
-	float d6_ = linear(texture2DLod(dep,pix+1.2*ofs*(vec2(nrm.x, nrm.y)-vec2(0.5)), 0.0).x);
+	float d6_ = linear(textureLod(dep,pix+1.2*ofs*(vec2(nrm.x, nrm.y)-vec2(0.5)), 0.0).x);
 	float d6 = mix(d5, d6_, dalpha);
 
 	// Unproject Pos
@@ -283,7 +288,7 @@ void main()
 	if (!true && gl_TexCoord[0].x < 0.5) {
 		result = vec4(vec3(pow(1.3*ao_, 1.0)), 1.0);
 	}
-#elif 1
+#elif 0
 	float mixalpha = 0.5;
 	vec4 result = vec4(1.0 * color0.rgb - pow(ao, 3.5)*0.7, 1.0);
 	result = mix(result, vec4(vec3(pow(ao_, 3.5)), 3.0), mixalpha);
