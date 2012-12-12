@@ -21,11 +21,11 @@ class Logger;
 
 class rAvatar;
 class rInventory;
-class rInventoryItem;
+class rInventoryItemAssoc;
 class rItem;
 class rParty;
-class rPartyAvatar;
-class rPartyQuest;
+class rPartyAvatarAssoc;
+class rPartyQuestAssoc;
 class rQuest;
 
 
@@ -42,7 +42,7 @@ public:
     void add(rInventory* inventory);
 
     /** Add a component to the managed components. */
-    void add(rInventoryItem* inventoryItem);
+    void add(rInventoryItemAssoc* inventoryItem);
 
     /** Add a component to the managed components. */
     void add(rItem* item);
@@ -100,9 +100,9 @@ private:
     std::map<OID,rInventory*> inventoriesIndex;
     
     /** List of allocated components of this type. */
-    std::vector<rInventoryItem*> inventoryItems;
+    std::vector<rInventoryItemAssoc*> inventoryItems;
     /** Index on id of leased components of this type. */
-    std::map<OID,rInventoryItem*> inventoryItemsIndex;
+    std::map<OID,rInventoryItemAssoc*> inventoryItemsIndex;
     
     /** List of allocated components of this type. */
     std::vector<rItem*> items;
@@ -113,9 +113,9 @@ private:
     
     std::vector<rParty*> parties;
     
-    std::vector<rPartyAvatar*> partyAvatars;
+    std::vector<rPartyAvatarAssoc*> partyAvatars;
     
-    std::vector<rPartyQuest*> partyQuests;
+    std::vector<rPartyQuestAssoc*> partyQuests;
     
     std::vector<rQuest*> quests;
 };

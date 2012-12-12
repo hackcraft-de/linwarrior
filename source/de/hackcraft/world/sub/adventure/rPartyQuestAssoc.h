@@ -1,5 +1,5 @@
 /* 
- * File:    rPartyQuest.h
+ * File:    rPartyQuestAssoc.h
  * Project: LinWarrior 3D
  * Home:    hackcraft.de
  * 
@@ -7,8 +7,8 @@
  */
 
 
-#ifndef RPARTYQUEST_H
-#define	RPARTYQUEST_H
+#ifndef RPARTYQUESTASSOC_H
+#define	RPARTYQUESTASSOC_H
 
 #include "de/hackcraft/world/Component.h"
 
@@ -16,10 +16,10 @@ class rParty;
 class rQuest;
 
 
-class rPartyQuest : public Component {
+class rPartyQuestAssoc : public Component {
 public:
-    rPartyQuest();
-    virtual ~rPartyQuest();
+    rPartyQuestAssoc();
+    virtual ~rPartyQuestAssoc();
 private:
     enum State {
         INACTIVE,
@@ -32,5 +32,5 @@ private:
     State state;
 };
 
-#endif	/* RPARTYQUEST_H */
+#endif	/* RPARTYQUESTASSOC_H */
 

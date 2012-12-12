@@ -18,8 +18,8 @@ class rParty;
 #include <vector>
 
 class rAvatar;
-class rPartyAvatar;
-class rPartyQuest;
+class rPartyAvatarAssoc;
+class rPartyQuestAssoc;
 class rQuest;
 
 class rParty : public Component {
@@ -28,8 +28,8 @@ public:
     virtual ~rParty();
 private:
     std::vector<rQuest*> quests;
-    std::map<rQuest*,rPartyQuest*> partyQuests;
-    std::map<rAvatar*,rPartyAvatar*> avatarParties;
+    std::map<rQuest*,rPartyQuestAssoc*> partyQuests;
+    std::map<rAvatar*,rPartyAvatarAssoc*> avatarParties;
 };
 
 #endif	/* RPARTY_H */

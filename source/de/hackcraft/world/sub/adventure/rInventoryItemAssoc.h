@@ -1,5 +1,5 @@
 /* 
- * File:    rInventoryItem.h
+ * File:    rInventoryItemAssoc.h
  * Project: LinWarrior 3D
  * Home:    hackcraft.de
  * 
@@ -7,19 +7,19 @@
  */
 
 
-#ifndef RINVENTORYITEM_H
-#define	RINVENTORYITEM_H
+#ifndef RINVENTORYITEMASSOC_H
+#define	RINVENTORYITEMASSOC_H
 
-class rInventoryItem;
+class rInventoryItemAssoc;
 
 #include "de/hackcraft/world/Component.h"
 
 class rItem;
 
-class rInventoryItem : public Component {
+class rInventoryItemAssoc : public Component {
 public:
-    rInventoryItem();
-    virtual ~rInventoryItem();
+    rInventoryItemAssoc();
+    virtual ~rInventoryItemAssoc();
 private:
     int amount;
     rItem* item;

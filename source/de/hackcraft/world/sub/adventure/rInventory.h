@@ -18,7 +18,7 @@ class rInventory;
 
 #include <vector>
 
-class rInventoryItem;
+class rInventoryItemAssoc;
 
 class rInventory : public Component {
 public:
@@ -37,7 +37,7 @@ private:
         INVENTORY_BUY
     };
     InventoryType type;
-    std::vector<rInventoryItem*> inventoryItems;
+    std::vector<rInventoryItemAssoc*> inventoryItems;
 };
 
 #endif	/* RINVENTORY_H */

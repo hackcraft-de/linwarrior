@@ -6,7 +6,7 @@
 
 #include "de/hackcraft/world/sub/adventure/rInventory.h"
 #include "de/hackcraft/world/sub/adventure/rItem.h"
-#include "de/hackcraft/world/sub/adventure/rInventoryItem.h"
+#include "de/hackcraft/world/sub/adventure/rInventoryItemAssoc.h"
 
 
 Logger* AdventureSystem::logger = Logger::getLogger("de.hackcraft.world.sub.adventure.AdventureSystem");
@@ -34,7 +34,7 @@ void AdventureSystem::add(rInventory* inventory) {
 }
 
 
-void AdventureSystem::add(rInventoryItem* inventoryItem) {
+void AdventureSystem::add(rInventoryItemAssoc* inventoryItem) {
     inventoryItems.push_back(inventoryItem);
     inventoryItemsIndex[inventoryItem->getId()] = inventoryItem;
 }

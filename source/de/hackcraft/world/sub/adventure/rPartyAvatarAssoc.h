@@ -1,5 +1,5 @@
 /* 
- * File:    rPartyAvatar.h
+ * File:    rPartyAvatarAssoc.h
  * Project: LinWarrior 3D
  * Home:    hackcraft.de
  * 
@@ -7,16 +7,16 @@
  */
 
 
-#ifndef RPARTYAVATAR_H
-#define	RPARTYAVATAR_H
+#ifndef RPARTYAVATARASSOC_H
+#define	RPARTYAVATARASSOC_H
 
 #include "de/hackcraft/world/Component.h"
 
 
-class rPartyAvatar : public Component {
+class rPartyAvatarAssoc : public Component {
 public:
-    rPartyAvatar();
-    virtual ~rPartyAvatar();
+    rPartyAvatarAssoc();
+    virtual ~rPartyAvatarAssoc();
 private:
     enum State {
         INVITED,
@@ -28,5 +28,5 @@ private:
     State state;
 };
 
-#endif	/* RPARTYAVATAR_H */
+#endif	/* RPARTYAVATARASSOC_H */
 
