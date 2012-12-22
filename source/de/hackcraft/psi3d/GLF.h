@@ -300,7 +300,7 @@
  * See end of file for a testdriver/sample of use.
  */
 struct GLF {
-    typedef int32_t four_bytes;
+    typedef uint32_t four_bytes;
 
 
     /**
