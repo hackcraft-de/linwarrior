@@ -15,13 +15,6 @@
 
 using std::string;
 
-#define debug_state !true
-#define debug_transitions !true
-#define debug_step !true
-
-// -------------------------------------------------------------
-
-#define NEARTO 23
 
 Logger* rController::logger = Logger::getLogger("de.hackcraft.world.sub.computer.rController");
 
@@ -46,6 +39,11 @@ rController::rController(Entity* entity, bool enable) {
 
     aimrange = 0;
     walkrange = 0;
+    nearToDistance = 23;
+
+    debugState = !true;
+    debugTransitions = !true;
+    debugStep = !true;
 }
 
 
@@ -152,7 +150,7 @@ void rController::push(OID value) {
 
 void rController::pop(std::string reason) {
 
-    if (debug_transitions) {
+    if (debugTransitions) {
         logger->debug() << object->name.c_str() << "#" << object->oid << ".pop(" << reason << ")\n";
     }
 
@@ -162,7 +160,7 @@ void rController::pop(std::string reason) {
         commandStack.pop_back();
     }
 
-    if (debug_transitions) {
+    if (debugTransitions) {
         printState();
     }
 }
@@ -170,13 +168,13 @@ void rController::pop(std::string reason) {
 
 void rController::animate(float spf) {
 
-    if (debug_state) logger->debug() << "cController::process()\n";
+    if (debugState) logger->debug() << "cController::process()\n";
 
     if (!active || !enabled || object == NULL) return;
 
     if (commandStack.empty()) pushWaitEvent();
 
-    if (debug_step) printState();
+    if (debugStep) printState();
 
     switch (commandStack.back()) {
         case WAIT: waitEvent();
@@ -193,7 +191,7 @@ void rController::animate(float spf) {
             break;
     }
     
-    if (debug_step) {
+    if (debugStep) {
         logger->debug() << "=> ";
         printState();
     }
@@ -246,7 +244,7 @@ void rController::waitEvent() {
                 s << self << ": Intruder!\n";
                 //World::getInstance()->sendMessage(0, self, 0, "DEBUG", s.str());
             }
-            this->doit(enemy, NULL, false, NEARTO);
+            this->doit(enemy, NULL, false, nearToDistance);
             pushAttackEnemy(enemy);
         }
     }
@@ -267,7 +265,7 @@ void rController::waitEvent() {
 
 void rController::pushAttackEnemy(OID entity) {
     
-    if (debug_transitions) {
+    if (debugTransitions) {
         logger->debug() << object->name.c_str() << "#" << object->oid << ".pushAttackEnemy( " << entity << " )\n";
     }
     
@@ -288,7 +286,7 @@ void rController::attackEnemy() {
 
     {
         //((cMech*)mDevice)->Pattern(tf, "nrnlln");
-        this->doit(entity, NULL, aimrange < 50.0f, NEARTO);
+        this->doit(entity, NULL, aimrange < 50.0f, nearToDistance);
     }
 
     // FIXME: Depends on Mech/tarcom.
@@ -329,7 +327,7 @@ void rController::attackEnemy() {
 
 void rController::pushFollowLeader(OID entity, bool patrol) {
     
-    if (debug_transitions) {
+    if (debugTransitions) {
         logger->debug() << object->name.c_str() << "#" << object->oid << ".pushFollowLeader( " << entity << ", " << patrol << " )\n";
     }
     
@@ -346,14 +344,14 @@ void rController::followLeader() {
     OID patrol = getParameter(2);
 
     {
-        this->doit(entity, NULL, false, NEARTO);
+        this->doit(entity, NULL, false, nearToDistance);
     }
 
     if (patrol) {
         OID nearby = enemyNearby; //controlledDevice->enemyNearby();
         
         if (nearby) {
-            this->doit(nearby, NULL, false, NEARTO);
+            this->doit(nearby, NULL, false, nearToDistance);
             pushAttackEnemy(nearby);
             return;
         }
@@ -367,7 +365,7 @@ void rController::pushGotoDestination(float* v, bool patrol) {
     
     if (v == NULL) return;
     
-    if (debug_transitions) {
+    if (debugTransitions) {
         logger->debug() << object->name.c_str() << "#" << object->oid << ".pushGotoDestination( <" << v[0] << "," << v[1] << "," << v[2] << ">, " << patrol << " )\n";
     }
     
@@ -398,7 +396,7 @@ void rController::gotoDestination() {
     float* v = (float*) ((void*) p);
 
     {
-        if (debug_state) logger->debug() << "going " << ((patrol > 0) ? "patrolling" : "directly") << " to <" << v[0] << "," << v[1] << "," << v[2] << " >\n";
+        if (debugState) logger->debug() << "going " << ((patrol > 0) ? "patrolling" : "directly") << " to <" << v[0] << "," << v[1] << "," << v[2] << " >\n";
         float* u = new float[3];
         vector_set(u, v[0], v[1], v[2]);
         this->doit(0, u, false);
@@ -407,7 +405,7 @@ void rController::gotoDestination() {
 
     float range = walkrange;
     
-    if (debug_state) logger->debug() << "DestinationRange " << range << "\n";
+    if (debugState) logger->debug() << "DestinationRange " << range << "\n";
     
     if (range < 8.0f) {
         this->doit(0, NULL, false);
@@ -419,7 +417,7 @@ void rController::gotoDestination() {
         OID nearby = enemyNearby;
         
         if (nearby) {
-            this->doit(nearby, NULL, false, NEARTO);
+            this->doit(nearby, NULL, false, nearToDistance);
             pushAttackEnemy(nearby);
             return;
         }
@@ -431,7 +429,7 @@ void rController::gotoDestination() {
 
 void rController::pushRepeatInstructions(int n) {
     
-    if (debug_transitions) {
+    if (debugTransitions) {
         logger->debug() << object->name.c_str() << "#" << object->oid << ".pushRepeatInstructions( " << n << " )\n";
     }
     
@@ -445,23 +443,23 @@ void rController::repeatInstructions() {
     OID opcode = getParameter(0);
     OID n = getParameter(1);
 
-    if (debug_state) {
+    if (debugState) {
         printState();
     }
 
     unsigned int first = getFrameSize();
-    if (debug_state) logger->debug() << "first " << first << " -> opcode " << opcode << "\n";
+    if (debugState) logger->debug() << "first " << first << " -> opcode " << opcode << "\n";
     unsigned int last = first;
 
     for (int i = 0; i < (int) n; i++) {
         
         int opcode = getParameter(last);
         last += getFrameSizeOf(opcode);
-        if (debug_state) logger->debug() << "last " << last << " -> opcode " << opcode << "\n";
+        if (debugState) logger->debug() << "last " << last << " -> opcode " << opcode << "\n";
     }
 
     int size = last - first;
-    if (debug_state) logger->debug() << size << " = " << last << " - " << first << "\n";
+    if (debugState) logger->debug() << size << " = " << last << " - " << first << "\n";
 
     for (int i = 0; i < size; i++) {
         push(getParameter(last - 1));

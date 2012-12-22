@@ -34,11 +34,13 @@ class Logger;
 struct rController : public Component, public IComputer {
 private:
     static Logger* logger;
+    
 public: // SYSTEM
     /** Identifier for this component (all uppercase letters without leading "r"). */
     static std::string cname;
     /** A unique random number (0-9999) to identify this component. */
     static unsigned int cid;
+    
 public: // INPUT
     /** Whether control is enabled (autopilot/ai enabled/disabled). */
     bool enabled;
@@ -50,6 +52,9 @@ public: // INPUT
     float aimrange;
     /** Indicator of distance to walk-target, see Mobile. (hook i) */
     float walkrange;
+    /** Distance set-point for considering a target to be near. */
+    float nearToDistance;
+    
 public: // OUTPUT
     /** Target for aiming or zero. (hook o) */
     OID aimtarget;
@@ -61,6 +66,7 @@ public: // OUTPUT
     float walktargetdist;
     /** Disable any action. (hook o) */
     bool idling;
+    
 protected: // INTERNALS
     /** Available opcodes of stack-machine. */
 
@@ -83,6 +89,13 @@ protected: // INTERNALS
     std::vector<OID> commandStack;
     /** Who disturbed me the last time - ignore now. */
     OID lastDisturbedBy;
+    /** Log debug info about current state. */
+    bool debugState;
+    /** Log debug info about state transition. */
+    bool debugTransitions;
+    /** Log iteration debug info. */
+    bool debugStep;
+    
 public:
     /** Initialises a en-/disabled controller for the given entity-> */
     rController(Entity* entity = NULL, bool enable = true);
