@@ -187,16 +187,16 @@
                 <in>rAvatar.h</in>
                 <in>rInventory.cpp</in>
                 <in>rInventory.h</in>
-                <in>rInventoryItem.cpp</in>
-                <in>rInventoryItem.h</in>
+                <in>rInventoryItemAssoc.cpp</in>
+                <in>rInventoryItemAssoc.h</in>
                 <in>rItem.cpp</in>
                 <in>rItem.h</in>
                 <in>rParty.cpp</in>
                 <in>rParty.h</in>
-                <in>rPartyAvatar.cpp</in>
-                <in>rPartyAvatar.h</in>
-                <in>rPartyQuest.cpp</in>
-                <in>rPartyQuest.h</in>
+                <in>rPartyAvatarAssoc.cpp</in>
+                <in>rPartyAvatarAssoc.h</in>
+                <in>rPartyQuestAssoc.cpp</in>
+                <in>rPartyQuestAssoc.h</in>
                 <in>rQuest.cpp</in>
                 <in>rQuest.h</in>
               </df>
