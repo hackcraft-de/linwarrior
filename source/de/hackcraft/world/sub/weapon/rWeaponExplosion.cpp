@@ -17,7 +17,7 @@ rWeaponExplosion::rWeaponExplosion(Entity* obj) {
     object = obj;
 
     if (EXPLOSIONSOUND) {
-        loadSource("data/org/freesound/explosion.wav", 1.0f, 10.0f);
+        loadSource("data/org/freesound/weapon/explosion.wav", 1.0f, 10.0f);
     }
 }
 

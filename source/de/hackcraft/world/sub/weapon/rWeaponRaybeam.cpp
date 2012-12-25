@@ -18,7 +18,7 @@ rWeaponRaybeam::rWeaponRaybeam(Entity* obj) {
     remainingClips = depotSize;
 
     if (WEAPONSOUND) {
-        loadSource("data/org/freesound/raybeam.wav");
+        loadSource("data/org/freesound/weapon/raybeam.wav");
     }
 }
 

@@ -22,7 +22,7 @@ rWeaponHoming::rWeaponHoming(Entity* obj) {
     remainingClips = depotSize;
 
     if (WEAPONSOUND) {
-        loadSource("data/org/freesound/homingmissile.wav");
+        loadSource("data/org/freesound/weapon/homingmissile.wav");
     }
 }
 

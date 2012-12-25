@@ -60,23 +60,29 @@
       </df>
       <df name="com">
         <df name="blendswap">
-          <df name="flopsy">
+          <df name="model">
+            <df name="flopsy">
+            </df>
           </df>
         </df>
       </df>
       <df name="org">
         <df name="freesound">
+          <df name="weapon">
+          </df>
         </df>
         <df name="opengameart">
-          <df name="gausscan">
-          </df>
-          <df name="reactor">
-          </df>
-          <df name="scorpion">
-          </df>
-          <df name="thunderbird">
-          </df>
-          <df name="twinblaster">
+          <df name="model">
+            <df name="gausscan">
+            </df>
+            <df name="reactor">
+            </df>
+            <df name="scorpion">
+            </df>
+            <df name="thunderbird">
+            </df>
+            <df name="twinblaster">
+            </df>
           </df>
         </df>
       </df>

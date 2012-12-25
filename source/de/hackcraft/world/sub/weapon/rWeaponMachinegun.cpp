@@ -21,7 +21,7 @@ rWeaponMachinegun::rWeaponMachinegun(Entity* obj) {
     remainingAmmo = clipSize;
     remainingClips = depotSize;
     if (WEAPONSOUND) {
-        loadSource("data/org/freesound/machinegun.wav", 1.0f, 1.5f);
+        loadSource("data/org/freesound/weapon/machinegun.wav", 1.0f, 1.5f);
     }
 }
 

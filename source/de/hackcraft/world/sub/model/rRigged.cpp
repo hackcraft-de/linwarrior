@@ -91,14 +91,14 @@ std::string rRigged::resolveFilename(std::string modelname) {
     m2f["ant"] = "data/base/model/tank/ant/ant.md5mesh";
     m2f["warbuggy"] = "data/base/model/tank/warbuggy/warbuggy.md5mesh";
 
-    m2f["flopsy"] = "data/com/blendswap/flopsy/flopsy.md5mesh";
+    m2f["flopsy"] = "data/com/blendswap/model/flopsy/flopsy.md5mesh";
 
-    m2f["scorpion"] = "data/org/opengameart/scorpion/scorpion.md5mesh";
-    m2f["thunderbird"] = "data/org/opengameart/thunderbird/thunderbird.md5mesh";
+    m2f["scorpion"] = "data/org/opengameart/model/scorpion/scorpion.md5mesh";
+    m2f["thunderbird"] = "data/org/opengameart/model/thunderbird/thunderbird.md5mesh";
 
-    m2f["gausscan"] = "data/org/opengameart/gausscan/gausscan.md5mesh";
-    m2f["twinblaster"] = "data/org/opengameart/twinblaster/twinblaster.md5mesh";
-    m2f["reactor"] = "data/org/opengameart/reactor/reactor.md5mesh";
+    m2f["gausscan"] = "data/org/opengameart/model/gausscan/gausscan.md5mesh";
+    m2f["twinblaster"] = "data/org/opengameart/model/twinblaster/twinblaster.md5mesh";
+    m2f["reactor"] = "data/org/opengameart/model/reactor/reactor.md5mesh";
 
     m2f["soldier"] = "/media/44EA-7693/workspaces/mm3d/soldier/soldier.md5mesh";
 
