@@ -184,7 +184,7 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
     // Mech Speaker
     if (0) {
         try {
-            soundsource->loadWithWav("data/base/device/pow.wav", false);
+            soundsource->loadWithWav("data/base/misc/pow.wav", false);
         } catch (...) {
             logger->warn() << "Sorry, no mech sound possible.\n";
         }
@@ -200,7 +200,7 @@ void cMech::init(float* pos, float* rot, std::string modelName) {
             soundsource->gainScaler0 = 0.6;
             soundsource->gainOffset = 0.0;
             
-            soundsource->loadWithWav("data/base/device/wanzer/stomp.wav", true);
+            soundsource->loadWithWav("data/base/misc/stomp.wav", true);
             
         } catch (...) {
             logger->warn() << "Sorry, no mech sound possible.\n";

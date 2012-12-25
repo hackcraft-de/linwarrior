@@ -80,16 +80,16 @@ int rRigged::getMountpoint(const char* point) {
 std::string rRigged::resolveFilename(std::string modelname) {
     std::map<std::string,std::string> m2f;
     
-    m2f["frogger"] = "data/base/device/wanzer/frogger/frogger.md5mesh";
-    m2f["gorilla_ii"] = "data/base/device/wanzer/gorilla/gorilla_ii.md5mesh";
-    m2f["lemur"] = "data/base/device/wanzer/lemur/lemur.md5mesh";
-    m2f["kibitz"] = "data/base/device/wanzer/kibitz/kibitz.md5mesh";
+    m2f["frogger"] = "data/base/rigged/wanzer/frogger/frogger.md5mesh";
+    m2f["gorilla_ii"] = "data/base/rigged/wanzer/gorilla/gorilla_ii.md5mesh";
+    m2f["lemur"] = "data/base/rigged/wanzer/lemur/lemur.md5mesh";
+    m2f["kibitz"] = "data/base/rigged/wanzer/kibitz/kibitz.md5mesh";
 
-    m2f["pod"] = "data/base/device/turret/pod/pod.md5mesh";
+    m2f["pod"] = "data/base/rigged/turret/pod/pod.md5mesh";
 
-    m2f["bug"] = "data/base/device/tank/bug/bug.md5mesh";
-    m2f["ant"] = "data/base/device/tank/ant/ant.md5mesh";
-    m2f["warbuggy"] = "data/base/device/tank/warbuggy/warbuggy.md5mesh";
+    m2f["bug"] = "data/base/rigged/tank/bug/bug.md5mesh";
+    m2f["ant"] = "data/base/rigged/tank/ant/ant.md5mesh";
+    m2f["warbuggy"] = "data/base/rigged/tank/warbuggy/warbuggy.md5mesh";
 
     m2f["flopsy"] = "data/com/blendswap/flopsy/flopsy.md5mesh";
 
