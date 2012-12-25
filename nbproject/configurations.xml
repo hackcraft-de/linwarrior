@@ -3,6 +3,8 @@
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df name="data" root="data">
       <df name="base">
+        <df name="chat">
+        </df>
         <df name="cityscape">
           <df name="roads">
           </df>
@@ -25,57 +27,35 @@
         </df>
         <df name="materials">
         </df>
-        <df name="messages">
+        <df name="misc">
         </df>
-        <df name="prg">
-          <in>post.frag</in>
-          <in>post.vert</in>
-          <in>post_old.frag</in>
-        </df>
-        <df name="rigged">
+        <df name="model">
           <df name="tank">
             <df name="ant">
-              <in>ant.md5mesh</in>
-              <in>ant.mm3d</in>
             </df>
             <df name="bug">
-              <in>bug.md5mesh</in>
-              <in>bug.mm3d</in>
             </df>
             <df name="warbuggy">
-              <in>warbuggy.md5mesh</in>
-              <in>warbuggy.mm3d</in>
             </df>
           </df>
           <df name="turret">
             <df name="pod">
-              <in>pod.md5mesh</in>
-              <in>pod.mm3d</in>
             </df>
           </df>
           <df name="wanzer">
             <df name="frogger">
-              <in>frogger.md5mesh</in>
-              <in>frogger.mm3d</in>
             </df>
             <df name="goranga">
-              <in>goranga.md5mesh</in>
-              <in>goranga.mm3d</in>
             </df>
             <df name="gorilla">
-              <in>gorilla_ii.md5mesh</in>
-              <in>gorilla_ii.mm3d</in>
             </df>
             <df name="kibitz">
-              <in>kibitz.md5mesh</in>
-              <in>kibitz.mm3d</in>
             </df>
             <df name="lemur">
-              <in>lemur.md5mesh</in>
-              <in>lemur.mm3d</in>
             </df>
-            <in>stomp.wav</in>
           </df>
+        </df>
+        <df name="prg">
         </df>
       </df>
       <df name="com">
