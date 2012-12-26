@@ -11,31 +11,14 @@
 
 #include "de/hackcraft/game/Game.h"
 
-#include "de/hackcraft/lang/Thread.h"
-
 #include "de/hackcraft/util/GapBuffer.h"
 
-#include <SDL/SDL.h>
 #include <string>
 
+#include <SDL/SDL.h>
+
 class Logger;
-
-/**
- * Models a minion worker thread that fetches jobs
- * from the main job queue.
- */
-class Minion : public Thread {
-private:
-    static Logger* logger;
-    /** Pointing to the main job-mutex. */
-    SDL_mutex* jobMutex;
-    /** Pointing to the main job-queue. */
-    std::queue<Runnable*>* jobQueue;
-public:
-    Minion(SDL_mutex* jobMutex, std::queue<Runnable*>* jobQueue);
-    void run();
-};
-
+class Runnable;
 
 /**
  * Encapsulates low level system-, startup- and io-code.
