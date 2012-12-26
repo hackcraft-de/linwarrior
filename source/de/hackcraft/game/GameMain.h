@@ -19,6 +19,7 @@
 
 class Logger;
 class Runnable;
+class Semaphore;
 
 /**
  * Encapsulates low level system-, startup- and io-code.
@@ -42,7 +43,7 @@ private:
     Uint8 keystate_[512];
 
     /** Mutex for job queue - minions wait until they can grab a job. */
-    SDL_mutex* jobMutex;
+    Semaphore* jobMutex;
 
     /** The job queue itself - minions grab jobs here. */
     std::queue<Runnable*>* jobQueue;

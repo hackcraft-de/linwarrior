@@ -15,18 +15,19 @@
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Console.h"
 
+#include "de/hackcraft/util/concurrent/Semaphore.h"
+
 // To dis-/enable zone drawing.
 #include "de/hackcraft/world/sub/trigger/rAlert.h"
 
-#include <sstream>
-#include <iostream>
 #include <cassert>
+#include <iosfwd>
+#include <iostream>
+#include <sstream>
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_timer.h>
-#include <SDL/SDL_thread.h>
 
-#include <iosfwd>
 
 Logger* GameMain::logger = Logger::getLogger("de.hackcraft.game.GameMain");
 
@@ -94,7 +95,7 @@ public:
 
 GameMain::GameMain() {
     instance = this;
-    jobMutex = SDL_CreateMutex();
+    jobMutex = new Semaphore(1);
     jobQueue = new std::queue<Runnable*>();
     mouseWheel = 0;
     overlayEnabled = !true;
@@ -924,7 +925,7 @@ int GameMain::run(int argc, char** args) {
     loopi(maxminions) {
         minions[i]->stop();
     }
-    SDL_DestroyMutex(jobMutex);
+    delete jobMutex;
     
     std::cout.rdbuf( stdout_ );
     //console.print();

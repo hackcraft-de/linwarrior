@@ -17,8 +17,7 @@ class Minion;
 
 class Logger;
 class Runnable;
-
-struct SDL_mutex;
+class Semaphore;
 
 /**
  * Models a minion worker thread that fetches jobs
@@ -28,11 +27,11 @@ class Minion : public Thread {
 private:
     static Logger* logger;
     /** Pointing to the main job-mutex. To be replaced with framework class. */
-    SDL_mutex* jobMutex;
+    Semaphore* jobMutex;
     /** Pointing to the main job-queue. */
     std::queue<Runnable*>* jobQueue;
 public:
-    Minion(SDL_mutex* jobMutex, std::queue<Runnable*>* jobQueue);
+    Minion(Semaphore* jobMutex, std::queue<Runnable*>* jobQueue);
     void run();
 };
 

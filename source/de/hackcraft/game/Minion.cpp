@@ -4,14 +4,15 @@
 
 #include "de/hackcraft/log/Logger.h"
 
-#include <SDL/SDL_thread.h>
+#include "de/hackcraft/util/concurrent/Semaphore.h"
+
 #include <SDL/SDL_timer.h>
 
 
 Logger* Minion::logger = Logger::getLogger("de.hackcraft.game.Minion");
 
 
-Minion::Minion(SDL_mutex* jobMutex, std::queue<Runnable*>* jobQueue) {
+Minion::Minion(Semaphore* jobMutex, std::queue<Runnable*>* jobQueue) {
     this->jobMutex = jobMutex;
     this->jobQueue = jobQueue;
 }
@@ -26,14 +27,14 @@ void Minion::run() {
     while (!done) {
         // Grab a new job.
         Runnable* nextjob = NULL;
-        SDL_mutexP(jobMutex);
+        jobMutex->acquire();
         {
             if (!jobQueue->empty()) {
                 nextjob = jobQueue->front();
                 jobQueue->pop();
             } // else look at secondary jobs.
         }
-        SDL_mutexV(jobMutex);
+        jobMutex->release();
         // Work on job if any available.
         if (nextjob != NULL) {
             logger->debug() << "Minion " << id << " is fulfilling your wish!\n";

@@ -166,6 +166,10 @@
             <in>math3d.h</in>
           </df>
           <df name="util">
+            <df name="concurrent">
+              <in>Semaphore.cpp</in>
+              <in>Semaphore.h</in>
+            </df>
             <in>Binding.h</in>
             <in>GapBuffer.h</in>
             <in>Geomap.h</in>
