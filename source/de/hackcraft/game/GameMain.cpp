@@ -90,14 +90,18 @@ public:
 
 Logger* Minion::logger = Logger::getLogger("de.hackcraft.game.Minion");
 
+
+Minion::Minion(SDL_mutex* jobMutex, std::queue<Runnable*>* jobQueue) {
+    this->jobMutex = jobMutex;
+    this->jobQueue = jobQueue;
+}
+
+
 void Minion::run() {
     unsigned long id = (unsigned long) this;//SDL_ThreadID();
     logger->info() << "Minion " << id << " at your service!\n";
     Runnable* job = (Runnable*) this;
     bool done = false;
-
-    jobMutex = GameMain::instance->jobMutex;
-    jobQueue = GameMain::instance->jobQueue;
 
     while (!done) {
         // Grab a new job.
@@ -840,7 +844,7 @@ int GameMain::run(int argc, char** args) {
     Minion* minions[maxminions];
 
     loopi(maxminions) {
-        minions[i] = new Minion();
+        minions[i] = new Minion(this->jobMutex, this->jobQueue);
         minions[i]->start();
     }
 

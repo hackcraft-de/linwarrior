@@ -32,6 +32,7 @@ private:
     /** Pointing to the main job-queue. */
     std::queue<Runnable*>* jobQueue;
 public:
+    Minion(SDL_mutex* jobMutex, std::queue<Runnable*>* jobQueue);
     void run();
 };
 
@@ -44,7 +45,6 @@ class GameMain {
 private:
     static Logger* logger;
 public:
-    friend class Minion;
     /** Points to the main instance, necessary because of c-callbacks/threads. */
     static GameMain* instance;
     
