@@ -6,8 +6,6 @@
 
 #include "de/hackcraft/util/concurrent/Semaphore.h"
 
-#include <SDL/SDL_timer.h>
-
 
 Logger* Minion::logger = Logger::getLogger("de.hackcraft.game.Minion");
 
@@ -46,9 +44,9 @@ void Minion::run() {
             // Wait for a job to do.
             logger->debug() << "Minion " << id << " is awaiting your command!\n";
             job = nextjob;
-            SDL_Delay(10);
+            Thread::sleep(10);
         } else {
-            SDL_Delay(10);
+            Thread::sleep(10);
         }
     }
 }

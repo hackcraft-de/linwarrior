@@ -22,11 +22,13 @@ private:
 public:
     Thread();
     Thread(Runnable *runnable);
+    
     void start();
     void stop();
-    void sleep(unsigned int ms);
     virtual void run() = 0;
     virtual int hashCode();
+public:
+    static void sleep(unsigned int ms);
 };
 
 

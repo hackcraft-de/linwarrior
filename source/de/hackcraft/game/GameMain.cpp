@@ -63,7 +63,7 @@ public:
             //cMain::drawPlaque();
             //cMain::drawLog();
             //SDL_GL_SwapBuffers();
-            SDL_Delay(1.0 / DEFAULT_FPS * 1000.0);
+            Thread::sleep(1.0 / DEFAULT_FPS * 1000.0);
             i++;
         }
     }
@@ -76,7 +76,7 @@ public:
     void run() {
         while (true) {
             //cout << "Buffering BGM.\n";
-            SDL_Delay(1000);
+            Thread::sleep(1000);
         }
     }
 };
@@ -87,7 +87,7 @@ public:
     void run() {
         while (true) {
             GameMain::instance->updateLog();
-            SDL_Delay(200);
+            Thread::sleep(200);
         }
     }
 };
@@ -822,7 +822,7 @@ int GameMain::run(int argc, char** args) {
 
     // Signal state change.
     //job_render->state = 1;
-    //SDL_Delay(200);
+    //Thread::sleep(200);
 
     logger->info() << "Entering Mainloop...\n";
     bool done = false;
@@ -896,8 +896,7 @@ int GameMain::run(int argc, char** args) {
                 const long min_delay_ms = 3;
                 if (delay_ms >= min_delay_ms) { // Some can only sleep >= x ms.
                     long os_delay_ms = delay_ms - min_delay_ms;
-                    alutSleep(os_delay_ms * 0.001);
-                    //SDL_Delay(os_delay_ms);
+                    Thread::sleep(os_delay_ms);
                     //logger->trace() << os_delay_ms << "\n";
                 }
                 // debug timing
