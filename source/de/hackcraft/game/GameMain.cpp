@@ -94,13 +94,18 @@ public:
 
 
 GameMain::GameMain() {
+    
     instance = this;
+    
     jobMutex = new Semaphore(1);
     jobQueue = new std::queue<Runnable*>();
+    minions = new std::vector<Minion*>;
+    
     mouseWheel = 0;
     overlayEnabled = !true;
 
     memset(keystate_, 0, sizeof(keystate_));
+    
     console.write("Console program output is printed here...");
     cmdline.write("Console commandline input is inserted here...");
 }
@@ -687,7 +692,7 @@ void GameMain::updateLog() {
 }
 
 
-int GameMain::run(int argc, char** args) {
+int GameMain::init(int argc, char** args) {
     
     //JobBGM* job_bgm = new JobBGM();
     //jobQueue.push(job_bgm);
@@ -696,7 +701,7 @@ int GameMain::run(int argc, char** args) {
     //jobQueue->push(job_render);
 
     // Remember original stdout/cout stream and redirect cout if enabled.
-    std::streambuf* stdout_ = std::cout.rdbuf();
+    stdout_ = std::cout.rdbuf();
     bool redirectOutput = true;
     if (redirectOutput) {
         JobOutput* job_output = new JobOutput();
@@ -711,7 +716,6 @@ int GameMain::run(int argc, char** args) {
         game.printHelp();
         return 1;
     }
-    double spf = 1.0 / (double) game.fps;
 
     logger->info() << "Initializing SDL Video- and -Input-Subsystems...\n";
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0) {
@@ -794,18 +798,18 @@ int GameMain::run(int argc, char** args) {
 
     logger->info() << "Initialising Input Settings...\n";
     SDL_ShowCursor(SDL_DISABLE);
-    SDL_Joystick* joy0 = SDL_JoystickOpen(0);
+    joy0 = (void*) SDL_JoystickOpen(0);
 
     logger->info() << "Installing Cleanup Hook...\n";
     atexit(cleanup);
 
     logger->info() << "Breeding Minions...\n";
     int maxminions = 3;
-    Minion* minions[maxminions];
-
+    
     loopi(maxminions) {
-        minions[i] = new Minion(this->jobMutex, this->jobQueue);
-        minions[i]->start();
+        Minion* minion = new Minion(this->jobMutex, this->jobQueue);
+        minion->start();
+        minions->push_back(minion);
     }
 
     bool loadscreen = true;
@@ -823,10 +827,24 @@ int GameMain::run(int argc, char** args) {
     // Signal state change.
     //job_render->state = 1;
     //Thread::sleep(200);
+    
+    return 0;
+}
+
+
+int GameMain::run(int argc, char** args) {
+    
+    int err = init(argc, args);
+    if (err != 0) {
+        return err;
+    }
 
     logger->info() << "Entering Mainloop...\n";
+    
     bool done = false;
     unsigned long start_ms = SDL_GetTicks();
+    double spf = 1.0 / (double) game.fps;
+    
     while (!done) {
         //logger->trace() << "loop\n";
 
@@ -867,11 +885,11 @@ int GameMain::run(int argc, char** args) {
 
         // Possibly print out info on pushed buttons.
         if (game.printpad) loopi(32) {
-            if (SDL_JoystickGetButton(joy0, i)) logger->trace() << "Button" << i << "\n";
+            if (SDL_JoystickGetButton((SDL_Joystick*) joy0, i)) logger->trace() << "Button" << i << "\n";
         }
         // Transfer real Joystick-/Gamepad-Input into the virtual gamepad
         // of the player by using a (re-)mapping.
-        updatePad(game.pad1, joy0, game.map1);
+        updatePad(game.pad1, (SDL_Joystick*) joy0, game.map1);
         // After securing Matrix: update world and draw frame.
         //GL::glPushMatrix();
         {
@@ -917,18 +935,23 @@ int GameMain::run(int argc, char** args) {
 
     } // end main loop
 
-    logger->info() << "Shutting Down...\n";
+    deinit();
 
+    return 0;
+}
+
+
+void GameMain::deinit() {
+    
+    logger->info() << "Shutting Down...\n";
+    
     // Better set global signal and SDL_WaitThread.
 
-    loopi(maxminions) {
-        minions[i]->stop();
+    for (Minion* minion : *minions) {
+        minion->stop();
     }
     delete jobMutex;
     
     std::cout.rdbuf( stdout_ );
     //console.print();
-
-    return 0;
 }
-

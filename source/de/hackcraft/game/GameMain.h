@@ -18,6 +18,7 @@
 #include <SDL/SDL.h>
 
 class Logger;
+class Minion;
 class Runnable;
 class Semaphore;
 
@@ -47,9 +48,14 @@ private:
 
     /** The job queue itself - minions grab jobs here. */
     std::queue<Runnable*>* jobQueue;
+    
+    std::vector<Minion*>* minions;
 
     /** stdout is redirected to this stringstream. */
     std::stringstream oss;
+    
+    /** Old stdout used to restore stdout. */
+    std::streambuf* stdout_;
 
     /** Program output log. */
     GapBuffer log;
@@ -62,12 +68,21 @@ private:
 
     /** Command & Control Overlay enabled => redirect keyboard */
     bool overlayEnabled;
+    
+    /** Low level joystick handle. */
+    void* joy0;
 
 private:
     /** Apply post-processing filter right after drawing frame. */
     void applyFilter(int width, int height);
     
 private:
+    /** Initializes called at the start of the run method. */
+    int init(int argc, char** args);
+    
+    /** Initializes called at the end of the run method. */
+    void deinit();
+    
     /** Sets initial OpenGL mode parameters (dis-/enables and values). */
     void initGL(int width, int height);
     
