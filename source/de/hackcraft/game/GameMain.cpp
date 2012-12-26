@@ -1,7 +1,6 @@
 #include "GameMain.h"
 
 #include "de/hackcraft/game/userkeys.h"
-#include "de/hackcraft/game/Minion.h"
 
 #include "de/hackcraft/io/Filesystem.h"
 
@@ -15,6 +14,7 @@
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Console.h"
 
+#include "de/hackcraft/util/concurrent/Minion.h"
 #include "de/hackcraft/util/concurrent/Semaphore.h"
 
 // To dis-/enable zone drawing.

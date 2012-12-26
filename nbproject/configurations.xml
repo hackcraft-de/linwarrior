@@ -95,8 +95,6 @@
             <in>Game.h</in>
             <in>GameMain.cpp</in>
             <in>GameMain.h</in>
-            <in>Minion.cpp</in>
-            <in>Minion.h</in>
             <in>OpenMission.cpp</in>
             <in>OpenMission.h</in>
             <in>userkeys.h</in>
@@ -167,6 +165,8 @@
           </df>
           <df name="util">
             <df name="concurrent">
+              <in>Minion.cpp</in>
+              <in>Minion.h</in>
               <in>Semaphore.cpp</in>
               <in>Semaphore.h</in>
             </df>

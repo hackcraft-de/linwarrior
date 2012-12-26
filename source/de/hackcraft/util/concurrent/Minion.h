@@ -21,7 +21,7 @@ class Semaphore;
 
 /**
  * Models a minion worker thread that fetches jobs
- * from the main job queue.
+ * from the main job queue - basically one thread of a thread pool.
  */
 class Minion : public Thread {
 private:
