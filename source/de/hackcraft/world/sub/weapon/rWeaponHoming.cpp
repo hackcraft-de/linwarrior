@@ -5,6 +5,9 @@
 
 #include "de/hackcraft/world/World.h"
 
+#include "de/hackcraft/world/sub/weapon/WeaponSystem.h"
+#include "de/hackcraft/world/sub/weapon/rTarget.h"
+
 #include <cassert>
 
 
@@ -110,14 +113,17 @@ void rWeaponHoming::animate(float spf) {
         // Now update the Missile itself
         if (s->target) {
             Entity *targetobject = World::getInstance()->getObject(s->target);
-            if (targetobject && true) {
-                float tgt[] = {0, 0, 0};
-                vector_cpy(tgt, targetobject->pos0);
-                float dir[] = {tgt[0] - s->pos[0], tgt[1] - s->pos[1], tgt[2] - s->pos[2]};
-                vector_norm(dir, dir);
-                vector_norm(s->vel, s->vel);
-                const float alpha = 0.96;
-                loop3i(s->vel[i] = (s->vel[i] * alpha + dir[i]*(1 - alpha)));
+            if (targetobject != NULL) {
+                rTarget *targetComponent = WeaponSystem::getInstance()->findTargetByEntity(targetobject->oid);
+                if (targetComponent && true) {
+                    float tgt[] = {0, 0, 0};
+                    vector_cpy(tgt, targetComponent->pos0);
+                    float dir[] = {tgt[0] - s->pos[0], tgt[1] - s->pos[1], tgt[2] - s->pos[2]};
+                    vector_norm(dir, dir);
+                    vector_norm(s->vel, s->vel);
+                    const float alpha = 0.96;
+                    loop3i(s->vel[i] = (s->vel[i] * alpha + dir[i]*(1 - alpha)));
+                }
             }
         }
         vector_norm(s->vel, s->vel);
