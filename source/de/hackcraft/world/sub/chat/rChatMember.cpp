@@ -45,14 +45,37 @@ void rChatMember::animate(float spf) {
 
 void rChatMember::drawHUD() {
     if (!active) return;
-
-    //GL::glColor4f(0,0.1,0,0.2);
-//    GL::glBegin(GL_QUADS);
-//    GL::glVertex3f(3, 1, 0);
-//    GL::glVertex3f(0, 1, 0);
-//    GL::glVertex3f(0, 0, 0);
-//    GL::glVertex3f(3, 0, 0);
-//    GL::glEnd();
+    /*
+    GL::glColor4f(0,0,0,0.8);
+    GL::glBegin(GL_QUADS);
+    GL::glVertex3f(3, 1, 0);
+    GL::glVertex3f(0, 1, 0);
+    GL::glColor4f(0,0,0,0.2);
+    GL::glVertex3f(0, 0, 0);
+    GL::glVertex3f(3, 0, 0);
+    GL::glEnd();
+    */
+    
+    GL::glPushMatrix();
+    {
+        float w = mConsole->getWidth();
+        float h = mConsole->getHeight();
+        GL::glTranslatef(0, 1.0f + (1.0f / h), 0);
+        GL::glScalef(3.0f / w, 1.0f / h, 1.0f);
+        
+        for (int i = 0; i < h; i++) {
+            GL::glTranslatef(0, -1, 0);
+            GL::glBegin(GL_LINES);
+            GL::glColor4f(0.99, 0.99, 0.99, 0.02 + 0.1 * (h - i) / h);
+            GL::glVertex3f(0,0,0);
+            GL::glColor4f(0.99, 0.99, 0.99, 0.0);
+            GL::glVertex3f(w,0,0);
+            GL::glEnd();
+        }
+        
+    }
+    GL::glPopMatrix();
+    
     GL::glPushMatrix();
     {
         GL::glColor4f(0.9, 0.9, 0.9, 0.5);
