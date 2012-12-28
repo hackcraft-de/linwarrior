@@ -2,6 +2,10 @@
 
 
 rPartyQuestAssoc::rPartyQuestAssoc() {
+    
+    party = NULL;
+    quest = NULL;
+    state = INACTIVE;
 }
 
 

@@ -190,8 +190,9 @@ void rWeaponRaybeam::drawEffect() {
         }
     };
 
-    unsigned int lifeindex = (int) ((0.7 - timeFiring) * 10);
-    if (lifeindex > sizeof (app) / sizeof (appearance) - 1) lifeindex = sizeof (app) / sizeof (appearance) - 1;
+    int lifeindex = (int) ((0.7 - timeFiring) * 10);
+    int entries = (int) (sizeof (app) / sizeof (appearance) - 1);
+    if (lifeindex > entries) lifeindex = sizeof (app) / sizeof (appearance) - 1;
     if (lifeindex < 0) lifeindex = 0;
 
     GL::glPushAttrib(GL_ALL_ATTRIB_BITS);

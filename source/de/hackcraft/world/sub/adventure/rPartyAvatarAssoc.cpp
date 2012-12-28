@@ -2,6 +2,7 @@
 
 
 rPartyAvatarAssoc::rPartyAvatarAssoc() {
+    state = APPLIED;
 }
 
 

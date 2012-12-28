@@ -2,6 +2,9 @@
 
 
 rQuest::rQuest() {
+    
+    requirements = NULL;
+    rewards = NULL;
 }
 
 

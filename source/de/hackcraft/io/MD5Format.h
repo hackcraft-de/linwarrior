@@ -393,7 +393,7 @@ protected: // PARSING UTILITIES
 
                 if (jointcount == -1) {
                     char s[1024];
-                    int r = sscanf(line, " %s {", s);
+                    int r = sscanf(line, " %1023s {", s);
                     if (r == 1 && strcmp("joints", s) == 0) {
                         //std::cout << "starting joints" << "\n";
                         jointcount = 0;
@@ -529,7 +529,7 @@ public: // TESTING
 
         MD5Format::model* m = NULL;
         try {
-            m = MD5Format::mapMD5Mesh("/home/benben/Desktop/workspaces/milk_workspace/diestel.md5mesh");
+            m = mapMD5Mesh("/home/benben/Desktop/workspaces/milk_workspace/diestel.md5mesh");
             //m = mapMD5Mesh("/home/benben/workspaces/mm3d-1.3.8/plugins/MD5Data/t.md5mesh");
         } catch (char* s) {
             std::cout << s << "\n";
@@ -541,8 +541,8 @@ public: // TESTING
         std::cout << "=======================================================" << "\n";
         MD5Format::joint* joints = (MD5Format::joint*) (m + 1);
         //joint* joints_ = new joint[m->numJoints];
-        MD5Format::toLocalJoints(m->numJoints, joints, joints);
-        MD5Format::toGlobalJoints(m->numJoints, joints, joints);
+        toLocalJoints(m->numJoints, joints, joints);
+        toGlobalJoints(m->numJoints, joints, joints);
         delete m;
     }
 

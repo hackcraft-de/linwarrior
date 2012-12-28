@@ -1,6 +1,7 @@
 #include "rInventory.h"
 
 rInventory::rInventory() {
+    type = INVENTORY_WALLET;
 }
 
 

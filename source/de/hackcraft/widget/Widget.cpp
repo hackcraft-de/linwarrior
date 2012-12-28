@@ -10,6 +10,12 @@
 Widget::Widget() {
     text = new GapBuffer();
     
+    dirty = false;
+    parent = NULL;
+    widgets = new std::list<Widget*>();
+    layout = new Layout();
+    border = new Border();
+    
     size = new double[2];
     minimumSize = new double[2];
     maximumSize = new double[2];

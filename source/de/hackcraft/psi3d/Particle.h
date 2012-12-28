@@ -188,7 +188,8 @@ struct Particle {
      * @param damping pseudo damping factor within [0,1], typically very small.
      */
     inline void stepEuler(float dt, float damping = 0.01f) {
-        Particle::stepEuler(pos, old, vel, fce, mass_inv, dt, damping);
+        // Calling static method for calculating step.
+        stepEuler(pos, old, vel, fce, mass_inv, dt, damping);
     }
 
     /**
@@ -232,7 +233,8 @@ struct Particle {
      * @param damping pseudo damping factor within [0,1], typically very small.
      */
     inline void stepVerlet(float dt_inv, float dt2, float damping = 0.01f, float velalpha = 1.0f) {
-        Particle::stepVerlet(pos, old, vel, fce, mass_inv, dt_inv, dt2, damping, velalpha);
+        // Calling static method for calculating step.
+        stepVerlet(pos, old, vel, fce, mass_inv, dt_inv, dt2, damping, velalpha);
     }
 
     /**

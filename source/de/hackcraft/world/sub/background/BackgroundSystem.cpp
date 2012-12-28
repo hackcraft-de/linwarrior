@@ -95,6 +95,8 @@ void BackgroundSystem::init(Propmap* properties) {
     if (textures.empty()) {
         initTextures();
     }
+    
+    seed = 131;
 }
 
 

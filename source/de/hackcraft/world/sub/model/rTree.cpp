@@ -222,8 +222,8 @@ rTree::TreeType* rTree::getCompiledTree(int seed, int type, int age) {
         }
     }
 
-    static GL::GLuint trunk_displaylists[] = {-1, -1, -1, -1, -1, -1, -1, -1};
-    if ((int) trunk_displaylists[type] == -1) {
+    static GL::GLint trunk_displaylists[] = {-1, -1, -1, -1, -1, -1, -1, -1};
+    if (trunk_displaylists[type] == -1) {
         trunk_displaylists[type] = GL::glGenLists(1);
         GL::glNewList(trunk_displaylists[type], GL_COMPILE);
         //GL::glColor3f(0.1f, 0.1f, 0.0f);

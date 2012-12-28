@@ -123,7 +123,7 @@ struct Noise {
                 if ((i & 255) == 255) {
                     perms[i] = 255;
                 } else {
-                    perms[i] = b = Noise::LFSR8(b);
+                    perms[i] = b = LFSR8(b);
                 }
             }
         }
@@ -272,7 +272,7 @@ struct Noise {
                 if ((i & 255) == 255) {
                     perms[i] = 255;
                 } else {
-                    perms[i] = b = Noise::LFSR8(b);
+                    perms[i] = b = LFSR8(b);
                 }
             }
         }
@@ -341,7 +341,7 @@ struct Noise {
                 if ((i & 255) == 255) {
                     perms[i] = 255;
                 } else {
-                    perms[i] = b = Noise::LFSR8(b);
+                    perms[i] = b = LFSR8(b);
                 }
             }
         }
@@ -417,7 +417,7 @@ struct Noise {
                 if ((i & 15) == 15) {
                     perms[i] = 15;
                 } else {
-                    perms[i] = b = Noise::LFSR4(b);
+                    perms[i] = b = LFSR4(b);
                 }
             }
         }

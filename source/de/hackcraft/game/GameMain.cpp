@@ -108,6 +108,10 @@ GameMain::GameMain() {
     
     console.write("Console program output is printed here...");
     cmdline.write("Console commandline input is inserted here...");
+    
+    stdout_ = NULL;
+    
+    joy0 = NULL;
 }
 
 

@@ -63,7 +63,7 @@ public:
      * A new instance of a pad will be initialised to all zeros.
      */
     Pad() {
-        //buttons = 0;
+        playerdata = NULL;
         for (int i = 0; i < MAX_BUTTONS; i++) {
             buttons[i] = 0;
         }
