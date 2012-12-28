@@ -19,16 +19,15 @@ rComcom::rComcom(Entity* obj) {
 
     int w = 20;
     int h = 10;
-    mConsole = Console::Console_new(w * h, w);
+    mConsole = new Console(w * h, w);
     assert(mConsole != NULL);
-    Console* console = (Console*) mConsole;
-    //Console_printf(mConsole, "* Welcome to LinWarrior3D\n");
-    Console::Console_print(console, "ComCOM(1) - MENU\n\n");
-    Console::Console_print(console, " [1] Formation\n");
-    Console::Console_print(console, " [2] Engage\n");
-    Console::Console_print(console, " [3] Report\n");
-    Console::Console_print(console, " [4] Objectives\n");
-    Console::Console_print(console, "\n\n > ");
+    //mConsole->print("* Welcome to LinWarrior3D\n");
+    mConsole->print("ComCOM(1) - MENU\n\n");
+    mConsole->print(" [1] Formation\n");
+    mConsole->print(" [2] Engage\n");
+    mConsole->print(" [3] Report\n");
+    mConsole->print(" [4] Objectives\n");
+    mConsole->print("\n\n > ");
     mLastMessage = 0;
 }
 
@@ -55,12 +54,11 @@ void rComcom::drawHUD() {
     {
         GL::glColor4f(0, 1, 0, 0.9);
         //GL::glColor4f(0.99, 0.99, 0.19, 1);
-        Console* console = (Console*) mConsole;
-        float w = console->width;
-        float h = console->size / console->width;
+        float w = mConsole->getWidth();
+        float h = mConsole->getHeight();
         GL::glTranslatef(0, 1.0f + (1.0f / h), 0);
         GL::glScalef(1.0f / w, 1.0f / h, 1.0f);
-        Console::Console_draw(console);
+        mConsole->draw();
     }
     GL::glPopMatrix();
 }

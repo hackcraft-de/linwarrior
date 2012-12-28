@@ -18,6 +18,7 @@ struct rChatMember;
 #include <list>
 
 class rChatMessage;
+class Console;
 
 /** 
  * Chat member (Communication Computer)
@@ -36,7 +37,7 @@ public:
     OID id;
 protected:
     /** Console instance for chat message output. */
-    void* mConsole;
+    Console* mConsole;
     /** Timestamp of last received/displayed chat message. */
     OID mLastMessage;
 public:

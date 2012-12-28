@@ -9,7 +9,7 @@
 #ifndef CONSOLE_H
 #define	CONSOLE_H
 
-struct Console;
+class Console;
 
 #include "de/hackcraft/psi3d/GLF.h"
 
@@ -22,33 +22,26 @@ struct Console;
  * Simple console buffer which makes use of the
  * instant font rendering class.
  */
-struct Console {
+class Console {
     char* buffer;
     int size;
     int width;
     int cursor;
-
+    
+public:
     /**
      *
      * @param size
      * @param width
-     * @return
      */
-    static Console* Console_new(int size, int width) {
+    Console(int size, int width) {
         char* buffer = (char*) malloc(sizeof(char) * size);
         memset(buffer, 0, sizeof(char) * size);
-        Console* con = (Console*) malloc(sizeof(Console));
-        Console_init(con, buffer, size, width);
-        return con;
+        init(buffer, size, width);
     }
 
-    /**
-     *
-     * @param itself
-     */
-    static void Console_free(Console* itself) {
-        free(itself->buffer);
-        free(itself);
+    ~Console() {
+        free(this->buffer);
     }
 
     /**
@@ -58,20 +51,43 @@ struct Console {
      * @param buffersize
      * @param bufferwidth
      */
-    static void Console_init(Console* itself, char* buffer, int buffersize, int bufferwidth) {
-        itself->buffer = buffer;
-        itself->size = buffersize;
-        itself->width = bufferwidth;
-        itself->cursor = 0;
+    void init(char* buffer, int buffersize, int bufferwidth) {
+        this->buffer = buffer;
+        this->size = buffersize;
+        this->width = bufferwidth;
+        this->cursor = 0;
     }
 
     /**
      *
      * @param itself
      */
-    static void Console_draw(Console* itself) {
-        glDrawConsole(itself->buffer, itself->size, itself->width, itself->cursor);
+    void draw() {
+        glDrawConsole(buffer, size, width, cursor);
     }
+
+    /**
+     *
+     * @param buffer
+     */
+    void print(const char* buffer) {
+        bnprint(this->buffer, size, width, &cursor, buffer);
+    }
+    
+    int getSize() {
+        return size;
+    }
+    
+    int getHeight() {
+        int height = size / width;
+        return height;
+    }
+    
+    int getWidth() {
+        return width;
+    }
+    
+public:    
 
     /**
      * Prints the given formated string into a console like string buffer.
@@ -109,7 +125,7 @@ struct Console {
         }
         *bufferpos = p;
     }
-    
+
     /**
      * Draws the characters in bufferstr rowwise, with bufferwidth characters for each row.
      * buffersize is the total size of the buffer (multiples of bufferwidth would be meaningful).
@@ -145,15 +161,6 @@ struct Console {
             GL::glPopMatrix();
         }
         GL::glPopAttrib();
-    }
-
-    /**
-     *
-     * @param itself
-     * @param buffer
-     */
-    static void Console_print(Console* itself, const char* buffer) {
-        bnprint(itself->buffer, itself->size, itself->width, &itself->cursor, buffer);
     }
 };
 

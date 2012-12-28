@@ -19,6 +19,8 @@ struct rComcom;
 
 #include <list>
 
+class Console;
+
 /** Communication Computer
  *  encapsulates sending and receiving of messages
  *  and stores these messages.
@@ -31,7 +33,7 @@ public:
     /** A unique random number (0-9999) to identify this component. */
     static unsigned int cid;
 protected:
-    void* mConsole;
+    Console* mConsole;
     OID mLastMessage;
 public:
     rComcom(Entity* obj = NULL);
