@@ -138,6 +138,27 @@ void rTarget::drawHUD() {
     GL::glVertex3f(0, 0, 0);
     GL::glVertex3f(1, 0, 0);
     GL::glEnd();
+    
+    GL::glPushMatrix();
+    {
+        float w = 1;
+        float h = 10;
+        GL::glTranslatef(0, 1.0f + (1.0f / h), 0);
+        GL::glScalef(1.0f / w, 1.0f / h, 1.0f);
+        
+        for (int i = 0; i < h; i++) {
+            GL::glTranslatef(0, -1, 0);
+            GL::glBegin(GL_LINES);
+            GL::glColor4f(0.99, 0.99, 0.99, 0.02 + 0.1 * (h - i) / h);
+            GL::glVertex3f(0,0,0);
+            GL::glColor4f(0.99, 0.99, 0.99, 0.0);
+            GL::glVertex3f(w,0,0);
+            GL::glEnd();
+        }
+        
+    }
+    GL::glPopMatrix();
+    
     GL::glColor4f(0.3, 0.3, 0.3, 0.3);
     for (int i = 1; i <= 5; i += 4) {
         if (i == 1) GL::glColor4f(1, 1, 1, 0.9);
