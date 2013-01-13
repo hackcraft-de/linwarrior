@@ -186,7 +186,7 @@ void rPlanetmap::init(Propmap* properties) {
         }
         
         for (int i = 0; i < 4; i++) {
-            string basepath = string("data/base/landscape/ground/");
+            string basepath = string("/base/landscape/ground/");
             string names[] = { 
                 string("ground_grass"), 
                 string("ground_rock"), 
@@ -204,7 +204,7 @@ void rPlanetmap::init(Propmap* properties) {
         }
 
         {
-            string basepath = string("data/base/landscape/grass/");
+            string basepath = string("/base/landscape/grass/");
             string name = string(basepath).append("grass_strip.tga");
             logger->debug() << "Loading [" << name << "] ...\n";
             unsigned int texname;
@@ -215,7 +215,7 @@ void rPlanetmap::init(Propmap* properties) {
             sGrasses.push_back(texname);
         }
 
-        string basepath = string("data/base/landscape/");
+        string basepath = string("/base/landscape/");
         string filenames[] = {
             string("blossom/blossom_desert.tga"),
             string("grass/grass_bold.tga"),
@@ -825,9 +825,9 @@ unsigned int rPlanetmap::loadMaterial() {
     static GL::GLenum prog = 0;
 
     if (prog == 0 && !fail) {
-        char* vtx = Filesystem::loadTextFile("data/base/material/base.vert");
+        char* vtx = Filesystem::loadTextFile("/base/material/base.vert");
         if (vtx) logger->debug() << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
-        char* fgm = Filesystem::loadTextFile("data/base/material/base2d.frag");
+        char* fgm = Filesystem::loadTextFile("/base/material/base2d.frag");
         if (fgm) logger->debug() << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
         fail = (vtx == NULL || fgm == NULL) || (vtx[0] == 0 && fgm[0] == 0);
         if (!fail) {

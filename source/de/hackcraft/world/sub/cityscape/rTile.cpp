@@ -34,7 +34,7 @@ rTile::rTile(int x, int y, int z, int kind) {
 
         logger->info() << "Generating Roads..." << "\n";
 
-        std::string basepath = std::string("data/base/roads/");
+        std::string basepath = std::string("/base/roads/");
         bool save = false;
         int resolution = 1 << (8 + ROADTILEDETAIL);
         unsigned char seed = 131;
@@ -111,12 +111,12 @@ unsigned int rTile::loadMaterial() {
 
     if (prog == 0 && !fail) {
         
-        char* vtx = Filesystem::loadTextFile("data/base/material/base.vert");
+        char* vtx = Filesystem::loadTextFile("/base/material/base.vert");
         if (vtx) {
             logger->debug() << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
         }
         
-        char* fgm = Filesystem::loadTextFile("data/base/material/base2d.frag");
+        char* fgm = Filesystem::loadTextFile("/base/material/base2d.frag");
         if (fgm) {
             logger->debug() << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
         }

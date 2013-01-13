@@ -92,8 +92,12 @@ rWeapon::rWeapon(Entity* obj) {
 
 void rWeapon::loadSource(const char* wavFilename, float pitch, float gain) {
     
+    // TODO: Use Filesystem-Class to load file image to memory, for now:
+    std::stringstream fname;
+    fname << "data" << wavFilename;
+    
     //ALuint buffer = alutCreateBufferHelloWorld();
-    ALuint buffer = alutCreateBufferFromFile(wavFilename);
+    ALuint buffer = alutCreateBufferFromFile(fname.str().c_str());
     alGenSources(1, &soundSource);
     alSourcei(soundSource, AL_BUFFER, buffer);
     alSourcef(soundSource, AL_PITCH, pitch);

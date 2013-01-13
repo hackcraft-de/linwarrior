@@ -22,7 +22,7 @@ rWeaponSparkgun::rWeaponSparkgun(Entity* obj) {
     remainingClips = depotSize;
 
     if (WEAPONSOUND) {
-        loadSource("data/org/freesound/weapon/sparkgun.wav");
+        loadSource("/org/freesound/weapon/sparkgun.wav");
     }
 }
 

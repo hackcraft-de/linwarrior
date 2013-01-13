@@ -21,7 +21,7 @@ camera(NULL),
 world(NULL),
 
 mission(0),
-bgm("data/org/freesound/ambient.wav"),
+bgm("/org/freesound/ambient.wav"),
 
 paused(false),
 fullscreen(DEFAULT_FULLSCREEN),

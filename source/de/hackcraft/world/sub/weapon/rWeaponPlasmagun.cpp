@@ -20,7 +20,7 @@ rWeaponPlasmagun::rWeaponPlasmagun(Entity* obj) {
     remainingClips = depotSize;
 
     if (WEAPONSOUND) {
-        loadSource("data/org/freesound/weapon/plasmagun.wav");
+        loadSource("/org/freesound/weapon/plasmagun.wav");
     }
 }
 

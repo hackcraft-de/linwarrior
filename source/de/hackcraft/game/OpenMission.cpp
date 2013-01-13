@@ -106,7 +106,7 @@ Entity* OpenMission::init(World* world) {
 
     logger->info() << "Loading global properties...\n";
     //try {
-        globalProperties.load("data/base/global.properties");
+        globalProperties.load("/base/global.properties");
     //} catch (...) {
     //    logger->info() << "Could not load global properties.\n";
     //}

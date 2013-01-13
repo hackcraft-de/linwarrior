@@ -100,7 +100,7 @@ rBuilding::rBuilding(int x, int y, int z, int rooms_x, int rooms_y, int rooms_z)
                 if (save) {
                     try {
                         char numb[3] = { char('0' + (k / 10)), char('0' + (k % 10)), '\0' };
-                        std::string fname = std::string("data/base/cityscape/facade/facade_") + std::string(numb) + std::string(".tga");
+                        std::string fname = std::string("/base/cityscape/facade/facade_") + std::string(numb) + std::string(".tga");
                         if (Texfile::saveTGA(fname.c_str(), w, h, bpp, texels)) {
                             logger->error() << "Could not save image" << "\n";
                         }
@@ -280,12 +280,12 @@ unsigned int rBuilding::loadMaterial() {
 
     if (prog == 0 && !fail) {
         
-        char* vtx = Filesystem::loadTextFile("data/base/material/base.vert");
+        char* vtx = Filesystem::loadTextFile("/base/material/base.vert");
         if (vtx) {
             logger->debug() << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
         }
         
-        char* fgm = Filesystem::loadTextFile("data/base/material/base2d.frag");
+        char* fgm = Filesystem::loadTextFile("/base/material/base2d.frag");
         if (fgm) {
             logger->debug() << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
         }

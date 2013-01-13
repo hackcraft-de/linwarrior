@@ -34,7 +34,7 @@ rTree::rTree(Entity* obj, float* pos, float* rot, int seed, int type, int age) {
     
     sInstances++;
     if (sInstances == 1) {
-        string foliagepath = string("data/base/landscape/foliage/");
+        string foliagepath = string("/base/landscape/foliage/");
         string foliagenames[] = {
             string("foliage_tree.tga"),
             string("foliage_strange.tga"),
@@ -53,7 +53,7 @@ rTree::rTree(Entity* obj, float* pos, float* rot, int seed, int type, int age) {
             sLeaftexs.push_back(texname);
         }
         
-        string barkpath = string("data/base/landscape/bark/");
+        string barkpath = string("/base/landscape/bark/");
         string barknames[] = {
             string("bark_oak.tga"),
             string("bark_palm.tga"),

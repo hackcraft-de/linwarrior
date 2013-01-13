@@ -58,7 +58,7 @@ FILE* Filesystem::openFile(const char* filename, const char* opentype) {
     
     std::stringstream fname;
     
-    fname << filename;
+    fname << "data" << filename;
     
     //std::list<std::string> prefixes;
     

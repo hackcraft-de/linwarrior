@@ -80,25 +80,25 @@ int rRigged::getMountpoint(const char* point) {
 std::string rRigged::resolveFilename(std::string modelname) {
     std::map<std::string,std::string> m2f;
     
-    m2f["frogger"] = "data/base/model/wanzer/frogger/frogger.md5mesh";
-    m2f["gorilla_ii"] = "data/base/model/wanzer/gorilla/gorilla_ii.md5mesh";
-    m2f["lemur"] = "data/base/model/wanzer/lemur/lemur.md5mesh";
-    m2f["kibitz"] = "data/base/model/wanzer/kibitz/kibitz.md5mesh";
+    m2f["frogger"] = "/base/model/wanzer/frogger/frogger.md5mesh";
+    m2f["gorilla_ii"] = "/base/model/wanzer/gorilla/gorilla_ii.md5mesh";
+    m2f["lemur"] = "/base/model/wanzer/lemur/lemur.md5mesh";
+    m2f["kibitz"] = "/base/model/wanzer/kibitz/kibitz.md5mesh";
 
-    m2f["pod"] = "data/base/model/turret/pod/pod.md5mesh";
+    m2f["pod"] = "/base/model/turret/pod/pod.md5mesh";
 
-    m2f["bug"] = "data/base/model/tank/bug/bug.md5mesh";
-    m2f["ant"] = "data/base/model/tank/ant/ant.md5mesh";
-    m2f["warbuggy"] = "data/base/model/tank/warbuggy/warbuggy.md5mesh";
+    m2f["bug"] = "/base/model/tank/bug/bug.md5mesh";
+    m2f["ant"] = "/base/model/tank/ant/ant.md5mesh";
+    m2f["warbuggy"] = "/base/model/tank/warbuggy/warbuggy.md5mesh";
 
-    m2f["flopsy"] = "data/com/blendswap/model/flopsy/flopsy.md5mesh";
+    m2f["flopsy"] = "/com/blendswap/model/flopsy/flopsy.md5mesh";
 
-    m2f["scorpion"] = "data/org/opengameart/model/scorpion/scorpion.md5mesh";
-    m2f["thunderbird"] = "data/org/opengameart/model/thunderbird/thunderbird.md5mesh";
+    m2f["scorpion"] = "/org/opengameart/model/scorpion/scorpion.md5mesh";
+    m2f["thunderbird"] = "/org/opengameart/model/thunderbird/thunderbird.md5mesh";
 
-    m2f["gausscan"] = "data/org/opengameart/model/gausscan/gausscan.md5mesh";
-    m2f["twinblaster"] = "data/org/opengameart/model/twinblaster/twinblaster.md5mesh";
-    m2f["reactor"] = "data/org/opengameart/model/reactor/reactor.md5mesh";
+    m2f["gausscan"] = "/org/opengameart/model/gausscan/gausscan.md5mesh";
+    m2f["twinblaster"] = "/org/opengameart/model/twinblaster/twinblaster.md5mesh";
+    m2f["reactor"] = "/org/opengameart/model/reactor/reactor.md5mesh";
 
     m2f["soldier"] = "/media/44EA-7693/workspaces/mm3d/soldier/soldier.md5mesh";
 
@@ -273,9 +273,9 @@ unsigned int rRigged::loadMaterial() {
     static GL::GLenum prog = 0;
 
     if (prog == 0 && !fail) {
-        char* vtx = Filesystem::loadTextFile("data/base/material/base.vert");
+        char* vtx = Filesystem::loadTextFile("/base/material/base.vert");
         if (vtx) logger->debug() << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
-        char* fgm = Filesystem::loadTextFile("data/base/material/base3d.frag");
+        char* fgm = Filesystem::loadTextFile("/base/material/base3d.frag");
         if (fgm) logger->debug() << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
         fail = (vtx == NULL || fgm == NULL) || (vtx[0] == 0 && fgm[0] == 0);
         if (!fail) {
