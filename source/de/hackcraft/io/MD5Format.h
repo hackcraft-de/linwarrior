@@ -10,6 +10,8 @@
 #ifndef _MD5FRMT_H_
 #define	_MD5FRMT_H_
 
+#include "de/hackcraft/io/Filesystem.h"
+
 #include "de/hackcraft/psi3d/math3d.h"
 
 #include <stdlib.h>
@@ -435,7 +437,7 @@ public: // LOADING
         m.numMeshes = 0;
         try {
 
-            FILE* f = fopen(filename, "rt");
+            FILE* f = Filesystem::openReadOnlyTextFile(filename);
             if (f == NULL) throw "could not open file for reading";
             int r;
 

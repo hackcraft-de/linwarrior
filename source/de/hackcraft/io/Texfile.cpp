@@ -1,5 +1,7 @@
 #include "Texfile.h"
 
+#include "de/hackcraft/io/Filesystem.h"
+
 #include "de/hackcraft/log/Logger.h"
 
 #include <stdio.h>
@@ -42,7 +44,7 @@ unsigned char* Texfile::loadTGA(const char *fname, int *w, int* h, int* bpp) {
 
     FILE *file;
 
-    file = fopen(fname, "rb");
+    file = Filesystem::openReadOnlyBinaryFile(fname);
     if (file == NULL) {
         logger->error() << "WARNING: Could not open tga file.\n";
         return warningTexture(fname, w, h, bpp);
@@ -112,7 +114,7 @@ int Texfile::saveTGA(const char *fname, int w, int h, int bpp, unsigned char* im
 
     FILE *file;
 
-    file = fopen(fname, "wb");
+    file = Filesystem::openWriteOnlyBinaryFile(fname);
     if (file == NULL) {
         return -1;
     };
