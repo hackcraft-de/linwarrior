@@ -16,8 +16,11 @@
  */
 class Filesystem {
 public:
-    /** Loading whole text file. */
+    /** Loading whole text file with zero termination. */
     static char* loadTextFile(const char* filename);
+    
+    /** Loading whole binary file and deliver loaded file size. */
+    static char* loadBinaryFile(const char* filename, long* filesize);
 
     /** Try to open text file from any data directory. */
     static FILE* openReadOnlyTextFile(const char* filename);

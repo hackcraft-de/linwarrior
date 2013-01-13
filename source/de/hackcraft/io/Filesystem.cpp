@@ -33,6 +33,39 @@ char* Filesystem::loadTextFile(const char* filename) {
 }
 
 
+char* Filesystem::loadBinaryFile(const char* filename, long* filesize) {
+    
+    // In case of an error nothing is read.
+    *filesize = 0;
+    
+    // Open file from any registered location.
+    FILE* f = openReadOnlyBinaryFile(filename);
+    
+    // Return empty string (0 terminated) if there is no such file.
+    if (f == NULL) {
+        return NULL;
+    }
+    
+    // Determine file length and allocate string array.
+    fseek(f, 0, SEEK_END);
+    unsigned long s = ftell(f);
+    char* cstr = new char[s];
+    rewind(f);
+    
+    // Read file contents into array.
+    if (fread(cstr, s, 1, f) != 1) {
+        delete[] cstr;
+        s = 0;
+    }
+    
+    fclose(f);
+    
+    *filesize = s;
+    
+    return cstr;
+}
+
+
 FILE* Filesystem::openReadOnlyTextFile(const char* filename) {
     
     return openFile(filename, "rt");
