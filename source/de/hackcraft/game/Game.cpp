@@ -6,6 +6,7 @@
 
 #include "de/hackcraft/world/sub/misc/MiscSystem.h"
 #include "de/hackcraft/world/sub/misc/rInputsource.h"
+#include "de/hackcraft/io/Filesystem.h"
 
 #include <cassert>
 #include <cstdlib>
@@ -50,6 +51,7 @@ void Game::printHelp() {
             << "Options:" << "\n"
             << "\n"
             << "  --help          prints this help screen" << "\n"
+            << "  --path          add a data path that takes precedence" << "\n"
             << "  --resolution    followed by resolution WIDTH or WIDTHxHEIGHT" << "\n"
             << "  --samples       folowed by the number of multisamples 0,2,4,8,... " << "\n"
             << "  --window        start in windowed mode" << "\n"
@@ -72,6 +74,11 @@ int Game::parseArgs(int argc, char** args) {
     loopi(argc) {
         if (arg_i("--help")) {
             return 1;
+        } else if (arg_i("--path")) {
+            advance_i();
+            std::string s = args[i];
+            std::cout << s << "\n";
+            Filesystem::getDirectoryPrefixes()->push_front(s);
         } else if (arg_i("--resolution")) {
             advance_i();
             std::string s = args[i];

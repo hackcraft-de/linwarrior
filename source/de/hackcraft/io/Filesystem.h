@@ -9,13 +9,21 @@
 #ifndef FILESYSTEM_H
 #define	FILESYSTEM_H
 
+#include <list>
 #include <stdio.h>
+#include <string>
 
 /**
  * Class that shall provide means to load files from the filesystem.
  */
 class Filesystem {
 public:
+    Filesystem();
+    
+    static Filesystem* getInstance();
+    
+    static std::list<std::string>* getDirectoryPrefixes();
+    
     /** Loading whole text file with zero termination. */
     static char* loadTextFile(const char* filename);
     
@@ -32,6 +40,12 @@ public:
 private:
     /** Try to open file from any data directory. */
     static FILE* openFile(const char* filename, const char* opentype);
+
+private:
+    static Filesystem* instance;
+    
+private:
+    std::list<std::string> prefixes;
 };
 
 #endif	/* FILESYSTEM_H */

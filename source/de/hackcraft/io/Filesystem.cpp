@@ -3,6 +3,34 @@
 #include <iostream>
 #include <sstream>
 #include <cstdio>
+#include <list>
+
+
+Filesystem* Filesystem::instance = NULL;
+
+
+Filesystem::Filesystem() {
+    
+    instance = this;
+    
+    prefixes.push_back("mod");
+    prefixes.push_back("ext");
+    prefixes.push_back("data");
+    prefixes.push_back("");
+}
+
+
+Filesystem* Filesystem::getInstance() {
+    if (instance == NULL) {
+        new Filesystem();
+    }
+    return instance;
+}
+
+
+std::list<std::string>* Filesystem::getDirectoryPrefixes() {
+    return & (getInstance()->prefixes);
+}
 
 
 char* Filesystem::loadTextFile(const char* filename) {
@@ -85,17 +113,21 @@ FILE* Filesystem::openWriteOnlyBinaryFile(const char* filename) {
 
 
 FILE* Filesystem::openFile(const char* filename, const char* opentype) {
+
+    // Try to open file from given directories.
     
-    // For now only just open the filename as it is
-    // later try 1st data directory then second and so on.
+    for (std::string prefix : getInstance()->prefixes) {
     
-    std::stringstream fname;
+        std::stringstream fname;
+
+        fname << prefix << filename;
+        std::cout << fname.str() << "\n";
+        FILE* f = fopen(fname.str().c_str(), opentype);
+
+        if (f != NULL) {
+            return f;
+        }
+    }
     
-    fname << "data" << filename;
-    
-    //std::list<std::string> prefixes;
-    
-    FILE* f = fopen(fname.str().c_str(), opentype);
-    
-    return f;
+    return NULL;
 }
