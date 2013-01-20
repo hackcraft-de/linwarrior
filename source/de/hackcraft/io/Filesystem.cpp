@@ -13,9 +13,17 @@ Filesystem::Filesystem() {
     
     instance = this;
     
+    // For game data directories within the project's own folder.
     prefixes.push_back("mod");
     prefixes.push_back("ext");
     prefixes.push_back("data");
+    
+    // For common *nix installation game data directories.
+    prefixes.push_back("/usr/share/games/linwarrior/mod");
+    prefixes.push_back("/usr/share/games/linwarrior/ext");
+    prefixes.push_back("/usr/share/games/linwarrior/data");
+    
+    // For absolute file references - sensible for development only.
     prefixes.push_back("");
 }
 
@@ -121,7 +129,7 @@ FILE* Filesystem::openFile(const char* filename, const char* opentype) {
         std::stringstream fname;
 
         fname << prefix << filename;
-        std::cout << fname.str() << "\n";
+        //std::cout << fname.str() << "\n";
         FILE* f = fopen(fname.str().c_str(), opentype);
 
         if (f != NULL) {
