@@ -1,5 +1,7 @@
 #include "rSoundsource.h"
 
+#include "de/hackcraft/io/Filesystem.h"
+
 #include "de/hackcraft/openal/AL.h"
 
 
@@ -34,7 +36,9 @@ void rSoundsource::loadWithWav(const char* filename, bool looping) {
         if (filename == NULL) {
                 buffer = alutCreateBufferHelloWorld();
         } else {
-                buffer = alutCreateBufferFromFile(filename);
+                long fileImageSize = 0;
+                char* fileImage = Filesystem::loadBinaryFile(filename, &fileImageSize);
+                buffer = alutCreateBufferFromFileImage(fileImage, fileImageSize);
         }
         
         if (buffer == AL_NONE) throw "could not load buffer";
