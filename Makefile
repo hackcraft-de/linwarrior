@@ -90,6 +90,7 @@ CFLAGS += -O1 -funroll-loops
 
 # Fast-Math doesn't work because of NaN usage.
 
+
 # Flags for profiling, instructions:
 # 1. Recompile everything with these flags un-commented.
 # 2. Run the binaray to collect data.
@@ -97,6 +98,16 @@ CFLAGS += -O1 -funroll-loops
 # 4. Disable/Comment these flags again and recompile everything.
 #CFLAGS += -pg
 #LFLAGS += -pg
+
+
+# Flags for debug symbols, instructions:
+# 1. Recompile everything with these flags un-commented.
+# 2. Possibly edit project's run debug configuration.
+# 3. Place breakpoints as you wish.
+# 4. Hit Debug-Run
+# 5. Disable/Comment this flag again and recompile everything to finish.
+#CFLAGS += -g
+
 
 # Default makefile Target.
 all: PRINTPLATFORM $(TARGET)
