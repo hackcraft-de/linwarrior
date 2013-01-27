@@ -101,6 +101,11 @@ std::string rRigged::resolveFilename(std::string modelname) {
     m2f["reactor"] = "/org/opengameart/model/reactor/reactor.md5mesh";
 
     m2f["soldier"] = "/media/44EA-7693/workspaces/mm3d/soldier/soldier.md5mesh";
+    
+    // if the model name isn't a shortcut then assume it's a path+filename.
+    if (m2f.find(modelname) == m2f.end()) {
+        return modelname;
+    }
 
     return m2f[modelname];
 }
