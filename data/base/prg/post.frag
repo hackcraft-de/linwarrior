@@ -69,6 +69,10 @@ vec2 ofse(int i, float r, vec2 p)
 }
 
 
+// --------------------------------
+// Screen space warping conversions
+
+
 vec2 warpNone(vec2 pix)
 {
     return pix;
@@ -94,6 +98,42 @@ vec2 warpDual(vec2 pix)
 {
     pix.x = mod(pix.x * 2.0, 1.0);
     return warpMono(pix);
+}
+
+
+// -----------------------
+// Color space conversions
+
+
+vec3 RGB2YUV(vec3 color)
+{
+	float CR = color.r;
+	float CG = color.g;
+	float CB = color.b;
+
+	float CY = 0.299*CR + 0.587*CG + 0.114*CB;
+	float CU = (CB-CY)*0.565;
+	float CV = (CR-CY)*0.713;
+
+	vec3 c = vec3(CY, CU, CV);
+
+	return c;
+}
+
+
+vec3 YUV2RGB(vec3 color)
+{
+	float CY = color.r;
+	float CU = color.g;
+	float CV = color.b;
+
+	float CR = CY + 1.403*CV;
+	float CG = CY - 0.344*CU - 0.714*CV;
+	float CB = CY + 1.770*CU;
+
+	vec3 c = vec3(CR, CG, CB);
+
+	return c;
 }
 
 
@@ -262,29 +302,14 @@ void main()
 #elif 0
 	float mixalpha = 0.5;
 
-	float CR = color0.r;
-	float CG = color0.g;
-	float CB = color0.b;
+	vec3 yuv = RGB2YUV(color0.rgb);
 
-	float CY = 0.299*CR + 0.587*CG + 0.114*CB;
-	float CU = (CB-CY)*0.565;
-	float CV = (CR-CY)*0.713;
-	
-	//nois = noiz3(abs(gl_TexCoord[0].y-0.5), 0.21, 0.91);
-	//CY = (0.98 + 0.04 * nois) * max(CY*(pow(1.3*ao_, 3.5)), CY) + 0.05*bloom;
-	//CY = max(CY*(pow(1.3*ao_, 3.5)), CY) + 0.05*bloom;
-	//CY = min(CY, CY * pow(1.3*ao_, 3.5)) + 0.05*bloom;
-	CY = (CY * pow(1.3*ao_, 1.0)) + 0.1*bloom;
+	yuv.r = (yuv.r * pow(1.3*ao_, 1.0)) + 0.1*bloom;
 
-	CR = CY + 1.403*CV;
-	CG = CY - 0.344*CU - 0.714*CV;
-	CB = CY + 1.770*CU;
-
-	color0.r = CR;
-	color0.g = CG;
-	color0.b = CB;
+	color0.rgb = YUV2RGB(yuv);
 
 	vec4 result = vec4(color0.rgb, 1.0);
+
 	if (!true && gl_TexCoord[0].x < 0.5) {
 		result = vec4(vec3(pow(1.3*ao_, 1.0)), 1.0);
 	}
