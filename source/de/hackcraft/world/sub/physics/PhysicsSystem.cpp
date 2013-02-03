@@ -5,6 +5,7 @@
 #include "de/hackcraft/world/World.h"
 
 #include "de/hackcraft/world/sub/physics/rCollider.h"
+#include "de/hackcraft/world/sub/physics/rSpringlink.h"
 #include "de/hackcraft/world/sub/physics/rTraceable.h"
 
 
@@ -47,6 +48,11 @@ void PhysicsSystem::add(rCollider* collider) {
 }
 
 
+void PhysicsSystem::add(rSpringlink* springlink) {
+    springlinks.push_back(springlink);
+    springlinksIndex[springlink->getId()] = springlink;
+}
+
 void PhysicsSystem::add(rTraceable* traceable) {
     traceables.push_back(traceable);
     traceablesIndex[traceable->getId()] = traceable;
@@ -76,6 +82,12 @@ void PhysicsSystem::animateObjects() {
         collider->prebind();
         collider->animate(spf);
         collider->postbind();
+    }
+    
+    for (rSpringlink* springlink : springlinks) {
+        springlink->prebind();
+        springlink->animate(spf);
+        springlink->postbind();
     }
     
     for (rTraceable* traceable : traceables) {

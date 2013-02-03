@@ -301,6 +301,8 @@
                 <in>PhysicsSystem.h</in>
                 <in>rCollider.cpp</in>
                 <in>rCollider.h</in>
+                <in>rSpringlink.cpp</in>
+                <in>rSpringlink.h</in>
                 <in>rTraceable.cpp</in>
                 <in>rTraceable.h</in>
               </df>

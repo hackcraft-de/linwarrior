@@ -22,6 +22,7 @@ class PhysicsSystem;
 
 class Logger;
 class rCollider;
+class rSpringlink;
 class rTraceable;
 
 class PhysicsSystem : public Subsystem {
@@ -33,6 +34,7 @@ public:
     virtual ~PhysicsSystem();
     
     void add(rCollider* collider);
+    void add(rSpringlink* springlink);
     void add(rTraceable* traceable);
 
     float* getGravity();
@@ -79,6 +81,11 @@ private:
     std::vector<rCollider*> colliders;
     /** Index on id of leased components of this type. */
     std::map<OID,rCollider*> collidersIndex;
+    
+    /** List of allocated components of this type. */
+    std::vector<rSpringlink*> springlinks;
+    /** Index on id of leased components of this type. */
+    std::map<OID,rSpringlink*> springlinksIndex;
     
     /** List of allocated components of this type. */
     std::vector<rTraceable*> traceables;
