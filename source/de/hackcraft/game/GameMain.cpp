@@ -2,7 +2,7 @@
 
 #include "de/hackcraft/game/userkeys.h"
 
-#include "de/hackcraft/io/Filesystem.h"
+#include "de/hackcraft/io/Shaderfile.h"
 
 #include "de/hackcraft/lang/Runnable.h"
 
@@ -189,9 +189,9 @@ void GameMain::applyFilter(int width, int height) {
     static GL::GLenum postprocess = 0;
 
     if (postprocess == 0 && !fail) {
-        char* vtx = Filesystem::loadTextFile("/base/prgs/post.vert");
+        char* vtx = Shaderfile::loadShaderFile("/base/prgs/post.vert");
         if (vtx) logger->trace() << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
-        char* fgm = Filesystem::loadTextFile("/base/prgs/post.frag");
+        char* fgm = Shaderfile::loadShaderFile("/base/prgs/post.frag");
         if (fgm) logger->trace() << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
         fail = (vtx == NULL || fgm == NULL) || (vtx[0] == 0 || fgm[0] == 0);
         if (!fail) {
