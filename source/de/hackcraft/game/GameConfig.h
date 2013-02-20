@@ -1,15 +1,15 @@
 /* 
- * File:     Game.h
+ * File:     GameConfig.h
  * Project:  LinWarrior 3D
  * Home:     hackcraft.de
  *
  * Created on September 24, 2011, 2:02 PM
  */
 
-#ifndef GAME_H
-#define GAME_H
+#ifndef GAMECONFIG_H
+#define GAMECONFIG_H
 
-struct Game;
+struct GameConfig;
 
 #include "de/hackcraft/game/OpenMission.h"
 
@@ -32,7 +32,7 @@ struct Game;
  * io-configuration. This is a singleton. It should not be used
  * by any other class and is maintained directly by the main code.
  */
-struct Game {
+struct GameConfig {
     /** Keyboard/Joystick inputs sent to which Virtual-Gamepad? */
     Pad* pad1;
 
@@ -90,7 +90,7 @@ struct Game {
     /**
      * Initialises default attribute parameters for running a game.
      */
-    Game();
+    GameConfig();
 
     /**
      * Prints commandline help.

@@ -9,7 +9,7 @@
 #ifndef _GAMEMAIN_H
 #define _GAMEMAIN_H
 
-#include "de/hackcraft/game/Game.h"
+#include "de/hackcraft/game/GameConfig.h"
 
 #include "de/hackcraft/util/GapBuffer.h"
 
@@ -35,7 +35,7 @@ public:
     
 private:
     /** Current game configuration. */
-    Game game;
+    GameConfig game;
 
     /** SDL doesn't count mouse wheel movement. */
     int mouseWheel;

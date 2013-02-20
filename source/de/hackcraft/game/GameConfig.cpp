@@ -1,4 +1,4 @@
-#include "Game.h"
+#include "GameConfig.h"
 
 #include "de/hackcraft/game/userkeys.h"
 
@@ -13,7 +13,7 @@
 #include <iostream>
 
 
-Game::Game()
+GameConfig::GameConfig()
 : pad1(NULL),
 map1(map_zedwise),
 
@@ -39,7 +39,7 @@ fov(DEFAULT_FOV),
 mouseInput(true) {
 }
 
-void Game::printHelp() {
+void GameConfig::printHelp() {
     std::cout << "\n"
             << "LinWarrior" << "\n"
             << "  by Benjamin Pickhardt (benjamin.pickhardt*udo.edu)" << "\n"
@@ -68,7 +68,7 @@ void Game::printHelp() {
             << "\n";
 }
 
-int Game::parseArgs(int argc, char** args) {
+int GameConfig::parseArgs(int argc, char** args) {
     // Walk through arguments until all consumed or an error occured.
 
     loopi(argc) {
@@ -140,7 +140,7 @@ int Game::parseArgs(int argc, char** args) {
     return 0;
 }
 
-void Game::initMission() {
+void GameConfig::initMission() {
     world = new World();
     MissionSystem* mission = NULL;
     
