@@ -1,7 +1,9 @@
 #include "GameMain.h"
 
+#include "de/hackcraft/game/OpenMission.h"
 #include "de/hackcraft/game/userkeys.h"
 
+#include "de/hackcraft/io/Pad.h"
 #include "de/hackcraft/io/Shaderfile.h"
 
 #include "de/hackcraft/lang/Runnable.h"
@@ -17,7 +19,14 @@
 #include "de/hackcraft/util/concurrent/Minion.h"
 #include "de/hackcraft/util/concurrent/Semaphore.h"
 
-// To dis-/enable zone drawing.
+#include "de/hackcraft/world/World.h"
+#include "de/hackcraft/world/Entity.h"
+
+#include "de/hackcraft/world/sub/misc/MiscSystem.h"
+#include "de/hackcraft/world/sub/misc/rInputsource.h"
+
+#include "de/hackcraft/world/sub/mission/MissionSystem.h"
+
 #include "de/hackcraft/world/sub/trigger/rAlert.h"
 
 #include <cassert>
@@ -96,6 +105,12 @@ public:
 GameMain::GameMain() {
     
     instance = this;
+    
+    world = NULL;
+    camera = NULL;
+    
+    pad1 = NULL;
+    map1 = NULL;
     
     jobMutex = new Semaphore(1);
     jobQueue = new std::queue<Runnable*>();
@@ -184,6 +199,33 @@ void GameMain::initGL(int width, int height) {
 }
 
 
+void GameMain::initMission() {
+    world = new World();
+    MissionSystem* mission = NULL;
+    
+    if (config.mission == 1) {
+        mission = new MissionSystem();
+    } else {
+        mission = new OpenMission();
+    }
+    
+    world->subsystems.push_back(mission);
+    camera = mission->init(world);
+    //pad1 = camera->pad;
+    pad1 = new Pad();
+    MiscSystem::getInstance()->findInputsourceByEntity(camera->oid)->setPad(pad1);
+    
+    if (config.map1 == 'z') {
+        map1 = map_zedwise;
+    } else if (config.map1 == 'c') {
+        map1 = map_clockwise;
+    } else {
+        map1 = map_zedwise;
+    }
+
+}
+
+
 void GameMain::applyFilter(int width, int height) {
     static bool fail = false;
     static GL::GLenum postprocess = 0;
@@ -256,32 +298,32 @@ void GameMain::applyFilter(int width, int height) {
 
 
 void GameMain::updateFrame(int elapsed_msec) {
-    if (game.paused) {
+    if (config.paused) {
         // Delete Fragged Objects of previous frames.
-        game.world->bagFragged();
+        world->bagFragged();
         return;
     }
 
     // Re-Cluster spatial index.
-    game.world->clusterObjects();
+    world->clusterObjects();
 
     int subframes = 1;
 
     loopi(subframes) {
         // calculate the time that the last frame took.
-        game.world->advanceTime(elapsed_msec / subframes);
+        world->advanceTime(elapsed_msec / subframes);
 
         // Deliver overdue messages to objects and groups of objects.
-        game.world->dispatchMessages();
+        world->dispatchMessages();
 
         // Calculate new animation state and the like (if not paused).
-        game.world->animateObjects();
+        world->animateObjects();
 
         // Calculate positions through transformations.
         GL::glPushMatrix();
         {
             GL::glLoadIdentity();
-            game.world->transformObjects();
+            world->transformObjects();
         }
         GL::glPopMatrix();
     }
@@ -309,7 +351,7 @@ void GameMain::drawFrame() {
     }
 
     // Draw area zones while paused (debug/editmode kind of).
-    rAlert::sDrawzone = game.paused;
+    rAlert::sDrawzone = config.paused;
 
     // Draw fewer frames? Only every n'th frame.
     int nthframe = 1;
@@ -318,7 +360,7 @@ void GameMain::drawFrame() {
     if (cnt % nthframe != 0) return;
 
     // SOLID / WIREFRAME drawing scheme.
-    if (!game.wireframe) {
+    if (!config.wireframe) {
         GL::glClearColor(0.2, 0.2, 0.2, 1.0);
         GL::glEnable(GL_FOG);
         GL::glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -334,37 +376,37 @@ void GameMain::drawFrame() {
         GL::glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // W/o background.
     }
 
-    GLS::glPushPerspectiveProjection(game.fov, 0.07, 300);
+    GLS::glPushPerspectiveProjection(config.fov, 0.07, 300);
     {
         // Setup camera.
         GL::glLoadIdentity();
-        if (game.camera) {
-            game.camera->camera();
-            game.camera->listener();
+        if (camera) {
+            camera->camera();
+            camera->listener();
         }
 
         // Find objects in visible range and prepare rendering for POV.
-        game.world->setupView(game.camera->pos0, game.camera->ori0);
+        world->setupView(camera->pos0, camera->ori0);
 
         // Draw the surrounding Sky- and Ground-Dome/Box
-        game.world->drawBack();
+        world->drawBack();
 
         // Draw the Objects themselves.
-        game.world->drawSolid();
+        world->drawSolid();
 
         // Draw the Object's translucent effects.
-        game.world->drawEffect();
+        world->drawEffect();
 
         bool postprocessing = true;
-        if (postprocessing) applyFilter(game.width, game.height);
+        if (postprocessing) applyFilter(config.width, config.height);
 
         // Draw the Head-Up-Display of the currently spectating Object.
-        game.camera->drawHUD();
+        camera->drawHUD();
     }
     GLS::glPopProjection();
 
     float motionblur = 0.0f;
-    if (game.nightvision > 0.0001f) {
+    if (config.nightvision > 0.0001f) {
         GL::glFlush();
         GLS::glAccumBlurInverse(0.83f);
     } else if (motionblur > 0.0001) {
@@ -393,7 +435,7 @@ void GameMain::drawFrame() {
     }
     //picking = !picking;
 
-    if (game.paused || overlayEnabled) drawLog();
+    if (config.paused || overlayEnabled) drawLog();
 }
 
 
@@ -467,11 +509,11 @@ void GameMain::updateKey(Uint8 keysym) {
     }
 
     if (keysym == _WIREFRAME_KEY) {
-        game.wireframe = !game.wireframe;
+        config.wireframe = !config.wireframe;
     } else if (keysym == _NIGHTVISION_KEY) {
-        game.nightvision = !game.nightvision;
+        config.nightvision = !config.nightvision;
     } else if (keysym == _PAUSE_KEY) {
-        game.paused = !game.paused;
+        config.paused = !config.paused;
     } else {
         if (keysym == SDLK_MINUS) World::getInstance()->setViewdistance(fmax(100, World::getInstance()->getViewdistance() - 50));
         else if (keysym == SDLK_PLUS) World::getInstance()->setViewdistance(fmin(3000, World::getInstance()->getViewdistance() + 50));
@@ -554,11 +596,11 @@ void GameMain::updatePad(Pad* pad, SDL_Joystick* joy, int* mapping) {
 
 
     // Optional Mouse Input.
-    if (game.mouseInput) {
+    if (config.mouseInput) {
         int mx = 0;
         int my = 0;
-        int w2 = game.width >> 1;
-        int h2 = game.height >> 1;
+        int w2 = config.width >> 1;
+        int h2 = config.height >> 1;
         unsigned char mb = SDL_GetRelativeMouseState(&mx, &my);
         SDL_WarpMouse(w2, h2);
         SDL_PumpEvents();
@@ -716,8 +758,8 @@ int GameMain::init(int argc, char** args) {
     std::cout << "LinWarrior 3D  (Build " __DATE__ ") by hackcraft.de" << "\n";
 
     logger->info() << "Reading Commandline Arguments...\n";
-    if (game.parseArgs(argc, args)) {
-        game.printHelp();
+    if (config.parseArgs(argc, args)) {
+        config.printHelp();
         return 1;
     }
 
@@ -729,15 +771,15 @@ int GameMain::init(int argc, char** args) {
 
     logger->info() << "Initializing Video-Mode and -Parameters...\n";
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    if (game.multisamples) {
+    if (config.multisamples) {
         SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, game.multisamples);
+        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, config.multisamples);
     }
     SDL_Surface* screen = NULL;
-    if (game.fullscreen) screen = SDL_SetVideoMode(game.width, game.height, 0, SDL_OPENGLBLIT | SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN);
-    else screen = SDL_SetVideoMode(game.width, game.height, 0, SDL_OPENGLBLIT | SDL_HWSURFACE | SDL_DOUBLEBUF);
+    if (config.fullscreen) screen = SDL_SetVideoMode(config.width, config.height, 0, SDL_OPENGLBLIT | SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN);
+    else screen = SDL_SetVideoMode(config.width, config.height, 0, SDL_OPENGLBLIT | SDL_HWSURFACE | SDL_DOUBLEBUF);
     if (!screen) {
-        logger->error() << "Unable to set " << game.width << " x " << game.height << "video: " << SDL_GetError() << "\n";
+        logger->error() << "Unable to set " << config.width << " x " << config.height << "video: " << SDL_GetError() << "\n";
         return 1;
     }
 
@@ -777,7 +819,7 @@ int GameMain::init(int argc, char** args) {
             ALuint source;
 
             //buffer = alutCreateBufferHelloWorld();
-            buffer = alutCreateBufferFromFile(game.bgm.c_str());
+            buffer = alutCreateBufferFromFile(config.bgm.c_str());
             if (buffer == AL_NONE) throw "Could not create buffer from file for background music.";
             alGenSources(1, &source);
             if (alGetError() != AL_NO_ERROR) throw "Could not generate background music source.";
@@ -826,7 +868,7 @@ int GameMain::init(int argc, char** args) {
     }
 
     logger->info() << "Initialising Mission...\n";
-    game.initMission();
+    initMission();
 
     // Signal state change.
     //job_render->state = 1;
@@ -847,7 +889,7 @@ int GameMain::run(int argc, char** args) {
     
     bool done = false;
     unsigned long start_ms = SDL_GetTicks();
-    double spf = 1.0 / (double) game.fps;
+    double spf = 1.0 / (double) config.fps;
     
     while (!done) {
         //logger->trace() << "loop\n";
@@ -888,12 +930,12 @@ int GameMain::run(int argc, char** args) {
         } // while poll event
 
         // Possibly print out info on pushed buttons.
-        if (game.printpad) loopi(32) {
+        if (config.printpad) loopi(32) {
             if (SDL_JoystickGetButton((SDL_Joystick*) joy0, i)) logger->trace() << "Button" << i << "\n";
         }
         // Transfer real Joystick-/Gamepad-Input into the virtual gamepad
         // of the player by using a (re-)mapping.
-        updatePad(game.pad1, (SDL_Joystick*) joy0, game.map1);
+        updatePad(pad1, (SDL_Joystick*) joy0, map1);
         // After securing Matrix: update world and draw frame.
         //GL::glPushMatrix();
         {
@@ -907,7 +949,7 @@ int GameMain::run(int argc, char** args) {
         // Lock framerate and give back idle time to the os,
         // other processes or threads.
         {
-            spf = (1.0f / game.fps);
+            spf = (1.0f / config.fps);
             // msec since frame started (end of last frame).
             long delta_ms = SDL_GetTicks() - start_ms;
             // Necessary delay to lock frame to that frame rate.

@@ -11,14 +11,9 @@
 
 struct GameConfig;
 
-#include "de/hackcraft/game/OpenMission.h"
-
-#include "de/hackcraft/io/Pad.h"
-
-#include "de/hackcraft/world/World.h"
-#include "de/hackcraft/world/Entity.h"
-
-#include "de/hackcraft/world/sub/mission/MissionSystem.h"
+#include <string>
+#include <queue>
+#include <vector>
 
 #define DEFAULT_FULLSCREEN true
 #define DEFAULT_FPS 29
@@ -28,22 +23,23 @@ struct GameConfig;
 #define DEFAULT_FOV 65
 
 /**
- * Structurizes/glues what's necessary to run a game-mission including
- * io-configuration. This is a singleton. It should not be used
- * by any other class and is maintained directly by the main code.
+ * Encapsulates parameters, options and configuration for the main controller.
+ * This configuration is then used by the main controller to start and
+ * run the simulation and run it's logic accordingly.
+ * 
+ * Contains a command line argument parser to read in those values.
+ * Without parsing command line arguments or for unprovided arguments
+ * there are sensible default values.
+ * 
+ * Please note that for technical reasons some values only take effect
+ * when starting the program, others when starting a new mission
+ * and some every start of a frame.
+ * Therefore, changing display would require a complete restart.
  */
 struct GameConfig {
-    /** Keyboard/Joystick inputs sent to which Virtual-Gamepad? */
-    Pad* pad1;
-
-    /** Mapping of real joystick/gamepad to virtual gamepad. */
-    int* map1;
-
-    /** Seeing the world through which object's eyes? */
-    Entity* camera;
-
-    /** Instance of the world we are on. */
-    World *world;
+    
+    /** Gamepad input mapping type (z=zedwise, c=clockwise). */
+    char map1;
 
     /** Id of Mission we are running. */
     int mission;
@@ -103,11 +99,6 @@ struct GameConfig {
      * \return 0 on success, 1 on failure.
      */
     int parseArgs(int argc, char** args);
-
-    /**
-     * Starts and initializes Mission according to the current game attributes.
-     */
-    void initMission();
 
 };
 

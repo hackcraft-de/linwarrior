@@ -1,25 +1,19 @@
 #include "GameConfig.h"
 
-#include "de/hackcraft/game/userkeys.h"
-
 #include "de/hackcraft/psi3d/macros.h"
 
-#include "de/hackcraft/world/sub/misc/MiscSystem.h"
-#include "de/hackcraft/world/sub/misc/rInputsource.h"
 #include "de/hackcraft/io/Filesystem.h"
 
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
 
+#include <string.h>
+
 
 GameConfig::GameConfig()
-: pad1(NULL),
-map1(map_zedwise),
-
-camera(NULL),
-
-world(NULL),
+:
+map1('z'),
 
 mission(0),
 bgm("/org/freesound/ambient.wav"),
@@ -111,9 +105,9 @@ int GameConfig::parseArgs(int argc, char** args) {
             advance_i();
             std::string s = args[i];
             if (s.compare("a")) {
-                this->map1 = map_zedwise;
+                this->map1 = 'z';
             } else if (s.compare("b")) {
-                this->map1 = map_clockwise;
+                this->map1 = 'c';
             } else {
                 printHelp();
             }
@@ -138,22 +132,5 @@ int GameConfig::parseArgs(int argc, char** args) {
         }
     }
     return 0;
-}
-
-void GameConfig::initMission() {
-    world = new World();
-    MissionSystem* mission = NULL;
-    
-    if (this->mission == 1) {
-        mission = new MissionSystem();
-    } else {
-        mission = new OpenMission();
-    }
-    
-    world->subsystems.push_back(mission);
-    camera = mission->init(world);
-    //pad1 = camera->pad;
-    pad1 = new Pad();
-    MiscSystem::getInstance()->findInputsourceByEntity(camera->oid)->setPad(pad1);
 }
 

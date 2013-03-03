@@ -14,13 +14,17 @@
 #include "de/hackcraft/util/GapBuffer.h"
 
 #include <string>
+#include <sstream>
 
 #include <SDL/SDL.h>
 
+class Entity;
 class Logger;
 class Minion;
+class Pad;
 class Runnable;
 class Semaphore;
+class World;
 
 /**
  * Encapsulates low level system-, startup- and io-code.
@@ -35,7 +39,19 @@ public:
     
 private:
     /** Current game configuration. */
-    GameConfig game;
+    GameConfig config;
+
+    /** Instance of the world we are on. */
+    World *world;
+
+    /** Seeing the world through which object's eyes? */
+    Entity* camera;
+    
+    /** Keyboard/Joystick inputs sent to which Virtual-Gamepad? */
+    Pad* pad1;
+
+    /** Mapping of real joystick/gamepad to virtual gamepad. */
+    int* map1;
 
     /** SDL doesn't count mouse wheel movement. */
     int mouseWheel;
@@ -85,6 +101,11 @@ private:
     
     /** Sets initial OpenGL mode parameters (dis-/enables and values). */
     void initGL(int width, int height);
+
+    /**
+     * Starts and initializes Mission according to the current game attributes.
+     */
+    void initMission();
     
     /** Handles "special" keys for things like rendering options. */
     void updateKey(Uint8 keysym);
