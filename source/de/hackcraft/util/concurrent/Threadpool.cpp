@@ -5,6 +5,8 @@
 #include "de/hackcraft/util/concurrent/Semaphore.h"
 #include "de/hackcraft/util/concurrent/Minion.h"
 
+#include <stdlib.h>
+
 
 Threadpool::Threadpool() {
     
@@ -43,10 +45,17 @@ void Threadpool::addThreads(int n) {
 
 void Threadpool::shutdown() {
 
-    for (Minion* minion : *minions) {
+    if (minions == NULL) {
+        return;
+    }
+    
+    while (!minions->empty()) {
+        
+        Minion* minion = minions->back();
+        minions->pop_back();
         
         minion->stop();
-        //delete minion;
+        delete minion;
     }
 }
 
