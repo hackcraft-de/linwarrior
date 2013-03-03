@@ -105,6 +105,7 @@
             <in>MD5Format.h</in>
             <in>Pad.h</in>
             <in>Shaderfile.cpp</in>
+            <in>Shaderfile.h</in>
             <in>Texfile.cpp</in>
             <in>Texfile.h</in>
           </df>
