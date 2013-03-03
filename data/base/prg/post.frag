@@ -2,6 +2,10 @@
 // Project:  LinWarrior 3d
 // Home:     hackcraft.de
 
+#include "/base/prgs/utils.inc"
+#include "/base/prgs/warp.inc"
+#include "/base/prgs/color.inc"
+
 
 varying vec3 normal, position, lightdir;
 varying float direction;
@@ -12,132 +16,7 @@ uniform sampler2D dep;
 float ofs = 0.0011;
 
 
-float linear(float z)
-{
-	float n = 0.07;// 0.0*gl_DepthRange.near;
-	float f = 300.0;// + 0.0*gl_DepthRange.far;
-	return (2.0 * n) / (f + n - z * (f - n));
-}
-
-
-float sig(float x)
-{
-	return 1.0 / (1.0 + exp(-x));
-}
-
-
-float getAO(float d0, float dn)
-{
-	float eps = +0.002;
-	float diff = (dn - d0) + eps;
-	return exp(-abs(diff) * 700.0);
-}
-
-
-float contrib(float d0, float dn)
-{
-	float diff = d0 - dn;
-	float eps = 0.0001;
-	if (abs(diff) < eps) return 1.0;
-	return exp(-(abs(diff)-eps)*500.0);
-}
-
-
-float noiz3(float x, float y, float z)
-{
-	float u = 121.12421 * (1.0+x);
-	float v = 731.23897 * (1.0+x+y);
-	float w = 531.38413 * (1.0+x+y+z);
-	return 0.5 + 0.5 * 0.3333 * ( sin(w + u*sin(u + v*sin(v))) + sin(v + w*sin(w + u*sin(u))) +  sin(u + v*sin(v + w*sin(w))) );
-}
-
-
-float mixd(float a, float b, float alpha)
-{
-	return b;//((1.0-alpha)*a + alpha*b);
-}
-
-
-float ds[17] = float[](0.000, 0.707, -1.000, 0.707, 0.000, -0.707, 1.000, -0.707, 0.000, 0.707, -1.000, 0.707, 0.000, -0.707, 1.000, -0.707, 0.000);
-float dc[17] = float[](1.000, -0.707, 0.000, 0.707, -1.000, 0.707, 0.000, -0.707, 1.000, -0.707, 0.000, 0.707, -1.000, 0.707, 0.000, -0.707, 1.000);
-
-
-vec2 ofse(int i, float r, vec2 p)
-{
-	return vec2(1.0*ds[i]*r, (1.7*r) + 1.0*dc[i]*r);
-	//return vec2(0.5*r-noiz3(p.x,p.y, i*0.23)*r, 0.5*r-noiz3(p.x,p.y, i*0.17)*r);
-}
-
-
-// --------------------------------
-// Screen space warping conversions
-
-
-vec2 warpNone(vec2 pix)
-{
-    return pix;
-}
-
-
-vec2 warpMono(vec2 pix)
-{
-    float f = -8.1;
-
-    vec2 v = pix * 2.0 - 1.0;
-
-    vec2 warped = vec2(
-        f * v.x / (v.y * v.y + f),
-        f * v.y / (v.x * v.x + f)
-    ) * 0.5 + 0.5;
-
-    return warped;
-}
-
-
-vec2 warpDual(vec2 pix)
-{
-    pix.x = mod(pix.x * 2.0, 1.0);
-    return warpMono(pix);
-}
-
-
-// -----------------------
-// Color space conversions
-
-
-vec3 RGB2YUV(vec3 color)
-{
-	float CR = color.r;
-	float CG = color.g;
-	float CB = color.b;
-
-	float CY = 0.299*CR + 0.587*CG + 0.114*CB;
-	float CU = (CB-CY)*0.565;
-	float CV = (CR-CY)*0.713;
-
-	vec3 c = vec3(CY, CU, CV);
-
-	return c;
-}
-
-
-vec3 YUV2RGB(vec3 color)
-{
-	float CY = color.r;
-	float CU = color.g;
-	float CV = color.b;
-
-	float CR = CY + 1.403*CV;
-	float CG = CY - 0.344*CU - 0.714*CV;
-	float CB = CY + 1.770*CU;
-
-	vec3 c = vec3(CR, CG, CB);
-
-	return c;
-}
-
-
-void main()
+vec4 test()
 {
 	vec2 pix = warpNone(gl_TexCoord[0].xy);
 	//float nx = 3.0 * ofs * (noiz3(gl_TexCoord[0].x, gl_TexCoord[0].y, 0.0) - 0.5);
@@ -149,6 +28,7 @@ void main()
 	//pix = vec2(pix.x + str * ofs*(0.5 - 0.5 * cos(pix.x*31.4)), pix.y + str * ofs*(0.5 - 0.5 * cos(pix.y*31.4)));
 
 	float rd = ofs * 0.35;
+
 
 	// Color blur
 	float r = rd;
@@ -162,6 +42,7 @@ void main()
 	vec4 color0 = c0;
 	vec4 colorn = c5;
 	vec4 blur = colorn - color0;
+
 
 	float nois = noiz3(gl_TexCoord[0].x, gl_TexCoord[0].y, 0.0);
 	float sn = 1.0;//sin(nois * 3.14);
@@ -187,16 +68,7 @@ void main()
 	float depthn = d5;
 
 	// Derive Normal
-	float e = ofs * 0.9;
-	float d0x = linear(textureLod(dep,pix+vec2(e, 0.0), 0.0).x);
-	float d0y = linear(textureLod(dep,pix+vec2(0.0, e), 0.0).x);
-        float xd = (d0x - d0);
-        float yd = (d0y - d0);
-	vec3 nrm_ = normalize(vec3( -e * xd, -yd * e, e * e));
-//	nrm_ = nrm_ * transpose(gl_NormalMatrix);
-        vec3 nrm1 = vec3(0.5, 0.5, 0.5) + 0.5 * nrm_;
-//	nrm1 = transpose(gl_NormalMatrix) * nrm1;
-	vec4 nrm = vec4(nrm1, 1.0);
+	vec4 nrm = deriveNormal(dep, pix, ofs);
 
 	float d6_ = linear(textureLod(dep,pix+1.2*ofs*(vec2(nrm.x, nrm.y)-vec2(0.5)), 0.0).x);
 	float d6 = mix(d5, d6_, dalpha);
@@ -268,6 +140,7 @@ void main()
 	ao = max(ao, getAO(depth0, mix(depth0,d6_, contrib(depth0,d6_))));
 	float ao_ = min(1.0, 1.0 - ao);
 
+
 	float bluryness = min(1.0, 1.1*(depth0-0.1));
 	float lum0 = (color0.r + color0.g + color0.b);
 	float lumn = (colorn.r + colorn.g + colorn.b);
@@ -275,6 +148,19 @@ void main()
 	vec4 composite = color0 * (0.70 + 1.69 * bloom) + 0.1 * (blur * bluryness);
 
 #if 1
+
+	vec3 yuv = RGB2YUV(color0.rgb);
+	vec3 yuv_blur = RGB2YUV(colorn.rgb) - yuv;
+
+	vec3 yuv_composite = yuv + 0.1 * (yuv_blur * bluryness);
+	yuv_composite.r = yuv_composite.r * (0.70 + 1.69 * bloom);
+
+	ao_ = min(1.0, 1.7 * ao_);
+	composite.r = (composite.r * ao_) + (0.5 * yuv_blur.r * (1.0-ao_));
+
+	vec4 result = vec4(YUV2RGB(yuv_composite), color0.a);
+
+#elif 0
 	//composite = vec4(ao_,ao_,ao_,1.0);
 	//composite = nois * composite + (1-nois) * vec4(ao_,ao_,ao_,1.0) * composite;
 	//composite *= vec4(ao_,ao_,ao_,1.0);
@@ -304,14 +190,15 @@ void main()
 
 	vec3 yuv = RGB2YUV(color0.rgb);
 
-	yuv.r = (yuv.r * pow(1.3*ao_, 1.0)) + 0.1*bloom;
+//	yuv.r = (yuv.r * pow(1.3*ao_, 1.0)) + 0.1*bloom;
+	yuv.r = (yuv.r * pow(1.4*ao_, 3.5)) + 0.1*bloom;
 
 	color0.rgb = YUV2RGB(yuv);
 
 	vec4 result = vec4(color0.rgb, 1.0);
-
 	if (!true && gl_TexCoord[0].x < 0.5) {
-		result = vec4(vec3(pow(1.3*ao_, 1.0)), 1.0);
+//		result = vec4(vec3(pow(1.3*ao_, 1.0)), 1.0);
+		result = vec4(vec3(pow(1.4*ao_, 3.5)), 1.0);
 	}
 #elif 0
 	float mixalpha = 0.5;
@@ -352,7 +239,12 @@ void main()
 	//float gc = 1.0 / 1.4;
 	result = pow(result, vec4(gc,gc,gc,1.0));
 #endif
-	gl_FragColor = result;
+	return result;
+}
+
+
+void main() {
+	gl_FragColor = test();
 }
 
 
