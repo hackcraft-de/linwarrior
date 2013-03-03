@@ -171,6 +171,8 @@
               <in>Minion.h</in>
               <in>Semaphore.cpp</in>
               <in>Semaphore.h</in>
+              <in>Threadpool.cpp</in>
+              <in>Threadpool.h</in>
             </df>
             <in>Binding.h</in>
             <in>GapBuffer.h</in>
