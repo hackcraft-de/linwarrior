@@ -20,10 +20,8 @@ class Entity;
 class GameConfig;
 class GapBuffer;
 class Logger;
-class Minion;
 class Pad;
-class Runnable;
-class Semaphore;
+class Threadpool;
 class World;
 
 /**
@@ -59,13 +57,7 @@ private:
     /** Old keystates */
     Uint8 keystate_[512];
 
-    /** Mutex for job queue - minions wait until they can grab a job. */
-    Semaphore* jobMutex;
-
-    /** The job queue itself - minions grab jobs here. */
-    std::queue<Runnable*>* jobQueue;
-    
-    std::vector<Minion*>* minions;
+    Threadpool* threadpool;
 
     /** stdout is redirected to this stringstream. */
     std::stringstream oss;

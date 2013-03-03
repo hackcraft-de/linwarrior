@@ -8,6 +8,7 @@
 #include "de/hackcraft/io/Shaderfile.h"
 
 #include "de/hackcraft/lang/Runnable.h"
+#include "de/hackcraft/lang/Thread.h"
 
 #include "de/hackcraft/log/Logger.h"
 
@@ -19,8 +20,7 @@
 
 #include "de/hackcraft/util/GapBuffer.h"
 
-#include "de/hackcraft/util/concurrent/Minion.h"
-#include "de/hackcraft/util/concurrent/Semaphore.h"
+#include "de/hackcraft/util/concurrent/Threadpool.h"
 
 #include "de/hackcraft/world/World.h"
 #include "de/hackcraft/world/Entity.h"
@@ -116,10 +116,8 @@ GameMain::GameMain() {
     
     pad1 = NULL;
     map1 = NULL;
-    
-    jobMutex = new Semaphore(1);
-    jobQueue = new std::queue<Runnable*>();
-    minions = new std::vector<Minion*>;
+
+    threadpool = new Threadpool();
     
     mouseWheel = 0;
     overlayEnabled = !true;
@@ -751,17 +749,17 @@ void GameMain::updateLog() {
 int GameMain::init(int argc, char** args) {
     
     //JobBGM* job_bgm = new JobBGM();
-    //jobQueue.push(job_bgm);
+    //threadpool->addJob(job_output);
     
     //JobRender* job_render = new JobRender();
-    //jobQueue->push(job_render);
+    //threadpool->addJob(job_output);
 
     // Remember original stdout/cout stream and redirect cout if enabled.
     stdout_ = std::cout.rdbuf();
     bool redirectOutput = true;
     if (redirectOutput) {
         JobOutput* job_output = new JobOutput();
-        jobQueue->push(job_output);
+        threadpool->addJob(job_output);
         std::cout.rdbuf( oss.rdbuf() );
     }
 
@@ -861,12 +859,7 @@ int GameMain::init(int argc, char** args) {
 
     logger->info() << "Breeding Minions...\n";
     int maxminions = 3;
-    
-    loopi(maxminions) {
-        Minion* minion = new Minion(this->jobMutex, this->jobQueue);
-        minion->start();
-        minions->push_back(minion);
-    }
+    threadpool->addThreads(maxminions);
 
     bool loadscreen = true;
     if (loadscreen) {
@@ -1000,13 +993,9 @@ int GameMain::run(int argc, char** args) {
 void GameMain::deinit() {
     
     logger->info() << "Shutting Down...\n";
-    
-    // Better set global signal and SDL_WaitThread.
 
-    for (Minion* minion : *minions) {
-        minion->stop();
-    }
-    delete jobMutex;
+    threadpool->shutdown();
+    delete threadpool;
     
     std::cout.rdbuf( stdout_ );
     //console.print();
