@@ -9,16 +9,17 @@
 #ifndef _GAMEMAIN_H
 #define _GAMEMAIN_H
 
-#include "de/hackcraft/game/GameConfig.h"
-
 #include "de/hackcraft/util/GapBuffer.h"
 
+#include <queue>
 #include <string>
 #include <sstream>
+#include <vector>
 
 #include <SDL/SDL.h>
 
 class Entity;
+class GameConfig;
 class Logger;
 class Minion;
 class Pad;
@@ -39,7 +40,7 @@ public:
     
 private:
     /** Current game configuration. */
-    GameConfig config;
+    GameConfig* config;
 
     /** Instance of the world we are on. */
     World *world;

@@ -12,8 +12,6 @@
 struct GameConfig;
 
 #include <string>
-#include <queue>
-#include <vector>
 
 #define DEFAULT_FULLSCREEN true
 #define DEFAULT_FPS 29
