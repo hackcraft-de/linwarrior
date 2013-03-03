@@ -9,8 +9,6 @@
 #ifndef _GAMEMAIN_H
 #define _GAMEMAIN_H
 
-#include "de/hackcraft/util/GapBuffer.h"
-
 #include <queue>
 #include <string>
 #include <sstream>
@@ -20,6 +18,7 @@
 
 class Entity;
 class GameConfig;
+class GapBuffer;
 class Logger;
 class Minion;
 class Pad;
@@ -75,13 +74,13 @@ private:
     std::streambuf* stdout_;
 
     /** Program output log. */
-    GapBuffer log;
+    GapBuffer *log;
 
     /** Console terminal program output. */
-    GapBuffer console;
+    GapBuffer *console;
 
     /** Commandline input buffer for console. */
-    GapBuffer cmdline;
+    GapBuffer *cmdline;
 
     /** Command & Control Overlay enabled => redirect keyboard */
     bool overlayEnabled;

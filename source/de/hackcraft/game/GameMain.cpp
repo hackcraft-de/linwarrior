@@ -17,6 +17,8 @@
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Console.h"
 
+#include "de/hackcraft/util/GapBuffer.h"
+
 #include "de/hackcraft/util/concurrent/Minion.h"
 #include "de/hackcraft/util/concurrent/Semaphore.h"
 
@@ -124,8 +126,13 @@ GameMain::GameMain() {
 
     memset(keystate_, 0, sizeof(keystate_));
     
-    console.write("Console program output is printed here...");
-    cmdline.write("Console commandline input is inserted here...");
+    log = new GapBuffer();
+    
+    console = new GapBuffer();    
+    console->write("Console program output is printed here...");
+    
+    cmdline = new GapBuffer();
+    cmdline->write("Console command line input is inserted here...");
     
     stdout_ = NULL;
     
@@ -458,15 +465,15 @@ void GameMain::drawLog() {
                 GL::glScalef(1.0/120.0, 1.0/60.0, 1.0);
                 GL::glTranslatef(0,1.0,-100);
                 char buffer[256*128];
-                log.printConsole(buffer, 120, 60/3);
+                log->printConsole(buffer, 120, 60/3);
                 Console::glDrawConsole(buffer, 120*60/3, 120, 0);
 
                 GL::glTranslatef(0,-60/3.0f,0);
-                console.printConsole(buffer, 120, 60/3);
+                console->printConsole(buffer, 120, 60/3);
                 Console::glDrawConsole(buffer, 120*60/3, 120, 0);
 
                 GL::glTranslatef(0,-60/3.0f,0);
-                cmdline.printConsole(buffer, 120, 60/3);
+                cmdline->printConsole(buffer, 120, 60/3);
                 Console::glDrawConsole(buffer, 120*60/3, 120, 0);
             }
             GL::glPopMatrix();
@@ -483,7 +490,7 @@ void GameMain::updateKey(Uint8 keysym) {
     }
 
     if (overlayEnabled) {
-        GapBuffer* text = &cmdline;
+        GapBuffer* text = cmdline;
         if (keysym == SDLK_LEFT) text->stepLeft();
         else if (keysym == SDLK_RIGHT) text->stepRight();
         else if (keysym == SDLK_UP) text->stepUp();
@@ -732,7 +739,7 @@ void GameMain::drawPlaque() {
 void GameMain::updateLog() {
     //cout << "Redirecting text output.\n";
     if (!oss.str().empty()) {
-        log.write(oss.str().c_str());
+        log->write(oss.str().c_str());
         printf("%s", oss.str().c_str());
         oss.clear();
         oss.str("");
