@@ -57,6 +57,10 @@ struct Component {
         return NULL;
     }
 
+    void addBinding(Binding* binding) {
+        prebinds.push_back(binding);
+    }
+
     void addBinding(void* dst, void* src, unsigned int size) {
         prebinds.push_back(new Binding(dst, src, size));
     }
