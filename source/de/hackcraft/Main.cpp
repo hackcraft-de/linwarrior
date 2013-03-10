@@ -2,64 +2,91 @@
 
 // Startup code: Dispatching sub program startups.
 
+#include "de/hackcraft/game/GameMain.h"
+
+#include "de/hackcraft/util/HashMap.h"
+
+#include "de/hackcraft/lang/String.h"
+
+#include "de/hackcraft/log/Logger.h"
+
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
 
-using namespace std;
 
-#include "de/hackcraft/game/GameMain.h"
-
-#include <de/hackcraft/util/HashMap.h>
-#include <de/hackcraft/lang/String.h>
-
-void testHM1() {
-    HashMap<Object*,Object*>* h = new HashMap<Object*,Object*>();
+/** Just a test class. */
+class TestMain : public Main {
+public:
     
-    Object a;
-    Object b;
-    h->put(&a, &b);
-}
-
-void testHM2() {
-    HashMap<String*,String*>* h = new HashMap<String*,String*>();
+    ~TestMain() {
+        std::cout << "Tearing down.\n";
+    }
     
-    for (int i = 0; i <= ('z'-'a'); i++) {
-        //std::cout << i << "\n";
-        char x[] = { char('a' + i), '\0' };
-        char y[] = { char('A' + i), '\0' };
-        h->put(new String(x), new String(y));
-    }
-    for (int i = 0; i <= ('z'-'a'); i++) {
-        char x[] = { char('a' + i), '\0' };
-        String* y = h->get(new String(x));
-        std::cout << y->c_str();
-    }
-}
-
-void testHM() {
-    //testHM1();
-    testHM2();
-}
-
-#include "de/hackcraft/log/Logger.h"
-
-void testLogger() {
-    Logger* logger = Logger::getLogger("/de/hackcraft/main");
     
-    logger->trace() << "log" << " test " << 1 << "\n";
-    logger->trace() + "log" + " test " + 1 + "\n";
-}
-
-static int test(int argc, char **args) {
-    cout << "Arguments for test module:\n";
-    for (int i = 0; i < argc; i++) {
-        cout << args[i] << "\n";
+    virtual int run(int argc, char** args) {
+        
+        std::cout << "Arguments for test module:\n";
+        
+        for (int i = 0; i < argc; i++) {
+            std::cout << args[i] << "\n";
+        }
+        
+        std::cout << "Testing...\n";
+        
+        //testHM();
+        testLogger();
+        
+        std::cout << "Finishing.\n";
+        
+        return 0;
     }
-    //testHM();
-    testLogger();
-    return 0;
-}
+    
+private:
+    
+    void testHM1() {
+        
+        HashMap<Object*,Object*>* h = new HashMap<Object*,Object*>();
+
+        Object a;
+        Object b;
+        h->put(&a, &b);
+    }
+
+    
+    void testHM2() {
+        
+        HashMap<String*,String*>* h = new HashMap<String*,String*>();
+
+        for (int i = 0; i <= ('z'-'a'); i++) {
+            //std::cout << i << "\n";
+            char x[] = { char('a' + i), '\0' };
+            char y[] = { char('A' + i), '\0' };
+            h->put(new String(x), new String(y));
+        }
+        for (int i = 0; i <= ('z'-'a'); i++) {
+            char x[] = { char('a' + i), '\0' };
+            String* y = h->get(new String(x));
+            std::cout << y->c_str();
+        }
+    }
+
+    
+    void testHM() {
+        //testHM1();
+        testHM2();
+    }
+
+    
+    void testLogger() {
+        
+        Logger* logger = Logger::getLogger("/de/hackcraft/main");
+
+        logger->trace() << "log" << " test " << 1 << "\n";
+        logger->trace() + "log" + " test " + 1 + "\n";
+    }
+    
+};
 
 
 Main* mainInstance;
@@ -86,27 +113,28 @@ int main(int argc, char **args) {
     try {
         atexit(cleanup);
         
-        string subprogram = (argc >= 2) ? string(args[1]) : string("");
+        std::string subprogram = (argc >= 2) ? std::string(args[1]) : std::string("");
         
         if (subprogram == "game") {
             mainInstance = new GameMain();
-            return mainInstance->run(argc-1, &args[1]);
             
         } else if (subprogram == "test") {
-            return test(argc-1, &args[1]);
+            mainInstance = new TestMain();
             
         } else {
-            cout << "Please specify module to run: <program> <module> [parameters]\n";
-            cout << "  game   Run game module\n";
-            cout << "  test   Run test module\n";
+            std::cout << "Please specify module to run: <program> <module> [parameters]\n";
+            std::cout << "  game   Run game module\n";
+            std::cout << "  test   Run test module\n";
             return 0;
         }
         
+        return mainInstance->run(argc-1, &args[1]);
+        
     } catch (char* s) {
-        cout << "Fatal exception caught:\n" << s << "\n";
+        std::cout << "Fatal exception caught:\n" << s << "\n";
         
     } catch (const char* s) {
-        cout << "Fatal exception caught:\n" << s << "\n";
+        std::cout << "Fatal exception caught:\n" << s << "\n";
     }
     return 0;    
 }
