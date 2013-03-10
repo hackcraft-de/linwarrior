@@ -95,6 +95,8 @@
             <in>GameConfig.h</in>
             <in>GameMain.cpp</in>
             <in>GameMain.h</in>
+            <in>GameMission.cpp</in>
+            <in>GameMission.h</in>
             <in>OpenMission.cpp</in>
             <in>OpenMission.h</in>
             <in>userkeys.h</in>
@@ -276,10 +278,6 @@
                 <in>rLightsource.h</in>
                 <in>rSoundsource.cpp</in>
                 <in>rSoundsource.h</in>
-              </df>
-              <df name="mission">
-                <in>MissionSystem.cpp</in>
-                <in>MissionSystem.h</in>
               </df>
               <df name="mobile">
                 <in>MobileSystem.cpp</in>
@@ -825,13 +823,6 @@
         </ccTool>
       </item>
       <item path="source/de/hackcraft/world/sub/misc/rSoundsource.cpp"
-            ex="false"
-            tool="1"
-            flavor2="8">
-        <ccTool>
-        </ccTool>
-      </item>
-      <item path="source/de/hackcraft/world/sub/mission/MissionSystem.cpp"
             ex="false"
             tool="1"
             flavor2="8">

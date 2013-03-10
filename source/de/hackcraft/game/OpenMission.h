@@ -12,11 +12,11 @@
 
 class OpenMission;
 
+#include "de/hackcraft/game/GameMission.h"
+
 #include "de/hackcraft/lang/OID.h"
 
 #include "de/hackcraft/util/Propmap.h"
-
-#include "de/hackcraft/world/sub/mission/MissionSystem.h"
 
 #include <set>
 #include <vector>
@@ -31,7 +31,7 @@ class rPlanetmap;
 /**
  * Mission for testing new Mission features.
  */
-class OpenMission : public MissionSystem {
+class OpenMission : public GameMission {
 private:
     OID group_alliance_player;
     OID group_alliance_wingmen;

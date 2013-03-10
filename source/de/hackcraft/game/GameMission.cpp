@@ -1,4 +1,4 @@
-#include "MissionSystem.h"
+#include "GameMission.h"
 
 #include "de/hackcraft/world/Entity.h"
 #include "de/hackcraft/world/World.h"
@@ -17,28 +17,18 @@
 
 #include <cassert>
 #include <ctime>
-    
-
-MissionSystem* MissionSystem::instance = NULL;
 
 
-MissionSystem* MissionSystem::getInstance() {
-    return instance;
-}
-
-
-MissionSystem::MissionSystem() {
-    instance = this;
-    
+GameMission::GameMission() {
     mState = 0;
 }
 
 
-MissionSystem::~MissionSystem() {
+GameMission::~GameMission() {
 }
 
 
-void MissionSystem::checkConditions() {
+void GameMission::checkConditions() {
     
     OID deadTag = World::getInstance()->getGroup(HLT_DEAD);
     
@@ -73,7 +63,7 @@ void MissionSystem::checkConditions() {
 }
 
 
-void MissionSystem::onVictory() {
+void GameMission::onVictory() {
     if (mState != -1) {
         mState = -1;
         World::getInstance()->sendMessage(0, 0, 0,
@@ -84,7 +74,7 @@ void MissionSystem::onVictory() {
 }
 
 
-void MissionSystem::onDefeat() {
+void GameMission::onDefeat() {
     if (mState != -2) {
         mState = -2;
         World::getInstance()->sendMessage(0, 0, 0,
@@ -95,7 +85,7 @@ void MissionSystem::onDefeat() {
 }
 
 
-Entity* MissionSystem::init(World* world) {
+Entity* GameMission::init(World* world) {
     if (true) {
         world->getTiming()->setTime(12);
     } else {
@@ -151,7 +141,7 @@ Entity* MissionSystem::init(World* world) {
 }
 
 
-void MissionSystem::advanceTime(int deltamsec) {
+void GameMission::advanceTime(int deltamsec) {
     checkConditions();
 }
 

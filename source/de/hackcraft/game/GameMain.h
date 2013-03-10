@@ -20,6 +20,7 @@ class Entity;
 class GameConfig;
 class GapBuffer;
 class Logger;
+class GameMission;
 class Pad;
 class Threadpool;
 class World;
@@ -38,6 +39,9 @@ public:
 private:
     /** Current game configuration. */
     GameConfig* config;
+    
+    /** Current mission/game controller. */
+    GameMission *mission;
 
     /** Instance of the world we are on. */
     World *world;

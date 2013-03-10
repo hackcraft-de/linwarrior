@@ -1,6 +1,7 @@
 #include "GameMain.h"
 
 #include "de/hackcraft/game/GameConfig.h"
+#include "de/hackcraft/game/GameMission.h"
 #include "de/hackcraft/game/OpenMission.h"
 #include "de/hackcraft/game/userkeys.h"
 
@@ -27,8 +28,6 @@
 
 #include "de/hackcraft/world/sub/misc/MiscSystem.h"
 #include "de/hackcraft/world/sub/misc/rInputsource.h"
-
-#include "de/hackcraft/world/sub/mission/MissionSystem.h"
 
 #include "de/hackcraft/world/sub/trigger/rAlert.h"
 
@@ -209,15 +208,14 @@ void GameMain::initGL(int width, int height) {
 
 void GameMain::initMission() {
     world = new World();
-    MissionSystem* mission = NULL;
     
     if (config->mission == 1) {
-        mission = new MissionSystem();
+        mission = new GameMission();
     } else {
         mission = new OpenMission();
     }
     
-    world->subsystems.push_back(mission);
+    //world->subsystems.push_back(mission);
     camera = mission->init(world);
     //pad1 = camera->pad;
     pad1 = new Pad();
@@ -306,11 +304,14 @@ void GameMain::applyFilter(int width, int height) {
 
 
 void GameMain::updateFrame(int elapsed_msec) {
+    
     if (config->paused) {
         // Delete Fragged Objects of previous frames.
         world->bagFragged();
         return;
     }
+    
+    mission->advanceTime(elapsed_msec);
 
     // Re-Cluster spatial index.
     world->clusterObjects();
