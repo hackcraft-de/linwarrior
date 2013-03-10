@@ -32,6 +32,7 @@ private:
     std::queue<Runnable*>* jobQueue;
 public:
     Minion(Semaphore* jobMutex, std::queue<Runnable*>* jobQueue);
+    virtual ~Minion();
     void run();
 };
 

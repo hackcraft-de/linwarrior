@@ -17,6 +17,11 @@ Minion::Minion(Semaphore* jobMutex, std::queue<Runnable*>* jobQueue) {
 }
 
 
+Minion::~Minion() {
+    // nothing to do - no owned resources.
+}
+
+
 void Minion::run() {
     
     unsigned long id = (unsigned long) this;//SDL_ThreadID();    
