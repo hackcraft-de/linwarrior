@@ -9,6 +9,8 @@
 #ifndef _GAMEMAIN_H
 #define _GAMEMAIN_H
 
+#include "de/hackcraft/Main.h"
+
 #include <queue>
 #include <string>
 #include <sstream>
@@ -29,7 +31,7 @@ class World;
  * Encapsulates low level system-, startup- and io-code.
  * Actually it is just a collection of what would be functions otherwise.
  */
-class GameMain {
+class GameMain : public Main {
 private:
     static Logger* logger;
 public:
@@ -119,6 +121,8 @@ private:
 public:
     /** Constructor sets instance pointer among other things. */
     GameMain();
+    
+    ~GameMain();
 
     /** Called directly by the main entry point. */
     int run(int argc, char** args);

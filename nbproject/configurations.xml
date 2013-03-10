@@ -350,7 +350,8 @@
             <in>World.cpp</in>
             <in>World.h</in>
           </df>
-          <in>main.cpp</in>
+          <in>Main.cpp</in>
+          <in>Main.h</in>
         </df>
       </df>
     </df>
@@ -471,10 +472,6 @@
             ex="false"
             tool="1"
             flavor2="8">
-        <ccTool>
-        </ccTool>
-      </item>
-      <item path="source/de/hackcraft/main.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
         </ccTool>
       </item>

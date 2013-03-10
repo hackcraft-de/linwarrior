@@ -45,17 +45,6 @@ Logger* GameMain::logger = Logger::getLogger("de.hackcraft.game.GameMain");
 GameMain* GameMain::instance = NULL;
 
 
-// Called atexit
-void cleanup() {
-    std::cout << "Thank you for playing.\n";
-    SDL_Quit();
-    alutExit();
-    GameMain::instance->alEnableSystem(false);
-    delete GameMain::instance;
-    GameMain::instance = NULL;
-}
-
-
 class JobRender : public Runnable {
 public:
     int state;
@@ -134,6 +123,15 @@ GameMain::GameMain() {
     stdout_ = NULL;
     
     joy0 = NULL;
+}
+
+
+GameMain::~GameMain() {
+    
+    std::cout << "Thank you for playing.\n";
+    SDL_Quit();
+    alutExit();
+    GameMain::instance->alEnableSystem(false);
 }
 
 
@@ -929,10 +927,6 @@ int GameMain::init(int argc, char** args) {
     
     SDL_ShowCursor(SDL_DISABLE);
     joy0 = (void*) SDL_JoystickOpen(0);
-
-    logger->info() << "Installing Cleanup Hook...\n";
-    
-    atexit(cleanup);
 
     logger->info() << "Breeding Minions...\n";
     

@@ -1,11 +1,4 @@
-/* 
- * File:     main.cpp
- * Project:  LinWarrior 3D
- * Home:     hackcraft.de
- *
- * Created on March 28, 2008, 21:25 PM (1999)
- */
-
+#include "Main.h"
 
 // Startup code: Dispatching sub program startups.
 
@@ -68,6 +61,19 @@ static int test(int argc, char **args) {
     return 0;
 }
 
+
+Main* mainInstance;
+
+
+/** Called at exit */
+void cleanup() {
+    
+    if (mainInstance != NULL) {
+        delete mainInstance;
+    }
+}
+
+
 //#ifdef wonly_WIN32
 //extern "C" int __stdcall WinMain(void* hInstance, void* hPrevInstance, char* lpCmdLine, int nCmdShow) {
 //    int argc = 2;
@@ -78,10 +84,13 @@ static int test(int argc, char **args) {
 int main(int argc, char **args) {
     
     try {
+        atexit(cleanup);
+        
         string subprogram = (argc >= 2) ? string(args[1]) : string("");
         
         if (subprogram == "game") {
-            return (new GameMain())->run(argc-1, &args[1]);
+            mainInstance = new GameMain();
+            return mainInstance->run(argc-1, &args[1]);
             
         } else if (subprogram == "test") {
             return test(argc-1, &args[1]);
@@ -101,3 +110,4 @@ int main(int argc, char **args) {
     }
     return 0;    
 }
+
