@@ -54,6 +54,9 @@ private:
 
     /** Mapping of real joystick/gamepad to virtual gamepad. */
     int* map1;
+    
+    /** Low level joystick handle. */
+    void* joy0;
 
     /** SDL doesn't count mouse wheel movement. */
     int mouseWheel;
@@ -61,6 +64,7 @@ private:
     /** Old keystates */
     Uint8 keystate_[512];
 
+    /** Threadpool currently in use only for a stdout-to-log shovel thread. */
     Threadpool* threadpool;
 
     /** stdout is redirected to this stringstream. */
@@ -80,9 +84,6 @@ private:
 
     /** Command & Control Overlay enabled => redirect keyboard */
     bool overlayEnabled;
-    
-    /** Low level joystick handle. */
-    void* joy0;
 
 private:
     /** Apply post-processing filter right after drawing frame. */

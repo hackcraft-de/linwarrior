@@ -138,17 +138,26 @@ GameMain::GameMain() {
 
 
 void GameMain::initGL(int width, int height) {
+    
     if (true) {
+        
         std::string glinfo;
+        
         glinfo = (const char*) GL::glGetString(GL_RENDERER);
         logger->debug() << glinfo << "\n";
+        
         glinfo = (const char*) GL::glGetString(GL_VENDOR);
         logger->debug() << glinfo << "\n";
+        
         glinfo = (const char*) GL::glGetString(GL_VERSION);
         logger->debug() << glinfo << "\n";
+        
         glinfo = (const char*) GL::glGetString(GL_EXTENSIONS);
         logger->debug() << glinfo << "\n";
-        if (glinfo.find("GL_EXT_texture3D", 0) == std::string::npos) {
+        
+        bool supportsTex3d = glinfo.find("GL_EXT_texture3D", 0) == std::string::npos;
+        
+        if (!supportsTex3d) {
             logger->error() << "NO SUPPORT for GL_EXT_texture3D !!!\n";
         }
     }
@@ -186,10 +195,13 @@ void GameMain::initGL(int width, int height) {
     GL::glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
     // Lighting
-    {
+    if (true) {
+        
         GL::glEnable(GL_LIGHTING);
+        
         float p[] = {0, 500, 0, 1};
         float a[] = {0.95, 0.5, 0.5, 1};
+        
         GL::glLightfv(GL_LIGHT0, GL_POSITION, p);
         GL::glLightfv(GL_LIGHT0, GL_AMBIENT, a);
         GL::glLightfv(GL_LIGHT0, GL_DIFFUSE, a);
@@ -198,6 +210,7 @@ void GameMain::initGL(int width, int height) {
         GL::glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.00001);
         GL::glEnable(GL_COLOR_MATERIAL);
         //GL::glEnable(GL_NORMALIZE);
+        
         GL::glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
     }
 
@@ -207,6 +220,7 @@ void GameMain::initGL(int width, int height) {
 
 
 void GameMain::initMission() {
+    
     world = new World();
     
     if (config->mission == 1) {
@@ -233,6 +247,7 @@ void GameMain::initMission() {
 
 
 void GameMain::applyFilter(int width, int height) {
+    
     static bool fail = false;
     static GL::GLenum postprocess = 0;
 
@@ -306,6 +321,7 @@ void GameMain::applyFilter(int width, int height) {
 void GameMain::updateFrame(int elapsed_msec) {
     
     if (config->paused) {
+        
         // Delete Fragged Objects of previous frames.
         world->bagFragged();
         return;
@@ -318,7 +334,8 @@ void GameMain::updateFrame(int elapsed_msec) {
 
     int subframes = 1;
 
-    loopi(subframes) {
+    for (int i = 0; i < subframes; i++) {
+        
         // calculate the time that the last frame took.
         world->advanceTime(elapsed_msec / subframes);
 
@@ -346,6 +363,7 @@ void GameMain::drawFrame() {
     static bool picking = false;
     const int SELECTIONSIZE = 1024;
     GL::GLuint selection[SELECTIONSIZE];
+    
     if (picking) {
         // With Projection:
         //GL::glGetIntegerv(GL_VIEWPORT, viewport);
@@ -354,8 +372,8 @@ void GameMain::drawFrame() {
         GL::glSelectBuffer(SELECTIONSIZE, selection);
         GL::glRenderMode(GL_SELECT);
         GL::glInitNames();
-        // With Modelview:
     } else {
+        // With Modelview:
         GL::glRenderMode(GL_RENDER);
     }
 
@@ -415,6 +433,7 @@ void GameMain::drawFrame() {
     GLS::glPopProjection();
 
     float motionblur = 0.0f;
+    
     if (config->nightvision > 0.0001f) {
         GL::glFlush();
         GLS::glAccumBlurInverse(0.83f);
@@ -424,21 +443,24 @@ void GameMain::drawFrame() {
     }
     
     if (picking) {
+        
         int entries = GL::glRenderMode(GL_RENDER);
         logger->debug() << "selected: " << entries << "\n";
         // Picking-Entry: n, minz, maxz, n_names
         GL::GLuint* p = selection;
 
-        loopi(entries) {
+        for (int i = 0; i < entries; i++) {
+            
             GL::GLuint n = *p++;
             GL::GLuint minz = *p++;
             GL::GLuint maxz = *p++;
             logger->trace() << n << " " << minz << " " << maxz << "\n";
 
-            loopj(n) {
+            for (int j = 0; j < (int) n; j++) {
                 GL::GLuint name = *p++;
                 logger->trace() << " " << name;
             }
+            
             logger->trace() << "\n";
         }
     }
@@ -449,6 +471,7 @@ void GameMain::drawFrame() {
 
 
 void GameMain::drawLog() {
+    
     GLS::glPushOrthoProjection(-0.0,+1.0,-1.0,+0.0,-100,+100);
     {
         GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -458,6 +481,7 @@ void GameMain::drawLog() {
             GL::glDisable(GL_DEPTH_TEST);
             GL::glDepthMask(false);
             GL::glColor4f(1,1,1,1);
+            
             GL::glPushMatrix();
             {
                 GL::glLoadIdentity();
@@ -484,12 +508,15 @@ void GameMain::drawLog() {
 
 
 void GameMain::updateKey(Uint8 keysym) {
+    
     if (keysym == SDLK_TAB) {
         overlayEnabled ^= true;
     }
 
     if (overlayEnabled) {
+        
         GapBuffer* text = cmdline;
+        
         if (keysym == SDLK_LEFT) text->stepLeft();
         else if (keysym == SDLK_RIGHT) text->stepRight();
         else if (keysym == SDLK_UP) text->stepUp();
@@ -544,23 +571,27 @@ void GameMain::updatePad(Pad* pad, SDL_Joystick* joy, int* mapping) {
         24, 25, 26, 27,
         28, 29, 30, 31
     };
+    
     int* map = default_mapping;
     if (mapping != NULL) map = mapping;
 
+    // Reset GamePad values to all zeros (inactive) before setting.
     pad->reset();
+    
     if (joy != NULL) {
 
-        loopi(4) {
+        for (int i = 0; i < 4; i++) {
             pad->setAxis((Pad::Axes) i, SDL_JoystickGetAxis(joy, i) / 32000.0f);
         }
 
-        loopi(32) {
+        for (int i = 0; i < 32; i++) {
             if (SDL_JoystickGetButton(joy, map[i])) pad->setButton((Pad::Buttons)i, true);
         }
         //pad->print();
     }
 
     Uint8 *keystate = SDL_GetKeyState(NULL);
+    
     if (keystate == NULL) return;
     if (overlayEnabled) return;
 
@@ -582,6 +613,7 @@ void GameMain::updatePad(Pad* pad, SDL_Joystick* joy, int* mapping) {
     if (keystate[SDLK_e] == 1) pad->setButton(Pad::BT_PU, true);
     if (keystate[SDLK_d] == 1) pad->setButton(Pad::BT_PD, true);
     if (keystate[SDLK_f] == 1) pad->setButton(Pad::BT_PR, true);
+    
     // Second Analogue Stick or Coolie-Hat:
     if (keystate[SDLK_LALT] == 0) {
         if (keystate[SDLK_j]) pad->setAxis(Pad::AX_LR2, -1.0f);
@@ -594,15 +626,16 @@ void GameMain::updatePad(Pad* pad, SDL_Joystick* joy, int* mapping) {
         if (keystate[SDLK_i]) pad->setButton(Pad::BT_HU, true);
         if (keystate[SDLK_k]) pad->setButton(Pad::BT_HD, true);
     };
+    
     // Alternate Coolie-Hat keys.
     if (keystate[SDLK_INSERT] == 1) pad->setButton(Pad::BT_PL, true);
     if (keystate[SDLK_PAGEUP] == 1) pad->setButton(Pad::BT_PU, true);
     if (keystate[SDLK_PAGEDOWN] == 1) pad->setButton(Pad::BT_PD, true);
     if (keystate[SDLK_DELETE] == 1) pad->setButton(Pad::BT_PR, true);
+    
     // Stick Buttons
     if (keystate[SDLK_PERIOD] || keystate[SDLK_HOME]) pad->setButton(Pad::BT_J1B, true);
     if (keystate[SDLK_COMMA] || keystate[SDLK_END]) pad->setButton(Pad::BT_J2B, true);
-
 
     // Optional Mouse Input.
     if (config->mouseInput) {
@@ -637,32 +670,44 @@ void GameMain::updatePad(Pad* pad, SDL_Joystick* joy, int* mapping) {
 
 
 int GameMain::alEnableSystem(bool en) {
+    
     static ALCdevice *dev = NULL;
     static ALCcontext *ctx = NULL;
+    
     static bool isenabled = false;
 
     if (en && !isenabled) {
+        
         logger->info() << "Enabling OpenAL\n";
         dev = alcOpenDevice(NULL);
+        
         if (!dev) {
             logger->error() << "Could not open OpenAL device.\n";
             return 1;
         }
+        
         ctx = alcCreateContext(dev, NULL);
         alcMakeContextCurrent(ctx);
+        
         if (!ctx) {
             logger->error() << "Could not make OpenAL context current.\n";
             return 1;
         }
+        
         isenabled = true;
+        
         return 0;
+        
     } else if (!en && isenabled) {
+        
         logger->debug() << "Disabling OpenAL\n";
         alcMakeContextCurrent(NULL);
         alcDestroyContext(ctx);
         alcCloseDevice(dev);
         isenabled = false;
+        
         return 0;
+        
     } else {
         return 1;
     }
@@ -670,12 +715,14 @@ int GameMain::alEnableSystem(bool en) {
 
 
 void GameMain::drawPlaque() {
+    
     GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
     {
         GL::glDisable(GL_LIGHTING);
         GL::glDisable(GL_FOG);
         GL::glDisable(GL_DEPTH_TEST);
         GL::glDisable(GL_CULL_FACE);
+        
         GLS::glPushOrthoProjection();
         {
             GL::glPushMatrix();
@@ -685,6 +732,7 @@ void GameMain::drawPlaque() {
                 GL::glScalef(1.0f / 80.0f, 1.0f / 40.0f, 1.0f);
                 
                 GL::glDisable(GL_TEXTURE_2D);
+                
                 GL::glBegin(GL_QUADS);
                 {
                     GL::glColor4f(0.6, 0.6, 0.6, 1);
@@ -736,8 +784,11 @@ void GameMain::drawPlaque() {
 
 
 void GameMain::updateLog() {
+    
     //cout << "Redirecting text output.\n";
+    
     if (!oss.str().empty()) {
+        
         log->write(oss.str().c_str());
         printf("%s", oss.str().c_str());
         oss.clear();
@@ -748,6 +799,8 @@ void GameMain::updateLog() {
 
 
 int GameMain::init(int argc, char** args) {
+
+    std::cout << "LinWarrior 3D  (Build " __DATE__ ") by hackcraft.de" << "\n";
     
     //JobBGM* job_bgm = new JobBGM();
     //threadpool->addJob(job_output);
@@ -758,56 +811,69 @@ int GameMain::init(int argc, char** args) {
     // Remember original stdout/cout stream and redirect cout if enabled.
     stdout_ = std::cout.rdbuf();
     bool redirectOutput = true;
+    
     if (redirectOutput) {
         JobOutput* job_output = new JobOutput();
         threadpool->addJob(job_output);
         std::cout.rdbuf( oss.rdbuf() );
     }
 
-    std::cout << "LinWarrior 3D  (Build " __DATE__ ") by hackcraft.de" << "\n";
-
     logger->info() << "Reading Commandline Arguments...\n";
+    
     if (config->parseArgs(argc, args)) {
         config->printHelp();
         return 1;
     }
 
     logger->info() << "Initializing SDL Video- and -Input-Subsystems...\n";
+    
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0) {
         logger->error() << "Unable to init SDL: " << SDL_GetError() << "\n";
         return 1;
     }
 
     logger->info() << "Initializing Video-Mode and -Parameters...\n";
+    
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    
     if (config->multisamples) {
         SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
         SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, config->multisamples);
     }
+    
     SDL_Surface* screen = NULL;
-    if (config->fullscreen) screen = SDL_SetVideoMode(config->width, config->height, 0, SDL_OPENGLBLIT | SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN);
-    else screen = SDL_SetVideoMode(config->width, config->height, 0, SDL_OPENGLBLIT | SDL_HWSURFACE | SDL_DOUBLEBUF);
+    
+    if (config->fullscreen) {
+        screen = SDL_SetVideoMode(config->width, config->height, 0, SDL_OPENGLBLIT | SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN);
+    } else {
+        screen = SDL_SetVideoMode(config->width, config->height, 0, SDL_OPENGLBLIT | SDL_HWSURFACE | SDL_DOUBLEBUF);
+    }
+    
     if (!screen) {
         logger->error() << "Unable to set " << config->width << " x " << config->height << "video: " << SDL_GetError() << "\n";
         return 1;
     }
 
     logger->info() << "Initialising GLEW...\n";
+    
     if (GL::glewInit() != GLEW_OK) {
         logger->error() << "Unable to init GLEW!\n";
         return 1;
     }
 
     logger->info() << "Setting Custom Window-Title...\n";
+    
     char* title;
     char* icon;
     SDL_WM_GetCaption(&title, &icon);
     SDL_WM_SetCaption("LinWarrior 3D  (Build " __DATE__ ") by hackcraft.de", icon);
 
     logger->info() << "Initializing OpenAL audio...\n";
+    
     if (alEnableSystem(true)) {
         logger->error() << "Could not enable OpenAL.\n";
     }
+    
     //if (!alutInit(&argc, args)) {
     if (!alutInitWithoutContext(NULL, NULL)) {
         logger->error() << "Unable to init ALUT: " << alGetError() << "\n";
@@ -815,14 +881,19 @@ int GameMain::init(int argc, char** args) {
         // Hope for no followup errors.
         //return 1;
     }
+    
     logger->debug() << "ALUT supported file formats: " << alutGetMIMETypes(ALUT_LOADER_BUFFER) << "\n";
     logger->debug() << "ALUT supported memory formats: " << alutGetMIMETypes(ALUT_LOADER_MEMORY) << "\n";
+    
     alGetError();
+    
     //alDopplerFactor(2.0);
     //alSpeedOfSound(343.3*0.1);
 
-    if (0) {
+    if (false) {
+        
         logger->info() << "Loading Ambient Background Music...\n";
+        
         try {
             ALuint buffer;
             ALuint source;
@@ -830,8 +901,10 @@ int GameMain::init(int argc, char** args) {
             //buffer = alutCreateBufferHelloWorld();
             buffer = alutCreateBufferFromFile(config->bgm.c_str());
             if (buffer == AL_NONE) throw "Could not create buffer from file for background music.";
+            
             alGenSources(1, &source);
             if (alGetError() != AL_NO_ERROR) throw "Could not generate background music source.";
+            
             alSourcei(source, AL_BUFFER, buffer);
             alSourcef(source, AL_PITCH, 1.0f);
             alSourcef(source, AL_GAIN, 1.0f);
@@ -842,23 +915,27 @@ int GameMain::init(int argc, char** args) {
             alSourcei(source, AL_LOOPING, AL_TRUE);
             alSourcei(source, AL_SOURCE_RELATIVE, AL_TRUE);
             alSourcePlay(source);
+            
         } catch (const char* s) {
             logger->error() << "Sorry no bgm possible.\n" << s << "\n";
         }
     }
 
     logger->info() << "Initialising OpenGL Settings...\n";
+    
     initGL(screen->w, screen->h);
 
-
     logger->info() << "Initialising Input Settings...\n";
+    
     SDL_ShowCursor(SDL_DISABLE);
     joy0 = (void*) SDL_JoystickOpen(0);
 
     logger->info() << "Installing Cleanup Hook...\n";
+    
     atexit(cleanup);
 
     logger->info() << "Breeding Minions...\n";
+    
     int maxminions = 3;
     threadpool->addThreads(maxminions);
 
@@ -872,6 +949,7 @@ int GameMain::init(int argc, char** args) {
     }
 
     logger->info() << "Initialising Mission...\n";
+    
     initMission();
 
     // Signal state change.
@@ -934,9 +1012,15 @@ int GameMain::run(int argc, char** args) {
         } // while poll event
 
         // Possibly print out info on pushed buttons.
-        if (config->printpad) loopi(32) {
-            if (SDL_JoystickGetButton((SDL_Joystick*) joy0, i)) logger->trace() << "Button" << i << "\n";
+        if (config->printpad) {
+            
+            for (int i = 0; i < 32; i++) {
+                if (SDL_JoystickGetButton((SDL_Joystick*) joy0, i)) {
+                    logger->trace() << "Button" << i << "\n";
+                }
+            }
         }
+        
         // Transfer real Joystick-/Gamepad-Input into the virtual gamepad
         // of the player by using a (re-)mapping.
         updatePad(pad1, (SDL_Joystick*) joy0, map1);
