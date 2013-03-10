@@ -24,7 +24,6 @@ class GapBuffer;
 class Logger;
 class GameMission;
 class Pad;
-class Threadpool;
 class World;
 
 /**
@@ -66,9 +65,6 @@ private:
     /** Old keystates */
     Uint8 keystate_[512];
 
-    /** Threadpool currently in use only for a stdout-to-log shovel thread. */
-    Threadpool* threadpool;
-
     /** stdout is redirected to this stringstream. */
     std::stringstream oss;
     
@@ -86,6 +82,9 @@ private:
 
     /** Command & Control Overlay enabled => redirect keyboard */
     bool overlayEnabled;
+    
+    /** Used to signal forked working threads (log, BGM) to terminate. */
+    bool done;
 
 private:
     /** Apply post-processing filter right after drawing frame. */
@@ -126,6 +125,12 @@ public:
 
     /** Called directly by the main entry point. */
     int run(int argc, char** args);
+    
+    /** Forked from run/init to shovel output within a concurrent thread. */
+    void runOutputJob();
+    
+    /** Forked from run/init to shovel BGM within a concurrent thread. */
+    void runBGMJob();
 
     /** Enables and disables OpenAL Audio-System. */
     int alEnableSystem(bool en);

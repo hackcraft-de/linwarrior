@@ -8,7 +8,6 @@
 #include "de/hackcraft/io/Pad.h"
 #include "de/hackcraft/io/Shaderfile.h"
 
-#include "de/hackcraft/lang/Runnable.h"
 #include "de/hackcraft/lang/Thread.h"
 
 #include "de/hackcraft/log/Logger.h"
@@ -20,8 +19,6 @@
 #include "de/hackcraft/psi3d/Console.h"
 
 #include "de/hackcraft/util/GapBuffer.h"
-
-#include "de/hackcraft/util/concurrent/Threadpool.h"
 
 #include "de/hackcraft/world/World.h"
 #include "de/hackcraft/world/Entity.h"
@@ -45,54 +42,6 @@ Logger* GameMain::logger = Logger::getLogger("de.hackcraft.game.GameMain");
 GameMain* GameMain::instance = NULL;
 
 
-class JobRender : public Runnable {
-public:
-    int state;
-    
-    JobRender() {
-        state = 0;
-    };
-
-    void run() {
-        int i = 0;
-        while (state == 0) {
-            //float s = 0.5 + 0.4 * sin(i * M_PI / 10.0);
-            //float c = 0.5 + 0.4 * cos(i * M_PI / 10.0);
-            //GL::glClearColor(0.1+s, 0.1+c, 0.9, 1.0);
-            //GL::glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            //cMain::drawPlaque();
-            //cMain::drawLog();
-            //SDL_GL_SwapBuffers();
-            Thread::sleep(1.0 / DEFAULT_FPS * 1000.0);
-            i++;
-        }
-    }
-
-};
-
-
-class JobBGM : public Runnable {
-public:
-    void run() {
-        while (true) {
-            //cout << "Buffering BGM.\n";
-            Thread::sleep(1000);
-        }
-    }
-};
-
-
-class JobOutput : public Runnable {
-public:
-    void run() {
-        while (true) {
-            GameMain::instance->updateLog();
-            Thread::sleep(200);
-        }
-    }
-};
-
-
 GameMain::GameMain() {
     
     instance = this;
@@ -104,8 +53,6 @@ GameMain::GameMain() {
     
     pad1 = NULL;
     map1 = NULL;
-
-    threadpool = new Threadpool();
     
     mouseWheel = 0;
     overlayEnabled = !true;
@@ -123,6 +70,8 @@ GameMain::GameMain() {
     stdout_ = NULL;
     
     joy0 = NULL;
+    
+    done = false;
 }
 
 
@@ -783,7 +732,7 @@ void GameMain::drawPlaque() {
 
 void GameMain::updateLog() {
     
-    //cout << "Redirecting text output.\n";
+    //std::cout << "Redirecting text output.\n";
     
     if (!oss.str().empty()) {
         
@@ -799,20 +748,30 @@ void GameMain::updateLog() {
 int GameMain::init(int argc, char** args) {
 
     std::cout << "LinWarrior 3D  (Build " __DATE__ ") by hackcraft.de" << "\n";
-    
-    //JobBGM* job_bgm = new JobBGM();
-    //threadpool->addJob(job_output);
-    
-    //JobRender* job_render = new JobRender();
-    //threadpool->addJob(job_output);
+
+    if (false) {
+        
+        class BGMJob : public Thread {
+            public: void run() { GameMain::instance->runBGMJob(); }
+        };
+        
+        BGMJob* job_bgm = new BGMJob();
+        job_bgm->start();
+    }
 
     // Remember original stdout/cout stream and redirect cout if enabled.
     stdout_ = std::cout.rdbuf();
     bool redirectOutput = true;
     
     if (redirectOutput) {
-        JobOutput* job_output = new JobOutput();
-        threadpool->addJob(job_output);
+        
+        class OutputJob : public Thread {
+            public: void run() { GameMain::instance->runOutputJob(); }
+        };
+        
+        OutputJob* job_output = new OutputJob();
+        job_output->start();
+        
         std::cout.rdbuf( oss.rdbuf() );
     }
 
@@ -930,9 +889,6 @@ int GameMain::init(int argc, char** args) {
 
     logger->info() << "Breeding Minions...\n";
     
-    int maxminions = 3;
-    threadpool->addThreads(maxminions);
-
     bool loadscreen = true;
     if (loadscreen) {
         logger->info() << "Showing load screen...\n";
@@ -945,10 +901,6 @@ int GameMain::init(int argc, char** args) {
     logger->info() << "Initialising Mission...\n";
     
     initMission();
-
-    // Signal state change.
-    //job_render->state = 1;
-    //Thread::sleep(200);
     
     return 0;
 }
@@ -963,7 +915,6 @@ int GameMain::run(int argc, char** args) {
 
     logger->info() << "Entering Mainloop...\n";
     
-    bool done = false;
     unsigned long start_ms = SDL_GetTicks();
     double spf = 1.0 / (double) config->fps;
     
@@ -1069,13 +1020,33 @@ int GameMain::run(int argc, char** args) {
 }
 
 
+void GameMain::runOutputJob() {
+    
+    while (!done) {
+        updateLog();
+        Thread::sleep(250);
+    }
+}
+
+
+void GameMain::runBGMJob() {
+    
+    while (!done) {
+        std::cout << "Buffering BGM.\n";
+        Thread::sleep(250);
+    }
+}
+
+
 void GameMain::deinit() {
     
     logger->info() << "Shutting Down...\n";
-
-    threadpool->shutdown();
-    delete threadpool;
     
+    // Tear down log and BGM threads gracefully or
+    // else they will work on invalid instance.
+    done = true;
+    Thread::sleep(500);
+
     std::cout.rdbuf( stdout_ );
     //console.print();
 }
