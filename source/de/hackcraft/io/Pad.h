@@ -30,7 +30,7 @@ public:
      * UD2, LR2: Secondary stick.
      */
     enum Axes {
-        AX_LR1, AX_UD1, AX_UD2, AX_LR2,
+        AX_LR1, AX_UD1, AX_LR2, AX_UD2,
         MAX_AXES
     };
 
@@ -44,8 +44,8 @@ public:
      * J1B, J2B: Buttons of the analouge sticks (pressing them down).
      */
     enum Buttons {
-        BT_PL, BT_PU, BT_PD, BT_PR, // 4 Primary action buttons.
-        BT_L1, BT_L2, BT_R1, BT_R2, // 2 + 2 Shoulder buttons.
+        BT_PU, BT_PR, BT_PD, BT_PL, // 4 Primary action buttons.
+        BT_L1, BT_R1, BT_L2, BT_R2, // 2 + 2 Shoulder buttons.
         BT_SELECT, BT_START, // 2 Central controll buttons.
         BT_J1B, BT_J2B, // 2 Analouge stick push down buttons (or L3 and R3).
         BT_HU, BT_HD, BT_HL, BT_HR, // 4 HUD directional buttons.

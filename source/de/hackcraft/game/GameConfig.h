@@ -35,9 +35,6 @@ struct GameConfig;
  * Therefore, changing display would require a complete restart.
  */
 struct GameConfig {
-    
-    /** Gamepad input mapping type (z=zedwise, c=clockwise). */
-    char map1;
 
     /** Id of Mission we are running. */
     int mission;

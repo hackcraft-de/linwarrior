@@ -13,8 +13,6 @@
 
 GameConfig::GameConfig()
 :
-map1('z'),
-
 mission(0),
 bgm("/org/freesound/ambient.wav"),
 
@@ -101,16 +99,6 @@ int GameConfig::parseArgs(int argc, char** args) {
                 this->height += (this->height % 2); // make even just in case.
             }
             //std::cout << "Resolution: " << this->width << " x " << this->height << "\n";
-        } else if (arg_i("--joypad")) {
-            advance_i();
-            std::string s = args[i];
-            if (s.compare("a")) {
-                this->map1 = 'z';
-            } else if (s.compare("b")) {
-                this->map1 = 'c';
-            } else {
-                printHelp();
-            }
         } else if (arg_i("--window")) {
             this->fullscreen = false;
         } else if (arg_i("--samples")) {

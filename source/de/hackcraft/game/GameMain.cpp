@@ -52,7 +52,6 @@ GameMain::GameMain() {
     camera = NULL;
     
     pad1 = NULL;
-    map1 = NULL;
     
     mouseWheel = 0;
     overlayEnabled = !true;
@@ -181,15 +180,6 @@ void GameMain::initMission() {
     //pad1 = camera->pad;
     pad1 = new Pad();
     MiscSystem::getInstance()->findInputsourceByEntity(camera->oid)->setPad(pad1);
-    
-    if (config->map1 == 'z') {
-        map1 = map_zedwise;
-    } else if (config->map1 == 'c') {
-        map1 = map_clockwise;
-    } else {
-        map1 = map_zedwise;
-    }
-
 }
 
 
@@ -504,24 +494,10 @@ void GameMain::updateKey(Uint8 keysym) {
 }
 
 
-void GameMain::updatePad(Pad* pad, SDL_Joystick* joy, int* mapping) {
+void GameMain::updatePad(Pad* pad, SDL_Joystick* joy) {
 
     if (pad == NULL) return;
-
-    int default_mapping[] = {
-        0, 1, 2, 3,
-        4, 5, 6, 7,
-        8, 9, 10, 11,
-        12, 13, 14, 15,
-        16, 17, 18, 19,
-        20, 21, 22, 23,
-        24, 25, 26, 27,
-        28, 29, 30, 31
-    };
     
-    int* map = default_mapping;
-    if (mapping != NULL) map = mapping;
-
     // Reset GamePad values to all zeros (inactive) before setting.
     pad->reset();
     
@@ -532,7 +508,7 @@ void GameMain::updatePad(Pad* pad, SDL_Joystick* joy, int* mapping) {
         }
 
         for (int i = 0; i < 32; i++) {
-            if (SDL_JoystickGetButton(joy, map[i])) pad->setButton((Pad::Buttons)i, true);
+            if (SDL_JoystickGetButton(joy, i)) pad->setButton((Pad::Buttons)i, true);
         }
         //pad->print();
     }
@@ -968,7 +944,7 @@ int GameMain::run(int argc, char** args) {
         
         // Transfer real Joystick-/Gamepad-Input into the virtual gamepad
         // of the player by using a (re-)mapping.
-        updatePad(pad1, (SDL_Joystick*) joy0, map1);
+        updatePad(pad1, (SDL_Joystick*) joy0);
         // After securing Matrix: update world and draw frame.
         //GL::glPushMatrix();
         {

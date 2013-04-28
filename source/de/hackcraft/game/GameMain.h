@@ -52,9 +52,6 @@ private:
     
     /** Keyboard/Joystick inputs sent to which Virtual-Gamepad? */
     Pad* pad1;
-
-    /** Mapping of real joystick/gamepad to virtual gamepad. */
-    int* map1;
     
     /** Low level joystick handle. */
     void* joy0;
@@ -109,7 +106,7 @@ private:
     void updateKey(Uint8 keysym);
 
     /** Reads joystick/keyboard input and maps it to to a Gamepad structure. */
-    void updatePad(Pad* pad, SDL_Joystick* joy, int* mapping);
+    void updatePad(Pad* pad, SDL_Joystick* joy);
 
     /** Updating the world for the given delta time. */
     void updateFrame(int elapsed_msec);

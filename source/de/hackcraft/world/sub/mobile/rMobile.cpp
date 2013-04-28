@@ -131,7 +131,7 @@ void rMobile::animate(float spf) {
     // Apply turret steering values and get exceeding over limit values.
     float excess_lr = TowerLR((-0.25f * M_PI) * tower_lr * spf);
     float excess_ud = 0;
-    TowerUD((+0.25f * M_PI) * tower_ud * spf);
+    TowerUD((-0.25f * M_PI) * tower_ud * spf);
     if (!immobile) {
         // Smoothen steering and throttle values, adds heaviness.
         chassis_lr_ += 0.75f * (excess_lr / spf + (-0.25f * M_PI) * chassis_lr) - chassis_lr_;
@@ -185,7 +185,7 @@ void rMobile::animate(float spf) {
             float lr = rd[0];// * 2;
             float ud = rd[1];
             tower_lr_tgt = lr;
-            tower_ud_tgt = ud;
+            tower_ud_tgt = -ud;
             //fire = (rand() % 100 <= 40 && fabs(rd[0]) < 0.5);
             fire = (fabs(rd[0]) < 0.5);
         }
