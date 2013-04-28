@@ -12,8 +12,8 @@ Make always using "make clean all".
 Run using the provided shell-scripts.
 
 
-Running the Game and Commandline Arguments
-------------------------------------------
+Running the Game and Command Line Arguments
+-------------------------------------------
 
 At the main project directory enter
 ./dist/linwarrior -h
@@ -23,7 +23,6 @@ a list of commandline options.
 There are options for:
 Windowed/Fullscreen
 Resolution
-Gamepad
 
 Then either start by entering
 ./dist/linwarrior
@@ -67,19 +66,22 @@ ASCII-Art of the Keyboard Layout (Monospaced Font):
 A/SDF\G /JKL\
 
 
-Gamepads/Joysticks
-------------------
+Gamepads
+--------
 
 A Gamepad can be used alongside the Keyboard-Mapping.
 
-Saitek's Impact gamepad works ok, similar layed out gamepads or by
-the same vendor may work, too (Z-Shaped ordering of the four buttons).
-Generally logitek is working for linux quite well as I have heard.
+Currently only a popular kind of game pad is used as the reference layout.
+Through standardization several manufacturers deliver the same layout
+whereas native pc game pads come in all impossible input-layouts.
 
-Speed Link's Thunder-Strike axes were malfunctioning (SDL problem?).
+These can be connected using a cheap to-usb-converter with older analog
+versions (hereafter called gp2) or directly via usb in case of the later
+version 3 (hereafter called gp3). I do believe that later upcoming versions
+(gp4 in 2013) will provide the same layout and hopefully compatibility.
 
 
-Mech Controll Mapping (cMech.h)
+Mech Control Mapping (cMech.h)
 -------------------------------
 
 A1  Throttle and Steering
