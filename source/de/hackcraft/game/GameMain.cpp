@@ -1,5 +1,6 @@
 #include "GameMain.h"
 
+#include "de/hackcraft/game/BatchMission.h"
 #include "de/hackcraft/game/GameConfig.h"
 #include "de/hackcraft/game/GameMission.h"
 #include "de/hackcraft/game/OpenMission.h"
@@ -172,7 +173,8 @@ void GameMain::initMission() {
     if (config->mission == 1) {
         mission = new GameMission();
     } else {
-        mission = new OpenMission();
+        //mission = new OpenMission();
+        mission = new BatchMission();
     }
     
     //world->subsystems.push_back(mission);

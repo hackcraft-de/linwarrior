@@ -9,6 +9,8 @@
           <df name="roads">
           </df>
         </df>
+        <df name="game">
+        </df>
         <df name="landscape">
           <df name="bark">
           </df>
@@ -91,6 +93,8 @@
       <df name="de">
         <df name="hackcraft">
           <df name="game">
+            <in>BatchMission.cpp</in>
+            <in>BatchMission.h</in>
             <in>GameConfig.cpp</in>
             <in>GameConfig.h</in>
             <in>GameMain.cpp</in>
