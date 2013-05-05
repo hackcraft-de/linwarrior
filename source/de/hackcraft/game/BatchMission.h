@@ -47,6 +47,10 @@ public:
     
     int execCommandSet(std::list<std::string>* args);
     
+    int execCommandSpawn(std::list<std::string>* args);
+    
+    void spawnMech();
+    
     Entity* initPlayerParty(float* position);
     
     void adjustHeight(float* pos);

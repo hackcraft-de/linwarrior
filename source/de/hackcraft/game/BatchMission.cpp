@@ -205,10 +205,13 @@ int BatchMission::execCommand(std::list<std::string>* args) {
     std::string cmd = args->front();
     
     if (cmd.compare("set") == 0) {
-        //logger->info() << "set command\n";
+        //logger->info() << "Command: set\n";
         execCommandSet(args);
+    } else if (cmd.compare("spawn") == 0) {
+        //logger->info() << "Command: spawn\n";
+        execCommandSpawn(args);
     } else {
-        //logger->info() << "unknown command " << "!\n";
+        //logger->info() << "Command: unknown " << "!\n";
     }
  
     return result;
@@ -229,6 +232,47 @@ int BatchMission::execCommandSet(std::list<std::string>* args) {
     globalProperties.put(key, val);
     
     return result;
+}
+
+
+int BatchMission::execCommandSpawn(std::list<std::string>* args) {
+
+    int result = 0;
+    
+    args->pop_front();
+    std::string entity = args->front();
+    
+    if (entity.compare("mech") == 0) {
+        logger->error() << "Spawn: mech.\n";
+        spawnMech();
+    } else {
+        logger->error() << "Spawn: unknown entity type.\n";
+    }
+    
+    return result;
+}
+
+
+void BatchMission::spawnMech() {
+    
+    cMech* mech = new cMech(&globalProperties);
+
+    std::string faction = globalProperties.getProperty("mech.faction", "/faction/neutral");
+    mech->target->addTag(World::getInstance()->getGroup(faction));
+
+    std::string enemies = globalProperties.getProperty("mech.enemies", "/faction/evil");
+    mech->tarcom->addEnemy(World::getInstance()->getGroup(enemies));
+
+    std::string exclude = globalProperties.getProperty("mech.exclude", "/health/dead");
+    mech->tarcom->addEnemy(World::getInstance()->getGroup(exclude), false);
+    
+    //mech->target->addTag(World::getInstance()->getGroup(FAC_BLUE));
+    //mech->target->addTag(World::getInstance()->getGroup(PLR_HUMAN));
+
+    //mech->tarcom->addEnemy(World::getInstance()->getGroup(FAC_RED));
+    //mech->tarcom->addEnemy(World::getInstance()->getGroup(HLT_DEAD), false);
+
+    World::getInstance()->spawnObject(mech);
 }
 
 
