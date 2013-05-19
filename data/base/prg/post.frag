@@ -18,7 +18,12 @@ float ofs = 0.0011;
 
 vec4 test()
 {
+        // For Screen:
 	vec2 pix = warpNone(gl_TexCoord[0].xy);
+
+        // For HMD:
+	//vec2 pix = warpDualShift(gl_TexCoord[0].xy, 0.079);
+
 	//float nx = 3.0 * ofs * (noiz3(gl_TexCoord[0].x, gl_TexCoord[0].y, 0.0) - 0.5);
 	//float ny = 3.0 * ofs * (noiz3(gl_TexCoord[0].y, gl_TexCoord[0].x, 0.0) - 0.5);
 	//pix = vec2(ofs*0.0 + 0.5 - 0.5 * cos(pix.x*3.14), 0.5 - 0.5 * cos(pix.y*3.14));
