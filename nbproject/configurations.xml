@@ -10,6 +10,7 @@
           </df>
         </df>
         <df name="game">
+          <in>mission.cfg</in>
         </df>
         <df name="landscape">
           <df name="bark">
