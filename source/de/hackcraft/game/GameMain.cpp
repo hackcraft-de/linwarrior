@@ -172,8 +172,9 @@ void GameMain::initMission() {
     
     if (config->mission == 1) {
         mission = new GameMission();
+    } else if (config->mission == 0) {
+        mission = new OpenMission();
     } else {
-        //mission = new OpenMission();
         mission = new BatchMission();
     }
     
@@ -367,7 +368,7 @@ void GameMain::drawFrame() {
         if (postprocessing) applyFilter(config->width, config->height);
 
         // Draw the Head-Up-Display of the currently spectating Object.
-        camera->drawHUD();
+            camera->drawHUD();
     }
     GLS::glPopProjection();
 
