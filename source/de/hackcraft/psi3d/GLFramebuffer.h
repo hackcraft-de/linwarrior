@@ -37,6 +37,8 @@ private:
 public:
     GLFramebuffer();
     
+    bool isBuiltin();
+    
     unsigned int getFramebuffer();
 
     unsigned int getColorbuffer();

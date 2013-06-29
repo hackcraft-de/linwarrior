@@ -8,6 +8,11 @@ GLFramebuffer::GLFramebuffer() {
 }
 
 
+bool GLFramebuffer::isBuiltin() {
+    return (framebuffer == 0);
+}
+
+
 unsigned int GLFramebuffer::getFramebuffer() {
     return framebuffer;
 }
