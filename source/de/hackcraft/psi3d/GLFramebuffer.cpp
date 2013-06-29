@@ -3,6 +3,11 @@
 #include "de/hackcraft/opengl/GL.h"
 
 
+GLFramebuffer::GLFramebuffer() {
+    initBuiltin(0, 0);
+}
+
+
 unsigned int GLFramebuffer::getFramebuffer() {
     return framebuffer;
 }
@@ -25,6 +30,16 @@ unsigned int GLFramebuffer::getWidth() {
 
 unsigned int GLFramebuffer::getHeight() {
     return height;
+}
+
+
+void GLFramebuffer::initBuiltin(int w, int h) {
+    
+    width = w;
+    height = h;
+    framebuffer = 0;
+    colorbuffer = 0;
+    depthbuffer = 0;
 }
 
 

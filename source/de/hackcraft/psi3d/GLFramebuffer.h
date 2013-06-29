@@ -35,6 +35,8 @@ private:
     unsigned int depthbuffer;
     
 public:
+    GLFramebuffer();
+    
     unsigned int getFramebuffer();
 
     unsigned int getColorbuffer();
@@ -43,10 +45,12 @@ public:
     unsigned int getWidth();
     unsigned int getHeight();
     
+    void initBuiltin(int w, int h);
     void initBuffers(int w, int h);
+    void cleanBuffers();
+    
     void bindBuffers();
     void unbindBuffers();
-    void cleanBuffers();
 };
 
 #endif	/* GLFRAMEBUFFER_H */
