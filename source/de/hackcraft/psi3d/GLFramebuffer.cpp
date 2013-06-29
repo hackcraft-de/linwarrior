@@ -78,6 +78,9 @@ void GLFramebuffer::initBuffers(int w, int h) {
     if (status != GL_FRAMEBUFFER_COMPLETE_EXT) {
         throw "Could not initialize frame-buffer.";
     }
+    
+    // Switch back to normal builtin frame buffer for now.
+    GL::glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 }
 
 
