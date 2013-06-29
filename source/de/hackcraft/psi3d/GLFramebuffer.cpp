@@ -49,6 +49,11 @@ void GLFramebuffer::initBuiltin(int w, int h) {
 
 
 void GLFramebuffer::initBuffers(int w, int h) {
+    initBuffers(w, h, false, false);
+}
+
+
+void GLFramebuffer::initBuffers(int w, int h, bool repeat_x, bool repeat_y) {
 
     this->width = w;
     this->height = h;
@@ -62,8 +67,8 @@ void GLFramebuffer::initBuffers(int w, int h) {
     // Generate and initialize color-buffer.
     GL::glGenTextures(1, &colorbuffer);
     GL::glBindTexture(GL_TEXTURE_2D, colorbuffer);
-    GL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    GL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    GL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, repeat_x ? GL_REPEAT : GL_CLAMP);
+    GL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, repeat_y ? GL_REPEAT : GL_CLAMP);
     GL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     GL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     GL::glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_BGRA, GL_UNSIGNED_BYTE, undefinedTexels);
@@ -72,8 +77,8 @@ void GLFramebuffer::initBuffers(int w, int h) {
     // Generate and initialize depth-buffer.
     GL::glGenTextures(1, &depthbuffer);
     GL::glBindTexture(GL_TEXTURE_2D, depthbuffer);
-    GL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    GL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    GL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, repeat_x ? GL_REPEAT : GL_CLAMP);
+    GL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, repeat_y ? GL_REPEAT : GL_CLAMP);
     GL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     GL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     GL::glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_INTENSITY);

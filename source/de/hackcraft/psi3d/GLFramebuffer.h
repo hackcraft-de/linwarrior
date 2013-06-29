@@ -49,6 +49,7 @@ public:
     
     void initBuiltin(int w, int h);
     void initBuffers(int w, int h);
+    void initBuffers(int w, int h, bool repeat_x, bool repeat_y);
     void cleanBuffers();
     
     void bindBuffers();
