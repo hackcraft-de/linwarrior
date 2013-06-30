@@ -10,7 +10,6 @@
           </df>
         </df>
         <df name="game">
-          <in>mission.cfg</in>
         </df>
         <df name="landscape">
           <df name="bark">
@@ -58,7 +57,13 @@
             </df>
           </df>
         </df>
-        <df name="prg">
+        <df name="prgs">
+          <in>color.inc</in>
+          <in>merge.frag</in>
+          <in>post.frag</in>
+          <in>post.vert</in>
+          <in>utils.inc</in>
+          <in>warp.inc</in>
         </df>
       </df>
       <df name="com">
@@ -165,6 +170,8 @@
           <df name="psi3d">
             <in>Console.h</in>
             <in>GLF.h</in>
+            <in>GLFramebuffer.cpp</in>
+            <in>GLFramebuffer.h</in>
             <in>GLS.h</in>
             <in>Particle.h</in>
             <in>Primitive.h</in>

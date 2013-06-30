@@ -21,6 +21,7 @@
 class Entity;
 class GameConfig;
 class GapBuffer;
+class GLFramebuffer;
 class Logger;
 class GameMission;
 class Pad;
@@ -38,6 +39,15 @@ public:
     static GameMain* instance;
     
 private:
+    /** Frame-buffer for initial 3d to 2d rendering. */
+    std::vector<GLFramebuffer*>* renderbuffer;
+
+    /** Frame-buffer for 2d deferred-/post-processing and effect application. */
+    std::vector<GLFramebuffer*>* effectbuffer;
+
+    /** Frame-buffer for final display if the effect-buffer wasn't the final. */
+    GLFramebuffer* screenbuffer;
+    
     /** Current game configuration. */
     GameConfig* config;
     
@@ -85,7 +95,10 @@ private:
 
 private:
     /** Apply post-processing filter right after drawing frame. */
-    void applyFilter(int width, int height);
+    void applyEffectFilter(GLFramebuffer* source);
+    
+    /** Apply optional projection filter after optional post-processing. */
+    void applyProjectionFilter(GLFramebuffer* sourceLeft, GLFramebuffer* sourceRight);
     
 private:
     /** Initializes called at the start of the run method. */
@@ -111,8 +124,11 @@ private:
     /** Updating the world for the given delta time. */
     void updateFrame(int elapsed_msec);
 
-    /** Draws a single frame. */
+    /** Draws a single frame for the whole screen. */
     void drawFrame();
+    
+    /** Draws a single frame for one eye. */
+    void drawFramelet(int eye, float shift);
 
 public:
     /** Constructor sets instance pointer among other things. */

@@ -20,6 +20,7 @@ paused(false),
 fullscreen(DEFAULT_FULLSCREEN),
 wireframe(false),
 nightvision(false),
+hud(true),
 
 printpad(false),
 fps(DEFAULT_FPS),
@@ -28,6 +29,7 @@ height(DEFAULT_YRES),
 depth(DEFAULT_BPP),
 multisamples(0),
 fov(DEFAULT_FOV),
+stereoscopic(0),
 mouseInput(true) {
 }
 
@@ -47,6 +49,7 @@ void GameConfig::printHelp() {
             << "  --resolution    followed by resolution WIDTH or WIDTHxHEIGHT" << "\n"
             << "  --samples       folowed by the number of multisamples 0,2,4,8,... " << "\n"
             << "  --window        start in windowed mode" << "\n"
+            << "  --cyber         followed by separation distance (eg. 0.036) start with stereoscopic" << "\n"
             << "  --joypad        removed option!" << "\n"
             << "                  Use either popular version 2 game pad (+ to-usb-converter) " << "\n"
             << "                  or use version 3 usb game pads (gp2, gp3) " << "\n"
@@ -101,6 +104,10 @@ int GameConfig::parseArgs(int argc, char** args) {
             //std::cout << "Resolution: " << this->width << " x " << this->height << "\n";
         } else if (arg_i("--window")) {
             this->fullscreen = false;
+        } else if (arg_i("--cyber")) {
+            advance_i();
+            std::string s = args[i];
+            this->stereoscopic = atof(s.c_str());
         } else if (arg_i("--samples")) {
             advance_i();
             std::string s = args[i];

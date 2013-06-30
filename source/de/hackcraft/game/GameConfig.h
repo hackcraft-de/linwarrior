@@ -53,6 +53,9 @@ struct GameConfig {
 
     /** Enables (fake) nightvision. */
     bool nightvision;
+    
+    /** Enables hud overlay. */
+    bool hud;
 
     /** Enables printing of game-pad button states. */
     bool printpad;
@@ -74,6 +77,9 @@ struct GameConfig {
 
     /** Field Of View in degrees */
     int fov;
+    
+    /** Stereoscopic virtual eye separation distance (eg. ~0.036) or zero for mono-scopic. */
+    float stereoscopic;
 
     /** Enables mouse input. */
     bool mouseInput;

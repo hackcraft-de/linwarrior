@@ -16,6 +16,7 @@
 #include "de/hackcraft/openal/AL.h"
 
 #include "de/hackcraft/psi3d/GLF.h"
+#include "de/hackcraft/psi3d/GLFramebuffer.h"
 #include "de/hackcraft/psi3d/GLS.h"
 #include "de/hackcraft/psi3d/Console.h"
 
@@ -48,6 +49,10 @@ GameMain::GameMain() {
     instance = this;
     
     config = new GameConfig();
+    
+    renderbuffer = new std::vector<GLFramebuffer*>();
+    effectbuffer = new std::vector<GLFramebuffer*>();
+    screenbuffer = new GLFramebuffer();
     
     world = NULL;
     camera = NULL;
@@ -102,13 +107,13 @@ void GameMain::initGL(int width, int height) {
         glinfo = (const char*) GL::glGetString(GL_EXTENSIONS);
         logger->debug() << glinfo << "\n";
         
-        bool supportsTex3d = glinfo.find("GL_EXT_texture3D", 0) == std::string::npos;
+        bool supportsTex3d = glinfo.find("GL_EXT_TEXTURE3D", 0) == std::string::npos;
         
         if (!supportsTex3d) {
             logger->error() << "NO SUPPORT for GL_EXT_texture3D !!!\n";
         }
     }
-
+    
     GL::glViewport(0, 0, width, height);
 
     rgba fogColor = {1.0, 1.0, 1.0, 1.0};
@@ -163,6 +168,43 @@ void GameMain::initGL(int width, int height) {
 
     // Init instant console font.
     GLF::glUploadFont();
+    
+    // Initialize frame buffers for stereo- or mono-scopic pipeline.
+    if (config->stereoscopic > 0) {
+        
+        GLFramebuffer* fb = NULL;
+
+        fb = new GLFramebuffer();
+        fb->initBuffers(width, height);
+        renderbuffer->push_back(fb);
+
+        fb = new GLFramebuffer();
+        fb->initBuffers(width, height);
+        renderbuffer->push_back(fb);
+
+        fb = new GLFramebuffer();
+        fb->initBuffers(width, height);
+        effectbuffer->push_back(fb);
+
+        fb = new GLFramebuffer();
+        fb->initBuffers(width, height);
+        effectbuffer->push_back(fb);
+        
+    } else {
+        
+        GLFramebuffer* fb = NULL;
+
+        fb = new GLFramebuffer();
+        //fb->initBuiltin(width, height);
+        fb->initBuffers(width, height);
+        renderbuffer->push_back(fb);
+
+        fb = new GLFramebuffer();
+        fb->initBuiltin(width, height);
+        effectbuffer->push_back(fb);
+    }
+
+    screenbuffer->initBuiltin(width, height);
 }
 
 
@@ -186,7 +228,7 @@ void GameMain::initMission() {
 }
 
 
-void GameMain::applyFilter(int width, int height) {
+void GameMain::applyEffectFilter(GLFramebuffer* source) {
     
     static bool fail = false;
     static GL::GLenum postprocess = 0;
@@ -220,24 +262,104 @@ void GameMain::applyFilter(int width, int height) {
         GL::glDisable(GL_CULL_FACE);
         GL::glEnable(GL_TEXTURE_2D);
         GL::glColor4f(1, 1, 1, 1);
+        
 
         GL::glUseProgramObjectARB(postprocess);
         {
-            // Capture Color.
-            static long screencolor = 0;
-            if (screencolor == 0) screencolor = GLS::glBindTextureMipmap2D(0, true, true, false, false, width, height, NULL);
+            int width = source->getWidth();
+            int height = source->getHeight();
+            
             GL::glUniform1i(GL::glGetUniformLocation(postprocess, "tex"), 0);
             GL::glActiveTexture(GL_TEXTURE0);
-            GL::glBindTexture(GL_TEXTURE_2D, screencolor);
-            GL::glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, 0, 0, width, height, 0);
+            
+            // Capture Color.
+            if (source->isBuiltin()) {
+                static long screencolor = 0;
+                if (screencolor == 0) screencolor = GLS::glBindTextureMipmap2D(0, true, true, false, false, width, height, NULL);
+                GL::glBindTexture(GL_TEXTURE_2D, screencolor);
+                GL::glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, 0, 0, width, height, 0);
+            } else {
+                GL::glBindTexture(GL_TEXTURE_2D, source->getColorbuffer());
+            }
 
-            // Capture Depth.
-            static long screendepth = 0;
-            if (screendepth == 0) screendepth = GLS::glBindTextureMipmap2D(0, true, true, false, false, width, height, NULL, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT);
             GL::glUniform1i(GL::glGetUniformLocation(postprocess, "dep"), 1);
             GL::glActiveTexture(GL_TEXTURE1);
-            GL::glBindTexture(GL_TEXTURE_2D, screendepth);
-            GL::glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, width, height);
+            
+            // Capture Depth.
+            if (source->isBuiltin()) {
+                static long screendepth = 0;
+                if (screendepth == 0) screendepth = GLS::glBindTextureMipmap2D(0, true, true, false, false, width, height, NULL, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT);
+                GL::glBindTexture(GL_TEXTURE_2D, screendepth);
+                GL::glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, width, height);
+            } else {
+                GL::glBindTexture(GL_TEXTURE_2D, source->getDepthbuffer());
+            }
+
+            GL::glBegin(GL_QUADS);
+            {
+                GL::glTexCoord2i(1, 0);
+                GL::glVertex3f(+1.0f, -1.0f, 0);
+                GL::glTexCoord2i(0, 0);
+                GL::glVertex3f(-1.0f, -1.0f, 0);
+                GL::glTexCoord2i(0, 1);
+                GL::glVertex3f(-1.0f, +1.0f, 0);
+                GL::glTexCoord2i(1, 1);
+                GL::glVertex3f(+1.0f, +1.0f, 0);
+            }
+            GL::glEnd();
+        }
+        GL::glUseProgramObjectARB(0);
+    }
+    GL::glPopAttrib();
+}
+
+
+void GameMain::applyProjectionFilter(GLFramebuffer* sourceLeft, GLFramebuffer* sourceRight) {
+    
+    static bool fail = false;
+    static GL::GLenum postprocess = 0;
+
+    if (postprocess == 0 && !fail) {
+        char* vtx = Shaderfile::loadShaderFile("/base/prgs/post.vert");
+        if (vtx) logger->trace() << "--- Vertex-Program Begin ---\n" << vtx << "\n--- Vertex-Program End ---\n";
+        char* fgm = Shaderfile::loadShaderFile("/base/prgs/merge.frag");
+        if (fgm) logger->trace() << "--- Fragment-Program Begin ---\n" << fgm << "\n--- Fragment-Program End ---\n";
+        fail = (vtx == NULL || fgm == NULL) || (vtx[0] == 0 || fgm[0] == 0);
+        if (!fail) {
+            std::stringstream str;
+            postprocess = GLS::glCompileProgram(vtx, fgm, str);
+            if (!str.str().empty()) {
+                logger->error() << str.str() << "\n";
+            }
+        }
+        delete[] vtx;
+        delete[] fgm;
+    }
+
+    if (fail) return;
+
+    GL::glFlush();
+
+    GL::glPushAttrib(GL_ALL_ATTRIB_BITS);
+    {
+        GL::glDisable(GL_LIGHTING);
+        GL::glDisable(GL_FOG);
+        GL::glDisable(GL_DEPTH_TEST);
+        GL::glDisable(GL_CULL_FACE);
+        GL::glEnable(GL_TEXTURE_2D);
+        GL::glColor4f(1, 1, 1, 1);
+
+        GL::glUseProgramObjectARB(postprocess);
+        {
+            // Bind left buffer.
+            GL::glUniform1i(GL::glGetUniformLocation(postprocess, "colorBufferLeft"), 0);
+            GL::glActiveTexture(GL_TEXTURE0);
+            GL::glBindTexture(GL_TEXTURE_2D, sourceLeft->getColorbuffer());
+
+            // Bind right buffer.
+            GL::glUniform1i(GL::glGetUniformLocation(postprocess, "colorBufferRight"), 1);
+            GL::glActiveTexture(GL_TEXTURE1);
+            GL::glBindTexture(GL_TEXTURE_2D, sourceRight->getColorbuffer());
 
             GL::glBegin(GL_QUADS);
             {
@@ -297,25 +419,30 @@ void GameMain::updateFrame(int elapsed_msec) {
 
 
 void GameMain::drawFrame() {
+    
+    float shift = config->stereoscopic;
+    
+    if (config->stereoscopic > 0) {
+        
+        drawFramelet(0, -shift);
+        drawFramelet(1, +shift);
+        
+        screenbuffer->bindBuffers();
+        
+        applyProjectionFilter(effectbuffer->at(0), effectbuffer->at(1));
+
+    } else {
+
+        drawFramelet(0, shift);
+    }
+}
+
+
+void GameMain::drawFramelet(int eye, float shift) {
     //logger->trace() << "elapsed: " << (elapsed_msec / 1000.0f) << "\n";
     //if (hurlmotion) elapsed = int(elapsed * 1.0f);
-
-    static bool picking = false;
-    const int SELECTIONSIZE = 1024;
-    GL::GLuint selection[SELECTIONSIZE];
     
-    if (picking) {
-        // With Projection:
-        //GL::glGetIntegerv(GL_VIEWPORT, viewport);
-        //gluPickMatrix(cx, viewport[3]-cy, 5, 5, viewport);
-        //gluPerspective(45,ratio,0.1,1000);
-        GL::glSelectBuffer(SELECTIONSIZE, selection);
-        GL::glRenderMode(GL_SELECT);
-        GL::glInitNames();
-    } else {
-        // With Modelview:
-        GL::glRenderMode(GL_RENDER);
-    }
+    renderbuffer->at(eye)->bindBuffers();
 
     // Draw area zones while paused (debug/editmode kind of).
     rAlert::sDrawzone = config->paused;
@@ -348,6 +475,7 @@ void GameMain::drawFrame() {
         // Setup camera.
         GL::glLoadIdentity();
         if (camera) {
+            GL::glTranslatef(-shift, 0, 0);
             camera->camera();
             camera->listener();
         }
@@ -363,15 +491,19 @@ void GameMain::drawFrame() {
 
         // Draw the Object's translucent effects.
         world->drawEffect();
-
+        
+        effectbuffer->at(eye)->bindBuffers();
+        
         bool postprocessing = true;
-        if (postprocessing) applyFilter(config->width, config->height);
-
+        if (postprocessing) applyEffectFilter(renderbuffer->at(eye));
+        
         // Draw the Head-Up-Display of the currently spectating Object.
+        if (config->hud) {
             camera->drawHUD();
+        }
     }
     GLS::glPopProjection();
-
+    
     float motionblur = 0.0f;
     
     if (config->nightvision > 0.0001f) {
@@ -381,30 +513,6 @@ void GameMain::drawFrame() {
         GL::glFlush();
         GLS::glAccumBlur(motionblur);
     }
-    
-    if (picking) {
-        
-        int entries = GL::glRenderMode(GL_RENDER);
-        logger->debug() << "selected: " << entries << "\n";
-        // Picking-Entry: n, minz, maxz, n_names
-        GL::GLuint* p = selection;
-
-        for (int i = 0; i < entries; i++) {
-            
-            GL::GLuint n = *p++;
-            GL::GLuint minz = *p++;
-            GL::GLuint maxz = *p++;
-            logger->trace() << n << " " << minz << " " << maxz << "\n";
-
-            for (int j = 0; j < (int) n; j++) {
-                GL::GLuint name = *p++;
-                logger->trace() << " " << name;
-            }
-            
-            logger->trace() << "\n";
-        }
-    }
-    //picking = !picking;
 
     if (config->paused || overlayEnabled) drawLog();
 }
@@ -488,6 +596,8 @@ void GameMain::updateKey(Uint8 keysym) {
         config->wireframe = !config->wireframe;
     } else if (keysym == _NIGHTVISION_KEY) {
         config->nightvision = !config->nightvision;
+    } else if (keysym == _HUD_KEY) {
+        config->hud = !config->hud;
     } else if (keysym == _PAUSE_KEY) {
         config->paused = !config->paused;
     } else {
