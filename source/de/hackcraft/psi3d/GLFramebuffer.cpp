@@ -49,11 +49,11 @@ void GLFramebuffer::initBuiltin(int w, int h) {
 
 
 void GLFramebuffer::initBuffers(int w, int h) {
-    initBuffers(w, h, false, false);
+    initBuffers(w, h, GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER);
 }
 
 
-void GLFramebuffer::initBuffers(int w, int h, bool repeat_x, bool repeat_y) {
+void GLFramebuffer::initBuffers(int w, int h, int wrapModeX, int warpModeY) {
 
     this->width = w;
     this->height = h;
@@ -63,12 +63,15 @@ void GLFramebuffer::initBuffers(int w, int h, bool repeat_x, bool repeat_y) {
     unsigned int framebuffer;
 
     void* undefinedTexels = NULL;
+    
+    float border4fv[] = { 0, 0, 0, 1};
 
     // Generate and initialize color-buffer.
     GL::glGenTextures(1, &colorbuffer);
     GL::glBindTexture(GL_TEXTURE_2D, colorbuffer);
-    GL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, repeat_x ? GL_REPEAT : GL_CLAMP);
-    GL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, repeat_y ? GL_REPEAT : GL_CLAMP);
+    GL::glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, border4fv);
+    GL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapModeX);
+    GL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, warpModeY);
     GL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     GL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     GL::glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_BGRA, GL_UNSIGNED_BYTE, undefinedTexels);
@@ -77,8 +80,8 @@ void GLFramebuffer::initBuffers(int w, int h, bool repeat_x, bool repeat_y) {
     // Generate and initialize depth-buffer.
     GL::glGenTextures(1, &depthbuffer);
     GL::glBindTexture(GL_TEXTURE_2D, depthbuffer);
-    GL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, repeat_x ? GL_REPEAT : GL_CLAMP);
-    GL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, repeat_y ? GL_REPEAT : GL_CLAMP);
+    GL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapModeX);
+    GL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, warpModeY);
     GL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     GL::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     GL::glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_INTENSITY);
