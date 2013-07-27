@@ -38,6 +38,9 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_timer.h>
 
+#include <openhmd/openhmd.h>
+ohmd_context* ctx = NULL;
+ohmd_device* hmd = NULL;
 
 Logger* GameMain::logger = Logger::getLogger("de.hackcraft.game.GameMain");
 
@@ -205,6 +208,22 @@ void GameMain::initGL(int width, int height) {
     }
 
     screenbuffer->initBuiltin(width, height);
+
+    ctx = ohmd_ctx_create();
+    int num_devices = ohmd_ctx_probe(ctx);
+    if(num_devices < 0){
+        logger->error() << "failed to probe devices: " << ohmd_ctx_get_error(ctx) << "\n";
+        //throw "Failed to probe devices!";
+    }
+
+    hmd = ohmd_list_open_device(ctx, 0);
+
+    if(!hmd){
+        logger->error() << "failed to open device: " << ohmd_ctx_get_error(ctx) << "\n";
+        //throw "Failed to open device!";
+    }
+    
+    logger->info() << hmd << "\n";
 }
 
 
@@ -475,7 +494,26 @@ void GameMain::drawFramelet(int eye, float shift) {
         // Setup camera.
         GL::glLoadIdentity();
         if (camera) {
+
+            float quat[4];
+            if (hmd != NULL) {
+                ohmd_ctx_update(ctx);
+                /*
+                float matrix[16];
+                if (eye == 0) {
+                    ohmd_device_getf(hmd, OHMD_LEFT_EYE_GL_MODELVIEW_MATRIX, matrix);
+                } else {
+                    ohmd_device_getf(hmd, OHMD_RIGHT_EYE_GL_MODELVIEW_MATRIX, matrix);
+                }
+                */
+                ohmd_device_getf(hmd, OHMD_ROTATION_QUAT, quat);
+                logger->trace() << quat[0] << " " << quat[1] << " " << quat[2] << " " << quat[3] << "\n";
+                //logger->trace() << matrix[0] << " " << matrix[1] << " " << matrix[2] << " " << matrix[3] << "\n";
+                quat_conj(quat);
+            }
+
             GL::glTranslatef(-shift, 0, 0);
+            GLS::glRotateq(quat);
             camera->camera();
             camera->listener();
         }

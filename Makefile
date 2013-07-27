@@ -51,7 +51,7 @@ ifdef MINGWCROSS
 	QUOTE=
 else
 	DESCRIPTION=Make for Linux and derivates
-	LIBRARIES= -lGLEW -lGLU -lGL -lSDL -lopenal -lalut
+	LIBRARIES= -lGLEW -lGLU -lGL -lSDL -lopenal -lalut -lopenhmd
 	TARGET=dist/linwarrior
 	MKDIR=mkdir -p
 	RM=rm -f
