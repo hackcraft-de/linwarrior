@@ -48,7 +48,7 @@ vec4 warpMerge(vec2 scale, float shift)
 
 
 void main() {
-	vec2 scale = vec2(1.05, 0.75);
+	vec2 scale = vec2(1.20, 0.60);
 	float shift = 0.0765;
 	gl_FragColor = warpMerge(scale, shift);
 	//gl_FragColor = textureLod(colorBufferLeft, pix.xy, 0.0);
