@@ -1,103 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="84">
+<configurationDescriptor version="90">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
-    <df name="data" root="data">
-      <df name="base">
-        <df name="chat">
-        </df>
-        <df name="cityscape">
-          <df name="roads">
-          </df>
-        </df>
-        <df name="game">
-        </df>
-        <df name="landscape">
-          <df name="bark">
-          </df>
-          <df name="blossom">
-          </df>
-          <df name="foliage">
-          </df>
-          <df name="grass">
-          </df>
-          <df name="ground">
-          </df>
-          <df name="leaf">
-          </df>
-          <df name="plant">
-          </df>
-        </df>
-        <df name="materials">
-        </df>
-        <df name="misc">
-        </df>
-        <df name="model">
-          <df name="tank">
-            <df name="ant">
-            </df>
-            <df name="bug">
-            </df>
-            <df name="warbuggy">
-            </df>
-          </df>
-          <df name="turret">
-            <df name="pod">
-            </df>
-          </df>
-          <df name="wanzer">
-            <df name="frogger">
-            </df>
-            <df name="goranga">
-            </df>
-            <df name="gorilla">
-            </df>
-            <df name="kibitz">
-            </df>
-            <df name="lemur">
-            </df>
-          </df>
-        </df>
-        <df name="prgs">
-          <in>color.inc</in>
-          <in>merge.frag</in>
-          <in>post.frag</in>
-          <in>post.vert</in>
-          <in>utils.inc</in>
-          <in>warp.inc</in>
-        </df>
-      </df>
-      <df name="com">
-        <df name="blendswap">
-          <df name="model">
-            <df name="flopsy">
-            </df>
-          </df>
-        </df>
-      </df>
-      <df name="org">
-        <df name="freesound">
-          <df name="weapon">
-          </df>
-        </df>
-        <df name="opengameart">
-          <df name="model">
-            <df name="gausscan">
-            </df>
-            <df name="reactor">
-            </df>
-            <df name="scorpion">
-            </df>
-            <df name="thunderbird">
-            </df>
-            <df name="twinblaster">
-            </df>
-          </df>
-        </df>
-      </df>
+    <df root="data" name="0">
     </df>
-    <df name="source" root="source">
+    <df root="source" name="1">
       <df name="de">
         <df name="hackcraft">
+          <df name="app">
+            <in>Activity.cpp</in>
+            <in>Activity.h</in>
+            <in>Application.cpp</in>
+            <in>Application.h</in>
+          </df>
           <df name="game">
             <in>BatchMission.cpp</in>
             <in>BatchMission.h</in>
@@ -192,7 +106,6 @@
             <in>GapBuffer.h</in>
             <in>Geomap.h</in>
             <in>HashMap.h</in>
-            <in>KDTree.h</in>
             <in>Propmap.cpp</in>
             <in>Propmap.h</in>
             <in>Timing.cpp</in>
@@ -383,8 +296,9 @@
   <confs>
     <conf name="Default" type="0">
       <toolsSet>
-        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>default</compilerSet>
+        <dependencyChecking>false</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <codeAssistance>
       </codeAssistance>
@@ -402,12 +316,48 @@
           </ccTool>
         </makeTool>
       </makefileType>
+      <item path="source/de/hackcraft/Main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/Main.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/app/Activity.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/app/Activity.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/app/Application.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/app/Application.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/game/BatchMission.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/game/BatchMission.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/game/GameConfig.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/game/GameConfig.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/game/GameMain.cpp"
             ex="false"
@@ -416,12 +366,37 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/game/GameMain.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/game/GameMission.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/game/GameMission.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/game/OpenMission.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/game/OpenMission.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/game/userkeys.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/io/Filesystem.cpp"
             ex="false"
@@ -430,6 +405,15 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/io/Filesystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/io/MD5Format.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/io/Pad.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="source/de/hackcraft/io/Shaderfile.cpp"
             ex="false"
             tool="1"
@@ -437,9 +421,18 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/io/Shaderfile.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/io/Texfile.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/io/Texfile.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/lang/OID.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="source/de/hackcraft/lang/Object.cpp"
             ex="false"
@@ -448,12 +441,21 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/lang/Object.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/lang/Runnable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/lang/String.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/lang/String.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="source/de/hackcraft/lang/Thread.cpp"
             ex="false"
@@ -462,12 +464,16 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/lang/Thread.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="source/de/hackcraft/log/Appender.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/log/Appender.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="source/de/hackcraft/log/LevelStreamLogger.cpp"
             ex="false"
@@ -476,9 +482,16 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/log/LevelStreamLogger.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/log/Logger.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/log/Logger.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="source/de/hackcraft/log/LoggerEvent.cpp"
             ex="false"
@@ -487,17 +500,28 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/log/LoggerEvent.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/openal/AL.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/openal/AL.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="source/de/hackcraft/opengl/GL.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/opengl/GL.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="source/de/hackcraft/opengl/GLU.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/opengl/GLU.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="source/de/hackcraft/proc/Ambient.cpp"
             ex="false"
@@ -506,12 +530,21 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/proc/Ambient.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/proc/Distortion.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/proc/Facade.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/proc/Facade.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="source/de/hackcraft/proc/Landscape.cpp"
             ex="false"
@@ -520,13 +553,24 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/proc/Landscape.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/proc/Noise.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="source/de/hackcraft/proc/Road.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/proc/Road.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="source/de/hackcraft/proc/Solid.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/proc/Solid.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="source/de/hackcraft/proc/Surface.cpp"
             ex="false"
@@ -535,7 +579,53 @@
         <ccTool>
         </ccTool>
       </item>
-      <item path="source/de/hackcraft/util/KDTree.h" ex="true" tool="3" flavor2="0">
+      <item path="source/de/hackcraft/proc/Surface.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/psi3d/Console.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/psi3d/GLF.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/psi3d/GLFramebuffer.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/psi3d/GLFramebuffer.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/psi3d/GLS.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/psi3d/Particle.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/psi3d/Primitive.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/psi3d/ctrl.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/psi3d/macros.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/psi3d/math3d.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/util/Binding.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/util/GapBuffer.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/util/Geomap.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/util/HashMap.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="source/de/hackcraft/util/Propmap.cpp"
             ex="false"
@@ -544,12 +634,16 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/util/Propmap.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="source/de/hackcraft/util/Timing.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/util/Timing.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="source/de/hackcraft/util/concurrent/Minion.cpp"
             ex="false"
@@ -558,12 +652,32 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/util/concurrent/Minion.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/util/concurrent/Semaphore.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/util/concurrent/Semaphore.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/util/concurrent/Threadpool.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/util/concurrent/Threadpool.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/widget/Border.cpp"
             ex="false"
@@ -572,12 +686,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/widget/Border.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/widget/Layout.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/widget/Layout.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/widget/Widget.cpp"
             ex="false"
@@ -586,12 +710,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/widget/Widget.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/Component.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/Component.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/Entity.cpp"
             ex="false"
@@ -600,12 +734,19 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/Entity.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/Subsystem.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/Subsystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/World.cpp"
             ex="false"
@@ -614,12 +755,19 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/World.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/object/cMech.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/object/cMech.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/adventure/AdventureSystem.cpp"
             ex="false"
@@ -628,12 +776,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/adventure/AdventureSystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/adventure/rAvatar.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/adventure/rAvatar.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/adventure/rInventory.cpp"
             ex="false"
@@ -642,12 +800,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/adventure/rInventory.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/adventure/rInventoryItemAssoc.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/adventure/rInventoryItemAssoc.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/adventure/rItem.cpp"
             ex="false"
@@ -656,12 +824,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/adventure/rItem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/adventure/rParty.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/adventure/rParty.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/adventure/rPartyAvatarAssoc.cpp"
             ex="false"
@@ -670,12 +848,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/adventure/rPartyAvatarAssoc.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/adventure/rPartyQuestAssoc.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/adventure/rPartyQuestAssoc.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/adventure/rQuest.cpp"
             ex="false"
@@ -684,12 +872,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/adventure/rQuest.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/background/BackgroundSystem.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/background/BackgroundSystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/camera/CameraSystem.cpp"
             ex="false"
@@ -698,12 +896,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/camera/CameraSystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/camera/rCamera.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/camera/rCamera.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/chat/ChatSystem.cpp"
             ex="false"
@@ -712,12 +920,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/chat/ChatSystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/chat/rChatGroup.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/chat/rChatGroup.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/chat/rChatMember.cpp"
             ex="false"
@@ -726,12 +944,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/chat/rChatMember.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/chat/rChatMessage.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/chat/rChatMessage.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/cityscape/CityscapeSystem.cpp"
             ex="false"
@@ -740,12 +968,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/cityscape/CityscapeSystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/cityscape/rBuilding.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/cityscape/rBuilding.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/cityscape/rPadmap.cpp"
             ex="false"
@@ -754,12 +992,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/cityscape/rPadmap.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/cityscape/rTile.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/cityscape/rTile.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/computer/ComputerSystem.cpp"
             ex="false"
@@ -768,12 +1016,27 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/computer/ComputerSystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/computer/IComputer.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/computer/rComcom.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/computer/rComcom.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/computer/rController.cpp"
             ex="false"
@@ -782,12 +1045,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/computer/rController.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/computer/rForcom.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/computer/rForcom.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/computer/rNavcom.cpp"
             ex="false"
@@ -796,12 +1069,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/computer/rNavcom.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/landscape/LandscapeSystem.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/landscape/LandscapeSystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/landscape/rPlanetmap.cpp"
             ex="false"
@@ -810,12 +1093,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/landscape/rPlanetmap.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/misc/MiscSystem.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/misc/MiscSystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/misc/rInputsource.cpp"
             ex="false"
@@ -824,12 +1117,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/misc/rInputsource.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/misc/rLightsource.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/misc/rLightsource.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/misc/rSoundsource.cpp"
             ex="false"
@@ -838,12 +1141,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/misc/rSoundsource.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/mobile/MobileSystem.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/mobile/MobileSystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/mobile/rMobile.cpp"
             ex="false"
@@ -852,12 +1165,27 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/mobile/rMobile.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="source/de/hackcraft/world/sub/model/IModel.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/model/ModelSystem.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/model/ModelSystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/model/rBillboard.cpp"
             ex="false"
@@ -866,12 +1194,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/model/rBillboard.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/model/rRigged.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/model/rRigged.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/model/rScatter.cpp"
             ex="false"
@@ -880,12 +1218,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/model/rScatter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/model/rTree.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/model/rTree.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/physics/PhysicsSystem.cpp"
             ex="false"
@@ -894,12 +1242,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/physics/PhysicsSystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/physics/rCollider.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/physics/rCollider.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/physics/rSpringlink.cpp"
             ex="false"
@@ -908,12 +1266,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/physics/rSpringlink.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/physics/rTraceable.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/physics/rTraceable.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/trigger/TriggerSystem.cpp"
             ex="false"
@@ -922,12 +1290,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/trigger/TriggerSystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/trigger/rAlert.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/trigger/rAlert.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/trigger/rTrigger.cpp"
             ex="false"
@@ -936,12 +1314,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/trigger/rTrigger.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/weapon/WeaponSystem.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/weapon/WeaponSystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/weapon/rTarcom.cpp"
             ex="false"
@@ -950,12 +1338,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/weapon/rTarcom.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/weapon/rTarget.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/weapon/rTarget.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/weapon/rWeapon.cpp"
             ex="false"
@@ -964,12 +1362,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/weapon/rWeapon.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/weapon/rWeaponExplosion.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/weapon/rWeaponExplosion.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/weapon/rWeaponHoming.cpp"
             ex="false"
@@ -978,12 +1386,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/weapon/rWeaponHoming.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/weapon/rWeaponMachinegun.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/weapon/rWeaponMachinegun.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/weapon/rWeaponPlasmagun.cpp"
             ex="false"
@@ -992,12 +1410,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/weapon/rWeaponPlasmagun.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/weapon/rWeaponRaybeam.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/weapon/rWeaponRaybeam.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
       <item path="source/de/hackcraft/world/sub/weapon/rWeaponSparkgun.cpp"
             ex="false"
@@ -1006,12 +1434,22 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="source/de/hackcraft/world/sub/weapon/rWeaponSparkgun.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="source/de/hackcraft/world/sub/weapon/rWepcom.cpp"
             ex="false"
             tool="1"
             flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="source/de/hackcraft/world/sub/weapon/rWepcom.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
     </conf>
   </confs>
