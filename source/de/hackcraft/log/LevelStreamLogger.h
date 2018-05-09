@@ -36,20 +36,24 @@ public:
     /*
     * This template does the trick of allowing the stream operator
     * on the level logger of a logger:
-    * 
+    * FIXED FOR LINUX, UNTESTED ELSEWHERE
     * logger.trace() << "Running operation: " << x << "\n";
     */
     template<typename T>
+	#ifdef __linux__
+    LevelStreamLogger& operator<<(const T& val) {
+        logstream << &val;
+	#else
     LevelStreamLogger& operator<<(T const& val) {
         logstream << val;
+	#endif
         appendStream();
         return *this;
     }
-    
     /*
     * This template does the trick of allowing the plus operator
     * on the level logger of a logger:
-    * 
+    *
     * logger.trace() + "Running operation: " + x + "\n";
     */
     template<typename T>
