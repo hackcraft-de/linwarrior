@@ -70,9 +70,9 @@ vec4 deriveNormal(sampler2D dep, vec2 pix, float pixofs) {
 
 	float e = pixofs * 0.9;
 
-	float d0  = linear(textureLod(dep,pix, 0.0).x);
-	float d0x = linear(textureLod(dep,pix+vec2(e, 0.0), 0.0).x);
-	float d0y = linear(textureLod(dep,pix+vec2(0.0, e), 0.0).x);
+	float d0  = linear(texture2D(dep, pix).x);
+	float d0x = linear(texture2D(dep, pix+vec2(e, 0.0)).x);
+	float d0y = linear(texture2D(dep, pix+vec2(0.0, e)).x);
 
     float xd = (d0x - d0);
     float yd = (d0y - d0);

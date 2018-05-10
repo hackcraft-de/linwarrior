@@ -2,6 +2,8 @@
 // Project:  LinWarrior 3d
 // Home:     hackcraft.de
 
+#version 120
+
 #include "/base/prgs/warp.inc"
 
 
@@ -38,9 +40,9 @@ vec4 warpMerge(vec2 scale, float shift)
 
 	// Get color from the individual buffer.
 	if (gl_TexCoord[0].x < 0.5) {
-		color = textureLod(colorBufferLeft, pix.xy, 0.0);
+		color = texture2D(colorBufferLeft, pix.xy);
 	} else {
-		color = textureLod(colorBufferRight, pix.xy, 0.0);
+		color = texture2D(colorBufferRight, pix.xy);
 	}
 
 	return color;
@@ -51,7 +53,7 @@ void main() {
 	vec2 scale = vec2(1.05, 0.75);
 	float shift = 0.0765;
 	gl_FragColor = warpMerge(scale, shift);
-	//gl_FragColor = textureLod(colorBufferLeft, pix.xy, 0.0);
+	//gl_FragColor = texture2D(colorBufferLeft, pix.xy);
 }
 
 

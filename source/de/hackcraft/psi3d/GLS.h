@@ -277,7 +277,7 @@ struct GLS {
             GL::glGetShaderiv(vs, GL_INFO_LOG_LENGTH, &length);
             char* log = new char[length];
             GL::glGetShaderInfoLog(vs, length, &length, log);
-            //str << "Vertex Shader Log:\n" << log << "\n";
+            str << "Vertex Shader Log:\n" << log << "\n";
             delete[] log;
         }
 
@@ -292,7 +292,7 @@ struct GLS {
             GL::glGetShaderiv(fs, GL_INFO_LOG_LENGTH, &length);
             char* log = new char[length];
             GL::glGetShaderInfoLog(fs, length, &length, log);
-            //str << "Fragment Shader Log:\n" << log << "\n";
+            str << "Fragment Shader Log:\n" << log << "\n";
             delete[] log;
         }
 

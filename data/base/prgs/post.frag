@@ -2,6 +2,8 @@
 // Project:  LinWarrior 3d
 // Home:     hackcraft.de
 
+#version 120
+
 #include "/base/prgs/utils.inc"
 #include "/base/prgs/warp.inc"
 #include "/base/prgs/color.inc"
@@ -28,7 +30,7 @@ vec4 test()
 	//float ny = 3.0 * ofs * (noiz3(gl_TexCoord[0].y, gl_TexCoord[0].x, 0.0) - 0.5);
 	//pix = vec2(ofs*0.0 + 0.5 - 0.5 * cos(pix.x*3.14), 0.5 - 0.5 * cos(pix.y*3.14));
 
-	//float str = 60.0 * linear(textureLod(dep,gl_TexCoord[0].xy, 0.0).x);
+	//float str = 60.0 * linear(texture2D(dep,gl_TexCoord[0].xy).x);
 	float str = 20.0;
 	//pix = vec2(pix.x + str * ofs*(0.5 - 0.5 * cos(pix.x*31.4)), pix.y + str * ofs*(0.5 - 0.5 * cos(pix.y*31.4)));
 
@@ -38,12 +40,12 @@ vec4 test()
 	// Color blur
 	float r = rd;
 	float calpha = 0.3;
-	vec4 c0 = textureLod(tex,pix, 0.0);
-	vec4 c1 = mix(c0, textureLod(tex,pix+vec2(ds[1]*r,dc[1]*r), 0.0), calpha); r += rd;
-	vec4 c2 = mix(c1, textureLod(tex,pix+vec2(ds[2]*r,dc[2]*r), 0.0), calpha); r += rd;
-	vec4 c3 = mix(c2, textureLod(tex,pix+vec2(ds[3]*r,dc[3]*r), 0.0), calpha); r += rd;
-	vec4 c4 = mix(c3, textureLod(tex,pix+vec2(ds[4]*r,dc[4]*r), 0.0), calpha); r += rd;
-	vec4 c5 = mix(c4, textureLod(tex,pix+vec2(ds[5]*r,dc[5]*r), 0.0), calpha); r += rd;
+	vec4 c0 = texture2D(tex,pix);
+	vec4 c1 = mix(c0, texture2D(tex,pix+vec2(ds[1]*r,dc[1]*r)), calpha); r += rd;
+	vec4 c2 = mix(c1, texture2D(tex,pix+vec2(ds[2]*r,dc[2]*r)), calpha); r += rd;
+	vec4 c3 = mix(c2, texture2D(tex,pix+vec2(ds[3]*r,dc[3]*r)), calpha); r += rd;
+	vec4 c4 = mix(c3, texture2D(tex,pix+vec2(ds[4]*r,dc[4]*r)), calpha); r += rd;
+	vec4 c5 = mix(c4, texture2D(tex,pix+vec2(ds[5]*r,dc[5]*r)), calpha); r += rd;
 	vec4 color0 = c0;
 	vec4 colorn = c5;
 	vec4 blur = colorn - color0;
@@ -55,19 +57,19 @@ vec4 test()
 
 	// Depth blur
 	float dalpha = 0.7;
-	float d0nonlin = textureLod(dep,pix, 0.0).x;
+	float d0nonlin = texture2D(dep,pix).x;
 	float d0 = linear(d0nonlin);
 	rd = ofs * 0.33 * 1.5;
 	r = ofs * 1.0;
-	float d1_ = linear(textureLod(dep,pix+ofse(1,r, pix), 0.0).x);
+	float d1_ = linear(texture2D(dep,pix+ofse(1,r, pix)).x);
 	float d1 = mix(d0, d1_, dalpha); r += rd;
-	float d2_ = linear(textureLod(dep,pix+ofse(2,r, pix), 0.0).x);
+	float d2_ = linear(texture2D(dep,pix+ofse(2,r, pix)).x);
 	float d2 = mix(d1, d2_, dalpha); r += rd;
-	float d3_ = linear(textureLod(dep,pix+ofse(3,r, pix), 0.0).x);
+	float d3_ = linear(texture2D(dep,pix+ofse(3,r, pix)).x);
 	float d3 = mix(d2, d3_, dalpha); r += rd;
-	float d4_ = linear(textureLod(dep,pix+ofse(4,r, pix), 0.0).x);
+	float d4_ = linear(texture2D(dep,pix+ofse(4,r, pix)).x);
 	float d4 = mix(d3, d4_, dalpha); r += rd;
-	float d5_ = linear(textureLod(dep,pix+ofse(5,r, pix), 0.0).x);
+	float d5_ = linear(texture2D(dep,pix+ofse(5,r, pix)).x);
 	float d5 = mix(d4, d5_, dalpha); r += rd;
 	float depth0 = d0;
 	float depthn = d5;
@@ -75,7 +77,7 @@ vec4 test()
 	// Derive Normal
 	vec4 nrm = deriveNormal(dep, pix, ofs);
 
-	float d6_ = linear(textureLod(dep,pix+1.2*ofs*(vec2(nrm.x, nrm.y)-vec2(0.5)), 0.0).x);
+	float d6_ = linear(texture2D(dep,pix+1.2*ofs*(vec2(nrm.x, nrm.y)-vec2(0.5))).x);
 	float d6 = mix(d5, d6_, dalpha);
 
 	// Unproject Pos
