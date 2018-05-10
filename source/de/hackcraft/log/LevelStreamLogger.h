@@ -40,7 +40,7 @@ public:
     * logger.trace() << "Running operation: " << x << "\n";
     */
     template<typename T>
-    LevelStreamLogger& operator<<(T const& val) {
+    LevelStreamLogger& operator<<(const T& val) {
         logstream << val;
         appendStream();
         return *this;
@@ -53,7 +53,7 @@ public:
     * logger.trace() + "Running operation: " + x + "\n";
     */
     template<typename T>
-    LevelStreamLogger& operator+(T const& val) {
+    LevelStreamLogger& operator+(const T& val) {
         logstream << val;
         appendStream();
         return *this;
