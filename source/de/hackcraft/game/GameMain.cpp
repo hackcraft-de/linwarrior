@@ -266,10 +266,17 @@ void GameMain::applyEffectFilter(GLFramebuffer* source) {
 
         GL::glUseProgramObjectARB(postprocess);
         {
+
+            float timer = world->getInstance()->getTiming()->getTime24();
+            GL::glUniform1f(GL::glGetUniformLocation(postprocess, "timer"), float(timer));
+
             int width = source->getWidth();
             int height = source->getHeight();
+
+            GL::glUniform1f(GL::glGetUniformLocation(postprocess, "bgl_RenderedTextureWidth"), float(width));
+            GL::glUniform1f(GL::glGetUniformLocation(postprocess, "bgl_RenderedTextureHeight"), float(height));
             
-            GL::glUniform1i(GL::glGetUniformLocation(postprocess, "tex"), 0);
+            GL::glUniform1i(GL::glGetUniformLocation(postprocess, "bgl_RenderedTexture"), 0);
             GL::glActiveTexture(GL_TEXTURE0);
             
             // Capture Color.
@@ -282,7 +289,7 @@ void GameMain::applyEffectFilter(GLFramebuffer* source) {
                 GL::glBindTexture(GL_TEXTURE_2D, source->getColorbuffer());
             }
 
-            GL::glUniform1i(GL::glGetUniformLocation(postprocess, "dep"), 1);
+            GL::glUniform1i(GL::glGetUniformLocation(postprocess, "bgl_DepthTexture"), 1);
             GL::glActiveTexture(GL_TEXTURE1);
             
             // Capture Depth.
