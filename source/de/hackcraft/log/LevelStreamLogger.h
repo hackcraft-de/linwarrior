@@ -41,7 +41,7 @@ public:
     */
     template<typename T>
     LevelStreamLogger& operator<<(const T& val) {
-        logstream << (*(&val));
+        logstream << (int*)(&val);
         appendStream();
         return *this;
     }
@@ -54,7 +54,7 @@ public:
     */
     template<typename T>
     LevelStreamLogger& operator+(const T& val) {
-        logstream << (*(&val));
+        logstream << (int*)(&val);
         appendStream();
         return *this;
     }
