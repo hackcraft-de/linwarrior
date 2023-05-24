@@ -1,3 +1,7 @@
+#include <string>
+#include <bits/basic_string.h>
+
+
 #include "rTree.h"
 
 #include "de/hackcraft/io/Texfile.h"
@@ -16,6 +20,7 @@ using std::list;
 
 #include <string>
 using std::string;
+
 
 #define ran(seed) (seed = ((seed * 1234567) % 65535))
 

@@ -33,6 +33,18 @@ public:
         this->level = level;
     }
 
+    LevelStreamLogger& operator<<(const std::__cxx11::basic_stringstream<char>& val) {
+        logstream << val.str();
+        appendStream();
+        return *this;
+   }
+
+    LevelStreamLogger& operator+(const std::__cxx11::basic_stringstream<char>& val) {
+        logstream << val.str();
+        appendStream();
+        return *this;
+   }
+
     /*
     * This template does the trick of allowing the stream operator
     * on the level logger of a logger:
@@ -41,7 +53,11 @@ public:
     */
     template<typename T>
     LevelStreamLogger& operator<<(const T& val) {
-        logstream << (*(&val));
+        //logstream << (*(&val));
+        //logstream << *(T*)(&val);
+        const T* x = (&val);
+        logstream << *x;
+        //logstream << (int*)(&val);
         appendStream();
         return *this;
     }
@@ -54,7 +70,10 @@ public:
     */
     template<typename T>
     LevelStreamLogger& operator+(const T& val) {
-        logstream << (*(&val));
+        //logstream << (*(&val));
+        const T* x = (&val);
+        logstream << *x;
+        //logstream << (int*)(&val);
         appendStream();
         return *this;
     }

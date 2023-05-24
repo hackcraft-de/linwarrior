@@ -13,10 +13,11 @@
 #include "de/hackcraft/opengl/GLU.h"
 
 // memcpy
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <string>
+#include <bits/basic_string.h>
 #include <ostream>
+#include <cstring>
+
 
 /** Extended OpenGL commands/snippets. */
 struct GLS {

@@ -71,7 +71,8 @@ CFLAGS += -Wp,-M,-MP,-MT,$@,-MF,dep/$(subst /,-,$@).d
 
 # Enable c++0x standard which gives extended initializer lists
 #CFLAGS += -std=c++0x
-CFLAGS += -std=gnu++0x
+#CFLAGS += -std=gnu++0x
+#CFLAGS += -std=c++11
 
 # Print warnings when compiling.
 CFLAGS += -Wall
@@ -108,6 +109,9 @@ CFLAGS += -O1 -funroll-loops
 # 5. Disable/Comment this flag again and recompile everything to finish.
 #CFLAGS += -g
 
+Release: all
+
+Debug: all
 
 # Default makefile Target.
 all: PRINTPLATFORM $(TARGET)
