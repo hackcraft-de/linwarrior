@@ -1,0 +1,34 @@
+#!/bin/bash
+
+echo Provisioning Mono Dev Dependencies
+
+OPTS=
+
+# Installation simulation dryrun.
+#OPTS=-s
+
+# Assume yes to all questions.
+OPTS=-y
+
+# Installation simulation dryrun and ssume yes.
+#OPTS=-sy
+
+# Quiet (and assume yes).
+#OPTS=-q
+
+apt-get ${OPTS} install mcs
+
+apt-get ${OPTS} install monop
+
+apt-get ${OPTS} install libtaoframework-opengl-cil-dev
+
+apt-get ${OPTS} install libtaoframework-openal-cil-dev
+
+apt-get ${OPTS} install libtaoframework-freeglut-cil-dev
+
+apt-get ${OPTS} install libtaoframework-sdl-cil-dev
+
+apt-get ${OPTS} install monodoc-taoframework-manual
+
+
+

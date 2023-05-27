@@ -1,0 +1,40 @@
+#!/bin/bash
+
+echo Provisioning Common Dev Dependencies
+
+OPTS=
+
+# Installation simulation dryrun.
+#OPTS=-s
+
+# Assume yes to all questions.
+OPTS=-y
+
+# Installation simulation dryrun and ssume yes.
+#OPTS=-sy
+
+# Quiet (and assume yes).
+#OPTS=-q
+
+apt-get ${OPTS} install python3
+
+apt-get ${OPTS} install mc
+
+apt-get ${OPTS} install git
+
+apt-get ${OPTS} install gitk
+
+# Pyhton IDE.
+apt-get ${OPTS} install idle
+
+# IDE mainly C variants.
+apt-get ${OPTS} install codeblocks
+
+# Lightweight IDE.
+apt-get ${OPTS} install geany
+
+# Powerful image editor.
+apt-get ${OPTS} install gimp
+
+
+

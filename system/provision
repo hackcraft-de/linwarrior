@@ -1,0 +1,18 @@
+#!/bin/bash
+
+echo Provisioning main script.
+
+echo Provisioning system tools and libs.
+echo Run for setting up a clean development environment.
+echo Review scrips and adjust for your own use as necessary.
+echo May mess up your neatly set up system otherwise.
+
+# General system tools and IDEs - you may not need these.
+./provision-common-dev
+
+# C++ compiler and libraries for the project - necessary but you may (already) have more recent versions.
+./provision-cpp-dev
+
+# Possible Mono (C#) compiler and libraries - if ever porting the project to a less annoying compiler.
+# ./provision-mono-dev
+

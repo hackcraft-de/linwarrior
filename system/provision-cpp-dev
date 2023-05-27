@@ -1,0 +1,41 @@
+#!/bin/bash
+
+echo Provisioning C++ Dev Dependencies
+
+# LIBRARIES= -lGLEW -lGLU -lGL -lSDL -lopenal -lalut
+
+
+OPTS=
+
+# Installation simulation dryrun.
+#OPTS=-s
+
+# Assume yes to all questions.
+OPTS=-y
+
+# Installation simulation dryrun and ssume yes.
+#OPTS=-sy
+
+# Quiet (and assume yes).
+#OPTS=-q
+
+apt-get ${OPTS} install g++
+
+
+apt-get ${OPTS} install libopenal-dev
+
+apt-get ${OPTS} install libalut-dev
+
+
+apt-get ${OPTS} install libopengl-dev
+
+apt-get ${OPTS} libglew-dev
+
+#apt-get ${OPTS} install freeglut3-dev
+
+
+apt-get ${OPTS} install libsdl1.2-dev
+#apt-get ${OPTS} install libsdl1.2-compat-dev
+
+
+
